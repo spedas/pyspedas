@@ -6,8 +6,9 @@ These png files are created inside CONFIG["local_data_dir"].
 """
 
 import os
-import pyspedas
-from pyspedas.tplot_tools import (
+import unittest
+import logging
+from pyspedas import (
     get_data,
     tplot,
     tplot_rename,
@@ -20,19 +21,29 @@ from pyspedas.tplot_tools import (
     store_data,
     del_data,
     time_double,
+    wavelet,
+    wavelet98,
+    wav_data,
+    tplot_restore,
+    tplot_names,
 )
-import unittest
+from pyspedas.analysis.tests.wavetest import wavetest
 from numpy.testing import assert_allclose
 import numpy as np
-from pyspedas.analysis.wavelet import wavelet
-from pyspedas.analysis.wavelet98 import wavelet98
-from pyspedas.analysis.wav_data import wav_data
-from pyspedas.utilities.download import download
-from pyspedas.projects.themis.config import CONFIG
+from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
-global_display = False
-local_idl_file = False  # Set to True to use a local IDL savefile (assumes directory ~/idltestfiles/ exists)
-outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
+# Whether to display plots during testing
+global_display = TESTING_CONFIG["global_display"]
+# Directory to save testing output files
+output_dir = TESTING_CONFIG["local_testing_dir"]
+# Ensure output directory exists
+analysis_dir = "analysis_tools"
+save_dir = os.path.join(output_dir, analysis_dir)
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+
+# Directory with IDL SPEDAS validation files
+validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 
 def tc_scales_from_freqs(freqs, omega0=6.0):
@@ -44,37 +55,10 @@ def tc_scales_from_freqs(freqs, omega0=6.0):
 def fracyear_to_unix(fyear: float):
     # Convert fractional years yyyy.fff from Torrence and Compo example to Unix timestamps
     iyear = int(fyear)
-    ut_start = pyspedas.time_double(str(iyear))
+    ut_start = time_double(str(iyear))
     frac = fyear - iyear
-    secs = pyspedas.time_double(str(iyear + 1)) - ut_start
+    secs = time_double(str(iyear + 1)) - ut_start
     return ut_start + frac * secs
-
-
-def load_idl_savefile(savefile):
-    """Load IDL tplot savefile for comparison with python results."""
-
-    filename = ""
-    if local_idl_file:
-        # Use a local file that has been downloaded manually
-        filename = os.path.join(os.path.expanduser("~"), "idltestfiles", savefile)
-    else:
-        # Download tplot files, all files should be under directory analysis_tools/
-        remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
-        remote_name = "analysis_tools/" + savefile
-        datafile = download(
-            remote_file=remote_name,
-            remote_path=remote_server,
-            local_path=outputdir,
-            no_download=False,
-        )
-        if not datafile:
-            # Skip tests
-            print("Cannot download data validation file. Filename: " + savefile)
-            return filename
-
-        filename = datafile[0]
-
-    return filename
 
 
 class TwaveletDataValidation(unittest.TestCase):
@@ -91,29 +75,31 @@ class TwaveletDataValidation(unittest.TestCase):
         cls.tol = 1e-10
 
         # Load validation variables from the test file
-        filename = load_idl_savefile("wavelet_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wavelet_test.tplot", output_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             raise unittest.SkipTest(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         # Test 1: simple sine waves
-        cls.sin_wav = pyspedas.get_data("sin_wav")
-        cls.sin_wav_wv_pow = pyspedas.get_data("sin_wav_wv_pow")
+        cls.sin_wav = get_data("sin_wav")
+        cls.sin_wav_wv_pow = get_data("sin_wav_wv_pow")
 
         # Test 2: Vassilis homework example using THEMIS FGM data
-        cls.tha_fgs_fac_bp_x = pyspedas.get_data("tha_fgs_fac_bp_x")
-        cls.tha_fgs_fac_bp_y = pyspedas.get_data("tha_fgs_fac_bp_y")
-        cls.tha_fgs_fac_bp_z = pyspedas.get_data("tha_fgs_fac_bp_z")
-        cls.tha_fgs_fac_bp_x_wv_pow = pyspedas.get_data("tha_fgs_fac_bp_x_wv_pow")
-        cls.tha_fgs_fac_bp_y_wv_pow = pyspedas.get_data("tha_fgs_fac_bp_y_wv_pow")
-        cls.tha_fgs_fac_bp_z_wv_pow = pyspedas.get_data("tha_fgs_fac_bp_z_wv_pow")
-        cls.wavetest_powspec = pyspedas.get_data("wavetest_powspec")
+        cls.tha_fgs_fac_bp_x = get_data("tha_fgs_fac_bp_x")
+        cls.tha_fgs_fac_bp_y = get_data("tha_fgs_fac_bp_y")
+        cls.tha_fgs_fac_bp_z = get_data("tha_fgs_fac_bp_z")
+        cls.tha_fgs_fac_bp_x_wv_pow = get_data("tha_fgs_fac_bp_x_wv_pow")
+        cls.tha_fgs_fac_bp_y_wv_pow = get_data("tha_fgs_fac_bp_y_wv_pow")
+        cls.tha_fgs_fac_bp_z_wv_pow = get_data("tha_fgs_fac_bp_z_wv_pow")
+        cls.wavetest_powspec = get_data("wavetest_powspec")
 
         tplot_rename("sin_wav_wv_pow", "idl_sin_wav_wv_pow")
         tplot_rename("wavetest_powspec", "idlwavetest_powspec")
@@ -129,31 +115,30 @@ class TwaveletDataValidation(unittest.TestCase):
 
     def setUp(self):
         """We need to clean tplot variables before each run"""
-        # pyspedas.del_data('*')
+        # del_data('*')
 
     def test_sin_wav(self):
         # The default is 'morl' rather than 'cmorl0.5-1.0, but it doesn't appear to make that much difference.
         # cmorl0.5-1.0 is what Eric used in the wiki example.
         wavelet("sin_wav", wavename="cmorl1.5-1.0")
         pvar = "sin_wav_pow"
-        pyspedas.options(pvar, "colormap", "jet")
-        pyspedas.ylim(pvar, 0.001, 0.1)
-        pyspedas.options(pvar, "ylog", True)
-        pyspedas.options(pvar, "ytitle", pvar)
-        pyspedas.options(pvar, "zlog", True)
+        options(pvar, "colormap", "jet")
+        ylim(pvar, 0.001, 0.1)
+        options(pvar, "ylog", True)
+        options(pvar, "ytitle", pvar)
+        options(pvar, "zlog", True)
         d = get_data("sin_wav_pow")
-        print(
+        logging.info(
             f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}"
         )
-        print(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
+        logging.info(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
         d_idl = get_data("idl_sin_wav_wv_pow")
-        print(
+        logging.info(
             f"IDL frequencies: bin count {d_idl.y.shape[1]}, min {np.min(d_idl.v)}, max: {np.max(d_idl.v)}"
         )
-        print(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
+        logging.info(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
 
-        local_path = outputdir
-        local_png = os.path.join(local_path, "sin_wav_simple.png")
+        local_png = os.path.join(save_dir, "sin_wav_simple.png")
         tvar = ["sin_wav", "sin_wav_pow", "idl_sin_wav_wv_pow"]
         tplot(tvar, display=global_display, save_png=local_png)
 
@@ -163,61 +148,59 @@ class TwaveletDataValidation(unittest.TestCase):
         idl_freqs = np.logspace(np.log10(0.00051), np.log10(0.05), 54)
 
         scales = tc_scales_from_freqs(idl_freqs)
+        self.assertIsNotNone(scales)
 
         wavelet("sin_wav", wavename="cmorl1.5-1.0", sampling_period=1.0)
         pvar = "sin_wav_pow"
-        pyspedas.options(pvar, "colormap", "spedas")
-        # pyspedas.ylim(pvar, 0.0005, 0.05)
-        pyspedas.options(pvar, "ylog", True)
-        pyspedas.options(pvar, "zlog", True)
-        pyspedas.options(pvar, "ytitle", pvar)
-        d = get_data("sin_wav_pow")
-        print(
+        options(pvar, "colormap", "spedas")
+        ylim(pvar, 0.0005, 0.05)
+        options(pvar, "ylog", True)
+        options(pvar, "zlog", True)
+        options(pvar, "ytitle", pvar)
+        d = get_data(pvar)
+        logging.info(
             f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}"
         )
-        print(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
+        logging.info(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
         d_idl = get_data("idl_sin_wav_wv_pow")
-        print(
+        logging.info(
             f"IDL frequencies: bin count {d_idl.y.shape[1]}, min {np.min(d_idl.v)}, max: {np.max(d_idl.v)}"
         )
-        print(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
+        logging.info(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
 
-        local_path = outputdir
-        local_png = os.path.join(local_path, "sin_wav_equiv.png")
+        local_png = os.path.join(save_dir, "sin_wav_equiv.png")
         tvar = ["sin_wav", "sin_wav_pow", "idl_sin_wav_wv_pow"]
         tplot(tvar, display=global_display, save_png=local_png)
 
     def test_themis_fgm_wavelet(self):
-        pyspedas.wavelet("tha_fgs_fac_bp_x")
-        pyspedas.wavelet("tha_fgs_fac_bp_y")
-        pyspedas.wavelet("tha_fgs_fac_bp_z")
+        wavelet("tha_fgs_fac_bp_x")
+        wavelet("tha_fgs_fac_bp_y")
+        wavelet("tha_fgs_fac_bp_z")
 
         zlim("tha_fgs_fac_bp_?_pow", 1.0e-1, 1.0e2)
         ylim("tha_fgs_fac_bp_?_pow", 1.0e-3, 4.1e-2)
         options("tha_fgs_fac_bp_?_pow", "zlog", True)
         options("tha_fgs_fac_bp_?_pow", "ylog", False)
         d = get_data("tha_fgs_fac_bp_x_pow")
-        print(
+        logging.info(
             f"Python frequencies: bin count {d.y.shape[1]}, min {np.min(d.v)}, max: {np.max(d.v)}"
         )
-        print(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
+        logging.info(f"Python power: min {np.min(d.y)}, max {np.max(d.y)}")
         d_idl = get_data("idl_fgs_fac_bp_x_wv_pow")
-        print(
+        logging.info(
             f"IDL frequencies: bin count {d_idl.y.shape[1]}, min {np.min(d_idl.v)}, max: {np.max(d_idl.v)}"
         )
-        print(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
+        logging.info(f"IDL power: min {np.min(d_idl.y)}, max {np.max(d_idl.y)}")
 
-        local_path = outputdir
-        local_png = os.path.join(local_path, "themis_fgm_wavelets.png")
+        local_png = os.path.join(save_dir, "themis_fgm_wavelets.png")
         tvar = ["tha_fgs_fac_bp_x_pow", "idl_fgs_fac_bp_x_wv_pow"]
         tplot(tvar, display=global_display, save_png=local_png)
 
     def test_nino3_tc(self):
-        from pyspedas.analysis.tests.wavetest import wavetest
 
         output_dict = wavetest(noplot=True)
         timestamps = [fracyear_to_unix(t) for t in output_dict["time"]]
-        pyspedas.store_data(
+        store_data(
             "sst_nino3_pwr",
             data={
                 "x": timestamps,
@@ -225,19 +208,18 @@ class TwaveletDataValidation(unittest.TestCase):
                 "v": output_dict["period"],
             },
         )
-        pyspedas.options("sst_nino3_pwr", "spec", 1)
-        pyspedas.options("sst_nino3_pwr", "yrange", [0.5, 128.0, 1])
-        pyspedas.options("sst_nino3_pwr", "zlog", 0)
+        options("sst_nino3_pwr", "spec", 1)
+        options("sst_nino3_pwr", "yrange", [0.5, 128.0, 1])
+        options("sst_nino3_pwr", "zlog", 0)
 
-        pyspedas.options("idlwavetest_powspec", "spec", 1)
-        pyspedas.options("idlwavetest_powspec", "yrange", [0.5, 128.0, 1])
-        pyspedas.options("idlwavetest_powspec", "zlog", 0)
+        options("idlwavetest_powspec", "spec", 1)
+        options("idlwavetest_powspec", "yrange", [0.5, 128.0, 1])
+        options("idlwavetest_powspec", "zlog", 0)
 
-        local_path = outputdir
-        local_png = os.path.join(local_path, "nino_powspec.png")
+        local_png = os.path.join(save_dir, "nino_powspec.png")
         tvar = "sst_nino3_pwr idlwavetest_powspec"
-        pyspedas.tplot(tvar, display=global_display, save_png=local_png)
-        d = pyspedas.get_data("sst_nino3_pwr")
+        tplot(tvar, display=global_display, save_png=local_png)
+        d = get_data("sst_nino3_pwr")
         assert_allclose(d.times, self.wavetest_powspec.times)
         assert_allclose(d.v, self.wavetest_powspec.v)
         # Max relative difference 2.8e-06
@@ -274,12 +256,12 @@ class TwaveletDataValidation(unittest.TestCase):
             # Compare python results with IDL results
             d1 = get_data(idl_pow[i])
             d2 = get_data(py_pow[i])
-            print(f"IDL {idl_pow[i]}: {d1.y.shape}, {d1.v.shape}")
-            print(f"Python {py_pow[i]}: {d2.y.shape}, {d2.v.shape}")
+            logging.info(f"IDL {idl_pow[i]}: {d1.y.shape}, {d1.v.shape}")
+            logging.info(f"Python {py_pow[i]}: {d2.y.shape}, {d2.v.shape}")
             for j in range(3):
                 # Find max difference
                 max_diff = np.abs(np.max(d1[j] - d2[j]))
-                print(f"- Max difference for {dcomp[j]}: {max_diff}")
+                logging.info(f"- Max difference for {dcomp[j]}: {max_diff}")
                 assert_allclose(d1[j], d2[j], rtol=1e-3, atol=1e-3)
 
             # Set plotting parameters
@@ -300,8 +282,7 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Plot 6 panels (x,y,z - IDL, python)
         tplot_options("title", "wav_data: IDL - Python comparison")
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_test.png")
+        local_png = os.path.join(save_dir, "wav_data_test.png")
         tplot(all_vars, display=global_display, save_png=local_png)
 
     def test_store_data_singleton_v(self):
@@ -323,6 +304,8 @@ class TwaveletDataValidation(unittest.TestCase):
         dat_x = get_data("tha_fgs_fac_bp_x")
         dat_y = get_data("tha_fgs_fac_bp_y")
         dat_z = get_data("tha_fgs_fac_bp_z")
+        self.assertEqual(np.shape(dat_x), np.shape(dat_y))
+        self.assertEqual(np.shape(dat_y), np.shape(dat_z))
         join_vec(
             ["tha_fgs_fac_bp_x", "tha_fgs_fac_bp_y", "tha_fgs_fac_bp_z"],
             newname="tha_fgs_joined",
@@ -346,6 +329,7 @@ class TwaveletDataValidation(unittest.TestCase):
         const_v = np.array([11.0, 12.0, 13.0])
         store_data("newvar", data={"x": time, "y": yvals, "v": const_v})
         orig_data = get_data("newvar")
+        self.assertIsNotNone(orig_data)
         split_vec("newvar")
         join_vec("newvar_*", newname="newvar_rejoined")
         joined_dat = get_data("newvar_rejoined")
@@ -374,9 +358,12 @@ class TwaveletDataValidation(unittest.TestCase):
         )
         store_data("newvar_tv", data={"x": time, "y": yvals, "v": time_varying_v})
         orig_data = get_data("newvar_tv")
+        self.assertIsNotNone(orig_data)
         split_vec("newvar_tv")
         dx = get_data("newvar_tv_x")
+        self.assertIsNotNone(dx)
         md = get_data("newvar_tv_x", metadata=True)
+        self.assertIn("extra_v_values", md)
         join_vec("newvar_tv_*", newname="newvar_tv_rejoined")
         joined_dat = get_data("newvar_tv_rejoined")
         self.assertEqual(len(joined_dat), 3)
@@ -432,17 +419,16 @@ class TwaveletDataValidation(unittest.TestCase):
         d = get_data(var4)
         # Period range should be within 8 to 60
         p = np.array(1.0 / d[2])
-        print(p)
+        logging.info(p)
         self.assertTrue(np.min(p) >= 8.0)
         self.assertTrue(np.max(p) <= 60.0)
         # In this case, the first p should be 8.0
         self.assertAlmostEqual(np.min(p), 8.0, delta=0.01)
 
         # Plot all results (optional)
-        vnames = pyspedas.tplot_names()
-        print(vnames)
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_keywords.png")
+        vnames = tplot_names()
+        logging.info(vnames)
+        local_png = os.path.join(save_dir, "wav_data_keywords.png")
         tplot(vnames, display=global_display, save_png=local_png)
 
     def test_wav_data_keywords2(self):
@@ -450,10 +436,12 @@ class TwaveletDataValidation(unittest.TestCase):
         # This is using the IDL save file wav_data_key2_test.tplot
         # which was created by the SPEDAS script: wav_data_validate.pro
 
-        print("\n\nTesting wav_data with keywords2\n")
+        logging.info("\n\nTesting wav_data with keywords2\n")
 
         # Load IDL savefile
-        filename = load_idl_savefile("wav_data_key2_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wav_data_key2_test.tplot", save_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             self.skipTest(
@@ -461,9 +449,9 @@ class TwaveletDataValidation(unittest.TestCase):
             )
 
         # Load validation variables from the test file
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         var = "sin_wav"
         all_vars = [var]
@@ -476,7 +464,7 @@ class TwaveletDataValidation(unittest.TestCase):
 
         for n in py_names:
             new_name = "idl_" + n
-            pyspedas.tplot_rename(n, new_name)
+            tplot_rename(n, new_name)
             all_vars.append(new_name)
             all_vars.append(n)
 
@@ -484,11 +472,11 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Compare with IDL results
         for n in py_names:
-            print(f"Comparing {n}")
+            logging.info(f"Comparing {n}")
             d_idl = get_data("idl_" + n)
             d_py = get_data(n)
             ddd = np.abs(d_idl.y - d_py.y)
-            print(
+            logging.info(
                 f"Max difference: {np.max(ddd)} at index {np.argmax(ddd)} Mean difference: {np.mean(ddd)}"
             )
             assert_allclose(d_idl.times, d_py.times)
@@ -499,8 +487,7 @@ class TwaveletDataValidation(unittest.TestCase):
             # assert_allclose(d_idl.y, d_py.y, rtol=1e-01, atol=1e-01)
 
         # Plot all results (optional)
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_key2_test.png")
+        local_png = os.path.join(save_dir, "wav_data_key2_test.png")
         tplot(all_vars, display=global_display, save_png=local_png)
 
     def test_wav_data_2d(self):
@@ -508,10 +495,12 @@ class TwaveletDataValidation(unittest.TestCase):
         # This is using the IDL save file wav_data_2d_test.tplot
         # which was created by the SPEDAS script: wav_data_validate.pro
 
-        print("\n\nTesting wav_data 2d\n")
+        logging.info("\n\nTesting wav_data 2d\n")
 
         # Load IDL savefile
-        filename = load_idl_savefile("wav_data_2d_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wav_data_2d_test.tplot", save_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             self.skipTest(
@@ -519,9 +508,9 @@ class TwaveletDataValidation(unittest.TestCase):
             )
 
         # Load validation variables from the test file
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         var = "sin_wav"
         all_vars = [var]
@@ -533,7 +522,7 @@ class TwaveletDataValidation(unittest.TestCase):
         ]
         for n in py_names:
             new_name = "idl_" + n
-            pyspedas.tplot_rename(n, new_name)
+            tplot_rename(n, new_name)
             all_vars.append(new_name)
             all_vars.append(n)
 
@@ -541,11 +530,11 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Compare with IDL results
         for n in py_names:
-            print(f"Comparing {n}")
+            logging.info(f"Comparing {n}")
             d_idl = get_data("idl_" + n)
             d_py = get_data(n)
             ddd = np.abs(d_idl.y - d_py.y)
-            print(
+            logging.info(
                 f"Max difference: {np.max(ddd)} at index {np.argmax(ddd)} Mean difference: {np.mean(ddd)}"
             )
             assert_allclose(d_idl.times, d_py.times)
@@ -553,8 +542,7 @@ class TwaveletDataValidation(unittest.TestCase):
             assert_allclose(d_idl.y, d_py.y, rtol=1e-01, atol=1e-01)
 
         # Plot all results (optional)
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_2d_test.png")
+        local_png = os.path.join(save_dir, "wav_data_2d_test.png")
         tplot(all_vars, display=global_display, save_png=local_png)
 
     def test_wav_data_resample(self):
@@ -563,10 +551,12 @@ class TwaveletDataValidation(unittest.TestCase):
         # This is using the IDL save file wav_data_resample_test.tplot
         # which was created by the SPEDAS script: wav_data_validate.pro
 
-        print("\n\nTesting wav_data resample keyword\n")
+        logging.info("\n\nTesting wav_data resample keyword\n")
 
         # Load IDL savefile
-        filename = load_idl_savefile("wav_data_resample_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wav_data_resample_test.tplot", save_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             self.skipTest(
@@ -574,13 +564,13 @@ class TwaveletDataValidation(unittest.TestCase):
             )
 
         # Load validation variables from the test file
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         # Rename the IDL results to distinguish them
-        pyspedas.tplot_rename("sin_wav_wv_pow", "idl_pow")
-        pyspedas.tplot_rename("sin_wav_orig_wv_pow", "idl_orig_pow")
+        tplot_rename("sin_wav_wv_pow", "idl_pow")
+        tplot_rename("sin_wav_orig_wv_pow", "idl_orig_pow")
 
         var = "sin_wav"
         wav_data(var)
@@ -596,8 +586,7 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Plot all results (optional)
         allvar = [var, varx, "idl_pow"]
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_resample_test.png")
+        local_png = os.path.join(save_dir, "wav_data_resample_test.png")
         tplot(allvar, display=global_display, save_png=local_png)
 
     def test_wav_data_cross(self):
@@ -605,10 +594,12 @@ class TwaveletDataValidation(unittest.TestCase):
         # This is using the IDL save file wav_data_cross_test.tplot
         # which was created by the SPEDAS script: wav_data_validate.pro
 
-        print("\n\nTesting wav_data cross1, cross2 keywords\n")
+        logging.info("\n\nTesting wav_data cross1, cross2 keywords\n")
 
         # Load IDL savefile
-        filename = load_idl_savefile("wav_data_cross_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wav_data_cross_test.tplot", save_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             self.skipTest(
@@ -616,9 +607,9 @@ class TwaveletDataValidation(unittest.TestCase):
             )
 
         # Load validation variables from the test file
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         var = "sin_wav"
         all_vars0 = [var]
@@ -650,17 +641,17 @@ class TwaveletDataValidation(unittest.TestCase):
         # Rename the IDL results to distinguish them
         for n in py_names0:
             new_name = "idl_" + n
-            pyspedas.tplot_rename(n, new_name)
+            tplot_rename(n, new_name)
             all_vars0.append(new_name)
             all_vars0.append(n)
         for n in py_names1:
             new_name = "idl_" + n
-            pyspedas.tplot_rename(n, new_name)
+            tplot_rename(n, new_name)
             all_vars1.append(new_name)
             all_vars1.append(n)
         for n in py_names2:
             new_name = "idl_" + n
-            pyspedas.tplot_rename(n, new_name)
+            tplot_rename(n, new_name)
             all_vars2.append(new_name)
             all_vars2.append(n)
 
@@ -676,11 +667,11 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Compare x,y,z results
         for n in py_names0:
-            print(f"Comparing {n}")
+            logging.info(f"Comparing {n}")
             d_idl = get_data("idl_" + n)
             d_py = get_data(n)
             ddd = np.abs(d_idl.y - d_py.y)
-            print(
+            logging.info(
                 f"Max difference: {np.max(ddd)} at index {np.argmax(ddd)} Mean difference: {np.mean(ddd)}"
             )
             assert_allclose(d_idl.times, d_py.times)
@@ -689,11 +680,11 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Compare cross1 results
         for n in py_names1:
-            print(f"Comparing {n}")
+            logging.info(f"Comparing {n}")
             d_idl = get_data("idl_" + n)
             d_py = get_data(n)
             ddd = np.abs(d_idl.y - d_py.y)
-            print(
+            logging.info(
                 f"Max difference: {np.max(ddd)} at index {np.argmax(ddd)} Mean difference: {np.mean(ddd)}"
             )
             assert_allclose(d_idl.times, d_py.times)
@@ -707,27 +698,28 @@ class TwaveletDataValidation(unittest.TestCase):
             assert_allclose(d_idl.times, d_py.times)
             assert_allclose(d_idl.v, d_py.v)
             ddd = np.abs(d_idl.y - d_py.y)
-            print(
+            logging.info(
                 f"Max difference: {np.max(ddd)} at index {np.argmax(ddd)} Mean difference: {np.mean(ddd)}"
             )
             assert_allclose(d_idl.y, d_py.y, rtol=7e-01, atol=7e-1)
 
         # Plot all results (optional)
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wav_data_cross0.png")
-        pyspedas.tplot(all_vars0, display=global_display, save_png=local_png)
-        local_png = os.path.join(local_path, "wav_data_cross1.png")
-        pyspedas.tplot(all_vars1, display=global_display, save_png=local_png)
-        local_png = os.path.join(local_path, "wav_data_cross2.png")
-        pyspedas.tplot(all_vars2, display=global_display, save_png=local_png)
+        local_png = os.path.join(save_dir, "wav_data_cross0.png")
+        tplot(all_vars0, display=global_display, save_png=local_png)
+        local_png = os.path.join(save_dir, "wav_data_cross1.png")
+        tplot(all_vars1, display=global_display, save_png=local_png)
+        local_png = os.path.join(save_dir, "wav_data_cross2.png")
+        tplot(all_vars2, display=global_display, save_png=local_png)
 
     def test_wavelet98_paul_dog(self):
         # Test wavelet98.py Paul and Dog and compare with IDL results.
 
-        print("\n\nTesting wavelet98 Paul and Dog wavelets\n")
+        logging.info("\n\nTesting wavelet98 Paul and Dog wavelets\n")
 
         # Load IDL savefile
-        filename = load_idl_savefile("wavelet98_paul_dog_test.tplot")
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "wavelet98_paul_dog_test.tplot", save_dir
+        )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
             self.skipTest(
@@ -735,18 +727,18 @@ class TwaveletDataValidation(unittest.TestCase):
             )
 
         # Load validation variables from the test file
-        pyspedas.del_data("*")
-        pyspedas.tplot_restore(filename)
-        pyspedas.tplot_names()
+        del_data("*")
+        tplot_restore(filename)
+        tplot_names()
 
         # Rename the IDL results to distinguish them
-        pyspedas.tplot_rename("wav_paul", "idl_wav_paul")
+        tplot_rename("wav_paul", "idl_wav_paul")
         options("idl_wav_paul", "ytitle", "idl")
-        pyspedas.tplot_rename("pow_paul", "idl_pow_paul")
+        tplot_rename("pow_paul", "idl_pow_paul")
         options("idl_pow_paul", "ytitle", "idl")
-        pyspedas.tplot_rename("wav_dog", "idl_wav_dog")
+        tplot_rename("wav_dog", "idl_wav_dog")
         options("idl_wav_dog", "ytitle", "idl")
-        pyspedas.tplot_rename("pow_dog", "idl_pow_dog")
+        tplot_rename("pow_dog", "idl_pow_dog")
         options("idl_pow_dog", "ytitle", "idl")
 
         var = "sin_wav"
@@ -823,8 +815,7 @@ class TwaveletDataValidation(unittest.TestCase):
             "pow_dog",
             "idl_pow_dog",
         ]
-        local_path = outputdir
-        local_png = os.path.join(local_path, "wavelet98_paul_dog_test.png")
+        local_png = os.path.join(save_dir, "wavelet98_paul_dog_test.png")
         tplot(allvar, display=global_display, save_png=local_png)
 
 
