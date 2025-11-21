@@ -71,7 +71,7 @@ def mms_login_lasp(always_prompt=False, headers={}):
 
         # check if the login failed
         if testget.status_code == 401:
-            logging.error("Invalid password for user: %s; trying public access..", user)
+            logging.error('Invalid password for user: ' + str(user) + '; trying public access..')
             user = None
 
     # only save the user's user/passwd if login was successful
