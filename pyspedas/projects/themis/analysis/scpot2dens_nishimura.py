@@ -107,8 +107,8 @@ def scpot2dens_nishimura(scpot, scptime, vth, vth_time, dens_i, dens_i_time, pos
 
     # Check if Ni exists and have >= 2 elements if no_interp is False
     if no_interp == False:
-        if not (dens_i[0] != -1) or (len(dens_e) < 2 or len(dens_i) < 2):
-            pyspedas.logger.error("dens_e and dens_i must exist and have two or more elements.")
+        if len(dens_i) < 2 or dens_i[0] == -1:
+            pyspedas.logger.error("dens_i must exist and have two or more elements.")
             return None
     else: #Can have a single element if not interpolating
         if dens_i[0] == -1:
@@ -124,7 +124,7 @@ def scpot2dens_nishimura(scpot, scptime, vth, vth_time, dens_i, dens_i_time, pos
     
     if no_interp == False:
         # Interpolate vth and dens_i to scpot time base
-        vth_int = interpolate_to_scptime(vthtime, scptime, vth)
+        vth_int = interpolate_to_scptime(vth_time, scptime, vth)
         dens_i_int = interpolate_to_scptime(dens_i_time, scptime, dens_i)
     else:
         # Or not
