@@ -106,6 +106,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if prefix != '' or suffix != '':
         check_pre_suff = True
 
+    # If nontrivial varnames or varformat are explicitly supplied, load the requested data whether or not
+    # it's marked as support_data in the CDF.
+
+    if varformat is not None:
+        get_support_data = True
+
     if varnames is None:
         varnames = []
 
@@ -113,6 +119,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         varnames = [varnames]
 
     if len(varnames) > 0:
+        get_support_data = True
         if '*' in varnames:
             varnames = []
 
