@@ -9,6 +9,10 @@
 *.nc
 *.fits
 *.tplot
+*.dat
+*.gz
+*.tar
+*.tgz
 # PySPEDAS uses pdm.lock, but uv also produces a uv.lock file, which we don't want to check in.
 uv.lock
 

@@ -293,9 +293,9 @@ def cdipdir_vect(time_in=None, iyear=None, idoy=None):
     Same as SPEDAS cdipdir_vec.
     """
     if (
-        (time_in is None or not isinstance(time_in, list))
-        and (iyear is None or not isinstance(iyear, list))
-        and (idoy is None or not isinstance(idoy, list))
+        (time_in is None or not isinstance(time_in, (list, tuple, np.ndarray)))
+        and (iyear is None or not isinstance(iyear, (list, tuple, np.ndarray)))
+        and (idoy is None or not isinstance(idoy, (list, tuple, np.ndarray)))
     ):
         return cdipdir(time_in, iyear, idoy)
 
@@ -1360,5 +1360,13 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
         c2 = p[i + 1]
         subname = "sub" + c1 + "2" + c2
         data_out = globals()[subname](time_in, data_out)
+
+    # Make the output the same type as the input.
+    if isinstance(data_in, list):
+        data_out = data_out.tolist()
+    elif isinstance(data_in, tuple):
+        data_out = tuple(data_out)
+    elif isinstance(data_in, np.ndarray):
+        data_out = np.array(data_out)
 
     return data_out

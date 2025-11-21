@@ -290,11 +290,11 @@ class CotransTestCases(unittest.TestCase):
             self.assertIn("cotrans error: Data is empty.", log.output[0])
             self.assertEqual(len(log.output), 1)
         # Test all combinations.
+        del_data()  # Ensure there are no leftover variables.
         with self.assertLogs(level="WARNING") as log:
             for i, coord_in in enumerate(all_cotrans):
                 for j, coord_out in enumerate(all_cotrans):
                     count += 1
-                    del_data()
                     cotrans(
                         name_out=name1,
                         time_in=t,
@@ -324,12 +324,14 @@ class CotransTestCases(unittest.TestCase):
                     self.assertTrue(abs(dd1[2] - dd2[2]) <= 1e-6)
                     if coord_out == coord_in:
                         self.assertIn(
-                            "Warning: coord_in equal to coord_out.", log.output[i * 2]
+                            "Warning: coord_in equal to coord_out.",
+                            log.output[i * 2],
                         )
                         self.assertIn(
                             "Warning: coord_in equal to coord_out.",
                             log.output[j * 2 + 1],
                         )
+                    del_data()  # Clean up for next test.
 
     def test_mlt(self):
         """Test sm2mlt.

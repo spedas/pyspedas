@@ -1,0 +1,184 @@
+abstract: '<p dir="auto">The Python-based Space Physics Environment Data Analysis
+  Software (PySPEDAS) framework supports multi-mission, multi-instrument retrieval,
+  analysis, and visualization of heliophysics time series data.</p>
+
+  <div dir="auto">&nbsp;</div>'
+authors:
+- affiliation: UCLA Division of Physical Sciences
+  family-names: Angelopoulos
+  given-names: Vassilis
+  orcid: 0000-0001-7024-1561
+- affiliation: Laboratory for Atmospheric and Space Physics
+  family-names: Harter
+  given-names: Bryan
+  orcid: 0000-0002-3908-9001
+- affiliation: Adnet Systems (United States)
+  family-names: Grimes
+  given-names: Eric
+  orcid: 0000-0001-5756-8789
+- family-names: Russell
+  given-names: Cindy
+- affiliation: University of California, Los Angeles
+  family-names: Wu
+  given-names: Jiashu
+- affiliation: University of California, Berkeley
+  family-names: Lewis
+  given-names: Jim
+  orcid: 0009-0005-4191-5906
+- affiliation: University of California Los Angeles
+  family-names: Drozdov
+  given-names: Alexander
+  orcid: 0000-0002-5334-2026
+- affiliation: University of California, Los Angeles
+  family-names: Hatzigeorgiu
+  given-names: Nick
+- affiliation: University of California, Berkeley
+  family-names: McTiernan
+  given-names: James
+  orcid: 0000-0002-3038-176X
+- affiliation: University of California, Los Angeles
+  family-names: Carpenter
+  given-names: Daniel
+- affiliation: Laboratory for Atmospheric and Space Physics
+  family-names: Barnum
+  given-names: Julie
+  orcid: 0000-0001-8755-0694
+- affiliation: Adnet Systems (United States)
+  family-names: Narock
+  given-names: Ayris
+  orcid: 0000-0001-6746-7455
+- family-names: GithubUser
+  given-names: Beforerr
+- affiliation: University of California, Berkeley
+  family-names: Pulupa
+  given-names: Marc
+  orcid: 0000-0002-1573-7457
+- affiliation: University of Colorado Boulder
+  family-names: Chu
+  given-names: Xiangning
+  orcid: 0000-0003-4109-0770
+- affiliation: Johns Hopkins University Applied Physics Laboratory
+  family-names: Smith
+  given-names: Brent
+- family-names: GithubUser
+  given-names: Tiger
+- affiliation: University of California, Los Angeles
+  family-names: Norris
+  given-names: Austin
+- family-names: GithubUser
+  given-names: Kiril B
+- affiliation: Center for Astrophysics | Harvard & Smithsonian
+  family-names: Badman
+  given-names: Samuel
+  orcid: 0000-0002-6145-436X
+- affiliation: The University of Texas at Austin
+  family-names: Keaton-Ashanti
+  given-names: Anansa
+- affiliation: Nagoya University
+  family-names: Hori
+  given-names: Tomo
+- family-names: Amano
+  given-names: Takanobu
+  orcid: 0000-0002-2140-6961
+- affiliation: University of California, Berkeley
+  family-names: Rexroad
+  given-names: Warren
+- family-names: GithubUser
+  given-names: krvidal
+- family-names: Onosawa
+  given-names: Shuji
+- affiliation: Southwest Research Institute
+  family-names: Powell
+  given-names: Luke
+- family-names: GithubUser
+  given-names: thigli
+- family-names: Shumko
+  given-names: Mykhaylo
+  orcid: 0000-0002-0437-7521
+- affiliation: West Virginia University
+  family-names: Al Shidi
+  given-names: Qusai
+  orcid: 0000-0003-0426-038X
+- affiliation: Johns Hopkins University Applied Physics Laboratory
+  family-names: Antunes
+  given-names: Sandy
+- affiliation: Johns Hopkins University Applied Physics Laboratory
+  family-names: Young
+  given-names: Sean A. Q.
+- family-names: '''Vo'
+  given-names: Tien
+- family-names: GithubUser
+  given-names: donglai96
+- family-names: GithubUser
+  given-names: rale8469
+- family-names: Short
+  given-names: Benjamin
+  orcid: 0000-0003-3945-6577
+- affiliation: Laboratory for Atmospheric and Space Physics
+  family-names: Lucas
+  given-names: Elysia
+cff-version: 1.2.0
+date-released: '2025-11-07'
+doi: 10.5281/zenodo.17634923
+identifiers:
+- type: swh
+  value: swh:1:dir:8e0fde3f78d6a0876f953641c49ab44a8f45b4a5;origin=https://doi.org/10.5281/zenodo.17634923;visit=swh:1:snp:afdefc029db40f2483ef7b96f3303328fbaa2135;anchor=swh:1:rel:d3d0172916e245496e9d62e7df1d4f8fbd6295c4;path=pyspedas-2.0.5
+keywords:
+- heliophysics
+- ACE
+- Arase
+- ERG
+- CDF
+- CLUSTER
+- coordinates
+- data access
+- DSCOVR
+- EQUATOR-S
+- FAST
+- GEOTAIL
+- heliosphere
+- IMAGE
+- Kyoto Dst
+- line plots
+- plotting
+- magnetosphere
+- MAVEN
+- MICA
+- MMS
+- spectrogram plots
+- POES
+- POLAR
+- PSP
+- Parker Solar Probe
+- SOLO
+- Solar Orbiter
+- THEMIS
+- ARTEMIS
+- RBSP
+- Van Allen Probes
+- WIND
+- HAPI
+- cdaweb
+- magnetic field modeling
+- geomagnetic
+- solar wind
+- space weather
+- GOES
+- KOMPSAT
+- particles
+- plasma
+- moments
+- Akebono
+- BARREL
+- ELFIN
+- ICON
+- IUGONET
+- GMAG
+- ground magnetometer
+- aurora
+- fields
+license:
+- mit
+message: If you use this software, please cite it using the metadata from this file.
+title: PySPEDAS (Space Physics Environment Data Analysis System in Python)
+type: software
