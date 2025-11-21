@@ -154,6 +154,14 @@ class FPITestCases(unittest.TestCase):
                       mag_data='mms1_fgm_b_gse_brst_l2_bvec',
                       vel_data='mms1_dis_bulkv_gse_brst')
 
+    def test_varname_support_data(self):
+        """ Test whether support data variables are returned if explicit varname or varformat is specified """
+        trange = ['2015-10-16/13:06:29', '2015-10-16/13:06:32']
+        data = pyspedas.projects.mms.fpi(probe='1',trange=trange,data_rate='brst',level='l2',datatype='des-dist',varnames=['mms1_des_energy_brst'],time_clip=True)
+        self.assertTrue('mms1_des_energy_brst' in data)
+        data = pyspedas.projects.mms.fpi(probe='1',trange=trange,data_rate='brst',level='l2',datatype='des-dist',varformat='*des_energy_brst',time_clip=True)
+        self.assertTrue('mms1_des_energy_brst' in data)
+
     def test_split_tensors(self):
         data = pyspedas.projects.mms.fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'],
                                 data_rate='brst',
