@@ -370,6 +370,10 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_fgs_dsl_z'))
         md_x = get_data('thc_fgs_dsl_x', metadata=True)
         self.assertTrue(md_x['plot_options']['xaxis_opt']['axis_label'] == md['plot_options']['xaxis_opt']['axis_label'])
+        self.assertTrue(md_x['plot_options']['yaxis_opt']['legend_names'] == md['CDF']['LABELS'][0:1])
+        md_y = get_data('thc_fgs_dsl_y', metadata=True)
+        self.assertTrue(md_y['plot_options']['xaxis_opt']['axis_label'] == md['plot_options']['xaxis_opt']['axis_label'])
+        self.assertTrue(md_y['plot_options']['yaxis_opt']['legend_names'] == md['CDF']['LABELS'][1:2])
 
     def test_imports(self):
         import pyspedas
