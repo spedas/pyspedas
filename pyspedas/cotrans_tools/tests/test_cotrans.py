@@ -10,18 +10,45 @@ These tests include the function in the following files:
 
 """
 
+import os
+import unittest
+import logging
 import numpy as np
 from numpy.testing import assert_allclose
-import unittest
 import pyspedas
-import logging
+from pyspedas import (
+    sm2mlt,
+    tplot_copy,
+    set_units,
+    get_units,
+    time_double,
+    get_data,
+    store_data,
+    del_data,
+    get_coords,
+    set_coords,
+    tplot_restore,
+    tplot_names,
+    options,
+    subtract,
+    tplot,
+    cotrans,
+    fac_matrix_make,
+)
 from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
-from pyspedas.cotrans_tools.cotrans import cotrans
-from pyspedas.cotrans_tools.fac_matrix_make import fac_matrix_make
-from pyspedas.tplot_tools import get_data, store_data, del_data, get_coords, set_coords
-from pyspedas import sm2mlt, tplot_copy, set_units, get_units, time_double
+from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
-global_display = False
+# Whether to display plots during testing
+global_display = TESTING_CONFIG["global_display"]
+# Directory to save testing output files
+output_dir = TESTING_CONFIG["local_testing_dir"]
+# Ensure output directory exists
+cotrans_dir = "cotrans_tools"
+save_dir = os.path.join(output_dir, cotrans_dir)
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+# Directory with IDL SPEDAS validation files
+validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 
 class CotransTestCases(unittest.TestCase):
@@ -35,7 +62,6 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_coords(self):
         """Test for pytplot.set_coords/get_coords"""
-        from pyspedas.tplot_tools import set_coords, get_coords
 
         del_data()
         doesntexist = get_coords("test_coord")
@@ -64,7 +90,6 @@ class CotransTestCases(unittest.TestCase):
 
     def test_get_set_units(self):
         """Test for pytplot.set_coords/get_coords"""
-        from pyspedas.tplot_tools import set_units, get_units, set_coords, get_coords
 
         del_data()
         doesntexist = get_units("test_units")
@@ -398,27 +423,25 @@ class CotransTestCases(unittest.TestCase):
         # Originally reported by Bob Weigel -- PySPEDAS GEO->GSM cotrans had weird artifacts at year boundaries
         # compared to Geopack GEO->GSM transform and other Python packages
         # The SPEDAS script that creates the file: general/tools/python_validate/cotrans_gsm_test.pro
-        remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
-        remote_name = "cotrans_tools/geogsm_gp_test.tplot"
-        datafile = pyspedas.download(
-            remote_file=remote_name,
-            remote_path=remote_server,
-            local_path="testdata",
-            no_download=False,
+
+        # Load validation variables from the test file
+        filename = test_data_download_file(
+            validation_dir, cotrans_dir, "geogsm_gp_test.tplot", save_dir
         )
 
-        pyspedas.tplot_restore(datafile[0])
-        pyspedas.tplot_names()
-        pyspedas.cotrans("zgeo", "zgeo_gsm_py", coord_in="geo", coord_out="gsm")
-        pyspedas.options("zgeo_gsm_py", "ytitle", "zgeo_gsm_py")
-        pyspedas.subtract("zgeo_gsm_py", "zgeo_gsm", newname="pydiff")
-        pyspedas.options("pydiff", "ytitle", "idl_python_diff")
-        pyspedas.subtract("zgeo_gsm_gp", "zgeo_gsm", newname="gpdiff")
-        pyspedas.options("gpdiff", "ytitle", "idl_geopack_diff")
-        pyspedas.tplot(
+        tplot_restore(filename)
+        tplot_names()
+        cotrans("zgeo", "zgeo_gsm_py", coord_in="geo", coord_out="gsm")
+        options("zgeo_gsm_py", "ytitle", "zgeo_gsm_py")
+        subtract("zgeo_gsm_py", "zgeo_gsm", newname="pydiff")
+        options("pydiff", "ytitle", "idl_python_diff")
+        subtract("zgeo_gsm_gp", "zgeo_gsm", newname="gpdiff")
+        options("gpdiff", "ytitle", "idl_geopack_diff")
+        local_png = os.path.join(save_dir, "geo_gsm_diffs.png")
+        tplot(
             ["zgeo", "zgeo_gsm", "zgeo_gsm_py", "pydiff", "gpdiff"],
             display=global_display,
-            save_png="geo_gsm_diffs.png",
+            save_png=local_png,
         )
         didl = get_data("zgeo_gsm")
         dpy = get_data("zgeo_gsm_py")

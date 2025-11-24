@@ -2,14 +2,35 @@
 Unit Tests for lmn transformations.
 """
 
-import numpy as np
+import os
+import logging
 import unittest
-import pyspedas
-from pyspedas.tplot_tools import del_data, get_data, tnames, tplot, data_exists, tplot_restore
+import numpy as np
+from pyspedas import (
+    del_data,
+    get_data,
+    tnames,
+    data_exists,
+    tplot_restore,
+    rotmat_get_coords,
+    tplot,
+)
 from pyspedas.projects.omni.omni_solarwind_load import omni_solarwind_load
 from pyspedas.cotrans_tools.lmn_matrix_make import lmn_matrix_make
 from pyspedas.projects.themis import fgm, state
-from pyspedas.utilities.download import download
+from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
+
+# Whether to display plots during testing
+global_display = TESTING_CONFIG["global_display"]
+# Directory to save testing output files
+output_dir = TESTING_CONFIG["local_testing_dir"]
+# Ensure output directory exists
+cotrans_dir = "cotrans_tools"
+save_dir = os.path.join(output_dir, cotrans_dir)
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+# Directory with IDL SPEDAS validation files
+validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 
 def _test_compare(tname1, tname2, center=False, approximate=False):
@@ -43,11 +64,11 @@ def _test_compare(tname1, tname2, center=False, approximate=False):
             do_match2 = np.allclose(y1, y2, rtol=1e-5, atol=1e-8)
         do_match = do_match1 and do_match2
         if not do_match:
-            print(f"Data for {tname1} and {tname2} do not match.")
-            print(f"Data1: {data1.y}")
-            print(f"Data2: {data2.y}")
+            logging.info(f"Data for {tname1} and {tname2} do not match.")
+            logging.info(f"Data1: {data1.y}")
+            logging.info(f"Data2: {data2.y}")
     except Exception as e:
-        print(f"Error comparing {tname1} and {tname2}: {e}")
+        logging.info(f"Error comparing {tname1} and {tname2}: {e}")
         do_match = False
     return do_match
 
@@ -56,49 +77,14 @@ class TestLMNTransform(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         """Find the test data files to restore."""
-        # Set to true when running locally
-        localfile = False  
-        # Set to your local directory, if running locally
-        localdir = "C:/work/idl_working/"
-
         # The SPEDAS script that creates the file: general/tools/python_validate/lmn_python_validate.pro
 
-        # Github files
-        remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
-        filename_solarwind = "solarwind_python_validate.tplot"
-        filename_lmn = "lmn_python_validate.tplot"
-
-        if localfile:
-            cls.filename_sw = localdir + filename_solarwind
-            cls.filename_lmn = localdir + filename_lmn
-        else:
-            remote_name = "cotrans_tools/" + filename_solarwind
-            datafile = download(
-                remote_file=remote_name,
-                remote_path=remote_server,
-                local_path="testdata",
-                no_download=False,
-            )
-            if not datafile:
-                # Skip tests
-                raise unittest.SkipTest(
-                    "Cannot download solarwind data validation file"
-                )
-
-            cls.filename_sw = datafile[0]
-
-            remote_name = "cotrans_tools/" + filename_lmn
-            datafile1 = download(
-                remote_file=remote_name,
-                remote_path=remote_server,
-                local_path="testdata",
-                no_download=False,
-            )
-            if not datafile1:
-                # Skip tests
-                raise unittest.SkipTest("Cannot download LMN data validation file")
-
-            cls.filename_lmn = datafile1[0]
+        cls.filename_sw = test_data_download_file(
+            validation_dir, cotrans_dir, "solarwind_python_validate.tplot", save_dir
+        )
+        cls.filename_lmn = test_data_download_file(
+            validation_dir, cotrans_dir, "lmn_python_validate.tplot", save_dir
+        )
 
     # @unittest.skip("Skipping LMN tests")
     def test_lmn_1omni(self):
@@ -109,7 +95,7 @@ class TestLMNTransform(unittest.TestCase):
 
         # Check if the IDL variables have been loaded
         tn = tnames()
-        print(tn)
+        logging.info(tn)
         idl_bz_def = "omni_BZ_idl_default"
         idl_p_def = "omni_P_idl_default"
         idl_bz_hro = "omni_BZ_idl_2020"
@@ -132,25 +118,25 @@ class TestLMNTransform(unittest.TestCase):
         trange = ["2050-01-01", "2050-01-01 23:59:59"]
         omni_solarwind_load(trange=trange, level="hro", suffix="_py_default")
         t1 = _test_compare(idl_bz_def, "omni_solarwind_BZ_py_default")
-        self.assertTrue(t1, f"Data for default BZ values do not match.")
+        self.assertTrue(t1, "Data for default BZ values do not match.")
         t2 = _test_compare(idl_p_def, "omni_solarwind_P_py_default")
-        self.assertTrue(t2, f"Data for default P values do not match.")
+        self.assertTrue(t2, "Data for default P values do not match.")
 
         # OMNI HRO
         trange = ["2020-01-01", "2020-01-01 23:59:59"]
         omni_solarwind_load(trange=trange, level="hro", suffix="_py_2020")
         t3 = _test_compare(idl_bz_hro, "omni_solarwind_BZ_py_2020")
-        self.assertTrue(t3, f"Data for 2020 HRO BZ values do not match.")
+        self.assertTrue(t3, "Data for 2020 HRO BZ values do not match.")
         t4 = _test_compare(idl_p_hro, "omni_solarwind_P_py_2020")
-        self.assertTrue(t4, f"Data for 2020 HRO P values do not match.")
+        self.assertTrue(t4, "Data for 2020 HRO P values do not match.")
 
         # OMNI HRO2
         trange = ["2021-01-01", "2021-01-01 06:00:00"]
         omni_solarwind_load(trange=trange, level="hro2", suffix="_py_2021")
         t5 = _test_compare(idl_bz_hro2, "omni_solarwind_BZ_py_2021")
-        self.assertTrue(t5, f"Data for 2021 HRO2 BZ values do not match.")
+        self.assertTrue(t5, "Data for 2021 HRO2 BZ values do not match.")
         t6 = _test_compare(idl_p_hro2, "omni_solarwind_P_py_2021")
-        self.assertTrue(t6, f"Data for 2021 HRO2 P values do not match.")
+        self.assertTrue(t6, "Data for 2021 HRO2 P values do not match.")
 
     # @unittest.skip("Skipping LMN tests")
     def test_lmn_2lmn(self):
@@ -167,10 +153,11 @@ class TestLMNTransform(unittest.TestCase):
         idl_bz = "OMNI_solarwind_BZ_idl"
         idl_names = [idl_pos, idl_b, idl_hro, idl_p, idl_bz]
         for name in idl_names:
-            self.assertTrue(data_exists(name), f"Data variable does not exist: " + name)
+            self.assertTrue(data_exists(name), f"Data variable does not exist: {name}")
 
         # Optionally plot the IDL data
-        # tplot(idl_names)
+        local_png = os.path.join(save_dir, "test_lmn_1omni.png")
+        tplot(idl_names, display=global_display, save_png=local_png)
 
         # Load pyspedas data
         trange = ["2022-01-01", "2022-01-01 06:00:00"]
@@ -204,31 +191,33 @@ class TestLMNTransform(unittest.TestCase):
         lmn_matrix_make(py_pos, py_b, trange=trange, newname=py_hro)
 
         # Verify rotation matrix input and output coordinates
-        in_coords, out_coords = pyspedas.rotmat_get_coords(py_hro)
+        in_coords, out_coords = rotmat_get_coords(py_hro)
         self.assertEqual(in_coords.upper(), "GSM")
         self.assertEqual(out_coords.upper(), "LMN")
 
         for name in py_names:
-            self.assertTrue(data_exists(name), f"Data variable does not exist: " + name)
-        # tplot(py_names)
+            self.assertTrue(data_exists(name), f"Data variable does not exist: {name}")
+        # Optionally plot the pyspedas data
+        local_png = os.path.join(save_dir, "test_lmn_2lmn.png")
+        tplot(py_names, display=global_display, save_png=local_png)
 
         # Verify that position and B field as the same as in IDL
         t1 = _test_compare(idl_b, py_b, center=True)
-        self.assertTrue(t1, f"B field data does not match.")
+        self.assertTrue(t1, "B field data does not match.")
         t2 = _test_compare(idl_pos, py_pos, center=True)
-        self.assertTrue(t2, f"Position data does not match.")
+        self.assertTrue(t2, "Position data does not match.")
 
         # Verify that the interpolated data matches
         t3 = _test_compare(idl_p, py_p, center=True)
-        self.assertTrue(t3, f"OMNI P data does not match.")
+        self.assertTrue(t3, "OMNI P data does not match.")
         t4 = _test_compare(idl_bz, py_bz, center=True)
-        self.assertTrue(t4, f"OMNI Bz data does not match.")
+        self.assertTrue(t4, "OMNI Bz data does not match.")
 
         # Verify that the LMN matrices match
         t5 = _test_compare(idl_hro, py_hro, approximate=True)
-        self.assertTrue(t5, f"LMN matrices do not match for HRO data.")
-        
-        print("test_lmn finished.")
+        self.assertTrue(t5, "LMN matrices do not match for HRO data.")
+
+        logging.info("test_lmn finished.")
 
 
 if __name__ == "__main__":

@@ -32,20 +32,28 @@ from types import ModuleType
 # to use this feature.
 
 
-def import_tkinter_with_message() -> Tuple[Optional[ModuleType], Optional[ModuleType], Optional[ModuleType]]:
-    """Attempt to import tkinter and return the module. If unavailable, log an error message describing the problem. """
+def import_tkinter_with_message() -> (
+    Tuple[Optional[ModuleType], Optional[ModuleType], Optional[ModuleType]]
+):
+    """Attempt to import tkinter and return the module. If unavailable, log an error message describing the problem."""
     try:
         import tkinter as tk
         from tkinter import messagebox, filedialog
+
         return tk, messagebox, filedialog
     except ImportError:
-        logging.error("The version of Python you are using does not support the tkinter module needed to run the PySPEDAS CDAWeb GUI.")
-        logging.error("You may need to reinstall a different version of Python compiled with tkinter support.")
+        logging.error(
+            "The version of Python you are using does not support the tkinter module needed to run the PySPEDAS CDAWeb GUI."
+        )
+        logging.error(
+            "You may need to reinstall a different version of Python compiled with tkinter support."
+        )
         return None, None, None
+
 
 class cdaWindow:
 
-     def __init__(self, master):
+    def __init__(self, master):
         tk, messagebox, filedialog = import_tkinter_with_message()
         if tk is None:
             return
@@ -194,7 +202,6 @@ class cdaWindow:
             # Change status
             status(msgtitle + "...")
 
-            file_result = []
             sel_f = list(file_list.curselection())
             sel_f_val = [file_list.get(index) for index in sel_f]
             if len(sel_f_val) < 1:
@@ -236,7 +243,7 @@ class cdaWindow:
             msg += "\nDownloaded files: " + str(no_of_files)
             msg += "\ntplot variables created: " + str(no_of_variables)
             messagebox.showinfo(msgtitle, msg)
-            
+
             status("")  # Reset status
             return loaded_vars
 

@@ -1,11 +1,14 @@
 """Automated tests for the analysis functions."""
 
 import unittest
+import os
+import copy
+import logging
 from unittest.mock import patch
+import numpy as np
 from numpy.testing import assert_allclose
 import importlib
 import pyspedas
-
 from pyspedas import (
     avg_data,
     yclip,
@@ -32,10 +35,20 @@ from pyspedas import (
     tdeflag,
     clean_spikes,
 )
+from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
-import numpy as np
-import copy
-import logging
+
+# Whether to display plots during testing
+global_display = TESTING_CONFIG["global_display"]
+# Directory to save testing output files
+output_dir = TESTING_CONFIG["local_testing_dir"]
+# Ensure output directory exists
+analysis_dir = "analysis_tools"
+save_dir = os.path.join(output_dir, analysis_dir)
+if not os.path.exists(save_dir):
+    os.makedirs(save_dir)
+# Directory with IDL SPEDAS validation files
+validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 
 class TestAnalysisFunctions(unittest.TestCase):
@@ -375,14 +388,9 @@ class TestAnalysisFunctions(unittest.TestCase):
         #   https://github.com/spedas/test_data
         # The SPEDAS script that creates the file: general/tools/python_validate/avg_data_python_validate.pro
 
-        # Download tplot files
-
-        from pyspedas import download
-
-        remote_server = "https://github.com/spedas/test_data/raw/refs/heads/main/"
-        remote_name = "analysis_tools/avg_data_validate.tplot"
-        datafile = download(
-            remote_file=remote_name, remote_path=remote_server, no_download=False
+        # Load IDL savefile
+        filename = test_data_download_file(
+            validation_dir, analysis_dir, "avg_data_validate.tplot", save_dir
         )
 
         trange = ["2010-02-13 00:00:00", "2010-02-13 11:59:59"]
@@ -394,7 +402,7 @@ class TestAnalysisFunctions(unittest.TestCase):
         pyspedas.avg_data(var)
 
         # Get IDL data
-        pyspedas.tplot_restore(datafile[0])
+        pyspedas.tplot_restore(filename)
         varidl = var + "_avg"
 
         # Compare IDL to python results

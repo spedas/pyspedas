@@ -8,6 +8,8 @@ These png files are created inside CONFIG["local_data_dir"].
 import os
 import unittest
 import logging
+from numpy.testing import assert_allclose
+import numpy as np
 from pyspedas import (
     get_data,
     tplot,
@@ -28,8 +30,6 @@ from pyspedas import (
     tplot_names,
 )
 from pyspedas.analysis.tests.wavetest import wavetest
-from numpy.testing import assert_allclose
-import numpy as np
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
 # Whether to display plots during testing
@@ -41,7 +41,6 @@ analysis_dir = "analysis_tools"
 save_dir = os.path.join(output_dir, analysis_dir)
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
-
 # Directory with IDL SPEDAS validation files
 validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
@@ -76,7 +75,7 @@ class TwaveletDataValidation(unittest.TestCase):
 
         # Load validation variables from the test file
         filename = test_data_download_file(
-            validation_dir, analysis_dir, "wavelet_test.tplot", output_dir
+            validation_dir, analysis_dir, "wavelet_test.tplot", save_dir
         )
         # If filename does not exist, skip the test
         if not os.path.exists(filename):
