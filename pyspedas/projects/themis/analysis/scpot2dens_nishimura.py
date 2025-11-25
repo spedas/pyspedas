@@ -22,7 +22,7 @@ def scpot2dens_nishimura(scpot, scptime, vth, vth_time, dens_i, dens_i_time, pos
         The time base of `scpot`.
     vth : array_like
         Electron thermal velocity data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peer_vthermal')
-    vthtime : array_like
+    vth_time : array_like
         The time base of `vth`.
     dens_i : array_like
         Ion density data, expected as a 1-D array. (call pyspedas.projects.themis.esa, DATATYPE = 'peir_density')
