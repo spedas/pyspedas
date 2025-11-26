@@ -43,6 +43,8 @@ jobs:
           extras='[mth5]'
           echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
           pip install ${wheelbase}${extras}
+          pip show pyspedas
+          pip show xarray
       if: matrix.os == 'ubuntu-latest'
     - name: Install dependencies (Windows)
       run: |
@@ -107,6 +109,7 @@ jobs:
       shell: bash
       run: |
         source .venv/bin/activate
+        printenv
         python - <<'PY'
         import pyspedas, pathlib, sys
         p = pathlib.Path(pyspedas.__file__).resolve()
