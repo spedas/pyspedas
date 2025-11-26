@@ -103,7 +103,12 @@ jobs:
     - name: Hide the repo copy so imports use site-packages
       run: |
         # keep it around for debugging; delete instead if you want the space back
+        printenv
+        echo $cwd
+        ls
         if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
+        ls
+        ls $VIRTUAL_ENV
 
     - name: Sanity check import location
       shell: bash
