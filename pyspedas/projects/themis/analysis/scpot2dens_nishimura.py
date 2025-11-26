@@ -58,39 +58,38 @@ def scpot2dens_nishimura(scpot, scptime, vth, vth_time, dens_i, dens_i_time, pos
     extract density, spacecraft potential, and velocity data, then calculate the plasma density from spacecraft potential
     using the `scpot2dens` function.
 
-    ```python
 
-    import pyspedas
-    from pyspedas.projects.themis.analysis import scpot2dens_nishimura
-    from pyspedas.tplot_tools import get_data
 
-    # Define the time range for which to load the data
-    trange = ['2017-07-20', '2017-07-20']
-
-    # Load THEMIS ESA data for probe 'a' within the specified time range
-    pyspedas.projects.themis.esa(trange=trange,
-                        probe='a',
-                        varnames=['tha_peir_density', 'tha_peer_sc_pot', 'tha_peer_vthermal'],
-                        level='l2')
-
-    # Load position data
-    pyspedas.projects.themis.state(probe='a', trange=trange)
-    pos_data = get_data('tha_pos_gsm')
-    pos_gsm_time = pos_data.times
-    pos_gsm = pos_data.y
-
-    # Retrieve ion density
-    dens_i_time, dens_i = get_data('tha_peir_density')
-
-    # Retrieve spacecraft potential
-    sc_pot_time, sc_pot = get_data('tha_peer_sc_pot')
-
-    # Retrieve electron velocity
-    vth_time, vth = get_data('tha_peer_vthermal')
-
-    # Calculate the plasma density from spacecraft potential, ESA datatimes are all the same
-    Npot = scpot2dens_nishimura(sc_pot, sc_pot_time, vth, vth_time, dens_i, dens_i_time, pos_gsm, pos_gsm_time, probe='a', no_interp=True)
-    ```
+    >>> import pyspedas
+    >>> from pyspedas.projects.themis import scpot2dens_nishimura
+    >>> from pyspedas import get_data
+    >>>
+    >>> # Define the time range for which to load the data
+    >>> trange = ['2017-07-20', '2017-07-20']
+    >>>
+    >>> # Load THEMIS ESA data for probe 'a' within the specified time range
+    >>> pyspedas.projects.themis.esa(trange=trange,
+    >>>                     probe='a',
+    >>>                     varnames=['tha_peir_density', 'tha_peer_sc_pot', 'tha_peer_vthermal'],
+    >>>                     level='l2')
+    >>>
+    >>> # Load position data
+    >>> pyspedas.projects.themis.state(probe='a', trange=trange)
+    >>> pos_data = get_data('tha_pos_gsm')
+    >>> pos_gsm_time = pos_data.times
+    >>> pos_gsm = pos_data.y
+    >>>
+    >>> # Retrieve ion density
+    >>> dens_i_time, dens_i = get_data('tha_peir_density')
+    >>>
+    >>> # Retrieve spacecraft potential
+    >>> sc_pot_time, sc_pot = get_data('tha_peer_sc_pot')
+    >>>
+    >>> # Retrieve electron velocity
+    >>> vth_time, vth = get_data('tha_peer_vthermal')
+    >>>
+    >>> # Calculate the plasma density from spacecraft potential, ESA datatimes are all the same
+    >>> Npot = scpot2dens_nishimura(sc_pot, sc_pot_time, vth, vth_time, dens_i, dens_i_time, pos_gsm, pos_gsm_time, probe='a', no_interp=True)
 
     References
     ----------

@@ -152,35 +152,36 @@ def scpot2dens(scpot, scptime, Te, Tetime, dens_e, dens_e_time, dens_i, dens_i_t
     extract density, spacecraft potential, and temperature data, then calculate the plasma density from spacecraft potential
     using the `scpot2dens` function.
 
-    ```python
-    import pyspedas
-    import pyspedas
-    from pyspedas.projects.themis.analysis import scpot2dens
 
-    # Define the time range for which to load the data
-    trange = ['2007-7-20/17:00:00', '2007-7-20/17:20:00']
 
-    # Load THEMIS ESA data for probe 'c' within the specified time range
-    pyspedas.projects.themis.esa(trange=trange,
-                        probe='c',
-                        varnames=['thc_peer_density', 'thc_peir_density', 'thc_peer_sc_pot', 'thc_peer_avgtemp'],
-                        level='l2')
+    >>> import pyspedas
+    >>> import pyspedas
+    >>> from pyspedas.projects.themis import scpot2dens
+    >>>
+    >>> # Define the time range for which to load the data
+    >>> trange = ['2007-7-20/17:00:00', '2007-7-20/17:20:00']
 
-    # Retrieve electron density
-    dens_e_time, dens_e = get_data('thc_peer_density')
+    >>> # Load THEMIS ESA data for probe 'c' within the specified time range
+    >>> pyspedas.projects.themis.esa(trange=trange,
+    >>>                    probe='c',
+    >>>                    varnames=['thc_peer_density', 'thc_peir_density', 'thc_peer_sc_pot', 'thc_peer_avgtemp'],
+    >>>                    level='l2')
+    >>>
+    >>> # Retrieve electron density
+    >>> dens_e_time, dens_e = get_data('thc_peer_density')
+    >>>
+    >>> # Retrieve ion density
+    >>> dens_i_time, dens_i = get_data('thc_peir_density')
+    >>>
+    >>> # Retrieve spacecraft potential
+    >>> sc_pot_time, sc_pot = get_data('thc_peer_sc_pot')
+    >>>
+    >>> # Retrieve electron temperature
+    >>> Te_time, Te = get_data('thc_peer_avgtemp')
+    >>>
+    >>> # Calculate the plasma density from spacecraft potential
+    >>> Npot = scpot2dens(sc_pot, sc_pot_time, Te, Te_time, dens_e, dens_e_time, dens_i, dens_i_time, 'c')
 
-    # Retrieve ion density
-    dens_i_time, dens_i = get_data('thc_peir_density')
-
-    # Retrieve spacecraft potential
-    sc_pot_time, sc_pot = get_data('thc_peer_sc_pot')
-
-    # Retrieve electron temperature
-    Te_time, Te = get_data('thc_peer_avgtemp')
-
-    # Calculate the plasma density from spacecraft potential
-    Npot = scpot2dens(sc_pot, sc_pot_time, Te, Te_time, dens_e, dens_e_time, dens_i, dens_i_time, 'c')
-    ```
 
     References
     ----------

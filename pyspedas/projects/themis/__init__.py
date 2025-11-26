@@ -23,3 +23,5 @@ from .state_tools.ssc_pre import ssc_pre
 from .state_tools.autoload_support import autoload_support
 from .state_tools import get_spinmodel
 from .cotrans import sse2sel,gse2sse,dsl2gse,ssl2dsl
+
+from .analysis import scpot2dens, scpot2dens_nishimura
