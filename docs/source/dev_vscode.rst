@@ -142,6 +142,12 @@ And then uv:
 
     pip install uv
 
+And then pdm-bump (which is useful for doing version bumps during a release workflow):
+
+.. code-block:: bash
+
+    pip install pdm-bump
+
 And configure pdm to use uv:
 
 .. code-block:: bash

@@ -132,19 +132,22 @@ PyCharm controls.
 
 It may take a few minutes for PyCharm to set up and index the project environment.
 
-Install and configure pdm and uv
+Install and configure pdm, pdm-bump, and uv
 ---------------------------------
 
 Next, you'll need to install some development tools to manage your PySPEDAS project.
 
 PySPEDAS uses the pdm package management tool to manage the pyspedas environment.  We also recommend using 'uv'
 to install dependencies.  Your new Conda environment should already have 'pip' installed, so we'll use pip to
-install pdm and uv. Open a terminal window and run the following pip commands:
+install pdm, uv, and pdm-bump (which is a convenient way to do version bumps during the release workflow).
+
+Open a terminal window and run the following pip commands:
 
 .. code-block:: bash
 
     pip install pdm
     pip install uv
+    pip install pdm-bump
 
 
 
@@ -171,7 +174,8 @@ This should install all the runtime, optional, and development dependencies.
 
 If any package dependencies failed to install cleanly with 'pdm sync', you may need to install
 them with conda instead.  This is rare on Linux or Windows, but may happen on Mac, depending on what MacOS and
-Python versions you're using.  For any packages that failed to install, try installing them with conda instead:
+Python versions you're using.  For any packages that failed to install (for this example, let's say it was netcdf4),
+try installing them with conda instead:
 
 
 .. code-block:: bash
