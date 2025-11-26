@@ -25,6 +25,7 @@ jobs:
       run: |
           working_dir=$(pwd)
           echo working dir: ${working_dir}
+          echo virtual env: $VIRTUAL_ENV
           echo "Installing pip, pdm, and uv"
           python -m pip install --upgrade pip
           pip install pdm
@@ -33,6 +34,8 @@ jobs:
           echo "Installing lint, setup, and test dependencies only"
           pdm install -dG lint -dG test -dG setup --no-default
           echo "Activating venv created by pdm"
+          echo "Listing .venv"
+          ls -a .venv
           source .venv/bin/activate
           echo "python: $(which python)"
           echo "Installing coverage"
