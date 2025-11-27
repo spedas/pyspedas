@@ -23,33 +23,27 @@ jobs:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
       run: |
-          cd /home/runner/work/pyspedas
           working_dir=$(pwd)
           echo working dir: ${working_dir}
           echo virtual env: $VIRTUAL_ENV
           # Create fresh virtual environment in a known location
-          python -m venv .venv
+          python -m venv ../.venv
           # Activate new environment
-          source .venv/bin/activate
+          source ../.venv/bin/activate
           echo "Which pip:"
           which pip
           echo "Installing pip, pdm, and uv"
           python -m pip install --upgrade pip
           pip install pdm
-          #pip install uv
-          #pdm config use_uv true
+          pip install uv
+          pdm config use_uv true
           hash -r
           echo "which pdm?"
           which pdm
+          echo "which uv?"
+          which uv
           echo "Installing lint, setup, and test dependencies only"
-          cd pyspedas
           pdm install -dG lint -dG test -dG setup --no-default
-          #echo "Activating venv created by pdm"
-          #echo "Listing .venv"
-          #ls -a .venv
-          #source .venv/bin/activate
-          #echo "python: $(which python)"
-          #echo "Installing coverage"
           echo "which pip?"
           which pip
           echo "which python?"
@@ -68,46 +62,79 @@ jobs:
       run: |
           working_dir=$(pwd)
           echo working dir: ${working_dir}
+          echo virtual env: $VIRTUAL_ENV
+          # Create fresh virtual environment in a known location
+          python -m venv ../.venv
+          # Activate new environment
+          source ../.venv/bin/activate
+          echo "Which pip:"
+          which pip
           echo "Installing pip, pdm, and uv"
           python -m pip install --upgrade pip
           pip install pdm
           pip install uv
           pdm config use_uv true
+          hash -r
+          echo "which pdm?"
+          which pdm
+          echo "which uv?"
+          which uv
+          echo "Installing lint, setup, and test dependencies only"
           pdm install -dG lint -dG test -dG setup --no-default
-          echo "Activating venv created by pdm"
-          source .venv/bin/activate
-          echo "python: $(which python)"
+          echo "which pip?"
+          which pip
+          echo "which python?"
+          which python
+          pip install coverage
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
+          extras='[mth5]'
           echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}
+          pip install ${wheelbase}${extras}
+          pip show pyspedas
+          pip show xarray
       if: matrix.os == 'windows-latest'
     - name: Install dependencies (macOS)
       run: |
           working_dir=$(pwd)
           echo working dir: ${working_dir}
+          echo virtual env: $VIRTUAL_ENV
+          # Create fresh virtual environment in a known location
+          python -m venv ../.venv
+          # Activate new environment
+          source ../.venv/bin/activate
+          echo "Which pip:"
+          which pip
           echo "Installing pip, pdm, and uv"
           python -m pip install --upgrade pip
           pip install pdm
           pip install uv
           pdm config use_uv true
+          hash -r
+          echo "which pdm?"
+          which pdm
+          echo "which uv?"
+          which uv
           echo "Installing lint, setup, and test dependencies only"
           pdm install -dG lint -dG test -dG setup --no-default
-          echo "Activating venv created by pdm"
-          source .venv/bin/activate
-          echo "python: $(which python)"
+          echo "which pip?"
+          which pip
+          echo "which python?"
+          which python
+          pip install coverage
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
+          extras='[mth5]'
           echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}
+          pip install ${wheelbase}${extras}
+          pip show pyspedas
+          pip show xarray
       if: matrix.os == 'macos-latest'
     - name: Lint with flake8
       run: |
-        cd /home/runner/work/pyspedas
-        source .venv/bin/activate
-        cd pyspedas
+        source ../.venv/bin/activate
         #pip install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
@@ -115,9 +142,7 @@ jobs:
         flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Lint with ruff
       run: |
-        cd /home/runner/work/pyspedas
-        source .venv/bin/activate
-        cd pyspedas
+        source ../.venv/bin/activate
         # stop the build if there are Python syntax errors or undefined names
         ruff check .  --select=E9,F63,F7,F82 --statistics
         # exit-zero treats all errors as warnings. 
@@ -135,8 +160,7 @@ jobs:
     - name: Sanity check import location
       shell: bash
       run: |
-        cd /home/runner/work/pyspedas
-        source .venv/bin/activate
+        source ../.venv/bin/activate
         printenv
         python - <<'PY'
         import pyspedas, pathlib, sys
@@ -179,8 +203,7 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
-        cd /home/runner/work/pyspedas
-        source .venv/bin/activate
+        source ../.venv/bin/activate
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
