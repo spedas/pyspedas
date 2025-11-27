@@ -26,11 +26,19 @@ jobs:
           working_dir=$(pwd)
           echo working dir: ${working_dir}
           echo virtual env: $VIRTUAL_ENV
+          # Create fresh virtual environment in a known location
+          python -m venv .venv
+          # Activate new environment
+          source .venv/bin/activate
+          echo "Which pip:"
+          which pip
           echo "Installing pip, pdm, and uv"
           python -m pip install --upgrade pip
           pip install pdm
           #pip install uv
           #pdm config use_uv true
+          echo "which pdm?"
+          which pdm
           echo "Installing lint, setup, and test dependencies only"
           pdm install -dG lint -dG test -dG setup --no-default
           echo "Activating venv created by pdm"
