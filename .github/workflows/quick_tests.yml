@@ -42,13 +42,18 @@ jobs:
           echo "which pdm?"
           which pdm
           echo "Installing lint, setup, and test dependencies only"
+          cd pyspedas
           pdm install -dG lint -dG test -dG setup --no-default
-          echo "Activating venv created by pdm"
-          echo "Listing .venv"
-          ls -a .venv
-          source .venv/bin/activate
-          echo "python: $(which python)"
-          echo "Installing coverage"
+          #echo "Activating venv created by pdm"
+          #echo "Listing .venv"
+          #ls -a .venv
+          #source .venv/bin/activate
+          #echo "python: $(which python)"
+          #echo "Installing coverage"
+          echo "which pip?"
+          which pip
+          echo "which python?"
+          which python
           pip install coverage
           echo "Building pyspedas sdist and wheel"
           python -m build
