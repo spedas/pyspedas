@@ -90,7 +90,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         )
 
         del_data("*")
-        tplot_restore('/tmp/geopack_validate.tplot')
+        tplot_restore(filename)
 
         # Input parameters
         cls.iopt = 3
