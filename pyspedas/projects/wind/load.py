@@ -58,13 +58,15 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pathformat = 'sms/'+datatype+'/sms_'+datatype+'/%Y/wi_'+datatype+'_sms_%Y%m%d_v??.cdf'
         masterfile = 'wi_' + datatype + '_sms_00000000_v01.cdf'
     elif instrument == 'waves':
-        if datatype == 'rad1' or datatype == 'rad2':
+        if datatype == 'rad1' or datatype == 'rad2' or datatype == 'tnr':
             prefix = user_prefix + 'wi_l2_wav_' + datatype + '_'
             pathformat = 'waves/'+datatype+'_l2/%Y/wi_l2_wav_'+datatype+'_%Y%m%d_v??.cdf'
             masterfile = 'wi_l2_wav_'+datatype+'_00000000_v01.cdf'
         else:
             pathformat = 'waves/wav_'+datatype+'/%Y/wi_'+datatype+'_wav_%Y%m%d_v??.cdf'
             masterfile = 'wi_' + datatype + '_wav_00000000_v01.cdf'
+        if datatype == 'tnr':
+            addmaster = False
     elif instrument == 'orbit':
         pathformat = 'orbit/'+datatype+'/%Y/wi_'+datatype.split('_')[1]+'_'+datatype.split('_')[0]+'_%Y%m%d_v??.cdf'
         masterfile = 'wi_' + datatype.split('_')[1]+'_'+datatype.split('_')[0] + '_00000000_v01.cdf'

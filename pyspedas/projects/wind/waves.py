@@ -29,7 +29,8 @@ def waves(trange=['2018-11-5', '2018-11-6'],
             Default: ['2018-11-5','2018-11-6']
 
         datatype: str
-            Data type; Valid options: 'h0', 'h1', 'k0', 'tds'
+            Data type; Valid options: 'h0', 'h1', 'k0', 'tds', 'rad1', 'rad2', 
+            'tnr'
             Default: 'h1'
 
         prefix: str
