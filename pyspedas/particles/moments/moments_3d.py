@@ -114,6 +114,16 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     e_inf[e_inf < 0] = 0.0
 
     # mystery line from the IDL version
+    # Less of a mystery, now that The following comments were added to the IDL version:
+
+    # weight is a function that will decrease the integrand for electrons
+    # and positive potential below a certain energy level, a gradual
+    # cutoff below the pot value.This will mitigate the effect of
+    # photoelectrons that may show up below the value of spacecraft
+    # potential.
+    # Ions should be unaffected unless the potential is negative.
+    # jmm, 2025 - 11 - 24
+
     weight = (energy + charge*sc_pot)/de + 0.5
     weight[weight < 0] = 0
     weight[weight > 1] = 1

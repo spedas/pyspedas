@@ -38,7 +38,7 @@ if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
 default_trange = ["2007-03-23", "2007-03-24"]
-
+global_display=True
 
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
@@ -895,6 +895,7 @@ class PlotTestCases(unittest.TestCase):
         store_data("spec", data=["mms1_des_energyspectr_omni_fast", "mms1_edp_scpot_fast_l2"])
         # Set some options so that the spectrum, trace, and y axes are legible
         options("mms1_edp_scpot_fast_l2", "yrange", [10, 100])
+        options("mms1_des_energyspectr_omni_fast", "yrange", [10, 100])
         # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
         options("spec", "right_axis", "True")
         tplot_options("xmargin", [0.1, 0.2])
