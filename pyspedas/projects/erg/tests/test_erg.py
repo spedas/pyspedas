@@ -409,6 +409,12 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('erg_mepe_l3_3dflux_FEDU'))
         self.assertTrue('erg_mepe_l3_3dflux_FEDU' in mepe_vars)
 
+    def test_load_mepe_l3_pa_data(self):
+        del_data()
+        mepe_vars = pyspedas.projects.erg.mepe(level='l3', datatype='pa')
+        self.assertTrue(data_exists('erg_mepe_l3_pa_FEDU'))
+        self.assertTrue('erg_mepe_l3_pa_FEDU' in mepe_vars)
+
     def test_load_mepe_3dflux(self):
         del_data()
         mepe_vars = pyspedas.projects.erg.mepe(datatype='3dflux')
