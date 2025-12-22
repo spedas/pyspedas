@@ -104,8 +104,8 @@ def mepe(
     if notplot:
         initial_notplot_flag = True
 
-    if level == 'l3':
-        datatype = '3dflux'
+    if level == 'l3' and datatype not in ['3dflux', 'pa']:
+        datatype = 'pa'
 
     file_res = 3600. * 24
     prefix = 'erg_mepe_'+level + '_' + datatype + '_'
