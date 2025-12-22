@@ -105,7 +105,7 @@ def mepe(
         initial_notplot_flag = True
 
     if level == 'l3' and datatype not in ['3dflux', 'pa']:
-        datatype = 'pa'
+        datatype = '3dflux'
 
     file_res = 3600. * 24
     prefix = 'erg_mepe_'+level + '_' + datatype + '_'
@@ -115,6 +115,7 @@ def mepe(
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
+    mixed_case = False
     if (len(loaded_data) > 0) and ror:
 
         try:
@@ -125,10 +126,24 @@ def mepe(
             print(' ')
             print(
                 '**************************************************************************')
-            print(gatt["LOGICAL_SOURCE_DESCRIPTION"])
+            if "LOGICAL_SOURCE_DESCRIPTION" in gatt.keys():
+                print(gatt["LOGICAL_SOURCE_DESCRIPTION"])
+                mixed_case = False
+            elif "Logical_source_description" in gatt.keys():
+                if "LOGICAL_SOURCE_DESCRIPTION" in gatt.keys():
+                    print(gatt["Logical_source_description"])
+                mixed_case = True
+
+            if mixed_case:
+                pi_name_att = "PI_name"
+                pi_affiliation_att = "PI_affiliation"
+            else:
+                pi_name_att = "PI_NAME"
+                pi_affiliation_att = "PI_AFFILIATION"
+
             print('')
-            print('PI: ', gatt['PI_NAME'])
-            print("Affiliation: ", gatt["PI_AFFILIATION"])
+            print('PI: ', gatt[pi_name_att])
+            print("Affiliation: ", gatt[pi_affiliation_att])
             print('')
             print('- The rules of the road (RoR) common to the ERG project:')
             print(
