@@ -177,7 +177,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         & ('psp_fld_' + level + '_quality_flags'+suffix not in loaded_vars):
         loaded_extra = load(
             instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
-            suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld' + level + 'quality_flags'],
+            suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld_' + level + '_quality_flags'],
             downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
             username=username, password=password,last_version=last_version, force_download=force_download, version=version,
         )
