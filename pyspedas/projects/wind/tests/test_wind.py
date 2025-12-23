@@ -143,17 +143,19 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('E_VOLTAGE_RAD2' in wav_vars)
         self.assertTrue('E_VOLTAGE_TNR' in wav_vars)
 
-    def test_load_waves_rad1_rad2_data(self):
+    def test_load_waves_rad1_rad2_tnr_data(self):
         import pyspedas
         from pyspedas.tplot_tools import tplot, tplot_names
         # example of a Type III radio burst
         trange = ['2019-04-02/15:00', '2019-04-02/16:30']
         rad2_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='rad2')
         rad1_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='rad1')
+        tnr_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='tnr')
         self.assertTrue('wi_l2_wav_rad1_PSD_V2_Z' in rad1_vars)
         self.assertTrue('wi_l2_wav_rad2_PSD_V2_Z' in rad2_vars)
+        self.assertTrue('wi_l2_wav_tnr_PSD_V2' in tnr_vars)
         #tplot_names()
-        #tplot('wi_l2_wav_rad?_PSD_V2_Z')
+        #tplot('wi_l2_wav_*_PSD_V2*')
 
     def test_load_orbit_pre_data(self):
         orb_vars = pyspedas.projects.wind.orbit(trange=['2013-11-5', '2013-11-6'])
