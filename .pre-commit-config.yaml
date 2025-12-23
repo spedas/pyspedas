@@ -1,0 +1,98 @@
+# Configuration file for pre-commit and pre-commit.ci.
+#
+# To perform automated fixes, either run `pre-commit run --all-files`
+# or comment `pre-commit.ci autofix` on a pull request.
+
+ci:  # https://pre-commit.ci/#configuration
+  autofix_prs: false
+  autoupdate_schedule: monthly
+
+repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
+
+- repo: https://github.com/pre-commit/pre-commit-hooks
+  rev: v6.0.0
+  hooks:
+  - id: check-ast
+    name: check abstract syntax tree
+  - id: check-merge-conflict
+  - id: check-case-conflict
+  - id: check-illegal-windows-names
+  - id: detect-private-key
+  - id: fix-byte-order-marker
+  - id: mixed-line-ending
+    args: [--fix=lf]
+    exclude: docs/make.bat
+  - id: forbid-submodules
+  - id: check-toml
+  - id: check-yaml
+#  - id: trailing-whitespace
+#  - id: end-of-file-fixer
+#  - id: name-tests-test
+
+- repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
+  rev: v2.15.0
+  hooks:
+  - id: pretty-format-yaml
+    args: [--autofix]
+    files: .pre-commit-config.yaml
+#  - id: pretty-format-ini
+#    args: [--autofix]
+
+- repo: https://github.com/sirosen/texthooks
+  rev: 0.7.1
+  hooks:
+#  - id: fix-smartquotes
+  - id: fix-spaces
+  - id: fix-ligatures
+  - id: forbid-bidi-controls
+
+#- repo: https://github.com/astral-sh/ruff-pre-commit
+#  rev: v0.14.5
+#  hooks:
+#  - id: ruff-check
+#    name: ruff-check (see https://docs.astral.sh/ruff/rules)
+#    args: [--fix]
+#  - id: ruff-format
+
+#- repo: https://github.com/sphinx-contrib/sphinx-lint
+#  rev: v1.0.1
+#  hooks:
+#  - id: sphinx-lint
+
+- repo: https://github.com/codespell-project/codespell
+  rev: v2.4.1
+  hooks:
+  - id: codespell
+    name: codespell (add false positives to pyproject.toml)
+    # temporarily exclude most files since suggested changes require some thought
+    exclude: pyspedas|docs/source
+    # args: [--write-changes]
+
+- repo: https://github.com/python-jsonschema/check-jsonschema
+  rev: 0.35.0
+  hooks:
+  - id: check-github-workflows
+
+- repo: https://github.com/abravalheri/validate-pyproject
+  rev: v0.24.1
+  hooks:
+  - id: validate-pyproject
+    name: validate pyproject.toml
+    additional_dependencies: ['validate-pyproject-schema-store[all]']
+
+# - repo: https://github.com/tox-dev/pyproject-fmt
+#   rev: v2.11.1
+#   hooks:
+#   - id: pyproject-fmt
+#     name: format pyproject.toml
+
+# - repo: https://github.com/hukkin/mdformat
+#   rev: 1.0.0
+#   hooks:
+#   - id: mdformat
+#     name: format .md files
+#     additional_dependencies:
+#     - mdformat-footnote
+#     - mdformat-gfm
+#     - mdformat-gfm-alerts
+#     - mdformat-ruff
