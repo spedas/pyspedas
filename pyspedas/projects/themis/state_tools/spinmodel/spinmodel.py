@@ -11,13 +11,14 @@ from pyspedas.tplot_tools import time_string
 def get_sm_data(probe: str,
                 valname: str,
                 correction_level: int,
-                suffix: str = '') -> (np.ndarray, np.ndarray):
+                suffix: str = '') -> tuple[np.ndarray, np.ndarray] | None:
     """ Return the times and values for a spin model tplot variable
 
     Args:
         probe: Probe name, one of 'a','b','c','d','e'
         valname: The data quantity to be returned
         correction_level: 0 for no corrections, 1 for waveform corrections, 2 for spin fit corrections
+        suffix: Suffix to be added to variable names
 
     Returns:
         A tuple containing the timestamps and data values as np.ndarray objects
@@ -153,21 +154,26 @@ class Spinmodel:
         Returns:
             ndarray(dtype=int) of indices into the seg_* attributes for each input time
          """
+        n = len(self.seg_times)
+        idx1 = np.searchsorted(self.seg_times, t, side="right") - 1
+        idx1_clip = np.clip(idx1, 0, n-1)
 
-        idx1 = np.searchsorted(self.seg_times, t)
-        idx2 = np.searchsorted(self.seg_t2, t)
-        diff = (idx2 - (idx1 + 1)).nonzero()
-        if len(diff) == len(t):
-            logging.warning('Indices don''t match up:')
-            logging.warning(idx1)
-            logging.warning(idx2)
+        # idx1_clip is what will be returned.  We'll do a consistency check for any gaps or
+        # overlaps between segment times, just in case any weird floating point stuff happens to the
+        # seg_times or seg_t2 arrays, causing input times to fall in the cracks between segments, or match
+        # multiple segments.
+
+        idx2 = np.searchsorted(self.seg_t2, t, side="right") - 1
+        idx2_clip = np.clip(idx2, -1, n-2)
+        mismatch = ((idx2_clip + 1) != idx1_clip)
+        bad_idx = np.flatnonzero(mismatch)
+        c = bad_idx.size
+        if c != 0:
+            logging.warning('Indices don''t match up: time gaps or overlaps detected. Mismatched indices:')
+            logging.warning(bad_idx)
+            raise ValueError
         else:
-            # If any points are beyond the last segment t2, assign them to the last segment and extrapolate.
-            idx_max = self.seg_count - 1
-            idx_extrap = idx2 > idx_max
-            idx_adjusted = idx2
-            idx_adjusted[idx_extrap] = idx_max
-            return idx_adjusted
+            return idx1_clip
 
     def interp_t(self,
                  t: np.ndarray,
@@ -519,13 +525,10 @@ class Spinmodel:
         end_time = self.seg_t2[-1]
         return start_time, end_time
 
-    def get_eclipse_times(self, min_shadow_duration:float=60.0):
+    def get_eclipse_times(self):
         """ Returns lists of start time and end times for eclipses found in the spin model
 
-        Args:
-            None
-
-        Returns: A tuple containing two listss, one for start times and one for end times.  Returns empty
+        Returns: A tuple containing two lists, one for start times and one for end times.  Returns empty
             lists if no eclipses found.
         """
         start_times=[]
@@ -534,13 +537,13 @@ class Spinmodel:
 
         for i in range(self.seg_count):
             this_eclipse_flag=self.seg_segflags[i] & 1
-            if not(this_eclipse_flag) and not(processing_shadow):
+            if not this_eclipse_flag and not processing_shadow:
                 # Previous and current segments are not eclipses, do nothing
                 pass
-            elif not(this_eclipse_flag) and processing_shadow:
+            elif not this_eclipse_flag and processing_shadow:
                 # Transition out of shadow, reset status
                 processing_shadow=False
-            elif this_eclipse_flag and not(processing_shadow):
+            elif this_eclipse_flag and not processing_shadow:
                 # Transition into shadow, add entries to start and end time lists, set status
                 start_times.append(self.seg_times[i])
                 end_times.append(self.seg_t2[i])
@@ -552,15 +555,11 @@ class Spinmodel:
         return start_times, end_times
 
 
-
-
-
     def __init__(self,
                  probe,
                  correction_level,
                  suffix=''):
-        self.lastseg = SpinmodelSegment(t1=0.0, t2=0.0, c1=0, c2=0, b=0.0, c=0.0, npts=0, maxgap=0.0, phaserr=0.0,
-                                        initial_delta_phi=0.0, idpu_spinper=0.0, segflags=0)
+        self.lastseg = -1
         self.seg_times = np.zeros(1, float)
         self.seg_t2 = np.zeros(1, float)
         self.seg_c1 = np.zeros(1, int)
