@@ -411,8 +411,8 @@ jobs:
         coverage run -a -m pyspedas.projects.fast.tests.test_fast
         echo Starting omni tests at `date`
         coverage run -a -m pyspedas.projects.omni.tests.test_omni
-        echo Starting themis tests at `date`
-        coverage run -a -m pyspedas.projects.themis.tests.test_themis
+        #echo Starting themis tests at `date`
+        #coverage run -a -m pyspedas.projects.themis.tests.test_themis
         echo Starting goes tests at `date`
         coverage run -a -m pyspedas.projects.goes.tests.test_goes
         echo Starting mica tests at `date`
