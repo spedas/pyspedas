@@ -173,11 +173,19 @@ class TestMTH5LoadFDSN(unittest.TestCase):
               If dates are the same, tplot variable should not be created.
               load_fdsn should return none
         """
+        # The server response has changed to '422: Unprocessable Entity' for this request
+        # because of the same start/end times.  So we need to catch the exception now.
+        from obspy.clients.fdsn.header import FDSNException
 
         date_start = '2015-06-22T01:45:00'
         date_end = date_start
+        tvar = None
 
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        try:
+            tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        except FDSNException as e:
+            pass
+
         self.assertIsNone(tvar)
 
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
