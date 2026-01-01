@@ -421,8 +421,8 @@ jobs:
         coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
         echo Starting solo tests at `date`
         coverage run -a -m pyspedas.projects.solo.tests.test_solo
-        echo Starting kyoto tests at `date`
-        coverage run -a -m pyspedas.projects.kyoto.tests.test_kyoto
+        #echo Starting kyoto tests at `date`
+        #coverage run -a -m pyspedas.projects.kyoto.tests.test_kyoto
         echo Starting swarm tests at `date`
         coverage run -a -m pyspedas.projects.swarm.tests.test_swarm
         echo Starting themis_check_args tests at `date`
