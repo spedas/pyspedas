@@ -322,8 +322,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.fast.tests.test_fast
         echo Starting omni tests at `date`
         coverage run -a -m  pyspedas.projects.omni.tests.test_omni
-        #echo Starting themis tests at `date`
-        #coverage run -a -m  pyspedas.projects.themis.tests.test_themis
+        echo Starting themis tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.test_themis
         echo Starting goes tests at `date`
         coverage run -a -m  pyspedas.projects.goes.tests.test_goes
         echo Starting mica tests at `date`
@@ -332,8 +332,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.ulysses.tests.test_ulysses
         echo Starting solo tests at `date`
         coverage run -a -m  pyspedas.projects.solo.tests.test_solo
-        #echo Starting kyoto tests at `date`
-        #coverage run -a -m  pyspedas.projects.kyoto.tests.test_kyoto
+        echo Starting kyoto tests at `date`
+        coverage run -a -m  pyspedas.projects.kyoto.tests.test_kyoto
         echo Starting swarm tests at `date`
         coverage run -a -m  pyspedas.projects.swarm.tests.test_swarm
         echo Starting themis_check_args tests at `date`
