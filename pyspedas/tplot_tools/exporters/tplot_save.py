@@ -30,7 +30,7 @@ def tplot_save(names, filename=None):
         >>> y_data = [1,2,3,4,5]
         >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
         >>> pyspedas.ylim('Variable1', 2, 4)
-        >>> pyspedas.save('Variable1', filename='C:/temp/variable1.pyspedas')
+        >>> pyspedas.tplot_save('Variable1', filename='C:/temp/variable1.pyspedas')
 
     """
     if isinstance(names,int):
@@ -59,7 +59,7 @@ def tplot_save(names, filename=None):
     temp_tplot_opt_glob = pyspedas.tplot_tools.tplot_opt_glob
     to_pickle.append(temp_tplot_opt_glob)
     
-    if filename==None:
+    if filename is None:
         filename='var_'+'-'.join(names)+'.pyspedas'
     
     out_file = open(filename, "wb")
