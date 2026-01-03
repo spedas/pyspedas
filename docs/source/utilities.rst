@@ -204,6 +204,16 @@ Download utilities
 .. autofunction:: pyspedas.dailynames
 .. autofunction:: pyspedas.load_leap_table
 
+File Format Readers/Writers
+----------------------------
+
+.. autofunction:: pyspedas.tplot_ascii
+.. autofunction:: pyspedas.tplot_save
+.. autofunction:: pyspedas.cdf_to_tplot
+.. autofunction:: pyspedas.netcdf_to_tplot
+.. autofunction:: pyspedas.sts_to_tplot
+.. autofunction:: pyspedas.tplot_restore
+
 Miscellaneous utilities
 ------------------------
 
