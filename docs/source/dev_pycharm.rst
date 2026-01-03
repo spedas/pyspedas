@@ -133,7 +133,7 @@ PyCharm controls.
 It may take a few minutes for PyCharm to set up and index the project environment.
 
 Install and configure pdm, pdm-bump, and uv
----------------------------------
+--------------------------------------------
 
 Next, you'll need to install some development tools to manage your PySPEDAS project.
 
