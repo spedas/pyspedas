@@ -62,6 +62,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
             prefix = user_prefix + 'wi_l2_wav_' + datatype + '_'
             pathformat = 'waves/'+datatype+'_l2/%Y/wi_l2_wav_'+datatype+'_%Y%m%d_v??.cdf'
             masterfile = 'wi_l2_wav_'+datatype+'_00000000_v01.cdf'
+        elif datatype == 'qtnfit' or datatype == 'qtnfit-filtered':
+            prefix = user_prefix + 'wi_l2_wav_' + datatype + '_'
+            pathformat = 'waves/solar-wind_electron_quasi-thermal_noise_spectroscopy_'+datatype+'/%Y/wind_waves_'+datatype+'_%Y%m%d_v??.cdf'
+            addmaster = False
         else:
             pathformat = 'waves/wav_'+datatype+'/%Y/wi_'+datatype+'_wav_%Y%m%d_v??.cdf'
             masterfile = 'wi_' + datatype + '_wav_00000000_v01.cdf'
