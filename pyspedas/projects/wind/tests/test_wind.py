@@ -152,10 +152,23 @@ class LoadTestCases(unittest.TestCase):
         rad1_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='rad1')
         tnr_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='tnr')
         self.assertTrue('wi_l2_wav_rad1_PSD_V2_Z' in rad1_vars)
+        self.assertTrue(data_exists('wi_l2_wav_rad1_PSD_V2_Z'))
         self.assertTrue('wi_l2_wav_rad2_PSD_V2_Z' in rad2_vars)
+        self.assertTrue(data_exists('wi_l2_wav_rad2_PSD_V2_Z'))
         self.assertTrue('wi_l2_wav_tnr_PSD_V2' in tnr_vars)
+        self.assertTrue(data_exists('wi_l2_wav_tnr_PSD_V2'))
         #tplot_names()
         #tplot('wi_l2_wav_*_PSD_V2*')
+
+    def test_load_waves_qtn(self):
+        trange = ['2005-01-01/00:00', '2005-01-02/00:00']
+        qtnfit_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='qtnfit')
+        qtnfit_filtered_vars = pyspedas.projects.wind.waves(trange=trange, time_clip=True, datatype='qtnfit-filtered')
+        self.assertTrue('wi_l2_wav_qtnfit_fit_n_e' in qtnfit_vars)
+        self.assertTrue(data_exists('wi_l2_wav_qtnfit_fit_n_e'))
+        self.assertTrue('wi_l2_wav_qtnfit-filtered_fit_n_e' in qtnfit_filtered_vars)
+        self.assertTrue(data_exists('wi_l2_wav_qtnfit-filtered_fit_n_e'))
+
 
     def test_load_orbit_pre_data(self):
         orb_vars = pyspedas.projects.wind.orbit(trange=['2013-11-5', '2013-11-6'])
