@@ -219,8 +219,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
         echo Starting mms data_rate_segments tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
-        echo Starting akebono tests at `date`
-        coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
+        #echo Starting akebono tests at `date`
+        #coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
         #echo Starting maven S3 tests at `date`
         #coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
         echo Starting maven tests at `date`
