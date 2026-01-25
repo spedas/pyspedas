@@ -95,7 +95,7 @@ dependencies = [
     "fsspec>=2023.9.0",
     "s3fs>=2023.9.0",
     "aioboto3>=11.1.1",
-    "pandas>=2.0.3,<3.0.0",
+    "pandas>=2.0.3",
     "matplotlib>=3.6.2",
     "xarray>=2023.7.0",
 ]
