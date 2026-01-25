@@ -214,8 +214,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
         echo Starting CDAWeb tests at `date`
         coverage run -a -m  pyspedas.cdagui_tools.tests.test_cdagui
-        #echo Starting akebono tests at `date`
-        #coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
+        echo Starting akebono tests at `date`
+        coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
         echo Starting cluster tests at `date`
