@@ -2,7 +2,7 @@ import unittest
 from datetime import datetime, timezone
 import numpy as np
 from pyspedas import time_string, time_datetime, time_double, degap, store_data, get_data, options, data_exists, time_ephemeris
-
+from numpy.testing import assert_allclose
 
 class TimeTestCases(unittest.TestCase):
     def test_time_datetime(self):
@@ -19,6 +19,41 @@ class TimeTestCases(unittest.TestCase):
             time_datetime([1450137600.0000000, 1444953600.0000000])
             == [datetime(2015, 12, 15, 0, 0, tzinfo=timezone.utc), datetime(2015, 10, 16, 0, 0, tzinfo=timezone.utc)]
         )
+
+    def test_numpy_time_get_store(self):
+        trange = time_double(np.array(['2007-03-23', '2007-03-24']))
+        trange_np = np.array(trange)
+        # Create the same timestamps in three different time resolutions
+        np_sec = np.array(trange_np,dtype="datetime64[s]")
+        np_us = np_sec.astype('datetime64[us]')
+        np_ns = np_sec.astype("datetime64[ns]")
+        print('original trange:', trange)
+        print('trange as numpy array: ',trange_np)
+        print('npdatetime64[s]: ', np_sec)
+        print('npdatetime64[us]: ', np_us)
+        print('npdatetime64[ns]: ', np_ns)
+        data = [1.0, 2.0]
+        store_data('tvar_sec', data={'x': np_sec, 'y': data})
+        store_data('tvar_us',  data={'x': np_us,  'y': data})
+        store_data('tvar_ns',  data={'x': np_ns,  'y': data})
+        # Check that different resolutions return the same unix times
+        tv_secdata = get_data('tvar_sec')
+        tv_usdata = get_data('tvar_us')
+        tv_nsdata = get_data('tvar_ns')
+        print('max time converted from sec: ', np.max(tv_secdata.times))
+        print('max time converted from us: ', np.max(tv_usdata.times))
+        print('max time converted from ns: ', np.max(tv_nsdata.times))
+        assert_allclose(trange_np, tv_nsdata.times)
+        assert_allclose(trange_np, tv_secdata.times)
+        assert_allclose(trange_np, tv_usdata.times)
+        # plot_options["trange"] is derived from the input times, need to check that too
+        tv_secmd = get_data('tvar_sec',metadata=True)
+        tv_usmd = get_data('tvar_us',metadata=True)
+        tv_nsmd = get_data('tvar_ns',metadata=True)
+        assert_allclose(tv_secmd['plot_options']['trange'],trange_np)
+        assert_allclose(tv_usmd['plot_options']['trange'],trange_np)
+        assert_allclose(tv_nsmd['plot_options']['trange'],trange_np)
+
 
     def test_time_string(self):
         """Test time_string function."""

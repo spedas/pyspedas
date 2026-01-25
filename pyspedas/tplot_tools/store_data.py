@@ -162,12 +162,24 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # Convert input time representation to np.datetime64 objects, if needed
     if isinstance(times, pd.Series):
         datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
-    elif isinstance(times[0],(datetime.datetime,np.datetime64)):
-        # Timezone-naive datetime or np.datetime64, use as-is, but we might have to convert the container to a numpy array
+    elif isinstance(times[0],datetime.datetime):
+        # Timezone-naive datetime, use as-is, but we might have to convert the container to a numpy array
         if isinstance(times,np.ndarray):
             datetimes = times
         else:
             datetimes = np.array(times)
+    elif isinstance(times[0],np.datetime64):
+        # np.datetime64, use as-is, but we might have to convert the container to a numpy array
+        if isinstance(times,np.ndarray):
+            datetimes = times
+        else:
+            datetimes = np.array(times)
+        # We want the np.datetime64 resolution to be ns.  If it already is, do nothing, otherwise,
+        # convert to ns.  In the future, we might support storing times in any resolution,
+        # and dealing with the conversion in get_data or in client code.
+        dtype = datetimes.dtype
+        if dtype.name != 'datetime64[ns]':
+            datetimes = datetimes.astype('datetime64[ns]')
     elif isinstance(times[0],(int,np.integer,float,np.float64)):
         # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
         # Make sure we have a numpy array
