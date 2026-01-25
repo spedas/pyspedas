@@ -217,6 +217,9 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+        pip show mth5
+        pip show mt-metadata
+        pip show obspy
         echo Starting MTH5 import test at `date`
         coverage run -a -m pyspedas.mth5.tests.test_mth5_import
         echo Starting MTH5 load_fdsn test at `date`
