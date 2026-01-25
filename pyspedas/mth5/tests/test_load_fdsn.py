@@ -201,6 +201,13 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
         t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+        import mth5
+        print('mth5 version: ',mth5.__version__)
+        import mt_metadata
+        print('mt-metadata version: ', mt_metadata.__version__)
+        import obspy
+        print('obspy version: ', obspy.__version__)
+
         print('date_start: ', date_start)
         print('t1: ', t1)
         print('date_end: ', date_end)
