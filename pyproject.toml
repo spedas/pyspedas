@@ -123,11 +123,11 @@ include-package-data = true
 # --- End-user selectable extras (go into wheel metadata) ---
 
 [project.optional-dependencies]
-mth5  = ["mth5>=0.5.0,<0.6.0","obspy>=1.4.2", "mt-metadata>=0.4.0,<1.0.0"]
+mth5  = ["mth5>=0.5.0","obspy>=1.4.2", "mt-metadata>=0.4.0"]
 vires = ["viresclient>=0.13.0"]
 maps  = ["basemap>=2.0.0"]
 # convenience group to get everything
-all = ["mth5>=0.5.0,<0.6.0", "obspy>=1.4.2", "mt-metadata>=0.4.0,<1.0.0", "viresclient>=0.13.0", "basemap>=2.0.0"]
+all = ["mth5>=0.5.0", "obspy>=1.4.2", "mt-metadata>=0.4.0", "viresclient>=0.13.0", "basemap>=2.0.0"]
 
 # --- Development dependencies, not in wheel metadata, for PySPEDAS devs, CI workflows, etc
 
