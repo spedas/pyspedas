@@ -196,7 +196,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
 
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nodownload=True)
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         time, data = pyspedas.get_data(tvar)
 
         t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
