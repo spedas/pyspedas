@@ -201,6 +201,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
         t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+        print('date_start: ', date_start)
+        print('t1: ', t1)
+        print('date_end: ', date_end)
+        print('t2: ', t2)
         self.assertTrue(t1 == date_start)
         self.assertTrue(t2 == date_end)
 
