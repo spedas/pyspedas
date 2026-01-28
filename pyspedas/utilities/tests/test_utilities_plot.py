@@ -601,7 +601,6 @@ class PlotTestCases(unittest.TestCase):
         )
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
-    @unittest.skip("Skipping ELFIN test due to server problems at UCLA")
     def test_elfin_specplot(self):
         del_data("*")
 

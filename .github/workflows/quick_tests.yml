@@ -226,16 +226,16 @@ jobs:
         coverage run -a -m  pyspedas.projects.themis.tests.test_themis_tplot_time
         echo Starting barrel tests at `date`
         coverage run -a -m  pyspedas.projects.barrel.tests.test_barrel
-        #echo Starting elfin epd_l1 tests at `date`
-        #coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_l1
-        #echo Starting elfin epd_l2 tests at `date`
-        #coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_l2
-        #echo Starting elfin state tests at `date`      
-        #coverage run -a -m  pyspedas.projects.elfin.tests.test_state
-        #echo Starting elfin tests at `date`      
-        #coverage run -a -m  pyspedas.projects.elfin.tests.test_elfin
-        #echo Starting elfin epd calibration tests at `date`      
-        #coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_calibration
+        echo Starting elfin epd_l1 tests at `date`
+        coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_l1
+        echo Starting elfin epd_l2 tests at `date`
+        coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_l2
+        echo Starting elfin state tests at `date`      
+        coverage run -a -m  pyspedas.projects.elfin.tests.test_state
+        echo Starting elfin tests at `date`      
+        coverage run -a -m  pyspedas.projects.elfin.tests.test_elfin
+        echo Starting elfin epd calibration tests at `date`      
+        coverage run -a -m  pyspedas.projects.elfin.tests.test_epd_calibration
         echo Starting soho tests at `date`
         coverage run -a -m  pyspedas.projects.soho.tests.test_soho
         echo Starting de2 tests at `date`
