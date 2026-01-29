@@ -252,8 +252,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
         echo Starting kompsat tests at `date`
         coverage run -a -m  pyspedas.projects.kompsat.tests.test_kompsat
-        #echo Starting hapi tests at `date`
-        #coverage run -a -m  pyspedas.hapi_tools.tests.test_hapi
+        echo Starting hapi tests at `date`
+        coverage run -a -m  pyspedas.hapi_tools.tests.test_hapi
         echo Starting noaa tests at `date`
         coverage run -a -m  pyspedas.projects.noaa.tests.test_noaa
         echo Starting particles tests at `date`
