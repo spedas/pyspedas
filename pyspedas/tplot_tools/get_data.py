@@ -9,7 +9,7 @@ import logging
 from astropy import units as u
 
 
-def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None):
+def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None, writeable=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
@@ -26,6 +26,9 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
             (significantly faster)
         units: bool, optional
             Attach the astropy units to the data and dependencioes prior to returning
+        writeable: bool, optional
+            EXPERIMENTAL, DO NOT USE IN PRODUCTION YET!   Return copies of output arrays, rather than
+            views of the pandas dataframe, to avoid exceptions due to read-only arrays returned by pandas>=3.0.0
          
     Returns
     --------
@@ -96,6 +99,14 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
 
     coord_names = temp_data_quant.coords.keys()
     data_values = temp_data_quant.data
+
+    # Temporary patch for Pandas 3.0.0
+    # Arguably, this is dangerous and should not be allowed...
+    if writeable and not times.flags['WRITEABLE']:
+        times=times.copy()
+    if writeable and not data_values.flags['WRITEABLE']:
+        data_values=data_values.copy()
+
     v1_values = None
     v2_values = None
     v3_values = None
@@ -134,22 +145,44 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
             pass
 
     if 'v1' in coord_names and 'v2' in coord_names and 'v3' in coord_names:
+        if writeable and not v1_values.flags['WRITEABLE']:
+            v1_values = v1_values.copy()
+        if writeable and not v2_values.flags['WRITEABLE']:
+            v2_values = v2_values.copy()
+        if writeable and not v3_values.flags['WRITEABLE']:
+            v3_values = v3_values.copy()
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
         return variable(times, data_values, v1_values, v2_values, v3_values)
     elif 'v1' in coord_names and 'v2' in coord_names:
+        if writeable and not v1_values.flags['WRITEABLE']:
+            v1_values = v1_values.copy()
+        if writeable and not v2_values.flags['WRITEABLE']:
+            v2_values = v2_values.copy()
+
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2'])
         return variable(times, data_values, v1_values, v2_values)
     elif 'v1' in coord_names:
+        if writeable and not v1_values.flags['WRITEABLE']:
+            v1_values = v1_values.copy()
+
         variable = namedtuple('variable', ['times', 'y', 'v1'])
         return variable(times, data_values, v1_values)
     elif 'v' in coord_names:
+        if writeable and not v1_values.flags['WRITEABLE']:
+            v1_values = v1_values.copy()
+
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(times, data_values, v1_values)
     elif 'spec_bins' in coord_names:
+        if writeable and not v1_values.flags['WRITEABLE']:
+            v1_values = v1_values.copy()
+
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(times, data_values, v1_values)
 
     if error is not None:
+        if writeable and not error.flags['WRITEABLE']:
+            error = error.copy()
         variable = namedtuple('variable', ['times', 'y', 'dy'])
         return variable(times, data_values, error)
     else:
