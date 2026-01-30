@@ -50,7 +50,6 @@ def rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3', species=N
     --------
     >>> rbspice_vars = pyspedas.projects.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
-
     # Calculate the pitch angle distributions
     >>> from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad_spinavg
     >>> rbsp_rbspice_pad_spinavg(probe='a', datatype='TOFxEH', level='l3')
