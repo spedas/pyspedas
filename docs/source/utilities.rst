@@ -93,6 +93,35 @@ Creating and Managing Tplot Variables
 -------------------------------------
 
 .. autofunction:: pyspedas.get_data
+
+A few notes about get_data:
+
+The type of the return value will differ depending on what is being requested.   If metadata=True is
+passed, the return value will be a dictionary containing the various metadata attributes, CDF metadata, plot
+options, and so forth.  Otherwise, the returned value will be a Python tuple, with a number of named fields.
+The first two fields returned will always be 'times' (the timestamps or X values), and 'y' (the data values).
+There may be additional fields, depending on whether v, v1, v2 (etc) attributes are defined for higher
+dimensional data types.  So be cautious about constructs like this:
+
+``mytimes, myvals = get_data('some_tplot_variable')``
+
+If 'some_tplot_variable' contains 'v', 'v1'. 'v2', or other DEPEND_N attributes, this will cause errors or
+warnings like 'too many values to unpack'.  Unless you already know how much metadata to expect,
+it's safer to do this:
+
+``mydata = get_data('some_tplot_variable')``
+
+then reference ``mydata.times``, ``mydata.y``, ``mydata.v``, etc.
+
+In some cases, due to the internal represenation of tplot variables as xarray and pandas objects,
+the arrays returned by get_data may be read-only views of pandas indexes or other parts of the data
+structure.  At this writing (January 2026), if pandas-3.0.0 or above is installed in the PySPEDAS environment,
+the time and data arrays returned by get_data should always be writeable, but the v, v1`, v2 (etc) elements might be read-only.
+In the (somewhat rare) case where you need to modify the returned arrays, you can specify ``ensure_writeable=True``
+in the get_data call. In this case, get_data will return read-write copies of the arrays, rather than read-only
+views.  The default setting is ``ensure_writeable=False``, to avoid unnecessary copies and save memory.
+
+
 .. autofunction:: pyspedas.store_data
 .. autofunction:: pyspedas.tplot_names
 .. autofunction:: pyspedas.tnames
