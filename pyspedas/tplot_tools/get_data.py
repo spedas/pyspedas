@@ -9,7 +9,7 @@ import logging
 from astropy import units as u
 
 
-def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None, writeable=False):
+def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_quant_in=None, ensure_writeable=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
     
@@ -25,10 +25,11 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
             Return the times as np.datetime64[ns] objects instead of unix times
             (significantly faster)
         units: bool, optional
-            Attach the astropy units to the data and dependencioes prior to returning
-        writeable: bool, optional
-            EXPERIMENTAL, DO NOT USE IN PRODUCTION YET!   Return copies of output arrays, rather than
-            views of the pandas dataframe, to avoid exceptions due to read-only arrays returned by pandas>=3.0.0
+            Attach the astropy units to the data and dependencies prior to returning
+        ensure_writeable: bool, optional
+            Ensure that returned arrays are writeable, rather than (for example) read-only views of pandas
+            data frame indices. Specify 'True' if you need to modify the returned arrays. Defaults to 'False'
+            for efficiency.
          
     Returns
     --------
@@ -102,9 +103,9 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
 
     # Temporary patch for Pandas 3.0.0
     # Arguably, this is dangerous and should not be allowed...
-    if writeable and not times.flags['WRITEABLE']:
+    if ensure_writeable and not times.flags['WRITEABLE']:
         times=times.copy()
-    if writeable and not data_values.flags['WRITEABLE']:
+    if ensure_writeable and not data_values.flags['WRITEABLE']:
         data_values=data_values.copy()
 
     v1_values = None
@@ -145,43 +146,43 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
             pass
 
     if 'v1' in coord_names and 'v2' in coord_names and 'v3' in coord_names:
-        if writeable and not v1_values.flags['WRITEABLE']:
+        if ensure_writeable and not v1_values.flags['WRITEABLE']:
             v1_values = v1_values.copy()
-        if writeable and not v2_values.flags['WRITEABLE']:
+        if ensure_writeable and not v2_values.flags['WRITEABLE']:
             v2_values = v2_values.copy()
-        if writeable and not v3_values.flags['WRITEABLE']:
+        if ensure_writeable and not v3_values.flags['WRITEABLE']:
             v3_values = v3_values.copy()
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2', 'v3'])
         return variable(times, data_values, v1_values, v2_values, v3_values)
     elif 'v1' in coord_names and 'v2' in coord_names:
-        if writeable and not v1_values.flags['WRITEABLE']:
+        if ensure_writeable and not v1_values.flags['WRITEABLE']:
             v1_values = v1_values.copy()
-        if writeable and not v2_values.flags['WRITEABLE']:
+        if ensure_writeable and not v2_values.flags['WRITEABLE']:
             v2_values = v2_values.copy()
 
         variable = namedtuple('variable', ['times', 'y', 'v1', 'v2'])
         return variable(times, data_values, v1_values, v2_values)
     elif 'v1' in coord_names:
-        if writeable and not v1_values.flags['WRITEABLE']:
+        if ensure_writeable and not v1_values.flags['WRITEABLE']:
             v1_values = v1_values.copy()
 
         variable = namedtuple('variable', ['times', 'y', 'v1'])
         return variable(times, data_values, v1_values)
     elif 'v' in coord_names:
-        if writeable and not v1_values.flags['WRITEABLE']:
+        if ensure_writeable and not v1_values.flags['WRITEABLE']:
             v1_values = v1_values.copy()
 
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(times, data_values, v1_values)
     elif 'spec_bins' in coord_names:
-        if writeable and not v1_values.flags['WRITEABLE']:
+        if ensure_writeable and not v1_values.flags['WRITEABLE']:
             v1_values = v1_values.copy()
 
         variable = namedtuple('variable', ['times', 'y', 'v'])
         return variable(times, data_values, v1_values)
 
     if error is not None:
-        if writeable and not error.flags['WRITEABLE']:
+        if ensure_writeable and not error.flags['WRITEABLE']:
             error = error.copy()
         variable = namedtuple('variable', ['times', 'y', 'dy'])
         return variable(times, data_values, error)
@@ -190,7 +191,7 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
         return variable(times, data_values)
 
 
-def get(name, xarray=False, metadata=False, dt=True, units=True):
+def get(name, xarray=False, metadata=False, dt=True, units=True, ensure_writeable=False):
     """
     This function extracts the data from the tplot Variables stored in memory.
 
@@ -205,8 +206,13 @@ def get(name, xarray=False, metadata=False, dt=True, units=True):
             Return the times as np.datetime64[ns] objects instead of unix times
             (significantly faster); defaults to True for pyspedas.get
         units: bool
-            Attach the astropy units to the data and dependencioes prior to returning
+            Attach the astropy units to the data and dependencies prior to returning
             defaults to True for pyspedas.get
+        ensure_writeable: bool, optional
+            Ensure that returned arrays are writeable, rather than (for example) read-only views of pandas
+            data frame indices. Specify 'True' if you need to modify the returned arrays. Defaults to 'False'
+            for efficiency.
+
 
     Returns: tuple of data/dimensions/metadata stored in pyspedas
         time_val : numpy array of seconds since 1970
@@ -226,4 +232,4 @@ def get(name, xarray=False, metadata=False, dt=True, units=True):
         >>> time, data = pyspedas.get("Variable1")
 
     """
-    return get_data(name, xarray=xarray, metadata=metadata, dt=dt, units=units)
+    return get_data(name, xarray=xarray, metadata=metadata, dt=dt, units=units, ensure_writeable=ensure_writeable)

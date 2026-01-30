@@ -44,10 +44,10 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_hs_nflux_ch0 = get_data(f"el{cls.probe}_pef_hs_nflux_ch0", writeable=True)
-        cls.elf_pef_hs_nflux_ch1 = get_data(f"el{cls.probe}_pef_hs_nflux_ch1", writeable=True)
-        cls.elf_pef_hs_nflux_ch2 = get_data(f"el{cls.probe}_pef_hs_nflux_ch2", writeable=True)
-        cls.elf_pef_hs_nflux_ch3 = get_data(f"el{cls.probe}_pef_hs_nflux_ch3", writeable=True)
+        cls.elf_pef_hs_nflux_ch0 = get_data(f"el{cls.probe}_pef_hs_nflux_ch0", ensure_writeable=True)
+        cls.elf_pef_hs_nflux_ch1 = get_data(f"el{cls.probe}_pef_hs_nflux_ch1", ensure_writeable=True)
+        cls.elf_pef_hs_nflux_ch2 = get_data(f"el{cls.probe}_pef_hs_nflux_ch2", ensure_writeable=True)
+        cls.elf_pef_hs_nflux_ch3 = get_data(f"el{cls.probe}_pef_hs_nflux_ch3", ensure_writeable=True)
         cls.elf_pef_hs_nflux_omni = get_data(f"el{cls.probe}_pef_hs_nflux_omni")
         cls.elf_pef_hs_nflux_para = get_data(f"el{cls.probe}_pef_hs_nflux_para")
         cls.elf_pef_hs_nflux_anti = get_data(f"el{cls.probe}_pef_hs_nflux_anti")
@@ -70,10 +70,10 @@ class TestELFL2Validation(unittest.TestCase):
             raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
-        cls.elf_pef_hs_eflux_ch0 = get_data(f"el{cls.probe}_pef_hs_eflux_ch0", writeable=True)
-        cls.elf_pef_hs_eflux_ch1 = get_data(f"el{cls.probe}_pef_hs_eflux_ch1", writeable=True)
-        cls.elf_pef_hs_eflux_ch2 = get_data(f"el{cls.probe}_pef_hs_eflux_ch2", writeable=True)
-        cls.elf_pef_hs_eflux_ch3 = get_data(f"el{cls.probe}_pef_hs_eflux_ch3", writeable=True)
+        cls.elf_pef_hs_eflux_ch0 = get_data(f"el{cls.probe}_pef_hs_eflux_ch0", ensure_writeable=True)
+        cls.elf_pef_hs_eflux_ch1 = get_data(f"el{cls.probe}_pef_hs_eflux_ch1", ensure_writeable=True)
+        cls.elf_pef_hs_eflux_ch2 = get_data(f"el{cls.probe}_pef_hs_eflux_ch2", ensure_writeable=True)
+        cls.elf_pef_hs_eflux_ch3 = get_data(f"el{cls.probe}_pef_hs_eflux_ch3", ensure_writeable=True)
         cls.elf_pef_hs_eflux_omni = get_data(f"el{cls.probe}_pef_hs_eflux_omni")
         cls.elf_pef_hs_eflux_para = get_data(f"el{cls.probe}_pef_hs_eflux_para")
         cls.elf_pef_hs_eflux_anti = get_data(f"el{cls.probe}_pef_hs_eflux_anti")
@@ -163,7 +163,7 @@ class TestELFL2Validation(unittest.TestCase):
         assert_allclose(elf_pef_hs_nflux_perp.y, self.elf_pef_hs_nflux_perp.y, rtol=1e-02)
         # test pa spectogram ch0
         spec2plot, _ = spec_pa_sort(self.elf_pef_hs_nflux_ch0.y, self.elf_pef_hs_nflux_ch0.v) 
-        # idl variable use aceding and decending pa
+        # idl variable use ascending and descending pa
         assert_allclose(elf_pef_hs_nflux_ch0.y, spec2plot, rtol=1e-02)
         # test pa spectogram ch1
         spec2plot, _ = spec_pa_sort(self.elf_pef_hs_nflux_ch1.y, self.elf_pef_hs_nflux_ch1.v)
@@ -209,7 +209,7 @@ class TestELFL2Validation(unittest.TestCase):
         assert_allclose(elf_pef_hs_eflux_perp.y, self.elf_pef_hs_eflux_perp.y, rtol=2e-02)
         # test pa spectogram ch0
         spec2plot, _ = spec_pa_sort(self.elf_pef_hs_eflux_ch0.y, self.elf_pef_hs_eflux_ch0.v) 
-        # idl variable use aceding and decending pa
+        # idl variable use ascending and descending pa
         assert_allclose(elf_pef_hs_eflux_ch0.y, spec2plot, rtol=1e-02)
         # test pa spectogram ch1
         spec2plot, _ = spec_pa_sort(self.elf_pef_hs_eflux_ch1.y, self.elf_pef_hs_eflux_ch1.v)
@@ -234,8 +234,8 @@ class TestELFL2Validation(unittest.TestCase):
             fullspin=True,
             PAspec_energybins=[(0,3),(4,6)],
             )
-        elf_pef_fs_nflux_ch0 = get_data(f"el{self.probe}_pef_fs_nflux_ch0", writeable=True)
-        elf_pef_fs_nflux_ch1 = get_data(f"el{self.probe}_pef_fs_nflux_ch1", writeable=True)
+        elf_pef_fs_nflux_ch0 = get_data(f"el{self.probe}_pef_fs_nflux_ch0")
+        elf_pef_fs_nflux_ch1 = get_data(f"el{self.probe}_pef_fs_nflux_ch1")
         elf_pef_fs_nflux_perp = get_data(f"el{self.probe}_pef_fs_nflux_perp")
         elf_pef_fs_nflux_anti = get_data(f"el{self.probe}_pef_fs_nflux_anti")
         elf_pef_fs_nflux_para = get_data(f"el{self.probe}_pef_fs_nflux_para")
@@ -255,7 +255,7 @@ class TestELFL2Validation(unittest.TestCase):
         assert_allclose(elf_pef_fs_nflux_perp.y, self.elf_pef_fs_nflux_perp.y, rtol=1e-02)
         # test pa spectogram ch0
         spec2plot, _ = spec_pa_sort(self.elf_pef_fs_nflux_ch0.y, self.elf_pef_fs_nflux_ch0.v) 
-        # idl variable use aceding and decending pa
+        # idl variable use ascending and descending pa
         assert_allclose(elf_pef_fs_nflux_ch0.y, spec2plot, rtol=1e-02)
         # test pa spectogram ch1
         spec2plot, _ = spec_pa_sort(self.elf_pef_fs_nflux_ch1.y, self.elf_pef_fs_nflux_ch1.v)
@@ -292,7 +292,7 @@ class TestELFL2Validation(unittest.TestCase):
         assert_allclose(elf_pef_fs_eflux_perp.y, self.elf_pef_fs_eflux_perp.y, rtol=1e-02)
         # test pa spectogram ch0
         spec2plot, _ = spec_pa_sort(self.elf_pef_fs_eflux_ch0.y, self.elf_pef_fs_eflux_ch0.v) 
-        # idl variable use aceding and decending pa
+        # idl variable use ascending and descending pa
         assert_allclose(elf_pef_fs_eflux_ch0.y, spec2plot, rtol=1e-02)
         # test pa spectogram ch1
         spec2plot, _ = spec_pa_sort(self.elf_pef_fs_eflux_ch1.y, self.elf_pef_fs_eflux_ch1.v)
