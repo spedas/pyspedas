@@ -180,12 +180,18 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = date_start
         tvar = None
+        # Identical or out of order start times should be caught by load_fsdn now.
+        exception_occurred = False
 
         try:
             tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         except FDSNException as e:
+            # If load_fdsn doesn't catch the problem with start/end times, the MTH5 library
+            # will throw an exception.  We consider that a failed test.
+            exception_occurred = True
             pass
 
+        self.assertFalse(exception_occurred)
         self.assertIsNone(tvar)
 
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
