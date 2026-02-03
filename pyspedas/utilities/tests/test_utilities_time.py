@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 import numpy as np
 from pyspedas import time_string, time_datetime, time_double, degap, store_data, get_data, options, data_exists, time_ephemeris
 from numpy.testing import assert_allclose
+import logging
 
 class TimeTestCases(unittest.TestCase):
     def test_time_datetime(self):
@@ -213,6 +214,20 @@ class TimeTestCases(unittest.TestCase):
         self.assertAlmostEqual(et, 788961669.18399811, places=5)
         et_to_ut = time_ephemeris(et, et2ut=True)
         self.assertAlmostEqual(ut, et_to_ut, places=6)
+
+    def test_time_ephemeris_leapsec_update (self):
+        disable_time = time_double('2027-01-01')  # time of next possible leap second
+        now = time_double()
+
+        days_to_failure = (disable_time - now)/86400.0
+        if days_to_failure < 120:
+            logging.warning(f"time_ephemeris may need a leap second update in {int(days_to_failure)} days")
+        else:
+            logging.info(f"time_ephemeris may need a leap second update in {int(days_to_failure)} days")
+
+        # If this bombs, we need to check if a leap second will be applied, and update the
+        # disable_time variable here and in time_ephemeris().
+        self.assertTrue(days_to_failure > 60)
 
 
 if __name__ == "__main__":
