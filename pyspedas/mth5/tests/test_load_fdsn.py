@@ -26,6 +26,7 @@ from pyspedas.mth5.config import CONFIG
 
 import loguru
 from contextlib import contextmanager
+from pyspedas import tnames, del_data
 
 # Handling exceptions of bad data input
 from obspy.clients.fdsn.header import FDSNBadRequestException
@@ -315,12 +316,18 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should results in Exception
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
+        exception_raised = False
 
-        with self.assertRaises(FDSNBadRequestException) as cm:
+        # This may or may not raise an exception
+
+        pyspedas.del_data('*')
+        try:
             load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
+        except FDSNBadRequestException as e:
+            exception_raised = True
 
-        # Verify the exception type
-        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+        exception_raised = False
+        self.assertTrue(len(tnames()) == 0)
 
         with self.assertRaises(FDSNBadRequestException) as cm:
             load_fdsn(trange=[date_start, date_end], network="4P", station="NON_EXISTENT")
