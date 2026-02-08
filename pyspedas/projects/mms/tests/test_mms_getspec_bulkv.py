@@ -472,7 +472,8 @@ class TestGetspecBulkv(unittest.TestCase):
         units=get_units('mms1_dis_dist_brst_qflux_no_bulk_subtract')
         self.assertEqual(units,'eV/(cm^2-s)')
         # max relative difference .0003
-        assert_allclose(self.qflux_nobulk_subtract.y, pydat.y, rtol=.0005)
+        # after using e_inf rather than e. max relative difference .00175
+        assert_allclose(self.qflux_nobulk_subtract.y, pydat.y, rtol=.002)
 
         tplot(['mms1_dis_dist_brst_flux_no_bulk_subtract','flux_mom_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_flux_no_bulk_subtract')
@@ -694,7 +695,8 @@ class TestGetspecBulkv(unittest.TestCase):
         units=get_units('mms1_dis_dist_brst_fac_qflux_no_bulk_subtract')
         self.assertEqual(units,'eV/(cm^2-s)')
         # max relative difference .0005
-        assert_allclose(self.qflux_mag_nobulk_subtract.y, pydat.y, rtol=.0006)
+        # after using e_inf rather than e in moments_3d, max relative difference now .00063
+        assert_allclose(self.qflux_mag_nobulk_subtract.y, pydat.y, rtol=.0007)
 
         tplot(['mms1_dis_dist_brst_fac_flux_no_bulk_subtract','flux_mom_mag_nobulk_subtract'],display=global_display,save_png='mms_getspec_flux_mag_nobulk_subtract.png')
         pydat=get_data('mms1_dis_dist_brst_fac_flux_no_bulk_subtract')
