@@ -91,8 +91,10 @@ class LoadTestCases(unittest.TestCase):
 
     def test_errors(self):
         pyspedas.projects.kyoto.dst(trange=None)
+        pyspedas.projects.kyoto.dst(trange=["2020-04-01","2020-03-01"])
         pyspedas.projects.kyoto.dst(trange=["1015-10-15", "1015-10-16"])
         pyspedas.projects.kyoto.load_ae(trange=None)
+        pyspedas.projects.kyoto.load_ae(trange=["2020-04-01","2020-03-01"])
         pyspedas.projects.kyoto.load_ae(trange=["1015-10-15", "1015-10-16"])
 
 
