@@ -1,6 +1,6 @@
 import unittest
 import pyspedas
-from pyspedas.tplot_tools import data_exists, del_data, get_data, tplot_names
+from pyspedas.tplot_tools import data_exists, del_data, get_data, tplot_names, time_string, time_double
 import numpy as np
 
 
@@ -21,14 +21,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("kyoto_dst"))
 
     def test_load_ae_data(self):
-        # final
-        del_data('*')
-        ae_vars = pyspedas.projects.kyoto.load_ae(trange=["2015-10-15", "2015-10-16"], datatypes=["ae", "al", "ao", "au", "ax"])
-        self.assertTrue(data_exists("kyoto_ae"))
-        self.assertTrue(data_exists("kyoto_al"))
-        self.assertTrue(data_exists("kyoto_ao"))
-        self.assertTrue(data_exists("kyoto_au"))
-        self.assertTrue(data_exists("kyoto_ax"))
         # provisional
         del_data('*')
         ae_vars = pyspedas.projects.kyoto.load_ae(trange=["2019-10-15", "2019-10-16"], datatypes=["ae", "al", "ao", "au", "ax"])
@@ -37,6 +29,29 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("kyoto_ao"))
         self.assertTrue(data_exists("kyoto_au"))
         self.assertTrue(data_exists("kyoto_ax"))
+        # realtime
+        del_data('*')
+        ae_vars = pyspedas.projects.kyoto.load_ae(trange=["2025-10-15", "2025-10-16"], datatypes=["ae", "al", "ao", "au", "ax"])
+        self.assertTrue(data_exists("kyoto_ae"))
+        self.assertTrue(data_exists("kyoto_al"))
+        self.assertTrue(data_exists("kyoto_ao"))
+        self.assertTrue(data_exists("kyoto_au"))
+        # Apparently the realtime AX index is not available yet
+        #self.assertTrue(data_exists("kyoto_ax"))
+        del_data('*')
+        # Check a time range that straddles the provisionsl/realtime cutoff date
+        ae_vars = pyspedas.projects.kyoto.load_ae(trange=["2020-12-31", "2021-01-01:23:59:59.9"], datatypes=["ae", "al", "ao", "au", "ax"])
+        # AE index, should be present for both
+        start_date_dbl = time_double('2020-12-31/00:00:00')
+        end_date_dbl = time_double('2021-01-01/23:59:00.0')
+        prov_start_date_dbl = time_double('2021-01-01/00:00:00')
+        ae_data = get_data("kyoto_ae")
+        self.assertTrue(ae_data.times[0] == start_date_dbl)
+        self.assertTrue(ae_data.times[-1] == end_date_dbl)
+        ax_data = get_data("kyoto_ax")
+        # AX index, only provisional
+        self.assertTrue(ax_data.times[0] == start_date_dbl)
+        self.assertFalse(ax_data.times[-1] >= prov_start_date_dbl)
 
 
     def test_load_dst_3digit(self):
