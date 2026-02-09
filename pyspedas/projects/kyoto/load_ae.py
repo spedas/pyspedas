@@ -133,32 +133,9 @@ def load_ae_worker(
     list
         A list of tplot variable names created.
 
-    Examples
-    --------
-    >>> from pyspedas.projects.kyoto import load_ae
-    >>> trange = ['2010-01-01 12:00:00', '2010-01-01 18:00:00']
-    >>> vars = load_ae(trange=trange)
-    >>> print(vars)
-    ['kyoto_ae', 'kyoto_al', 'kyoto_ao', 'kyoto_au', 'kyoto_ax']
     """
 
     vars = []  # list of tplot variables created
-
-    if trange is None or len(trange) != 2:
-        logging.error("Keyword trange with two datetimes is required to download data.")
-        return vars
-    if trange[0] >= trange[1]:
-        logging.error("Invalid time range. End time must be greater than start time.")
-        return vars
-
-    if local_data_dir == "":
-        local_data_dir = CONFIG["local_data_dir"]
-    if local_data_dir[-1] != "/":
-        local_data_dir += "/"
-
-    if remote_data_dir == "":
-        remote_data_dir = CONFIG["remote_data_dir_ae"]
-
     ack = """
             ******************************
             The provisional AE data are provided by the World Data Center for Geomagnetism, Kyoto,
@@ -172,6 +149,14 @@ def load_ae_worker(
             and longitude of 170.93E, replacing the closed station Cape Wellen.)
             ******************************
         """
+
+    if local_data_dir == "":
+        local_data_dir = CONFIG["local_data_dir"]
+    if local_data_dir[-1] != "/":
+        local_data_dir += "/"
+
+    if remote_data_dir == "":
+        remote_data_dir = CONFIG["remote_data_dir_ae"]
 
     all_datatypes = ["ae", "al", "ao", "au", "ax"]
     for i in range(len(datatypes)):
@@ -256,9 +241,6 @@ def load_ae_worker(
             if time_clip:
                 tclip(varname, trange[0], trange[1], overwrite=True)
 
-    # Print the acknowledgments
-    logging.info(ack)
-
     return vars
 
 
@@ -327,6 +309,42 @@ def load_ae(
     >>> print(vars)
     ['kyoto_ae', 'kyoto_al', 'kyoto_ao', 'kyoto_au', 'kyoto_ax']
     """
+
+    vars = []  # list of tplot variables created
+
+    if trange is None or len(trange) != 2:
+        logging.error("load_ae: Keyword trange with two datetimes is required to download data.")
+        return vars
+    trange_dbl = time_double(trange)
+    earliest_data = time_double('1996-01-01')
+    if trange_dbl[0] >= trange_dbl[1]:
+        logging.error(f"load_ae: Invalid time range. End time {trange[1]} must be greater than start time {trange[0]}.")
+        return vars
+    if trange_dbl[1] < earliest_data:
+        logging.error(f"load_ae: Invalid time range. End time {trange[1]} is earlier than 1996-01-01")
+        return vars
+
+    if local_data_dir == "":
+        local_data_dir = CONFIG["local_data_dir"]
+    if local_data_dir[-1] != "/":
+        local_data_dir += "/"
+
+    if remote_data_dir == "":
+        remote_data_dir = CONFIG["remote_data_dir_ae"]
+
+    ack = """
+            ******************************
+            The provisional AE data are provided by the World Data Center for Geomagnetism, Kyoto,
+            and are not for redistribution (https://wdc.kugi.kyoto-u.ac.jp/). Furthermore, we thank
+            AE stations (Abisko [SGU, Sweden], Cape Chelyuskin [AARI, Russia], Tixi [IKFIA and
+            AARI, Russia], Pebek [AARI, Russia], Barrow, College [USGS, USA], Yellowknife,
+            Fort Churchill, Sanikiluaq (Poste-de-la-Baleine) [CGS, Canada], Narsarsuaq [DMI,
+            Denmark], and Leirvogur [U. Iceland, Iceland]) as well as the RapidMAG team for
+            their cooperations and efforts to operate these stations and to supply data for the provisional
+            AE index to the WDC, Kyoto. (Pebek is a new station at geographic latitude of 70.09N
+            and longitude of 170.93E, replacing the closed station Cape Wellen.)
+            ******************************
+        """
     prov_cutoff_date = "2021-01-01/00:00:00"
     if time_double(trange[0]) >= time_double(prov_cutoff_date):
         retvalue = load_ae_worker(trange=trange,
@@ -376,4 +394,7 @@ def load_ae(
                               force_download=force_download,
                               realtime=True)
         retvalue = merge_provisional_realtime(prov_vars,realtime_vars)
+
+    # Print the acknowledgments
+    logging.info(ack)
     return retvalue
