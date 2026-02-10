@@ -21,6 +21,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists("kyoto_dst"))
 
     def test_load_ae_data(self):
+        # provsional before Y2K, ensure that timestamps are correctly interpreted as in the 1900s
+        # The data files only contain 2-digit years(!) and we rely on strptime to do the right thing.
+        del_data('*')
+        ae_vars = pyspedas.projects.kyoto.load_ae(trange=["1996-01-01", "1996-01-05"])
+        self.assertTrue(data_exists("kyoto_ae"))
+        ae_data = get_data('kyoto_ae')
+        self.assertTrue(int(ae_data.times[0]) == int(time_double('1996-01-01')))
         # provisional
         del_data('*')
         ae_vars = pyspedas.projects.kyoto.load_ae(trange=["2019-10-15", "2019-10-16"], datatypes=["ae", "al", "ao", "au", "ax"])
