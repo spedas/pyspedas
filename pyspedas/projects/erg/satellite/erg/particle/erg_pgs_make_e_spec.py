@@ -2,13 +2,6 @@
 import numpy as np
 from copy import deepcopy
 
-# use nanmean from bottleneck if it's installed, otherwise use the numpy one
-try:
-    import bottleneck as bn
-    nanmean = bn.nanmean
-except ImportError:
-    nanmean = np.nanmean
-
 def erg_pgs_make_e_spec(data_in):
     """
     Builds energy spectrogram from the particle data structure
