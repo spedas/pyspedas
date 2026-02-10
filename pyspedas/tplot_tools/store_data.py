@@ -163,11 +163,11 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     if isinstance(times, pd.Series):
         datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
     elif isinstance(times[0],datetime.datetime):
-        # Timezone-naive datetime, use as-is, but we might have to convert the container to a numpy array
+        # Timezone-naive datetime, do explicit conversion to np.datetime64[ns] and ensure container is a numpy array
         if isinstance(times,np.ndarray):
-            datetimes = times
+            datetimes = times.astype('datetime64[ns]')
         else:
-            datetimes = np.array(times)
+            datetimes = np.array(times,dtype='datetime64[ns]')
     elif isinstance(times[0],np.datetime64):
         # np.datetime64, use as-is, but we might have to convert the container to a numpy array
         if isinstance(times,np.ndarray):
