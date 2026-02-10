@@ -67,6 +67,9 @@ def parse_ae_html(html_text):
         if match:
             date_str = match.group(1)
             hour_str = match.group(2)
+            # Note: we are passing a 2-digit year to strptime!  Fortunately, the earliest date
+            # for provisional AE data is 1996-01-01, and strptime treats any 2-digit year >= 69
+            # as being in the 1900's, .so this is correct for our purposes.  JWL 2026-02-09
             date = datetime.strptime(date_str + hour_str, "%y%m%d%H")
             minute_values = match.group(4).split()
             for i, value in enumerate(minute_values):
@@ -178,6 +181,8 @@ def load_ae_worker(
 
         # Keep unique files names only
         file_names = list(set(file_names))
+        # The above operation does not necessarily preserve order!  We need to sort the filenames.
+        file_names = sorted(file_names)
 
         times = []
         data = []
