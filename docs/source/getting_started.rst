@@ -251,18 +251,23 @@ Install support for Jupyter notebooks
 
 
 Many PySPEDAS examples are distributed as jupyter notebooks, so you will probably
-want the "jupyter" package:
+want to install the "jupyter" and "ipympl" packages:
 
 .. code-block:: bash
 
    pip install jupyter
+   pip install ipympl
 
 .. _check_pycharm_settings:
 
-Check PyCharm setting for Python plots
---------------------------------------
+Check PyCharm setting for Python plots (PyCharm Professional version only)
+---------------------------------------------------------------------------
 
-By default, PyCharm may display plots in its own interface.  This is not what you want,
+If you are just using the base PyCharm installation, and have not paid for a PyCharm
+Professional license, you may skip this section: this feature is only available to
+PyCharm Professional users, and the settings described here don't exist in the base version.
+
+By default, PyCharm (Professional version) may display plots in its own interface.  This is not what you want,
 because it doesn't allow interactive usage like panning or zooming into a plot. Select
 the "Settings..." menu, then find "Tools" in the left hand pane and expand it.
 You should see something like this:
@@ -382,6 +387,9 @@ with the command
 (If you omit the filename and just do "jupyter notebook", you will get a list of whatever
 notebooks are in your project, and you can click on the one you want to run).
 
+You may be prompted to select a kernel (the Python installation to be used when runnng your notebook).
+If so, select the default kernel and continue.
+
 This will open a browser window (or open a new tab in your existing browser) which should look something like this:
 
 .. image:: _static/jupyter_window.png
@@ -477,5 +485,16 @@ line if you've downloaded the notebook and are running it in an environment that
 Creating Jupyter notebooks
 --------------------------
 
+The Jupyter notebook interface also allows you to create your own notebooks.  From a terminal
+window, start the Jupyter server:
 
-TBD
+.. code-block:: bash
+
+   jupyter notebook
+
+Accept the default kernel if prompted, then go to the browser window that Jupyter should have opened.
+You will see that the Jupyter browser page has its own "File" menu.  Select File->New->Notebook .
+This should open another browser tab or window with an empty notebook you can edit.   To save it,
+from that notebook's browser window, use the Jupyter File menu to select File->Save As (if you haven't
+named the notebook yet), or File->Save (if you've already named it via Save As, and are just saving incremental
+changes.
