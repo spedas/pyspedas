@@ -161,6 +161,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # Convert input time representation to np.datetime64 objects, if needed
     if isinstance(times, pd.Series):
+        logging.warning('store_data: unchecked conversion of pd.Series to numpy times')
         datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
     elif isinstance(times[0],datetime.datetime):
         # Timezone-naive datetime, do explicit conversion to np.datetime64[ns] and ensure container is a numpy array
@@ -194,6 +195,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         datetimes = np.array(times,dtype='datetime64[ns]')
     else:
         # Hope it's convertable to a numpy array!  This case will get hit for an xarray DataArray.
+        logging.warning('store_data: unchecked conversion of xarray? to numpy times')
         datetimes = np.array(times)
 
     times = datetimes
