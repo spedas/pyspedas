@@ -70,11 +70,11 @@ class LoadTestCases(unittest.TestCase):
         trange3=['2024-05-07', '2024-05-21']
 
         pyspedas.projects.kyoto.load_ae(trange=trange1,datatypes=["ae"],time_clip=True,prefix='tr1_')
-        tplot('tr1_kyoto_ae')
+        #tplot('tr1_kyoto_ae')
         pyspedas.projects.kyoto.load_ae(trange=trange2,datatypes=["ae"],time_clip=True,prefix='tr2_')
-        tplot('tr2_kyoto_ae')
+        #tplot('tr2_kyoto_ae')
         pyspedas.projects.kyoto.load_ae(trange=trange3,datatypes=["ae"],time_clip=True,prefix='tr3_')
-        tplot('tr3_kyoto_ae')
+        #tplot('tr3_kyoto_ae')
         ae1 = get_data('tr1_kyoto_ae')
         ae2 = get_data('tr2_kyoto_ae')
         ae3 = get_data('tr3_kyoto_ae')
@@ -82,6 +82,7 @@ class LoadTestCases(unittest.TestCase):
         print(time_string(ae1.times[-1]))
         self.assertTrue(ae1.times[0] == time_double(trange1[0]))
         self.assertTrue(ae1.times[-1] > (time_double(trange1[1]) - 5*60))
+        self.assertEqual(len(ae1.times) + len(ae2.times), len(ae3.times))
 
     def test_load_dst_3digit(self):
         # Test a time interval with 3-digit Dst values, which can run together in the data file
