@@ -61,6 +61,20 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(ax_data.times[0] == start_date_dbl)
         self.assertFalse(ax_data.times[-1] >= prov_start_date_dbl)
 
+    def test_kyoto_ae_y2k(self):
+        # Test the sort order for data files across the Y2K boundary
+        # The 2-digit year rolls over from 99 to 00, so we want
+        # to be sure that the data files are loaded in the right order
+        # and the timestamps are monotonic
+        trange=['1999-12-30','2000-01-03']
+        pyspedas.projects.kyoto.load_ae(trange=trange)
+        ae_data = get_data("kyoto_ae")
+        dt=ae_data.times[1:]-ae_data.times[0:-1]
+        dtmin=np.min(dt)
+        dtmax=np.max(dt)
+        print(dtmin,dtmax)
+        self.assertTrue(dtmin > 0.0)
+
     def test_kyoto_ae_may2024(self):
         # This tests a small range that has provisional AE data for a specific event, but only
         # realtime on each side.
