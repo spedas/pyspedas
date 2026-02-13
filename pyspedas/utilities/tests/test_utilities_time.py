@@ -1,9 +1,10 @@
 import unittest
 from datetime import datetime, timezone
 import numpy as np
-from pyspedas import time_string, time_datetime, time_double, degap, store_data, get_data, options, data_exists, time_ephemeris
+from pyspedas import time_string, time_datetime, time_double, degap, store_data, get_data, options, data_exists, time_ephemeris, is_timezone_aware
 from numpy.testing import assert_allclose
 import logging
+import pandas as pd
 
 class TimeTestCases(unittest.TestCase):
     def test_time_datetime(self):
@@ -229,6 +230,100 @@ class TimeTestCases(unittest.TestCase):
         # disable_time variable here and in time_ephemeris().
         self.assertTrue(days_to_failure > 60)
 
+    def test_store_data_time_conversions(self):
+        # Test different ways of passing times to store_data, ensure that they
+        # all round-trip through store_data/get_data correctly
+        # Try different times: before Unix epoch, just at Unix epoch, after epoch
+
+        # String timestamps with list as container
+        time_string_list = ["1965-01-01","1970-01-01", "2001-01-01"]
+        # Numeric types, with list as container
+        time_dbl_list = time_double(time_string_list)
+        time_int_list = [int(x) for x in time_dbl_list]
+        # Timezone-aware and timezone-naive datetime objects, with list as container
+        time_dt_list = time_datetime(time_string_list)
+        self.assertTrue(is_timezone_aware(time_dt_list))
+        time_dt_tz_naive_list = [aware_dt.replace(tzinfo=None) for aware_dt in time_dt_list]
+        self.assertFalse(is_timezone_aware(time_dt_tz_naive_list[0]))
+        time_string_np = np.array(time_string_list)
+        # Same set of types, but with numpy arrays as the container
+        time_dbl_np = np.array(time_dbl_list)
+        time_int_np = np.array(time_int_list)
+        time_dt_np = np.array(time_dt_list)
+        # Numpy datetime64, ms and ns resolution, in numpy arrays and lists
+        time_dbl_ns_np = time_dbl_np*1e9
+        time_dbl_msec_np = time_dbl_np*1e3
+        time_npdt_ns_np = time_dbl_ns_np.astype('datetime64[ns]')
+        time_npdt_ms_np = time_dbl_msec_np.astype('datetime64[ms]')
+        time_npdt_ns_list = [x for x in time_npdt_ns_np]
+        time_npdt_ms_list = [x for x in time_npdt_ms_np]
+        self.assertFalse(is_timezone_aware(time_npdt_ns_list))
+        self.assertFalse(is_timezone_aware(time_npdt_ms_np))
+        # Python datetimes and numpy datetimes [ms] with Pandas pd.Series as container
+        time_dt_pd = pd.Series(time_dt_np)
+        time_npdt_ms_pd = pd.Series(time_npdt_ms_np)
+
+
+        data = [1,2,3]
+
+        # Create tplot variables from each input type and container type
+        store_data('time_string_list',data={'x': time_string_list, 'y': data})
+        store_data('time_dbl_list',data={'x': time_dbl_list, 'y': data})
+        store_data('time_int_list',data={'x': time_int_list, 'y': data})
+        store_data('time_dt_list',data={'x': time_dt_list, 'y': data})
+        store_data('time_dt_tz_naive_list',data={'x': time_dt_list, 'y': data})
+        store_data('time_npdt_ns_list',data={'x': time_npdt_ns_list, 'y': data})
+        store_data('time_npdt_ms_list',data={'x': time_npdt_ms_list, 'y': data})
+        store_data('time_string_np',data={'x': time_string_np, 'y': data})
+        store_data( 'time_dbl_np',data={'x': time_dbl_np, 'y': data})
+        store_data('time_dt_np',data={'x': time_dt_np, 'y': data})
+        store_data('time_int_np',data={'x': time_int_np, 'y': data})
+        store_data('time_npdt_ns_np',data={'x': time_npdt_ns_np, 'y': data})
+        store_data('time_npdt_ms_np',data={'x': time_npdt_ms_np, 'y': data})
+        store_data('time_dt_pd',data={'x': time_dt_pd, 'y': data})
+        store_data('time_npdt_ms_pd', data={'x': time_npdt_ms_pd, 'y': data})
+
+        # Test xarray DataArray object as time variable.  This can happen (for now)
+        # in tools like degap().
+
+        xr = get_data('time_dt_np',xarray=True)
+        store_data('time_dt_xr',data={'x':xr.coords["time"], 'y':xr.values})
+
+        # Complete the round trip with get_data
+        time_string_list_rt = get_data('time_string_list')
+        time_dbl_list_rt = get_data('time_dbl_list')
+        time_dt_list_rt = get_data('time_dt_list')
+        time_dt_tz_naive_list_rt = get_data('time_dt_tz_naive_list')
+        time_int_list_rt = get_data('time_int_list')
+        time_npdt_ms_list_rt = get_data('time_npdt_ms_list')
+        time_npdt_ns_list_rt = get_data('time_npdt_ns_list')
+        time_string_np_rt = get_data('time_string_np')
+        time_dbl_np_rt = get_data('time_dbl_np')
+        time_dt_np_rt = get_data('time_dt_np')
+        time_int_np_rt = get_data('time_int_np')
+        time_npdt_ms_np_rt = get_data('time_npdt_ms_np')
+        time_npdt_ns_np_rt = get_data('time_npdt_ns_np')
+        time_dt_pd_rt = get_data('time_dt_pd')
+        time_npdt_ms_pd_rt = get_data('time_npdt_ms_pd')
+        time_dt_xr_rt = get_data('time_dt_xr')
+
+        # Compare the retrieved timestamps to original timestamps
+        assert_allclose(time_string_list_rt.times, time_dbl_np)
+        assert_allclose(time_dbl_list_rt.times, time_dbl_np)
+        assert_allclose(time_dt_list_rt.times, time_dbl_np)
+        assert_allclose(time_dt_tz_naive_list_rt.times, time_dbl_np)
+        assert_allclose(time_int_list_rt.times, time_dbl_np)
+        assert_allclose(time_npdt_ms_list_rt.times, time_dbl_np)
+        assert_allclose(time_npdt_ns_list_rt.times, time_dbl_np)
+        assert_allclose(time_string_np_rt.times, time_dbl_np)
+        assert_allclose(time_dbl_np_rt.times, time_dbl_np)
+        assert_allclose(time_dt_np_rt.times, time_dbl_np)
+        assert_allclose(time_int_np_rt.times, time_dbl_np)
+        assert_allclose(time_npdt_ms_np_rt.times, time_dbl_np)
+        assert_allclose(time_npdt_ns_np_rt.times, time_dbl_np)
+        assert_allclose(time_dt_pd_rt.times, time_dbl_np)
+        assert_allclose(time_npdt_ms_pd_rt.times, time_dbl_np)
+        assert_allclose(time_dt_xr_rt.times, time_dbl_np)
 
 if __name__ == "__main__":
     unittest.main()
