@@ -12,6 +12,7 @@ import pyspedas
 import xarray as xr
 import copy
 import warnings
+from pyspedas import is_timezone_aware
 
 tplot_num = 1
 
@@ -161,11 +162,16 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
 
     # Convert input time representation to np.datetime64 objects, if needed
     if isinstance(times, pd.Series):
-        logging.warning('store_data: unchecked conversion of pd.Series to numpy times')
-        datetimes = times.to_numpy()  # if it is pandas series, convert to numpy array
+        datetimes = times.to_numpy(dtype='datetime64[ns]')  # if it is pandas series, convert to numpy array
     elif isinstance(times[0],datetime.datetime):
         # Timezone-naive datetime, do explicit conversion to np.datetime64[ns] and ensure container is a numpy array
-        if isinstance(times,np.ndarray):
+        if is_timezone_aware(times):
+            # Numpy will complain if it is given timezone-aware datetimes to convert.
+            # So we convert to UTC first, then drop the timezone entirely
+            tz_aware_utc = [aware_dt.astimezone(datetime.timezone.utc) for aware_dt in times]
+            tz_naive = [aware_dt.replace(tzinfo=None) for aware_dt in tz_aware_utc]
+            datetimes = np.array(tz_naive,dtype='datetime64[ns]')
+        elif isinstance(times,np.ndarray):
             datetimes = times.astype('datetime64[ns]')
         else:
             datetimes = np.array(times,dtype='datetime64[ns]')
@@ -195,8 +201,7 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         datetimes = np.array(times,dtype='datetime64[ns]')
     else:
         # Hope it's convertable to a numpy array!  This case will get hit for an xarray DataArray.
-        logging.warning('store_data: unchecked conversion of xarray? to numpy times')
-        datetimes = np.array(times)
+        datetimes = np.array(times).astype('datetime64[ns]')
 
     times = datetimes
 
