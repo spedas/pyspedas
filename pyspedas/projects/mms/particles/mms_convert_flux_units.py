@@ -93,7 +93,7 @@ def mms_convert_flux_units(data_in, units=None):
     elif units_out == 'df_km':
         exp_out = [-2, 1, 0]
     elif units_out == 'df_cm':
-        exp_out = [-2, 1, 1]
+        exp_out = [-2, 1, -1]
 
     exp = np.array(exp_in) + np.array(exp_out)
 
