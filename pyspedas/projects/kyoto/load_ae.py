@@ -8,6 +8,7 @@ from .kyoto_config import CONFIG
 from pyspedas import time_string,get_data, time_double, time_string, del_data, tnames
 from pyspedas import tplot_copy
 import numpy as np
+import os
 
 def merge_provisional_realtime(prov_list, realtime_list):
     return_list = []
@@ -168,59 +169,117 @@ def load_ae_worker(
             logging.error("Invalid datatype: " + datatype)
             continue  # skip to the next datatype
 
-        if realtime:
-            ff = "%Y/%m/%d/" + datatype + "%y%m%d"
-        else:
-            ff = "%Y%m/" + datatype + "%y%m%d.for.request"
+        rt_ff = "%Y/%m/%d/" + datatype + "%y%m%d"
+        prov_ff = "%Y%m/" + datatype + "%y%m%d.for.request"
 
         try:
-            file_names = dailynames(file_format=ff, trange=trange)
+            rt_file_names = dailynames(file_format=rt_ff, trange=trange)
+            prov_file_names = dailynames(file_format=prov_ff, trange=trange)
         except Exception as e:
             logging.error("Error occurred while getting file names: " + str(e))
             continue  # skip to the next datatype
 
         # Keep unique files names only
-        file_names = list(set(file_names))
+        rt_file_names = list(set(rt_file_names))
+        prov_file_names = list(set(prov_file_names))
         # The above operation does not necessarily preserve order!  We need to sort the filenames.
-        file_names = sorted(file_names)
+        rt_file_names = sorted(rt_file_names)
+        prov_file_names = sorted(prov_file_names)
 
         times = []
         data = []
-
+        rt_downloaded_files = []
+        prov_downloaded_files = []
         # Download the html page for each url and extract times and data
-        for filename in file_names:
-            if realtime:
-                yyyy = filename[:4]
-                mm = filename[5:7]
-                dd = filename[8:10]
-                url = remote_data_dir + "ae_realtime/data_dir/" + filename
-                # Use a local path similar to IDL SPEDAS
-                local_path = local_data_dir + "ae_realtime/data_dir/" + datatype + "/" + yyyy + "/" + mm + "/" + dd + "/"
-
-            else:
-                yyyymm = ""
-                if len(filename) > 6:
-                    yyyymm = filename[:6]
-                url = remote_data_dir + "ae_provisional/" + filename
-                # Use a local path similar to IDL SPEDAS
-                local_path = local_data_dir + "ae_provisional/" + datatype + "/" + yyyymm + "/"
+        for filename in prov_file_names:
+            yyyymm = ""
+            if len(filename) > 6:
+                yyyymm = filename[:6]
+            url = remote_data_dir + "ae_provisional/" + filename
+            # Use a local path similar to IDL SPEDAS
+            local_path = local_data_dir + "ae_provisional/" + datatype + "/" + yyyymm + "/"
             fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
+            if fname is not None and len(fname) >= 1:
+                prov_downloaded_files.extend(fname)
 
-            if download_only:
-                continue  # skip to the next file
+        for filename in rt_file_names:
+            yyyy = filename[:4]
+            mm = filename[5:7]
+            dd = filename[8:10]
+            url = remote_data_dir + "ae_realtime/data_dir/" + filename
+            # Use a local path similar to IDL SPEDAS
+            local_path = local_data_dir + "ae_realtime/data_dir/" + datatype + "/" + yyyy + "/" + mm + "/" + dd + "/"
 
-            if fname is None or len(fname) < 1:
-                logging.error("Error occurred while downloading: " + url)
-                continue  # skip to the next file
+            fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
+            if fname is not None and len(fname) >= 1:
+                rt_downloaded_files.extend(fname)
+
+        if download_only:
+            continue  # skip to the next data type
+
+        if len(rt_downloaded_files) == 0 and len(prov_downloaded_files) == 0:
+            logging.warning(f"No data found in requested time range for datatype {datatype}")
+            continue
+
+        # Merge prov and realtime file lists
+        # We need to use YYYYMMDD as sort/duplicate keys.  The filenames only have two digit years
+        # so we need to infer (guess) the century.
+        rt_keys = []
+        for fn in rt_downloaded_files:
+            bn = os.path.basename(fn)   # like aeyymmdd
+            yy=bn[2:4]
+            mm=bn[4:6]
+            dd=bn[6:8]
+            if int(yy) >= 69:
+                key='19'+yy+mm+dd
+            else:
+                key='20'+yy+mm+dd
+            rt_keys.append(key)
+        prov_keys = []
+        for fn in prov_downloaded_files:
+            bn = os.path.basename(fn)   # like aeyymmdd.for.request
+            yy=bn[2:4]
+            mm=bn[4:6]
+            dd=bn[6:8]
+            if int(yy) >= 69:
+                key='19'+yy+mm+dd
+            else:
+                key='20'+yy+mm+dd
+            prov_keys.append(key)
+
+        # Check for duplicates...if found, take provisional over realtime
+        rt_thinned = []
+        rt_keys_thinned = []
+        for k,f in zip(rt_keys, rt_downloaded_files):
+            if k in prov_keys:
+                logging.warning(f"Both realtime and provional {datatype} data found for date {k}, using provisional")
+                pass
+            else:
+                rt_thinned.append(f)
+                rt_keys_thinned.append(k)
+
+        combined_keys=prov_keys + rt_keys_thinned
+        combined_filenames=prov_downloaded_files + rt_thinned
+
+        # Now sort the keys and filenames with some python zip magic
+        step1=zip(combined_keys, combined_filenames)
+        step2=sorted(step1)
+        sorted_keys_tuple, sorted_filenames_tuple = zip(*step2)
+        sorted_keys = list(sorted_keys_tuple)
+        sorted_filenames = list(sorted_filenames_tuple)
+
+        # Now iterate through the time-sorted file list, load and combine the data.
+
+        for fname in sorted_filenames:
             try:
-                with open(fname[0], "r") as file:
+                with open(fname, "r") as file:
                     html_text = file.read()
                 file_times, file_data = parse_ae_html(html_text)
                 times.extend(file_times)
                 data.extend(file_data)
             except Exception as e:
                 logging.error(
-                    "Error occurred while parsing " + filename + ": " + str(e)
+                    "Error occurred while parsing " + fname + ": " + str(e)
                 )
                 continue  # skip to the next file
 

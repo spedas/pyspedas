@@ -2,6 +2,7 @@ import unittest
 import pyspedas
 from pyspedas.tplot_tools import data_exists, del_data, get_data, tplot_names, time_string, time_double
 import numpy as np
+from pyspedas import tplot
 
 
 
@@ -60,6 +61,27 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(ax_data.times[0] == start_date_dbl)
         self.assertFalse(ax_data.times[-1] >= prov_start_date_dbl)
 
+    def test_kyoto_ae_may2024(self):
+        # This tests a small range that has provisional AE data for a specific event, but only
+        # realtime on each side.
+        del_data('*')
+        trange1=['2024-05-07', '2024-05-12']
+        trange2=['2024-05-12', '2024-05-21']
+        trange3=['2024-05-07', '2024-05-21']
+
+        pyspedas.projects.kyoto.load_ae(trange=trange1,datatypes=["ae"],time_clip=True,prefix='tr1_')
+        tplot('tr1_kyoto_ae')
+        pyspedas.projects.kyoto.load_ae(trange=trange2,datatypes=["ae"],time_clip=True,prefix='tr2_')
+        tplot('tr2_kyoto_ae')
+        pyspedas.projects.kyoto.load_ae(trange=trange3,datatypes=["ae"],time_clip=True,prefix='tr3_')
+        tplot('tr3_kyoto_ae')
+        ae1 = get_data('tr1_kyoto_ae')
+        ae2 = get_data('tr2_kyoto_ae')
+        ae3 = get_data('tr3_kyoto_ae')
+        print(time_string(ae1.times[0]))
+        print(time_string(ae1.times[-1]))
+        self.assertTrue(ae1.times[0] == time_double(trange1[0]))
+        self.assertTrue(ae1.times[-1] > (time_double(trange1[1]) - 5*60))
 
     def test_load_dst_3digit(self):
         # Test a time interval with 3-digit Dst values, which can run together in the data file
