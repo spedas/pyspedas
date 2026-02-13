@@ -108,7 +108,7 @@ Documentation = "https://pyspedas.readthedocs.io"
 Issue_Tracker = "https://github.com/spedas/pyspedas/issues"
 Source_Code = "https://github.com/spedas/pyspedas"
 Concept_DOI = "https://doi.org/10.5281/zenodo.17634923"
-Versioned_DOI = "https://doi.org/10.5281/zenodo.18613400"
+Versioned_DOI = "https://doi.org/10.5281/zenodo.18636227"
 
 [tool.setuptools]
 packages = {find = {exclude = ["contrib", "docs", "tests*"]}}
