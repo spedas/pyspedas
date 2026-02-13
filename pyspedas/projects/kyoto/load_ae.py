@@ -10,32 +10,19 @@ from pyspedas import tplot_copy
 import numpy as np
 import os
 
-def merge_provisional_realtime(prov_list, realtime_list):
-    return_list = []
-    for datatype in ['ae', 'al', 'ao', 'au', 'ax']:
-        prov_tmpname = "kyoto_ae_tmp_prov_kyoto_" + datatype
-        realtime_tmpname = "kyoto_ae_tmp_realtime_kyoto_" + datatype
-        return_name = 'kyoto_' + datatype
-        if (prov_tmpname in prov_list) and (realtime_tmpname not in realtime_list):
-            # provisional data. but no realtime
-            tplot_copy(prov_tmpname, return_name)
-            return_list.append(return_name)
-        elif (prov_tmpname not in prov_list) and (realtime_tmpname in realtime_list):
-            # realtime data, but no provisional
-            tplot_copy(realtime_tmpname, return_name)
-            return_list.append(return_name)
-        elif (prov_tmpname in prov_list) and (realtime_tmpname in realtime_list):
-            prov_data = get_data(prov_tmpname)
-            prov_md = get_data(prov_tmpname, metadata=True)
-            realtime_data = get_data(realtime_tmpname)
-            concat_times = np.concat((prov_data.times, realtime_data.times), axis=0)
-            concat_data = np.concat((prov_data.y, realtime_data.y), axis=0)
-            store_data(return_name, data={'x': concat_times, 'y': concat_data}, attr_dict=prov_md)
-            return_list.append(return_name)
-        # if data type is not in either list, just ignore it
-    del_data('kyoto_ae_tmp_*')
-    return return_list
-
+def ae_file_sort_keys(downloaded_files):
+    keys = []
+    for fn in downloaded_files:
+        bn = os.path.basename(fn)  # like aeyymmdd
+        yy = bn[2:4]
+        mm = bn[4:6]
+        dd = bn[6:8]
+        if int(yy) >= 69:
+            key = '19' + yy + mm + dd
+        else:
+            key = '20' + yy + mm + dd
+        keys.append(key)
+    return keys
 
 
 def parse_ae_html(html_text):
@@ -92,7 +79,8 @@ def load_ae_worker(
     local_data_dir="",
     download_only=False,
     force_download=False,
-    realtime = False,
+    skip_realtime = False,
+    skip_provisional = False
 ):
     """
     Downloads and loads either provisional or realtime index data (but not both) from the Kyoto World Data Center for Geomagnetism.
@@ -129,8 +117,11 @@ def load_ae_worker(
     force_download: bool
         Download file even if local version is more recent than server version
         Default: False
-    realtime: bool
-        If true, return data from the WDC realtime data directories, otherwise return provisional data.
+    skip_provisional: bool
+        If Rrue, only attempt downloading and processing realtime data. Default: False
+    skip_realtime: bool
+        If True, only attempt downloading and processing provisional data. Default: False
+
 
     Returns
     -------
@@ -191,28 +182,30 @@ def load_ae_worker(
         rt_downloaded_files = []
         prov_downloaded_files = []
         # Download the html page for each url and extract times and data
-        for filename in prov_file_names:
-            yyyymm = ""
-            if len(filename) > 6:
-                yyyymm = filename[:6]
-            url = remote_data_dir + "ae_provisional/" + filename
-            # Use a local path similar to IDL SPEDAS
-            local_path = local_data_dir + "ae_provisional/" + datatype + "/" + yyyymm + "/"
-            fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
-            if fname is not None and len(fname) >= 1:
-                prov_downloaded_files.extend(fname)
+        if not skip_provisional:
+            for filename in prov_file_names:
+                yyyymm = ""
+                if len(filename) > 6:
+                    yyyymm = filename[:6]
+                url = remote_data_dir + "ae_provisional/" + filename
+                # Use a local path similar to IDL SPEDAS
+                local_path = local_data_dir + "ae_provisional/" + datatype + "/" + yyyymm + "/"
+                fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
+                if fname is not None and len(fname) >= 1:
+                    prov_downloaded_files.extend(fname)
 
-        for filename in rt_file_names:
-            yyyy = filename[:4]
-            mm = filename[5:7]
-            dd = filename[8:10]
-            url = remote_data_dir + "ae_realtime/data_dir/" + filename
-            # Use a local path similar to IDL SPEDAS
-            local_path = local_data_dir + "ae_realtime/data_dir/" + datatype + "/" + yyyy + "/" + mm + "/" + dd + "/"
+        if not skip_realtime:
+            for filename in rt_file_names:
+                yyyy = filename[:4]
+                mm = filename[5:7]
+                dd = filename[8:10]
+                url = remote_data_dir + "ae_realtime/data_dir/" + filename
+                # Use a local path similar to IDL SPEDAS
+                local_path = local_data_dir + "ae_realtime/data_dir/" + datatype + "/" + yyyy + "/" + mm + "/" + dd + "/"
 
-            fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
-            if fname is not None and len(fname) >= 1:
-                rt_downloaded_files.extend(fname)
+                fname = download(url, local_path=local_path, no_download=no_download, force_download=force_download)
+                if fname is not None and len(fname) >= 1:
+                    rt_downloaded_files.extend(fname)
 
         if download_only:
             continue  # skip to the next data type
@@ -223,29 +216,12 @@ def load_ae_worker(
 
         # Merge prov and realtime file lists
         # We need to use YYYYMMDD as sort/duplicate keys.  The filenames only have two digit years
-        # so we need to infer (guess) the century.
-        rt_keys = []
-        for fn in rt_downloaded_files:
-            bn = os.path.basename(fn)   # like aeyymmdd
-            yy=bn[2:4]
-            mm=bn[4:6]
-            dd=bn[6:8]
-            if int(yy) >= 69:
-                key='19'+yy+mm+dd
-            else:
-                key='20'+yy+mm+dd
-            rt_keys.append(key)
-        prov_keys = []
-        for fn in prov_downloaded_files:
-            bn = os.path.basename(fn)   # like aeyymmdd.for.request
-            yy=bn[2:4]
-            mm=bn[4:6]
-            dd=bn[6:8]
-            if int(yy) >= 69:
-                key='19'+yy+mm+dd
-            else:
-                key='20'+yy+mm+dd
-            prov_keys.append(key)
+        # so we need to infer (guess) the century.  Fortunately, the realtime and provisional
+        # file basenames are close enough that we can use the same routine to generate sort
+        # keys for both.
+
+        rt_keys = ae_file_sort_keys(rt_downloaded_files)
+        prov_keys = ae_file_sort_keys(prov_downloaded_files)
 
         # Check for duplicates...if found, take provisional over realtime
         rt_thinned = []
@@ -253,7 +229,6 @@ def load_ae_worker(
         for k,f in zip(rt_keys, rt_downloaded_files):
             if k in prov_keys:
                 logging.warning(f"Both realtime and provional {datatype} data found for date {k}, using provisional")
-                pass
             else:
                 rt_thinned.append(f)
                 rt_keys_thinned.append(k)
@@ -409,56 +384,28 @@ def load_ae(
             and longitude of 170.93E, replacing the closed station Cape Wellen.)
             ******************************
         """
-    prov_cutoff_date = "2021-01-01/00:00:00"
-    if time_double(trange[0]) >= time_double(prov_cutoff_date):
-        retvalue = load_ae_worker(trange=trange,
-                          datatypes=datatypes,
-                          time_clip=time_clip,
-                          remote_data_dir=remote_data_dir,
-                          prefix=prefix,
-                          suffix=suffix,
-                          no_download=no_download,
-                          local_data_dir=local_data_dir,
-                          force_download=force_download,
-                          realtime=True)
-    elif time_double(trange[1]) < time_double(prov_cutoff_date):
-        retvalue = load_ae_worker(trange=trange,
-                          datatypes=datatypes,
-                          time_clip=time_clip,
-                          remote_data_dir=remote_data_dir,
-                          prefix=prefix,
-                          suffix=suffix,
-                          no_download=no_download,
-                          local_data_dir=local_data_dir,
-                          force_download=force_download,
-                          realtime=False)
-    else:
-        # Time range spans provisional/realtime cutoff
-        del_data('kyoto_ae_tmp*')
-        prov_trange = [trange[0],"2020-12-31:23:59:59"]
-        realtime_trange = ["2021-01-01/00:00:00", trange[1]]
-        prov_vars = load_ae_worker(trange=prov_trange,
-                              datatypes=datatypes,
-                              time_clip=time_clip,
-                              remote_data_dir=remote_data_dir,
-                              prefix='kyoto_ae_tmp_prov_',
-                              suffix=suffix,
-                              no_download=no_download,
-                              local_data_dir=local_data_dir,
-                              force_download=force_download,
-                              realtime=False)
-        realtime_vars = load_ae_worker(trange=realtime_trange,
-                              datatypes=datatypes,
-                              time_clip=time_clip,
-                              remote_data_dir=remote_data_dir,
-                              prefix='kyoto_ae_tmp_realtime_',
-                              suffix=suffix,
-                              no_download=no_download,
-                              local_data_dir=local_data_dir,
-                              force_download=force_download,
-                              realtime=True)
-        retvalue = merge_provisional_realtime(prov_vars,realtime_vars)
+    earliest_mixed_date = "2024-05-10/00:00:00"
+    latest_mixed_date = "2024-05-15/00:00:00"
+    latest_provisional_only = "2021-01-01/00:00:00"
+    skip_realtime = False
+    skip_provisional = False
+    if time_double(trange[1]) <= time_double(latest_provisional_only):
+        skip_realtime = True
+    elif time_double(trange[0]) >= time_double(latest_mixed_date):
+        skip_provisional = True
 
+    retvalue = load_ae_worker(trange=trange,
+                              datatypes=datatypes,
+                              time_clip=time_clip,
+                              remote_data_dir=remote_data_dir,
+                              prefix=prefix,
+                              suffix=suffix,
+                              no_download=no_download,
+                              local_data_dir=local_data_dir,
+                              force_download=force_download,
+                              skip_realtime=skip_realtime,
+                              skip_provisional=skip_provisional,
+                              )
     # Print the acknowledgments
     logging.info(ack)
     return retvalue
