@@ -1,7 +1,7 @@
 .. _getting-started:
 
-Getting Started
-====================================
+Getting Started with Python and PySPEDAS
+=========================================
 
 
 
@@ -9,7 +9,9 @@ Requirements
 --------------
 PySPEDAS supports Windows, macOS and Linux.
 
-At this writing (October 2025), PySPEDAS is compatible with Python versions 3.10 through 3.14.
+At this writing (October 2025), the core PySPEDAS features are compatible with Python versions 3.10 through 3.14.
+Some optional extras (for example, the basemap package used to render SECS/EICS data) may only be
+compatible through Python 3.13.
 
 The following installation guide represents a somewhat minimal approach to getting a working PySPEDAS
 installation.   It assumes you are starting from scratch, with no pre-existing Python version or developer tools installed.

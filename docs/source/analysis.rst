@@ -69,6 +69,11 @@ This group of routines calculates plasma moments (density, velocity, fluxes, pre
 3-D particle distributions (with two dimensions being azimuthal and elevation angles, and the third dimension
 representing energy bins).
 
+Zijin Zhang has written a useful guide to the mathematical definitions of the various moment quantities, and
+how the calculations are discretized in order to apply them to observed particle distributions:
+
+https://juliaspacephysics.github.io/VelocityDistributionFunctions.jl/dev/moment_note/
+
 moments_3d
 ^^^^^^^^^^
 

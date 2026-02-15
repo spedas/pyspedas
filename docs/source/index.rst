@@ -40,6 +40,8 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    :maxdepth: 1
 
    getting_started
+   examples_and_tutorials
+   getting_help
 
 .. toctree::
    :maxdepth: 1
@@ -59,7 +61,7 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
 
 
 .. toctree::
-   :caption: Upcoming changes in PySPEDAS 2.0
+   :caption: Updating code using older versions of PySPEDAS to PySPEDAS 2.0 and beyond
    :maxdepth: 1
 
    pyspedas_2_migration
