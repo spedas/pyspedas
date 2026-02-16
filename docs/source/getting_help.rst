@@ -1,4 +1,4 @@
-.. _getting-help::
+.. _getting-help:
 
 Getting Help, Reporting Problems, and Suggesting Enhancements
 ===============================================================
