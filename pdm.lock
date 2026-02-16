@@ -406,11 +406,11 @@ files = [
 
 [[package]]
 name = "astropy-iers-data"
-version = "0.2026.2.9.0.50.33"
+version = "0.2026.2.16.0.48.25"
 summary = ""
 files = [
-    {file = "astropy_iers_data-0.2026.2.9.0.50.33-py3-none-any.whl", hash = "sha256:ac01dede0240499b23c2b89fdc93093500336197c5c794e6a01173cfd78a7620"},
-    {file = "astropy_iers_data-0.2026.2.9.0.50.33.tar.gz", hash = "sha256:26aa979a2d309cd68367d4e9c0711dc0cd546bd29c797f473d9b4517cd74509a"},
+    {file = "astropy_iers_data-0.2026.2.16.0.48.25-py3-none-any.whl", hash = "sha256:180d1c3f59d18aa616345560799c2d88ec6e5164b8c45c746380acf892946136"},
+    {file = "astropy_iers_data-0.2026.2.16.0.48.25.tar.gz", hash = "sha256:be14512844e71536a15e165d729385f3cb4865d7822172509e68c4ac79322067"},
 ]
 
 [[package]]
@@ -2185,14 +2185,14 @@ files = [
 
 [[package]]
 name = "joserfc"
-version = "1.6.1"
+version = "1.6.2"
 summary = ""
 dependencies = [
     "cryptography",
 ]
 files = [
-    {file = "joserfc-1.6.1-py3-none-any.whl", hash = "sha256:74d158c9d56be54c710cdcb2a0741372254b682ad2101a0f72e5bd0e925695f0"},
-    {file = "joserfc-1.6.1.tar.gz", hash = "sha256:7759a14d732d93503317468c0dd258510c4f64b30759cf42e96016c97b38c4b7"},
+    {file = "joserfc-1.6.2-py3-none-any.whl", hash = "sha256:2570a69cca95619fae4ffad9d051f0eb57a7741a5a9bd1afc996e74534e31a3d"},
+    {file = "joserfc-1.6.2.tar.gz", hash = "sha256:fd666ee075dbc4889b8b0353437847644777c1045c394838feeadb5aaecd72ab"},
 ]
 
 [[package]]
@@ -3066,7 +3066,7 @@ dependencies = [
     "scipy==1.15.3; python_full_version < \"3.11\"",
     "scipy==1.17.0; python_full_version >= \"3.11\"",
     "xarray==2025.6.1; python_full_version < \"3.11\"",
-    "xarray==2026.1.0; python_full_version >= \"3.11\"",
+    "xarray==2026.2.0; python_full_version >= \"3.11\"",
 ]
 files = [
     {file = "mt_metadata-0.4.0-py2.py3-none-any.whl", hash = "sha256:2729564127915d4031af4432961cc7f2b94b54869a99a0922797767ce0b96197"},
@@ -3883,11 +3883,11 @@ files = [
 
 [[package]]
 name = "platformdirs"
-version = "4.7.1"
+version = "4.9.2"
 summary = ""
 files = [
-    {file = "platformdirs-4.7.1-py3-none-any.whl", hash = "sha256:06ac79ae0c5025949f62711e3f7cd178736515a29bcc669f42a216016cd1dc7a"},
-    {file = "platformdirs-4.7.1.tar.gz", hash = "sha256:6f4ff8472e482af4b7e67a183fbe63da846a9b34f57d5019c4d112a181003d82"},
+    {file = "platformdirs-4.9.2-py3-none-any.whl", hash = "sha256:9170634f126f8efdae22fb58ae8a0eaa86f38365bc57897a6c4f781d1f5875bd"},
+    {file = "platformdirs-4.9.2.tar.gz", hash = "sha256:9a33809944b9db043ad67ca0db94b14bf452cc6aeaac46a88ea55b26e2e9d291"},
 ]
 
 [[package]]
@@ -5746,7 +5746,7 @@ dependencies = [
     "requests",
     "tqdm",
     "xarray==2025.6.1; python_full_version < \"3.11\"",
-    "xarray==2026.1.0; python_full_version >= \"3.11\"",
+    "xarray==2026.2.0; python_full_version >= \"3.11\"",
 ]
 files = [
     {file = "viresclient-0.15.0-py3-none-any.whl", hash = "sha256:bfa61e0ee9e988b7ef1403782f692e8de116d12db0705e7885c485e5620a997c"},
@@ -5916,7 +5916,7 @@ files = [
 
 [[package]]
 name = "xarray"
-version = "2026.1.0"
+version = "2026.2.0"
 summary = ""
 dependencies = [
     "numpy==2.3.5; python_full_version >= \"3.11\"",
@@ -5924,17 +5924,17 @@ dependencies = [
     "pandas==3.0.0; python_full_version >= \"3.11\"",
 ]
 files = [
-    {file = "xarray-2026.1.0-py3-none-any.whl", hash = "sha256:5fcc03d3ed8dfb662aa254efe6cd65efc70014182bbc2126e4b90d291d970d41"},
-    {file = "xarray-2026.1.0.tar.gz", hash = "sha256:0c9814761f9d9a9545df37292d3fda89f83201f3e02ae0f09f03313d9cfdd5e2"},
+    {file = "xarray-2026.2.0-py3-none-any.whl", hash = "sha256:e927d7d716ea71dea78a13417970850a640447d8dd2ceeb65c5687f6373837c9"},
+    {file = "xarray-2026.2.0.tar.gz", hash = "sha256:978b6acb018770554f8fd964af4eb02f9bcc165d4085dbb7326190d92aa74bcf"},
 ]
 
 [[package]]
 name = "xmltodict"
-version = "1.0.2"
+version = "1.0.3"
 summary = ""
 files = [
-    {file = "xmltodict-1.0.2-py3-none-any.whl", hash = "sha256:62d0fddb0dcbc9f642745d8bbf4d81fd17d6dfaec5a15b5c1876300aad92af0d"},
-    {file = "xmltodict-1.0.2.tar.gz", hash = "sha256:54306780b7c2175a3967cad1db92f218207e5bc1aba697d887807c0fb68b7649"},
+    {file = "xmltodict-1.0.3-py3-none-any.whl", hash = "sha256:35d65d5c08f2a1121df338a0c4e49ca638480fa7c1b899ded45e0759bf32e40e"},
+    {file = "xmltodict-1.0.3.tar.gz", hash = "sha256:3bf1f49c7836df34cf6d9cc7e690c4351f7dfff2ab0b8a1988bba4a9b9474909"},
 ]
 
 [[package]]
