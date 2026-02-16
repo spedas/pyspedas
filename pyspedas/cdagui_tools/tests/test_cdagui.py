@@ -1,6 +1,7 @@
 import unittest
 from pyspedas import CDAWeb, data_exists, del_data, get_data, time_double
 from pyspedas.cdagui_tools.config import CONFIG
+import numpy as np
 
 output_dir = CONFIG["local_data_dir"]
 
@@ -107,6 +108,11 @@ class CDAWebTests(unittest.TestCase):
         result = cdaweb_obj.cda_download(urllist, output_dir)
         self.assertEqual(len(result) > 0, True)
         self.assertTrue(data_exists("b_gse"))
+        # Test for duplicate timestamps
+        d=get_data('b_gse')
+        dt = d.times[1:] - d.times[0:-1]
+        # Time resolution for this data type should be 0.1 sec
+        self.assertTrue(np.min(dt) > 0.001)
 
     def test_load_time_clip(self):
         del_data("*")

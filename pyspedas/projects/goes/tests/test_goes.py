@@ -3,7 +3,7 @@ import unittest
 import numpy as np
 import logging
 import pyspedas
-from pyspedas.tplot_tools import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data, get_data
 from pyspedas.projects.goes.config import CONFIG
 
 global_display = False
@@ -381,6 +381,12 @@ class LoadTestCases(unittest.TestCase):
         )
         self.assertTrue("goes17_b_gse" in mag_vars_17)
         self.assertTrue(data_exists("goes17_b_gse"))
+        # Check for duplicate timestamps
+        d=get_data('goes17_b_gse')
+        dt=d.times[1:] - d.times[0:-1]
+        # Time resolution for this variable should be about 0.1 sec
+        self.assertTrue(np.min(dt) > 0.001)
+
 
     def test_load_mpsh_data_17(self):
         del_data()
