@@ -212,14 +212,14 @@ def loadr(
                 ]:  # high resolution 1 min
                     pathformat = [
                         remote_path
-                        + "mpsh-l2-avg1m/%Y/%m/sci_mpsh-l2-avg1m_g"
+                        + "mpsh-l2-avg1m_science/%Y/%m/sci_mpsh-l2-avg1m_g"
                         + str(prb)
                         + "_d%Y%m%d_v?-?-?.nc"
                     ]
                 else:  # low resolution 5 min, smaller files
                     pathformat = [
                         remote_path
-                        + "mpsh-l2-avg5m/%Y/%m/sci_mpsh-l2-avg5m_g"
+                        + "mpsh-l2-avg5m_science/%Y/%m/sci_mpsh-l2-avg5m_g"
                         + str(prb)
                         + "_d%Y%m%d_v?-?-?.nc"
                     ]

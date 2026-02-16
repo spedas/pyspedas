@@ -399,6 +399,18 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue("g17_mpsh_AvgDiffElectronFlux" in mpsh_vars_17)
         self.assertTrue(data_exists("g17_mpsh_AvgDiffElectronFlux"))
 
+    def test_load_mpsh_data_18_2026(self):
+        # Test a date in 2026, after the URL structure was changed
+        del_data()
+        mpsh_vars_18 = pyspedas.projects.goes.mpsh(
+            probe="18",
+            trange=["2026-01-01", "2026-01-02"],
+            prefix="probename",
+            time_clip=True,
+        )
+        self.assertTrue("g18_mpsh_AvgDiffElectronFlux" in mpsh_vars_18)
+        self.assertTrue(data_exists("g18_mpsh_AvgDiffElectronFlux"))
+
     def test_load_mpsh_data_16(self):
         del_data()
         mpsh_vars_16 = pyspedas.projects.goes.mpsh(
