@@ -18,7 +18,9 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
          notplot:bool=False,
          no_update:bool=False,
          time_clip:bool=False,
-         force_download=False) -> List[str]:
+         force_download=False,
+         species=None
+         ) -> List[str]:
     """
     Load data from Cluster instruments
 
@@ -85,6 +87,9 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
             Download file even if local version is more recent than server version
             Default: False
 
+        species: str
+            Species to load psd data for. Valid options are: 'h1', 'he1', 'o1'.
+            Default: None
 
     Returns
     -------
@@ -137,7 +142,16 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         elif instrument == 'aspoc':
             pathformat = 'c'+prb+'/'+datatype+'/asp/%Y/c'+prb+'_'+datatype+'_asp_%Y%m%d_v??.cdf'
         elif instrument == 'cis':
-            pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
+            if species == None:
+                pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
+            else: 
+                if species == 'h1':
+                    scd = 'proton' # second name for H+
+                if species == 'he1':
+                    scd = 'heplus' # second name for He+
+                if species == 'o1':
+                    scd = 'oplus' # second name for O+
+                pathformat = 'c'+prb+'/'+instrument+'-codif/'+scd+'_3ddist_highsens_phasespacedens'+'/%Y/c'+prb+'_cp_'+instrument+'-codif_hs_'+species+'_psd'+'_%Y%m%d_v????????.cdf'
         elif instrument == 'dwp':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
         elif instrument == 'edi':
