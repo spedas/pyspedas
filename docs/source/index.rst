@@ -61,7 +61,7 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
 
 
 .. toctree::
-   :caption: Updating code using older versions of PySPEDAS to PySPEDAS 2.0 and beyond
+   :caption: Updating older code to PySPEDAS 2.0+
    :maxdepth: 1
 
    pyspedas_2_migration
