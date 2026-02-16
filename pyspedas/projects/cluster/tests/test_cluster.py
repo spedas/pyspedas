@@ -54,6 +54,35 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('N_p__C1_PP_CIS'))
         self.assertTrue('N_p__C1_PP_CIS' in cis_vars)
 
+    def test_codif_2dslices(self):
+        del_data('*')
+        trange = ['2002-04-18 12:00:00', '2002-04-18 18:00:00']
+        event = '2002-04-18 17:30:03'
+        probe = '1'
+        pyspedas.projects.cluster.cis(trange, probe=probe, option='psd_h1', get_support_data=True)
+        pyspedas.projects.cluster.cis(trange, probe=probe, varformat='V_p_xyz_gse__C1_PP_CIS')
+        pyspedas.projects.cluster.fgm(trange, probe=probe, datatype='cp')
+        pyspedas.tplot_names()
+        xmd = pyspedas.get_data('ions_3d__C1_CP_CIS_CODIF_HS_H1_PSD', metadata=True)
+        xmd#['CDF']['VATT']
+        dist = pyspedas.projects.cluster.cluster_get_codif_dist('ions_3d__C1_CP_CIS_CODIF_HS_H1_PSD', probe)
+
+        slice_xy = pyspedas.slice2d(dist, time=event, rotation='xy', interpolation='2d')
+        slice_xz = pyspedas.slice2d(dist, time=event, rotation='xz', interpolation='2d')
+        slice_yz = pyspedas.slice2d(dist, time=event, rotation='yz', interpolation='2d')
+
+        pyspedas.slice2d_plot(slice_xy, display=False, save_png='cluster_codif_slice_xy.png')
+        pyspedas.slice2d_plot(slice_xz, display=False, save_png='cluster_codif_slice_xz.png')
+        pyspedas.slice2d_plot(slice_yz, display=False, save_png='cluster_codif_slice_yz.png')
+
+        the_slice = pyspedas.slice2d(dist, time=event, rotation='bv', mag_data='B_vec_xyz_gse__C1_CP_FGM_SPIN',
+                               vel_data='V_p_xyz_gse__C1_PP_CIS')
+        pyspedas.slice2d_plot(the_slice, display=False, save_png='cluster_codif_slice_slice_bv_geo.png')
+
+        the_slice = pyspedas.slice2d(dist, time=event, rotation='bv', interpolation='2d',
+                               mag_data='B_vec_xyz_gse__C1_CP_FGM_SPIN', vel_data='V_p_xyz_gse__C1_PP_CIS')
+        pyspedas.slice2d_plot(the_slice, display=False, save_png='cluster_codif_slice_bv_2dinterp.png')
+
     def test_load_dwp_data(self):
         del_data('*')
         dwp_vars = pyspedas.projects.cluster.dwp()
