@@ -62,9 +62,6 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.cluster.cis(trange, probe=probe, option='psd_h1', get_support_data=True)
         pyspedas.projects.cluster.cis(trange, probe=probe, varformat='V_p_xyz_gse__C1_PP_CIS')
         pyspedas.projects.cluster.fgm(trange, probe=probe, datatype='cp')
-        pyspedas.tplot_names()
-        xmd = pyspedas.get_data('ions_3d__C1_CP_CIS_CODIF_HS_H1_PSD', metadata=True)
-        xmd#['CDF']['VATT']
         dist = pyspedas.projects.cluster.cluster_get_codif_dist('ions_3d__C1_CP_CIS_CODIF_HS_H1_PSD', probe)
 
         slice_xy = pyspedas.slice2d(dist, time=event, rotation='xy', interpolation='2d')
