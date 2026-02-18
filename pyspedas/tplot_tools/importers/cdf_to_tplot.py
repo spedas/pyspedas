@@ -814,7 +814,22 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 units = filter_greater_than(unit_ptr_array.flatten().tolist())
                         except:
                             pass
-                metadata[var_name]['units'] = str(units)
+                if isinstance(units, (list,np.ndarray)):
+                    # If units is a list or array, and are all the same, replace with the single value
+                    # Otherwise, stringify the whole array
+                    firstunit=units[0].lower()
+                    allsame=True
+                    for u in units:
+                        if u.lower() != firstunit:
+                            allsame=False
+                    if allsame:
+                        metadata[var_name]['units'] = units[0]
+                    else:
+                        # Go ahead and stringify the whole mess
+                        logging.warning(f'Variable {var_name} in file {cdf_file} has non-homegeneous values {units}')
+                        metadata[var_name]['units'] = str(units)
+                else:
+                     metadata[var_name]['units'] = str(units)
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")
