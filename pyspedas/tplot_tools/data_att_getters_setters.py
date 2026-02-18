@@ -277,6 +277,8 @@ def set_units(name, units):
 
         # should also update the legend, if it includes the coordinate system
         # for this to work, the coordinate system should be in all upper case
+        if units is None:
+            units = 'None'
         if (units_in is not None) and (metadata.get('plot_options') is not None):
             if metadata['plot_options'].get('yaxis_opt') is not None:
                 if metadata['plot_options']['yaxis_opt'].get('legend_names') is not None:
