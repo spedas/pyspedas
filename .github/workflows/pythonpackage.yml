@@ -358,6 +358,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_utilities_tplot_wildcard
         echo Starting plotting tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_utilities_plot
+        echo Starting orbit plot tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
         echo Starting utilities time_tests tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_utilities_time
         echo Starting utilities libs_tests tests at `date`
