@@ -20,6 +20,9 @@ from pyspedas import (
     get_data,
     store_data,
     options,
+    get_units,
+    set_units,
+    set_coords,
 )
 
 
@@ -63,11 +66,52 @@ class UtilTestCases(unittest.TestCase):
     def test_tkm2re(self):
         store_data("test", data={"x": [1, 2, 3], "y": [5, 5, 5]})
         options("test", "ysubtitle", "[Re]")
+        set_units("test", "Re")
+        self.assertTrue(get_units("test").lower() == 're')
         # convert to km
         tkm2re("test", km=True)
+        self.assertTrue(data_exists("test_km"))
+        self.assertTrue(get_units("test_km").lower() == 'km')
+        test_d = get_data('test_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
         # convert back
         tkm2re("test_km")
         self.assertTrue(data_exists("test_km_re"))
+        self.assertTrue(get_units("test_km_re").lower() == 're')
+        test_d = get_data('test_km_re')
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        # try converting km to km
+        tkm2re("test_km", km=True)
+        self.assertTrue(data_exists("test_km_km"))
+        self.assertTrue(get_units("test_km_km").lower() == 'km')
+        test_d = get_data('test_km_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
+        self.assertTrue(np.max(test_d.y) < 100000.0)
+
+        # try converting re to re
+        tkm2re("test_km_re", km=False)
+        self.assertTrue(data_exists("test_km_re_re"))
+        self.assertTrue(get_units("test_km_re_re").lower() == 're')
+        test_d = get_data('test_km_re_re')
+        self.assertTrue(np.min(test_d.y) > 4.0)
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        # Ensure that a conversion gets performed if the units are missing or unrecognized
+        set_units('test_km', 'unknown')
+        tkm2re("test_km", km=False)
+        self.assertTrue(data_exists("test_km_re"))
+        self.assertTrue(get_units("test_km_re").lower() == 're')
+        test_d = get_data('test_km_re')
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        set_units('test_km_re', None)
+        tkm2re("test_km_re", km=True)
+        self.assertTrue(data_exists("test_km_re_km"))
+        self.assertTrue(get_units("test_km_re_km").lower() == 'km')
+        test_d = get_data('test_km_re_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
+
         nothing = tkm2re("doesnt_exist")
         self.assertTrue(nothing is None)
         tkm2re("test_km", newname="another_test_km")
