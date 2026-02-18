@@ -823,10 +823,12 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         if u.lower() != firstunit:
                             allsame=False
                     if allsame:
+                        # Return units as a scalar
                         metadata[var_name]['units'] = units[0]
                     else:
-                        # Go ahead and stringify the whole mess
-                        logging.warning(f'Variable {var_name} in file {cdf_file} has non-homegeneous values {units}')
+                        # Go ahead and stringify the whole mess to force it to bw a scalar
+                        # TODO: there must be a better way to handle this!
+                        logging.warning(f'Variable {var_name} in file {cdf_file} has non-homogeneous unit values {units}')
                         metadata[var_name]['units'] = str(units)
                 else:
                      metadata[var_name]['units'] = str(units)
