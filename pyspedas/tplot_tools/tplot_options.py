@@ -78,7 +78,7 @@ def tplot_options(option, value):
         xmargin             [flt, flt]   The width of the left and right margins of the plot (in inches)
         ymargin             [flt, flt]   The height of the top and bottom margins of the plot (in inches)
         annotations         dict         A dictionary of text, positions, xycoords, and other options to be placed on the plot
-        varlabel_style      str          Set to 'extra_axes' for each variable on its own axis, or 'extra_panel' for all variables in a single panel
+        varlabel_style      str          Set to 'extra_axes' for each variable on its own axis, or 'extra_panel' for a more compact display in a single panel
         ==================  ==========   =====
 
     Returns
