@@ -34,6 +34,8 @@ def tplotxy(tvars,
             axis=None,
             ):
     """
+    Plot one or more 3d tplot variables, by projecting them onto one of the coordinate planes XY, XY, or YZ.
+
     Parameters
     ----------
     tvars: string or list of strings
@@ -44,9 +46,11 @@ def tplotxy(tvars,
     center_origin: bool
         If True, center the plot on the origin.
     reverse_x: bool
-        If True, reverse the x-axis of the plot (more positive values to the left)
+        If True, reverse the x-axis of the plot (more positive values to the left).  This is handy
+        for GSE-like orbit plots if you want the sun depicted toward the left
     reverse_y: bool
         If True, reverse the y-axis of the plot (more positive values to the bottom)
+        If reverse_x is set, and you're projecting onto the xy plane, this keeps the coordinate system right-handed.
     colors: list or tuple of strings
         Colors to use if multiple variables are plotted. Default: ('k', 'b', 'g', 'r', 'c', 'm', 'y').
         If number of variables exceeds number of colors, they will cycle.
