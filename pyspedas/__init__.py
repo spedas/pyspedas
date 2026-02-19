@@ -103,6 +103,7 @@ from .tplot_tools import highlight
 from .tplot_tools import annotate
 from .tplot_tools import tplot
 from .tplot_tools import tplotxy
+from .tplot_tools import tplotxy3
 from .tplot_tools import cdf_to_tplot
 from .tplot_tools import netcdf_to_tplot
 from .tplot_tools import tplot_ascii

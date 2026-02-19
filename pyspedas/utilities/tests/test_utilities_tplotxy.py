@@ -26,6 +26,7 @@ from pyspedas import (
     annotate,
     is_pseudovariable,
     tplotxy,
+    tplotxy3,
     tkm2re,
 )
 from pyspedas.utilities.config_testing import TESTING_CONFIG
@@ -134,6 +135,16 @@ class PlotTestCases(unittest.TestCase):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
         themis.state(trange=default_trange, probe=['a','d', 'e'])
         tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], plane='yz', center_origin = False, reverse_x=True, reverse_y=False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_yz_nocenter.png')
+
+    def test_themis_orbit_km_legends_3planes(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        themis.state(trange=default_trange, probe=['a','d','e'])
+        tplotxy3('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_3planes.png')
+
+    def test_themis_orbit_km_legends_3planes_sunright(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        themis.state(trange=default_trange, probe=['a','d','e'])
+        tplotxy3('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_3planes_sunright.png')
 
 if __name__ == "__main__":
     unittest.main()

@@ -128,6 +128,7 @@ from .MPLPlotter.highlight import highlight
 from .MPLPlotter.annotate import annotate
 from .MPLPlotter.tplot import tplot
 from .MPLPlotter.tplotxy import tplotxy
+from .MPLPlotter.tplotxy3 import tplotxy3
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot
 from .exporters.tplot_ascii import tplot_ascii
