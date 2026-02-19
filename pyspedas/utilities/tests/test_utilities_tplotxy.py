@@ -49,7 +49,18 @@ class PlotTestCases(unittest.TestCase):
     def test_themis_orbit_km(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
         themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re.png')
+        tplotxy('th?_pos_gse', title='THEMIS orbit plot', reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re.png')
+
+
+    def test_themis_orbit_km_legends(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
+        tplotxy('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends.png')
+
+    def test_themis_orbit_km_badlegends(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
+        tplotxy('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-B'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_badlegends.png')
 
     def test_themis_orbit_km_xz(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
@@ -81,12 +92,12 @@ class PlotTestCases(unittest.TestCase):
     def test_themis_orbit_inner_linestyles(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
         themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', linestyles=['solid','dotted','dashdot'], display=global_display, save_png='orbits_thm_linestyles.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', linestyles=['solid','dotted','dashdot'], display=global_display, save_png='orbits_thm_linestyles.png')
 
     def test_themis_orbit_inner_markers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
         themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], legend_names=['THEMIS-A','THEMIS-B','THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
 
     def test_themis_orbit_inner_startendmarkers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
@@ -97,11 +108,6 @@ class PlotTestCases(unittest.TestCase):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
         themis.state(trange=default_trange, probe=['a','d', 'e'])
         tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', startmarkers=['x','.','+'], markers=None, display=global_display, save_png='orbits_thm_startmarkers.png')
-
-    def test_themis_orbit_inner_plotmask(self):
-        # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', plotmask=[True,False,True], display=global_display, save_png='orbits_thm_plotmask.png')
 
     def test_themis_orbit_inner_linewidths(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units

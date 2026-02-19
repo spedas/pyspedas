@@ -10,6 +10,7 @@ def tplotxy(tvars,
             reverse_x = False,
             reverse_y = False,
             plot_units='re',
+            title=None,
             colors=('k', 'b', 'g', 'r', 'c', 'm', 'y'),
             linestyles=('solid'),
             linewidths=(None),
@@ -18,7 +19,8 @@ def tplotxy(tvars,
             endmarkers=(None),
             markevery=10,
             markersize=5,
-            plotmask=(True),
+            legend_names=None,
+            legend_location='upper right',
             show_centerbody=True,
             centerbody_size_re=1.0,
             save_png='',
@@ -64,8 +66,10 @@ def tplotxy(tvars,
         plot a marker at every n-th data point (default: 10)
     markersize: float
         size of the marker in points (default: 5)
-    plotmask: list or tuple of bool
-        If False, skip this variable when making plots, calculating axis ranges, etc. Default: (True)
+    legend_names: list of str
+        If set, labels to use in the plot legend.
+    legend_location: str
+        Placement of legend relative to the plot window.
     show_centerbody: bool
         If True, draw the central body at the origin
     centerbody_size_re: float
@@ -132,13 +136,18 @@ def tplotxy(tvars,
     if not isinstance(linewidths, (list, np.ndarray,tuple)):
         linewidths = [linewidths]
 
-    if not isinstance(plotmask, (list, np.ndarray,tuple)):
-        plotmask = [plotmask]
-    if (len(plotmask) != 1) and (len(plotmask) != len(tvars)):
-        logging.warning(f"Mismatch between plotmask length {len(plotmask)} and variable list length {len(tvars)}.")
+    if legend_names is not None:
+        if not isinstance(legend_names, (list, np.ndarray,tuple)):
+            legend_names = [legend_names]
+        if len(legend_names) != len(tvars):
+            logging.warning(f"Length of legend_names ({len(legend_names)}) does not match length of tvars ({len(tvars)}), disabling legends")
+            legend_names= None
 
     if fig is None and axis is None:
         fig, axis = plt.subplots(sharey=True, sharex=True, figsize=(xsize, ysize), layout='constrained')
+
+    if title is not None and title != '':
+        fig.suptitle(title)
 
     km_in_re = 6371.2
     if plot_units is None:
@@ -152,11 +161,6 @@ def tplotxy(tvars,
         unit_annotation=f' Units: {plot_units} '
 
     for index,tvar in enumerate(tvars):
-        n_plotmask = len(plotmask)
-        this_plotmask = plotmask[index % n_plotmask]
-        if not this_plotmask:
-            logging.info(f"Variable {tvar} is masked, skipping")
-            continue
         units=get_units(tvar)
         if isinstance(plot_units, (list, np.ndarray)):
             units=units[0]
@@ -223,11 +227,20 @@ def tplotxy(tvars,
         n_endmarkers = len(endmarkers)
         thisendmarker = endmarkers[index % n_endmarkers]
 
-        axis.plot(proj_x, proj_y, color=thiscolor, linestyle=thisstyle, linewidth=thiswidth, marker=thismarker, markersize=markersize, markevery=markevery)
+        this_line = axis.plot(proj_x, proj_y, color=thiscolor, linestyle=thisstyle, linewidth=thiswidth, marker=thismarker, markersize=markersize, markevery=markevery)
         if thisstartmarker is not None:
             axis.plot(proj_x[0], proj_y[0], color=thiscolor, linestyle=thisstyle, marker=thisstartmarker, markersize=markersize)
         if thisendmarker is not None:
             axis.plot(proj_x[-1], proj_y[-1], color=thiscolor, linestyle=thisstyle, marker=thisendmarker, markersize=markersize)
+
+        if legend_names is not None:
+            try:
+                if isinstance(this_line, list):
+                    this_line[0].set_label(legend_names[index])
+                else:
+                    this_line.set_label(legend_names[index])
+            except IndexError:
+                continue
 
     if center_origin:
         x_halfwidth = np.nanmax(np.abs([max_x, min_x]))
@@ -272,6 +285,10 @@ def tplotxy(tvars,
         axis.invert_xaxis()
     if reverse_y:
         axis.invert_yaxis()
+
+    if legend_names is not None:
+        legend = axis.legend(loc=legend_location, markerfirst=True)
+
     fig.canvas.draw()
 
     if save_png is not None and save_png != '':
