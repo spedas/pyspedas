@@ -23,6 +23,7 @@ from pyspedas import (
     get_units,
     set_units,
     set_coords,
+    bshock_2,
 )
 
 
@@ -424,6 +425,67 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(xmp.max() > 10.77)
         self.assertTrue(ymp.min() < -68.0)
         self.assertTrue(ymp.max() > 77.8)
+
+    def test_bshock_2(self):
+        result=bshock_2()
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 2000)
+        self.assertTrue(len(result[1]) == 2000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,190.05394])
+
+        result=bshock_2([])  # empty xsh array
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 2000)
+        self.assertTrue(len(result[1]) == 2000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,190.05394])
+
+        result=bshock_2(short=True)
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 1000)
+        self.assertTrue(len(result[1]) == 1000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,-0.82224500],rtol=1e-3)
+
+        result=bshock_2([1,2,3,4,5])
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 10)
+        self.assertTrue(len(result[1]) == 10)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[1,5, -22.124428,26.168026],rtol=1e-3)
+
+        result=bshock_2([1,2,3,4,5], return_west=True)
+        self.assertTrue(len(result)==3)
+        self.assertTrue(len(result[0]) == 10)
+        self.assertTrue(len(result[1]) == 10)
+        self.assertTrue(len(result[2]) == 5)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[1,5, -22.124428, 26.168026],rtol=1e-3)
+        ymin=np.min(result[2])
+        ymax=np.max(result[2])
+        bounds=np.array([ymin,ymax])
+        assert_allclose(bounds,[21.693228, 26.168026],rtol=1e-3)
 
     def test_find_datasets_quiet(self):
         ds = find_datasets(mission="MMS", instrument="FGM", quiet=True)

@@ -166,6 +166,7 @@ from .utilities.leap_seconds import load_leap_table
 from .utilities.libs import libs
 from .utilities.mpause_2 import mpause_2
 from .utilities.mpause_t96 import mpause_t96
+from .utilities.bshock_2 import bshock_2
 from .utilities.tcopy import tcopy
 from .utilities.is_gzip import is_gzip
 from .utilities.xdegap import xdegap
