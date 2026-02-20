@@ -2,7 +2,8 @@ import logging
 import numpy as np
 import math
 from geopack.geopack import recalc as geopack_recalc
-from pyspedas import cotrans, time_double
+from pyspedas.cotrans_tools.cotrans import cotrans
+from pyspedas.tplot_tools import time_double
 
 
 def sm_ns_model(time, gsm_pos, sc2NS=False):

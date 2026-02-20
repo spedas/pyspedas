@@ -14,7 +14,7 @@ This function is similar to cotrans.pro of IDL SPEDAS.
 import logging
 import numpy as np
 import pyspedas
-from pyspedas import (
+from pyspedas.tplot_tools import (
     store_data,
     get_data,
     get_coords,
