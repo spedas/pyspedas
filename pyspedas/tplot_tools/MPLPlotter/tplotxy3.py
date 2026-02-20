@@ -1,4 +1,8 @@
-from pyspedas.tplot_tools import tplot_wildcard_expand, get_data, get_coords, get_units
+from pyspedas.tplot_tools import tplot_wildcard_expand, get_data, get_coords, get_units, set_coords, set_units, store_data
+from pyspedas.utilities.bshock_2 import bshock_2
+from pyspedas.utilities.mpause_2 import mpause_2
+from pyspedas.analysis.neutral_sheet import neutral_sheet
+from pyspedas.cotrans_tools.cotrans import cotrans
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
@@ -21,6 +25,9 @@ def tplotxy3(tvars,
             legend_location='upper right',
             show_centerbody=True,
             centerbody_size_re=1.0,
+            plot_bow_shock=False,
+            plot_magnetopause=False,
+            plot_neutral_sheet=False,
             save_png='',
             save_eps='',
             save_jpeg='',
@@ -72,6 +79,12 @@ def tplotxy3(tvars,
         If True, draw the central body at the origin
     centerbody_size_re: float
         The size in Re of the center body. Default: 1.0
+    plot_bow_shock: bool
+        If True, plot the bow shock location on each panel. Default: False
+    plot_magnetopause: bool
+        If True, plot the magnetopause boundary on each panel. Default: False
+    plot_neutral_sheet: bool
+        If True, plot the AEN neutral sheet boundary on the XZ panel. Default: False
     save_png : str, optional
         A full file name and path.
         If this option is set, the plot will be automatically saved to the file name provided in PNG format.
@@ -159,7 +172,25 @@ def tplotxy3(tvars,
         plot_units = 'None'
         unit_annotation=""
     else:
-        unit_annotation=f' Units: {plot_units} '
+        unit_annotation=f' ({plot_units}) '
+
+    plot_coords = get_coords(tvars[0])
+    if plot_coords is None:
+        plot_coords = 'Unknown'
+        coord_annotation=""
+    else:
+        coord_annotation=f"-{plot_coords}"
+
+    full_annotation=coord_annotation+unit_annotation
+
+    xy_plane.set_xlabel('X' + full_annotation)
+    xy_plane.set_ylabel('Y' + full_annotation)
+
+    xz_plane.set_xlabel('X' + full_annotation)
+    xz_plane.set_ylabel('Z' + full_annotation)
+
+    yz_plane.set_xlabel('Y' + full_annotation)
+    yz_plane.set_ylabel('Z' + full_annotation)
 
     for index,tvar in enumerate(tvars):
         units=get_units(tvar)
@@ -252,6 +283,91 @@ def tplotxy3(tvars,
             except IndexError:
                 continue
 
+    if plot_units.lower() == 'km':
+        extras_conv = km_in_re
+    else:
+        extras_conv = 1.0
+
+    # bow shock
+    bs_color = 'black'
+    bs_linestyle = 'dotted'
+    bs_linewidth = 1
+    bs = bshock_2()
+    # XY plane, just plot
+    bs_x = bs[0]*extras_conv
+    bs_y = bs[1]*extras_conv
+    xy_plane.plot(bs_x, bs_y, color=bs_color, linestyle=bs_linestyle, linewidth=bs_linewidth)
+    # XZ plane, plot and add legend
+    this_line = xz_plane.plot(bs_x,bs_y, color=bs_color, linestyle=bs_linestyle, linewidth=bs_linewidth)
+    # YZ plane, TBD (what to show for head-on view?
+    # update legends as we did for the s/c traces
+    if legend_names is not None:
+        try:
+            if isinstance(this_line, list):
+                this_line[0].set_label("Bow Shock")
+            else:
+                this_line.set_label("Bow Shock")
+        except IndexError:
+            pass
+
+    # magnetopause
+    mp_color = 'black'
+    mp_linestyle ='dashed'
+    mp_linewidth = 1
+    mp = mpause_2()
+    # XY plane, just plot
+    mp_x = mp[0]*extras_conv
+    mp_y = mp[1]*extras_conv
+    xy_plane.plot(mp_x, mp_y, color=mp_color, linestyle=mp_linestyle, linewidth=mp_linewidth)
+    # XZ plane, plot and add legend
+    this_line = xz_plane.plot(mp_x,mp_y, color=mp_color, linestyle=mp_linestyle, linewidth=mp_linewidth)
+    # YZ plane, TBD (what to show for head-on view?
+    # update legends as we did for the s/c traces
+    if legend_names is not None:
+        try:
+            if isinstance(this_line, list):
+                this_line[0].set_label("Magnetopause")
+            else:
+                this_line.set_label("Magnetopause")
+        except IndexError:
+            pass
+
+    # neutral sheet
+
+    # This is time-dependent, so we'll just pick the midpoint of the first tplot variable
+    d=get_data(tvars[0])
+    mid_time = (d.times[-1] - d.times[0])/2.0
+    ns_x_re = -1.0*np.arange(0.0,375.0, 5.0)
+    times=np.zeros(len(ns_x_re))
+    times[:] = mid_time
+    ns_gsm_pos=np.zeros((len(ns_x_re),3))
+    ns_gsm_pos[:,0] = ns_x_re
+    ns = neutral_sheet(times, ns_gsm_pos, model="aen", sc2NS=False)
+    ns_gsm_pos[:,2] = ns
+    store_data('ns_gsm_pos', data={'x':times, 'y':ns_gsm_pos})
+    set_coords('ns_gsm_pos','GSM')
+    set_units('ns_gsm_pos', 're')
+    cotrans('ns_gsm_pos', 'ns_gse_pos',coord_in='gsm', coord_out='gse')
+    gse_dat = get_data('ns_gse_pos')
+    ns_z = gse_dat.y[:,2]*extras_conv
+    ns_x = ns_x_re * extras_conv
+    ns_color = 'black'
+    ns_linestyle ='dashdot'
+    ns_linewidth = 1
+
+    this_line = xz_plane.plot(ns_x,ns_z, color=ns_color, linestyle=ns_linestyle, linewidth=ns_linewidth)
+    # YZ plane, TBD (what to show for head-on view?
+    # update legends as we did for the s/c traces
+    if legend_names is not None:
+        try:
+            if isinstance(this_line, list):
+                this_line[0].set_label("Neutral Sheet, AEN model (XZ panel only)")
+            else:
+                this_line.set_label("Neutral Sheet, AEN model (XZ panel only)")
+        except IndexError:
+            pass
+
+    # Adjust X, Y, Z ranges
     if center_origin:
         x_halfwidth = np.nanmax(np.abs([max_x, min_x]))
         y_halfwidth = np.nanmax(np.abs([max_y, min_y]))

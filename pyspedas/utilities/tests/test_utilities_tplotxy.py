@@ -43,108 +43,107 @@ if not os.path.exists(save_dir):
 default_trange = ["2020-01-01", "2020-01-02"]
 global_display=True
 
-
 class PlotTestCases(unittest.TestCase):
     """Test XY plot functions."""
-
-    def test_themis_orbit_km(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+    def setUp(self):
         themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', title='THEMIS orbit plot', reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re.png')
 
-
-    def test_themis_orbit_km_legends(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends.png')
-
-    def test_themis_orbit_km_badlegends(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-B'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_badlegends.png')
-
-    def test_themis_orbit_km_xz(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', reverse_x=True, reverse_y=False, plane='xz', plot_units='re', display=global_display, save_png='orbits_thm_art_xz_re.png')
-
-    def test_themis_orbit_km_yz(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', reverse_x=False, reverse_y=False, plane='yz', plot_units='re', display=global_display, save_png='orbits_thm_art_yz_re.png')
 
     def test_themis_orbit_re(self):
-        # Test a simple THEMIS orbit plot in the XY plane,plot units in km
-        themis.state(trange=default_trange, probe=['a','b','c','d','e'])
-        tplotxy('th?_pos_gse', reverse_x=True, reverse_y=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km.png')
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        tplotxy('th?_pos_gse', title='THEMIS+ARTEMIS orbit plot 2020-01-01, units re', reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re.png')
+
+
+    def test_themis_orbit_re_legends(self):
+        # Test a simple THEMIS orbit plot in the XY plane with legends, plot units in re
+        tplotxy('th?_pos_gse',title='THEMIS+ARTEMIS orbit plot 2020-01-01 with legends', legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends.png')
+
+    def test_themis_orbit_re_badlegends(self):
+        # Test a simple THEMIS orbit plot in the XY plane with bad legends, plot units in re
+        tplotxy('th?_pos_gse', title='THEMIS+ARTEMIS orbit plot 2020-01-01 with bad legends',legend_names=['THEMIS-A','THEMIS-B'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_badlegends.png')
+
+    def test_themis_orbit_re_xz(self):
+        # Test a simple THEMIS orbit plot in the XZ plane, plot units in re
+         tplotxy('th?_pos_gse', title='THEMIS+ARTEMIS orbit plot 2020-01-01, XZ plane, units re',reverse_x=True, reverse_y=False, plane='xz', plot_units='re', display=global_display, save_png='orbits_thm_art_xz_re.png')
+
+    def test_themis_orbit_re_yz(self):
+        # Test a THEMIS orbit plot in the YZ plane, no X reversal, plot units in re
+         tplotxy('th?_pos_gse', title='THEMIS+ARTEMIS orbit plot 2020-01-01, YZ plane, no reversal, units km', reverse_x=False, reverse_y=False, plane='yz', plot_units='re', display=global_display, save_png='orbits_thm_art_yz_noreverse_re.png')
+
+    def test_themis_orbit_km(self):
+        # Test a simple THEMIS-ARTEMIS orbit plot in the XY plane,plot units in km
+        tplotxy('th?_pos_gse', title='THEMIS+ARTEMIS orbit plot 2020-01-01, units km',reverse_x=True, reverse_y=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km.png')
 
     def test_themis_orbit_inner_mixedunits_km(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units km, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
         tkm2re('the_pos_gse', km=False)
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse_re'], reverse_x=True, reverse_y=True, plot_units='km', display=global_display, save_png='orbits_thm_mixed_km.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse_re'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, no reversal, units km', reverse_x=True, reverse_y=True, plot_units='km', display=global_display, save_png='orbits_thm_mixed_km.png')
 
     def test_themis_orbit_inner_mixedunits_re(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
         tkm2re('the_pos_gse', km=False)
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse_re'], reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_mixed_re.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse_re'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, no reversal, units re', reverse_x=True, reverse_y=True, plot_units='re', display=global_display, save_png='orbits_thm_mixed_re.png')
 
     def test_themis_orbit_inner_linestyles(self):
-        # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', linestyles=['solid','dotted','dashdot'], display=global_display, save_png='orbits_thm_linestyles.png')
+        # Test a simple THEMIS orbit plot in the XY plane, inner probes, linestyles, plot units re, mixed input units
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, linestyle, units re', legend_names=['THEMIS-A','THEMIS-B','THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', linestyles=['solid','dotted','dashdot'], display=global_display, save_png='orbits_thm_linestyles.png')
 
     def test_themis_orbit_inner_markers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], legend_names=['THEMIS-A','THEMIS-B','THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, markers, units re', legend_names=['THEMIS-A','THEMIS-B','THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
 
     def test_themis_orbit_inner_startendmarkers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', startmarkers=['x','.','+'], endmarkers=['x','.','+'], markers=None, display=global_display, save_png='orbits_thm_startendmarkers.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, no reversal, startend markers units re', reverse_x=True, reverse_y=True, plot_units='re', startmarkers=['x','.','+'], endmarkers=['x','.','+'], markers=None, display=global_display, save_png='orbits_thm_startendmarkers.png')
 
     def test_themis_orbit_inner_startmarkers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', startmarkers=['x','.','+'], markers=None, display=global_display, save_png='orbits_thm_startmarkers.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], title='THEMIS inner orbit plot 2020-01-01, YZ plane, start markers, units re',reverse_x=True, reverse_y=True, plot_units='re', startmarkers=['x','.','+'], markers=None, display=global_display, save_png='orbits_thm_startmarkers.png')
 
     def test_themis_orbit_inner_linewidths(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', linewidths=[1,2,3], display=global_display, save_png='orbits_thm_linewidths.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, linewidths, units re', reverse_x=True, reverse_y=True, plot_units='re', linewidths=[1,2,3], display=global_display, save_png='orbits_thm_linewidths.png')
 
     def test_themis_orbit_inner_showearth_xy(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], reverse_x=True, reverse_y=True, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_xy.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], title='THEMIS inner orbit plot 2020-01-01, XY plane, input km, units re',reverse_x=True, reverse_y=True, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_xy.png')
 
     def test_themis_orbit_inner_showearth_xz(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], plane='xz', reverse_x=True, reverse_y=False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_xz.png')
+         tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, XZ plane, input km, units re', plane='xz', reverse_x=True, reverse_y=False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_xz.png')
 
 
     def test_themis_orbit_inner_showearth_yz(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], plane='yz', reverse_x=True, reverse_y=False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_yz.png')
+         tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot, YZ plane, no reversal, units re', plane='yz', plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_yz.png')
 
     def test_themis_orbit_inner_showearth_yz_nocenter(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        themis.state(trange=default_trange, probe=['a','d', 'e'])
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'], plane='yz', center_origin = False, reverse_x=True, reverse_y=False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_yz_nocenter.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, no reversal, no centering, units re', plane='yz', center_origin = False, plot_units='re', show_centerbody=True, display=global_display, save_png='orbits_thm_showearth_yz_nocenter.png')
 
-    def test_themis_orbit_km_legends_3planes(self):
+    def test_themis_orbit_re_legends_3planes(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','d','e'])
-        tplotxy3('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_3planes.png')
+         tplotxy3('tha_pos_gse thd_pos_gse the_pos_gse',title='THEMIS inner orbit plot 2020-01-01, all planes, sun left, units re', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_re_legends_3planes.png')
 
-    def test_themis_orbit_km_legends_3planes_sunright(self):
+    def test_themis_art_orbit_re_legends_3planes(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-        themis.state(trange=default_trange, probe=['a','d','e'])
-        tplotxy3('th?_pos_gse', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_3planes_sunright.png')
+         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, sun left, units re', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_3planes.png')
+
+    def test_themis_orbit_km_legends_3planes_sunright_km(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        tplotxy3('tha_pos_gse thd_pos_gse the_pos_gse', title='THEMIS inner orbit plot 2020-01-01, all planes, sun right, units km',legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], plot_units='km', display=global_display, save_png='orbits_thm_re_legends_3planes_sunright_km.png')
+
+    def test_themis_art_orbit_re_legends_extras_3planes(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units re', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True,  reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_extras_3planes.png')
+
+    def test_themis_art_orbit_km_legends_extras_3planes(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units km', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True,  reverse_x=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km_legends_extras_3planes.png')
+
+    def test_themis_art_orbit_km_legends_extras_sunright_3planes(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units km', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km_legends_extras_sunright_3planes.png')
 
 if __name__ == "__main__":
     unittest.main()
