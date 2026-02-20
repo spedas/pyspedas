@@ -3,6 +3,7 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
+from .save_plot import save_plot
 
 def tplotxy(tvars,
             plane='xy',
@@ -309,30 +310,7 @@ def tplotxy(tvars,
 
     fig.canvas.draw()
 
-    if save_png is not None and save_png != '':
-        if not save_png.endswith('.png'):
-            save_png += '.png'
-        plt.savefig(save_png, dpi=dpi)
-
-    if save_eps is not None and save_eps != '':
-        if not save_eps.endswith('.eps'):
-            save_eps += '.eps'
-        plt.savefig(save_eps, dpi=dpi)
-
-    if save_svg is not None and save_svg != '':
-        if not save_svg.endswith('.svg'):
-            save_svg += '.svg'
-        plt.savefig(save_svg, dpi=dpi)
-
-    if save_pdf is not None and save_pdf != '':
-        if not save_pdf.endswith('.pdf'):
-            save_pdf += '.pdf'
-        plt.savefig(save_pdf, dpi=dpi)
-
-    if save_jpeg is not None and save_jpeg != '':
-        if not save_jpeg.endswith('.jpeg'):
-            save_jpeg += '.jpeg'
-        plt.savefig(save_jpeg, dpi=dpi)
+    save_plot(save_png=save_png, save_eps=save_eps, save_jpeg=save_jpeg, save_pdf=save_pdf, save_svg=save_svg, dpi=dpi)
 
     if display:
         plt.show()
