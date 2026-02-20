@@ -162,7 +162,28 @@ def tplotxy(tvars,
         plot_units = 'None'
         unit_annotation=""
     else:
-        unit_annotation=f' Units: {plot_units} '
+        unit_annotation=f' ({plot_units})'
+
+    plot_coords = get_coords(tvars[0])
+    if plot_coords is None:
+        plot_coords = 'Unknown'
+        coord_annotation=""
+    else:
+        coord_annotation=f"-{plot_coords}"
+
+    full_annotation=coord_annotation+unit_annotation
+
+    if plane=='xy':
+        axis.set_xlabel('X' + full_annotation)
+        axis.set_ylabel('Y' + full_annotation)
+
+    elif plane=='xz':
+        axis.set_xlabel('X' + full_annotation)
+        axis.set_ylabel('Z' + full_annotation)
+
+    elif plane=='yz':
+        axis.set_xlabel('Y' + full_annotation)
+        axis.set_ylabel('Z' + full_annotation)
 
     for index,tvar in enumerate(tvars):
         units=get_units(tvar)
@@ -191,21 +212,14 @@ def tplotxy(tvars,
         if plane=='xy':
             proj_x = d.y[:,0] * unit_conv
             proj_y = d.y[:,1] * unit_conv
-            axis.set_xlabel('X' + unit_annotation)
-            axis.set_ylabel('Y' + unit_annotation)
 
         elif plane=='xz':
             proj_x = d.y[:,0] * unit_conv
             proj_y = d.y[:,2] * unit_conv
-            axis.set_xlabel('X' + unit_annotation)
-            axis.set_ylabel('Z' + unit_annotation)
 
         elif plane=='yz':
             proj_x = d.y[:,1] * unit_conv
             proj_y = d.y[:,2] * unit_conv
-            axis.set_xlabel('Y' + unit_annotation)
-            axis.set_ylabel('Z' + unit_annotation)
-
 
 
         local_xmax = np.nanmax(proj_x)
