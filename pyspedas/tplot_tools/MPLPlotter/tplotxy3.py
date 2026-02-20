@@ -1,12 +1,281 @@
 from pyspedas.tplot_tools import tplot_wildcard_expand, get_data, get_coords, get_units, set_coords, set_units, store_data
-from pyspedas.utilities.bshock_2 import bshock_2
-from pyspedas.utilities.mpause_2 import mpause_2
-from pyspedas.analysis.neutral_sheet import neutral_sheet
-from pyspedas.cotrans_tools.cotrans import cotrans
 import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
+
+km_in_re = 6371.2
+
+def tplotxy3_add_mpause(x,
+                        y,
+                        fig=None,
+                        legend_name=None,
+                        color='k',
+                        linestyle='solid',
+                        linewidth=1,
+                        units='re',
+                        display=False,
+                        save_png='',
+                        save_eps='',
+                        save_jpeg='',
+                        save_pdf='',
+                        save_svg='',
+                        dpi=300,
+                        ):
+    """
+    Add a magnetopause boundary or similar structure to a tplotxy3 figure
+
+    This utility adds a magnetopause, bow shock, or similar structure to the XZ and XY planes of a tplotxy3 figure.
+    The assumptions are that the structure is rotationally symmetric about the X axis, and the boundary
+    is given by arrays of X and Y coordinates.
+
+    The plot is assumed to be in units of either km or re.
+
+    The plot X/Y/Z ranges will not be affected when the data is plotted.
+
+    Parameters
+    ----------
+    x: array of floats
+        The X coordinates of the boundary, presumably in GSE or GSM coordinates.
+    y: array of floats
+        The Y coordinates of the boundary, presumably in GSE or GSM coordinates.
+    fig:
+        The matplotlib figure object containing the panels to be updated.
+    legend_name: str
+        The string to add to the legend.
+    color: str
+        The color of the line to be plotted
+    linestyle: str
+        The style of the line to be plotted (e.g. 'solid', 'dotted', etc)
+    linewidth: int
+        The width of the line to be plotted
+    units: str
+        The units of the boundary position (default: Re)
+    display: bool
+        If True, display the figure after updating. Default: False
+    save_png : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in PNG format.
+    save_eps : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in EPS format.
+    save_jpeg : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in JPEG format.
+    save_pdf : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in PDF format.
+    save_svg : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in SVG format.
+    dpi: float, optional
+        The resolution of the plot in dots per inch
+
+    Returns
+    -------
+    None
+    """
+
+    if fig is None:
+        logging.error("No figure provided")
+        return
+
+    # Get axes and properties stored in the fig object
+
+    xy_plane = fig.xy_plane
+    xz_plane = fig.xz_plane
+    plot_units = fig.plot_units
+
+    unit_conv = 1.0
+
+    if units.lower() != plot_units.lower():
+        if units.lower() == 're':
+            unit_conv = km_in_re
+        else:
+            unit_conv = 1.0/km_in_re
+
+    # Ensure that the axes don't autoscale when adding the new trace
+    xy_plane.autoscale(False, axis='both')
+    xz_plane.autoscale(False, axis='both')
+
+    # Plot the trace on each plane
+
+    xy_plane.plot(x*unit_conv, y*unit_conv, color=color, linestyle=linestyle, linewidth=linewidth)
+    this_line = xz_plane.plot(x*unit_conv, y*unit_conv, color=color, linestyle=linestyle, linewidth=linewidth)
+
+    if legend_name is not None and legend_name != '':
+        try:
+            if isinstance(this_line, list):
+                this_line[0].set_label(legend_name)
+            else:
+                this_line.set_label(legend_name)
+        except IndexError:
+            pass
+        handles, labels = xz_plane.get_legend_handles_labels()
+        legend = fig.legend(handles, labels, loc="upper right", markerfirst=True)
+        fig.canvas.draw()
+
+        if save_png is not None and save_png != '':
+            if not save_png.endswith('.png'):
+                save_png += '.png'
+            plt.savefig(save_png, dpi=dpi)
+
+        if save_eps is not None and save_eps != '':
+            if not save_eps.endswith('.eps'):
+                save_eps += '.eps'
+            plt.savefig(save_eps, dpi=dpi)
+
+        if save_svg is not None and save_svg != '':
+            if not save_svg.endswith('.svg'):
+                save_svg += '.svg'
+            plt.savefig(save_svg, dpi=dpi)
+
+        if save_pdf is not None and save_pdf != '':
+            if not save_pdf.endswith('.pdf'):
+                save_pdf += '.pdf'
+            plt.savefig(save_pdf, dpi=dpi)
+
+        if save_jpeg is not None and save_jpeg != '':
+            if not save_jpeg.endswith('.jpeg'):
+                save_jpeg += '.jpeg'
+            plt.savefig(save_jpeg, dpi=dpi)
+
+        if display:
+            plt.show()
+
+def tplotxy3_add_neutral_sheet( x,
+                                y,
+                                fig=None,
+                                legend_name=None,
+                                color='k',
+                                linestyle='solid',
+                                linewidth=1,
+                                units='re',
+                                display=False,
+                                save_png='',
+                                save_eps='',
+                                save_jpeg='',
+                                save_pdf='',
+                                save_svg='',
+                                dpi=300,
+                                ):
+    """
+    Add a neutral or similar structure to a tplotxy3 figure
+
+    This utility adds a neutral sheet or similar structure to the XZ plane of a tplotxy3 figure.
+    The boundary is given by arrays of X and Z coordinates.
+
+    The plot is assumed to be in units of either km or re.
+
+    The plot X/Y/Z ranges will not be affected when the data is plotted.
+
+    Parameters
+    ----------
+    x: array of floats
+        The X coordinates of the boundary, presumably in GSE or GSM coordinates.
+    y: array of floats
+        The Y coordinates of the boundary, presumably in GSE or GSM coordinates.
+    fig:
+        The matplotlib figure object containing the panels to be updated.
+    legend_name: str
+        The string to add to the legend.
+    color: str
+        The color of the line to be plotted
+    linestyle: str
+        The style of the line to be plotted (e.g. 'solid', 'dotted', etc)
+    linewidth: int
+        The width of the line to be plotted
+    units: str
+        The units of the boundary position (default: Re)
+    display: bool
+        If True, display the figure after updating. Default: False
+    save_png : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in PNG format.
+    save_eps : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in EPS format.
+    save_jpeg : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in JPEG format.
+    save_pdf : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in PDF format.
+    save_svg : str, optional
+        A full file name and path.
+        If this option is set, the plot will be automatically saved to the file name provided in SVG format.
+    dpi: float, optional
+        The resolution of the plot in dots per inch
+
+    Returns
+    -------
+    None
+    """
+
+    if fig is None:
+        logging.error("No figure provided")
+        return
+
+    # Get axes and properties stored in the fig object
+
+    xz_plane = fig.xz_plane
+    plot_units = fig.plot_units
+
+    unit_conv = 1.0
+
+    if units.lower() != plot_units.lower():
+        if units.lower() == 're':
+            unit_conv = km_in_re
+        else:
+            unit_conv = 1.0/km_in_re
+
+    # Ensure that the axes don't autoscale when adding the new trace
+    xz_plane.autoscale(False, axis='both')
+
+    # Plot the trace on each plane
+
+    this_line = xz_plane.plot(x*unit_conv, y*unit_conv, color=color, linestyle=linestyle, linewidth=linewidth)
+
+    if legend_name is not None and legend_name != '':
+        try:
+            if isinstance(this_line, list):
+                this_line[0].set_label(legend_name)
+            else:
+                this_line.set_label(legend_name)
+        except IndexError:
+            pass
+        handles, labels = xz_plane.get_legend_handles_labels()
+        legend = fig.legend(handles, labels, loc="upper right", markerfirst=True)
+        fig.canvas.draw()
+
+        if save_png is not None and save_png != '':
+            if not save_png.endswith('.png'):
+                save_png += '.png'
+            plt.savefig(save_png, dpi=dpi)
+
+        if save_eps is not None and save_eps != '':
+            if not save_eps.endswith('.eps'):
+                save_eps += '.eps'
+            plt.savefig(save_eps, dpi=dpi)
+
+        if save_svg is not None and save_svg != '':
+            if not save_svg.endswith('.svg'):
+                save_svg += '.svg'
+            plt.savefig(save_svg, dpi=dpi)
+
+        if save_pdf is not None and save_pdf != '':
+            if not save_pdf.endswith('.pdf'):
+                save_pdf += '.pdf'
+            plt.savefig(save_pdf, dpi=dpi)
+
+        if save_jpeg is not None and save_jpeg != '':
+            if not save_jpeg.endswith('.jpeg'):
+                save_jpeg += '.jpeg'
+            plt.savefig(save_jpeg, dpi=dpi)
+
+        if display:
+            plt.show()
+
 
 def tplotxy3(tvars,
             center_origin=True,
@@ -22,12 +291,8 @@ def tplotxy3(tvars,
             markevery=10,
             markersize=5,
             legend_names=None,
-            legend_location='upper right',
             show_centerbody=True,
             centerbody_size_re=1.0,
-            plot_bow_shock=False,
-            plot_magnetopause=False,
-            plot_neutral_sheet=False,
             save_png='',
             save_eps='',
             save_jpeg='',
@@ -52,6 +317,10 @@ def tplotxy3(tvars,
         If True, reverse the x-axis of the plot (more positive values to the left).
         For plots in GSE-like coordinates, this puts the sun to the left instead of the right.
         It will also reverse the Y axis of the upper left (XY) plot.
+    plot_units: str
+        The units to use for the plot (default: 're').
+    title: str
+        The title to use for the plot.
     colors: list or tuple of strings
         Colors to use if multiple variables are plotted. Default: ('k', 'b', 'g', 'r', 'c', 'm', 'y').
         If number of variables exceeds number of colors, they will cycle.
@@ -73,18 +342,10 @@ def tplotxy3(tvars,
         size of the marker in points (default: 5)
     legend_names: list of str
         If set, labels to use in the plot legend.
-    legend_location: str
-        Placement of legend relative to the plot window.
     show_centerbody: bool
         If True, draw the central body at the origin
     centerbody_size_re: float
         The size in Re of the center body. Default: 1.0
-    plot_bow_shock: bool
-        If True, plot the bow shock location on each panel. Default: False
-    plot_magnetopause: bool
-        If True, plot the magnetopause boundary on each panel. Default: False
-    plot_neutral_sheet: bool
-        If True, plot the AEN neutral sheet boundary on the XZ panel. Default: False
     save_png : str, optional
         A full file name and path.
         If this option is set, the plot will be automatically saved to the file name provided in PNG format.
@@ -113,13 +374,13 @@ def tplotxy3(tvars,
 
     Returns
     -------
-    None
+    Matplotlib fig object
     """
 
     tvars = tplot_wildcard_expand(tvars)
     if len(tvars) < 1:
         logging.error("No matching variables found to plot")
-        return
+        return None
 
     # Get maximum range of each variable to set plot x/y range
     max_x = 0
@@ -160,10 +421,14 @@ def tplotxy3(tvars,
     yz_plane = axis[1,1]
     blank_plane = axis[0,1]
 
+    # Save the plottable axes in the fig object in case we need to modify the plot later
+    fig.xy_plane = xy_plane
+    fig.xz_plane = xz_plane
+    fig.yz_plane = yz_plane
+
     if title is not None and title != '':
         fig.suptitle(title)
 
-    km_in_re = 6371.2
     if plot_units is None:
         plot_units = get_units(tvars[0])
     if isinstance(plot_units, (list, np.ndarray)):
@@ -174,12 +439,15 @@ def tplotxy3(tvars,
     else:
         unit_annotation=f' ({plot_units}) '
 
+    fig.plot_units = plot_units
+
     plot_coords = get_coords(tvars[0])
     if plot_coords is None:
         plot_coords = 'Unknown'
         coord_annotation=""
     else:
         coord_annotation=f"-{plot_coords}"
+    fig.plot_coords = plot_coords
 
     full_annotation=coord_annotation+unit_annotation
 
@@ -288,84 +556,7 @@ def tplotxy3(tvars,
     else:
         extras_conv = 1.0
 
-    # bow shock
-    bs_color = 'black'
-    bs_linestyle = 'dotted'
-    bs_linewidth = 1
-    bs = bshock_2()
-    # XY plane, just plot
-    bs_x = bs[0]*extras_conv
-    bs_y = bs[1]*extras_conv
-    xy_plane.plot(bs_x, bs_y, color=bs_color, linestyle=bs_linestyle, linewidth=bs_linewidth)
-    # XZ plane, plot and add legend
-    this_line = xz_plane.plot(bs_x,bs_y, color=bs_color, linestyle=bs_linestyle, linewidth=bs_linewidth)
-    # YZ plane, TBD (what to show for head-on view?
-    # update legends as we did for the s/c traces
-    if legend_names is not None:
-        try:
-            if isinstance(this_line, list):
-                this_line[0].set_label("Bow Shock")
-            else:
-                this_line.set_label("Bow Shock")
-        except IndexError:
-            pass
 
-    # magnetopause
-    mp_color = 'black'
-    mp_linestyle ='dashed'
-    mp_linewidth = 1
-    mp = mpause_2()
-    # XY plane, just plot
-    mp_x = mp[0]*extras_conv
-    mp_y = mp[1]*extras_conv
-    xy_plane.plot(mp_x, mp_y, color=mp_color, linestyle=mp_linestyle, linewidth=mp_linewidth)
-    # XZ plane, plot and add legend
-    this_line = xz_plane.plot(mp_x,mp_y, color=mp_color, linestyle=mp_linestyle, linewidth=mp_linewidth)
-    # YZ plane, TBD (what to show for head-on view?
-    # update legends as we did for the s/c traces
-    if legend_names is not None:
-        try:
-            if isinstance(this_line, list):
-                this_line[0].set_label("Magnetopause")
-            else:
-                this_line.set_label("Magnetopause")
-        except IndexError:
-            pass
-
-    # neutral sheet
-
-    # This is time-dependent, so we'll just pick the midpoint of the first tplot variable
-    d=get_data(tvars[0])
-    mid_time = (d.times[-1] - d.times[0])/2.0
-    ns_x_re = -1.0*np.arange(0.0,375.0, 5.0)
-    times=np.zeros(len(ns_x_re))
-    times[:] = mid_time
-    ns_gsm_pos=np.zeros((len(ns_x_re),3))
-    ns_gsm_pos[:,0] = ns_x_re
-    ns = neutral_sheet(times, ns_gsm_pos, model="aen", sc2NS=False)
-    ns_gsm_pos[:,2] = ns
-    store_data('ns_gsm_pos', data={'x':times, 'y':ns_gsm_pos})
-    set_coords('ns_gsm_pos','GSM')
-    set_units('ns_gsm_pos', 're')
-    cotrans('ns_gsm_pos', 'ns_gse_pos',coord_in='gsm', coord_out='gse')
-    gse_dat = get_data('ns_gse_pos')
-    ns_z = gse_dat.y[:,2]*extras_conv
-    ns_x = ns_x_re * extras_conv
-    ns_color = 'black'
-    ns_linestyle ='dashdot'
-    ns_linewidth = 1
-
-    this_line = xz_plane.plot(ns_x,ns_z, color=ns_color, linestyle=ns_linestyle, linewidth=ns_linewidth)
-    # YZ plane, TBD (what to show for head-on view?
-    # update legends as we did for the s/c traces
-    if legend_names is not None:
-        try:
-            if isinstance(this_line, list):
-                this_line[0].set_label("Neutral Sheet, AEN model (XZ panel only)")
-            else:
-                this_line.set_label("Neutral Sheet, AEN model (XZ panel only)")
-        except IndexError:
-            pass
 
     # Adjust X, Y, Z ranges
     if center_origin:
@@ -470,5 +661,7 @@ def tplotxy3(tvars,
 
     if display:
         plt.show()
+
+    return fig
 
 

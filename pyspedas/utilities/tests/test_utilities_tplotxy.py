@@ -6,30 +6,19 @@ import numpy as np
 from pyspedas.projects import themis
 from pyspedas import (
     store_data,
-    options,
-    timespan,
-    tplot,
-    tplot_options,
-    degap,
-    del_data,
-    databar,
-    ylim,
-    xlim,
-    zlim,
-    time_double,
-    timebar,
-    highlight,
     get_data,
-    tplot_copy,
-    split_vec,
-    count_traces,
-    annotate,
-    is_pseudovariable,
+    set_coords,
+    set_units,
+    cotrans,
     tplotxy,
     tplotxy3,
+    tplotxy3_add_mpause,
+    tplotxy3_add_neutral_sheet,
     tkm2re,
 )
 from pyspedas.utilities.config_testing import TESTING_CONFIG
+from pyspedas import bshock_2, mpause_2
+from pyspedas.analysis.neutral_sheet import neutral_sheet
 
 # Whether to display plots during testing
 global_display = TESTING_CONFIG["global_display"]
@@ -41,12 +30,30 @@ if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 
 default_trange = ["2020-01-01", "2020-01-02"]
-global_display=True
+global_display=False
 
 class PlotTestCases(unittest.TestCase):
-    """Test XY plot functions."""
-    def setUp(self):
+    @classmethod
+    def setUpClass(cls):
         themis.state(trange=default_trange, probe=['a','b','c','d','e'])
+        cls.bs = bshock_2()
+        cls.mp = mpause_2()
+        # This is time-dependent, so we'll just pick the midpoint of the first tplot variable
+        d=get_data('tha_pos_gse')
+        mid_time = (d.times[-1] - d.times[0])/2.0
+        ns_x_re = -1.0*np.arange(0.0,375.0, 5.0)
+        times=np.zeros(len(ns_x_re))
+        times[:] = mid_time
+        ns_gsm_pos=np.zeros((len(ns_x_re),3))
+        ns_gsm_pos[:,0] = ns_x_re
+        ns = neutral_sheet(times, ns_gsm_pos, model="aen", sc2NS=False)
+        ns_gsm_pos[:,2] = ns
+        store_data('ns_gsm_pos', data={'x':times, 'y':ns_gsm_pos})
+        set_coords('ns_gsm_pos','GSM')
+        set_units('ns_gsm_pos', 're')
+        cotrans('ns_gsm_pos', 'ns_gse_pos',coord_in='gsm', coord_out='gse')
+        cls.gse_dat = get_data('ns_gse_pos')
+
 
 
     def test_themis_orbit_re(self):
@@ -90,7 +97,7 @@ class PlotTestCases(unittest.TestCase):
 
     def test_themis_orbit_inner_markers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
-        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, markers, units re', legend_names=['THEMIS-A','THEMIS-B','THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
+        tplotxy(['tha_pos_gse', 'thd_pos_gse', 'the_pos_gse'],title='THEMIS inner orbit plot 2020-01-01, YZ plane, markers, units re', legend_names=['THEMIS-A','THEMIS-D', 'THEMIS-E'], reverse_x=True, reverse_y=True, plot_units='re', markers=['x','.','+'], markevery=60, display=global_display, save_png='orbits_thm_markers.png')
 
     def test_themis_orbit_inner_startendmarkers(self):
         # Test a simple THEMIS orbit plot in the XY plane, inner probes, plot units re, mixed input units
@@ -135,15 +142,34 @@ class PlotTestCases(unittest.TestCase):
 
     def test_themis_art_orbit_re_legends_extras_3planes(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units re', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True,  reverse_x=True, plot_units='re', display=global_display, save_png='orbits_thm_art_re_legends_extras_3planes.png')
+        fig = tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units re', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=True, plot_units='re', display=False)
+        # Add bow shock to figure
+        tplotxy3_add_mpause(self.bs[0],self.bs[1],fig=fig,legend_name="Bow Shock",color='k',linestyle='dotted',linewidth=1,display=False)
+        # Add magnetopause to figure
+        tplotxy3_add_mpause(self.mp[0],self.mp[1],fig=fig,legend_name="Magnetopause",color='k',linestyle='dashed',linewidth=1,display=False)
+        # Add neutral sheet to figure
+        tplotxy3_add_neutral_sheet(self.gse_dat.y[:,0],self.gse_dat.y[:,2],fig=fig, legend_name="Neutral sheet",color='k',linestyle='dashdot',linewidth=1,display=global_display,save_png='orbits_thm_art_re_legends_extras_3planes.png')
+
+    def test_themis_art_orbit_re_legends_extras_sunright_3planes(self):
+        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
+        fig = tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun right, units re', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], reverse_x=False, plot_units='re', display=False)
+        # Add bow shock to figure
+        tplotxy3_add_mpause(self.bs[0],self.bs[1],fig=fig,legend_name="Bow Shock",color='k',linestyle='dotted',linewidth=1,display=False)
+        # Add magnetopause to figure
+        tplotxy3_add_mpause(self.mp[0],self.mp[1],fig=fig,legend_name="Magnetopause",color='k',linestyle='dashed',linewidth=1,display=False)
+        # Add neutral sheet to figure
+        tplotxy3_add_neutral_sheet(self.gse_dat.y[:,0],self.gse_dat.y[:,2],fig=fig, legend_name="Neutral sheet",color='k',linestyle='dashdot',linewidth=1,display=global_display,save_png='orbits_thm_art_re_legends_extras_sunright_3planes.png')
 
     def test_themis_art_orbit_km_legends_extras_3planes(self):
         # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units km', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True,  reverse_x=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km_legends_extras_3planes.png')
+        fig = tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units km', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'],reverse_x=True, plot_units='km', display=False)
+        # Add bow shock to figure
+        tplotxy3_add_mpause(self.bs[0],self.bs[1],fig=fig,legend_name="Bow Shock",color='k',linestyle='dotted',linewidth=1,display=False)
+        # Add magnetopause to figure
+        tplotxy3_add_mpause(self.mp[0],self.mp[1],fig=fig,legend_name="Magnetopause",color='k',linestyle='dashed',linewidth=1,display=False)
+        # Add neutral sheet to figure
+        tplotxy3_add_neutral_sheet(self.gse_dat.y[:,0],self.gse_dat.y[:,2],fig=fig, legend_name="Neutral sheet",color='k',linestyle='dashdot',linewidth=1,display=global_display,save_png='orbits_thm_art_km_legends_extras_sunright_3planes.png')
 
-    def test_themis_art_orbit_km_legends_extras_sunright_3planes(self):
-        # Test a simple THEMIS orbit plot in the XY plane, plot units in re
-         tplotxy3('th?_pos_gse',title='THEMIS_ARTEMIS orbit plot 2020-01-01, all planes, extras, sun left, units km', legend_names=['THEMIS-A','THEMIS-B', 'THEMIS-C', 'THEMIS-D', 'THEMIS-E'], plot_bow_shock=True, plot_magnetopause=True, plot_neutral_sheet=True, plot_units='km', display=global_display, save_png='orbits_thm_art_km_legends_extras_sunright_3planes.png')
 
 if __name__ == "__main__":
     unittest.main()
