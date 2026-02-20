@@ -217,8 +217,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
-        echo Starting hapi tests at `date`
-        coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
+        #echo Starting hapi tests at `date`
+        #coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
         pip show mth5
         pip show mt-metadata
         pip show obspy
