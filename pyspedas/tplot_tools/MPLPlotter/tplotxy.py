@@ -210,18 +210,34 @@ def tplotxy(tvars,
         elif plot_units.lower() != units.lower():
                 logging.warning(f"Input variable {tvar} has units {units.lower()}, unable to convert to plot_units {plot_units.lower}")
         d=get_data(tvar)
-        if plane=='xy':
-            proj_x = d.y[:,0] * unit_conv
-            proj_y = d.y[:,1] * unit_conv
+        ndim = len(d.y.shape)
+        if ndim == 2: # orbits, foot points, hodograms, etc
+            if plane=='xy':
+                proj_x = d.y[:,0] * unit_conv
+                proj_y = d.y[:,1] * unit_conv
 
-        elif plane=='xz':
-            proj_x = d.y[:,0] * unit_conv
-            proj_y = d.y[:,2] * unit_conv
+            elif plane=='xz':
+                proj_x = d.y[:,0] * unit_conv
+                proj_y = d.y[:,2] * unit_conv
 
-        elif plane=='yz':
-            proj_x = d.y[:,1] * unit_conv
-            proj_y = d.y[:,2] * unit_conv
+            elif plane=='yz':
+                proj_x = d.y[:,1] * unit_conv
+                proj_y = d.y[:,2] * unit_conv
+        elif ndim == 3: # multiple field line traces
+            if plane == 'xy':
+                proj_x = d.y[:,:, 0] * unit_conv
+                proj_y = d.y[:,:, 1] * unit_conv
 
+            elif plane == 'xz':
+                proj_x = d.y[:,:, 0] * unit_conv
+                proj_y = d.y[:,:, 2] * unit_conv
+
+            elif plane == 'yz':
+                proj_x = d.y[:,:, 1] * unit_conv
+                proj_y = d.y[:,:, 2] * unit_conv
+        else:
+            logging.error(f"Input variable {tvar} with {ndim} dimensions is not supported")
+            return None
 
         local_xmax = np.nanmax(proj_x)
         local_ymax = np.nanmax(proj_y)

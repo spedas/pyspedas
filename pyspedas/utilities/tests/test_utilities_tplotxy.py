@@ -15,6 +15,8 @@ from pyspedas import (
     tplotxy3_add_mpause,
     tplotxy3_add_neutral_sheet,
     tkm2re,
+    tplot_restore,
+    tplot_names,
 )
 from pyspedas.utilities.config_testing import TESTING_CONFIG
 from pyspedas import bshock_2, mpause_2
@@ -53,6 +55,9 @@ class PlotTestCases(unittest.TestCase):
         set_units('ns_gsm_pos', 're')
         cotrans('ns_gsm_pos', 'ns_gse_pos',coord_in='gsm', coord_out='gse')
         cls.gse_dat = get_data('ns_gse_pos')
+
+        tplot_restore('/tmp/ttrace_iono_t89.tplot')
+        tplot_names()
 
 
 
@@ -170,6 +175,17 @@ class PlotTestCases(unittest.TestCase):
         # Add neutral sheet to figure
         tplotxy3_add_neutral_sheet(self.gse_dat.y[:,0],self.gse_dat.y[:,2],fig=fig, legend_name="Neutral sheet",color='k',linestyle='dashdot',linewidth=1,display=global_display,save_png='orbits_thm_art_km_legends_extras_sunright_3planes.png')
 
+    def test_plot_idl_traces(self):
+        fig=tplotxy('tha_iono_t89_trace',display=global_display, plane='xy',plot_units='km',legend_names=['tha_t89_iono'],save_jpeg='flines_tha_t89_xy.jpeg')
+        fig=tplotxy('tha_iono_t89_trace',display=global_display, plane='xz',plot_units='km',legend_names=['tha_t89_iono'],save_eps='flines_tha_t89_xy.eps')
+        fig=tplotxy('tha_iono_t89_trace',display=global_display, plane='yz',plot_units='km',legend_names=['tha_t89_iono'],save_pdf='flines_tha_t89_yz.pdf')
+        fig=tplotxy('ifoot_t89',display=global_display, plane='xy',plot_units='km',legend_names=['ifoot_t89'],save_svg='flines_ifoot_t89_xy.svg')
+        fig=tplotxy('ifoot_t89',display=global_display, plane='xz',plot_units='km',legend_names=['ifoot_t89'],save_png='flines_ifoot_t89_xz.png')
+        fig=tplotxy('ifoot_t89',display=global_display, plane='yz',plot_units='km',legend_names=['ifoot_t89'],save_png='flines_ifoot_t89_yz.png')
+
+    def test_plot_idl_traces_3panels(self):
+        fig=tplotxy3('tha_iono_t89_trace',display=global_display, plot_units='km',legend_names=['tha_t89_iono'],save_png='flines_tha_t89_3panel.png')
+        fig=tplotxy3('ifoot_t89',display=global_display,plot_units='km',legend_names=['ifoot_t89'],save_png='flines_ifoot_t89_3panel.png')
 
 if __name__ == "__main__":
     unittest.main()

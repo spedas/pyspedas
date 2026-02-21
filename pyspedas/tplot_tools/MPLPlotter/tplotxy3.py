@@ -439,9 +439,19 @@ def tplotxy3(tvars,
                 logging.warning(f"Input variable {tvar} has units {units.lower()}, unable to convert to plot_units {plot_units.lower}")
         d=get_data(tvar)
 
-        proj_x = d.y[:,0] * unit_conv
-        proj_y = d.y[:,1] * unit_conv
-        proj_z = d.y[:,2] * unit_conv
+        ndims = len(d.y.shape)
+        if ndims == 2: # orbits, hodograms, etc
+            proj_x = d.y[:,0] * unit_conv
+            proj_y = d.y[:,1] * unit_conv
+            proj_z = d.y[:,2] * unit_conv
+        elif ndims == 3: # multiple field line traces
+            proj_x = d.y[:,:,0] * unit_conv
+            proj_y = d.y[:,:,1] * unit_conv
+            proj_z = d.y[:,:,2] * unit_conv
+        else:
+            logging.error(f"Input variable {tvar} with {ndims} dimensions is not supported")
+            return None
+
 
         local_xmax = np.nanmax(proj_x)
         local_ymax = np.nanmax(proj_y)
@@ -504,13 +514,6 @@ def tplotxy3(tvars,
                     this_line.set_label(legend_names[index])
             except IndexError:
                 continue
-
-    if plot_units.lower() == 'km':
-        extras_conv = km_in_re
-    else:
-        extras_conv = 1.0
-
-
 
     # Adjust X, Y, Z ranges
     if center_origin:
