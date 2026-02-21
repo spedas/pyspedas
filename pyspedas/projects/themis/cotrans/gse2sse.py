@@ -110,9 +110,10 @@ def gse2sse(name_in: str, name_out: str, isssetogse: bool = False,
     # SSE Y-axis: ecliptic north unit vector (0,0,1) cross SSE-X
     ecliptic_north = np.repeat(np.array([[0, 0, 1]]), sun_pos_dim[0], axis=0)
     sse_y = tcrossp(ecliptic_north,sse_x, return_data=True)
+    # Bug fix...ensure that sse_y is normalized!
+    sse_y = tnormalize(sse_y, return_data=True)
     # SSE Z-axis: SSE-X cross SSE-Y (not necessarily ecliptic north)
     sse_z = tcrossp(sse_x, sse_y, return_data=True)
-
     # Make rotation matrix from basis vectors, store in tplot variable
 
     out_data = np.zeros((sun_pos_dim[0], 3, 3))
