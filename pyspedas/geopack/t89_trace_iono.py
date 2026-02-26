@@ -1,70 +1,136 @@
 import numpy as np
 from scipy.integrate import RK45
 from geopack import geopack, t89
+import logging
+from pyspedas import get_data, store_data, get_coords, set_coords, get_units, set_units, time_string
 
-def trace_to_iono(f, pos_init, max_distance=50.0, dt=1.0, south=False):
+import numpy as np
+from scipy.integrate import solve_ivp
+
+R_E_KM = 6371.2
+#R_IONO_RE = 1.0 + 100.0 / R_E_KM  # 1 Re + 100 km
+R_IONO_RE = 6468.4 / R_E_KM
+
+def trace_to_iono_solveivp(f_dir, pos_init, *, max_s=100.0, max_step=0.05,
+                          r_iono=R_IONO_RE, rtol=1e-6, atol=1e-9):
     """
-    Trace the magnetic field line using RK45 until the ionosphere (defined as 1.1 earth radii) is reached
-
-    Parameters:
-    - f: Function that returns the normalized magnetic field direction.
-    - pos_init: Initial position [x, y, z].
-    - max_distance: Maximum distance to trace before stopping.
-    - dt: Initial time step for RK45.
-
-    Returns:
-    - positions: List of positions along the traced field line.
+    Trace using dx/ds = f_dir(s, x), where f_dir returns a *direction* (unit-ish vector).
+    s is interpreted as distance along curve in Re.
     """
 
-    # Initialize the RK45 integrator
-    # atol = .0008 Re corresponds to an error tolerance of about 5 km
-    # debug: set dt to np.inf for now to see what happens
-    dt = 0.05
-    integrator = RK45(f, 0, pos_init, 10.0, atol=.0008, rtol=2.0e-10, max_step=dt)
+    pos_init = np.asarray(pos_init, dtype=float)
 
-    #integrator.direction = -1.0
+    def hit_iono(s, y):
+        # root when ||y|| - r_iono = 0
+        return np.linalg.norm(y) - r_iono
 
-    # Store the initial position
-    positions = [pos_init]
-    radius_last=100.0
-    while integrator.t < max_distance:
-        # Integrate one step
-        integrator.step()
+    hit_iono.terminal = True
+    hit_iono.direction = -1.0  # radius decreasing (inward) toward ionosphere
 
-        # Get the current position
-        pos_current = integrator.y
+    sol = solve_ivp(
+        fun=f_dir,
+        t_span=(0.0, max_s),
+        y0=pos_init,
+        method="RK45",
+        max_step=max_step,
+        rtol=rtol,
+        atol=atol,
+        events=[hit_iono],
+        dense_output=True,
+    )
 
-        radius = np.linalg.norm(pos_current)
+    # Build Nx3 array of points
+    pts = sol.y.T  # (N,3)
 
-        # Store the current position
-        positions.append(pos_current)
-        print(pos_current, radius)
-        radius_last=radius
+    # If event fired, append the interpolated event point as the last point
+    if sol.t_events[0].size > 0:
+        s_event = sol.t_events[0][0]
+        y_event = sol.sol(s_event)
+        # Replace last point with event point (or append, your choice)
+        pts = np.vstack([pts, y_event])
 
-        # Check if we've reached the ionosphere (1 Re plus 100 km)
-        if radius < 1.015696:
-            # We're done
-            # Use the last two (or three?) points to refine the foot point, then replace last position with foot point
-            break
+    return pts, sol
 
-
-    return np.array(positions)
-
-def trace_iono_89(time, startpos, iopt=3.0, south=False):
+def trace_iono_89(time, startpos, iopt=3.0, km=True, south=False):
     ps = geopack.recalc(time)
-    if south:
-        direction=-1.0
+    direction = -1.0 if south else 1.0
+
+    startpos = np.asarray(startpos, dtype=float)
+    if km:
+        startpos = startpos / R_E_KM  # to Re
+
+    def t89_dir(s, pos):
+        b_igrf = np.array(geopack.igrf_gsm(pos[0], pos[1], pos[2]), dtype=float)
+        b_t89  = np.array(t89.t89(iopt, ps, pos[0], pos[1], pos[2]), dtype=float)
+        b = b_igrf + b_t89
+
+        bnorm = np.linalg.norm(b)
+        if not np.isfinite(bnorm) or bnorm == 0.0:
+            # stop integration gracefully by returning zeros
+            return np.zeros(3)
+        #print(s, pos, b, direction*(b/bnorm))
+        return direction * (b / bnorm)
+
+    # started with max_step 0.05, 311 points, foot point distance 2.818, max distance 105
+    # 0.1, 157 points, foot point distance 2.818
+    # 0.5, 38 points, foot point distance 2.818
+    trace_points, sol = trace_to_iono_solveivp(
+        t89_dir, startpos,
+        max_s=200.0,
+        max_step=0.1,
+        r_iono=R_IONO_RE,
+        rtol=1e-6,
+        atol=1e-9,
+    )
+
+    foot_point = trace_points[-1] if len(trace_points) else None
+    if km:
+        foot_point = foot_point*R_E_KM
+        trace_points = trace_points*R_E_KM
+        #sol = sol*R_E_KM
+    return trace_points, foot_point, sol
+
+def ttrace2iono_89(tvar, foot_name, trace_name, iopt=3.0, km=True, south=False):
+    coords=get_coords(tvar)
+    units=get_units(tvar)
+    if coords != 'gsm':
+        logging.warning(f"ttrace2iono_89: input variable has coords {coords}, must transform to GSM first")
+
+    data = get_data(tvar)
+    if km:
+        startpos = data.y/R_E_KM
     else:
-        direction=1.0
+        startpos=data.y
 
-    def t89_closure(t,pos):
-        b_igrf = geopack.igrf_gsm(pos[0],pos[1],pos[2])
-        b_t89 = t89.t89(iopt,ps, pos[0],pos[1],pos[2])
-        b = np.array(b_igrf)+np.array(b_t89)
-        nb = b/np.linalg.norm(b)
-        #print(t,pos,b, nb)
-        return direction*nb
-    trace_points = trace_to_iono(t89_closure,pos_init=startpos,max_distance=100.0,dt=0.05, south=south)
-    foot_point = trace_points[-1]
-    print(foot_point)
+    npts = len(data.times)
+    all_foot_points = np.zeros((npts, 3))
+    max_trace_points = 1
+    ragged_list = []
+    for i,time in enumerate(data.times):
+        #print(f"Tracing from point {i} at {startpos[i,:]}")
+        if (i> 0) and (i % 100 == 0):
+            print(f"Traced {i} points so far, current trace time {time_string(time)}")
+        trace_points, foot, sol = trace_iono_89(time, startpos[i,:], iopt=iopt, km=False, south=south)
+        if km:
+            trace_points = trace_points*R_E_KM
+            foot = foot*R_E_KM
+        max_trace_points = np.max((max_trace_points, len(trace_points)))
+        all_foot_points[i,:] = foot
+        ragged_list.append(trace_points)
+        #print(f"Traced {len(trace_points)} points to foot point {foot}")
 
+    # Initialize final trace point array to all-nan
+    all_trace_points = np.zeros((npts, max_trace_points, 3))
+    all_trace_points[:,:,:] = np.nan
+    print(f"Max trace points: {max_trace_points}")
+    for i,thistrace in enumerate(ragged_list):
+        n_trace_points = thistrace.shape[0]
+        all_trace_points[i,0:n_trace_points,:] = thistrace
+
+    # Create output tplot variables
+    store_data(foot_name, data={'x':data.times, 'y':all_foot_points})
+    set_coords(foot_name, 'GSM')
+    set_units(foot_name, 'km')
+    store_data(trace_name, data={'x':data.times, 'y':all_trace_points})
+    set_coords(trace_name, 'GSM')
+    set_units(trace_name, 'km')
