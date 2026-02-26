@@ -161,17 +161,17 @@ class LoadTestCases(unittest.TestCase):
 
     def test_t89_equ_n(self):
         trace_equator_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3
+            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3, km=False,
         )
 
     def test_t89_equ_s(self):
         trace_equator_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3
+            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3, km=False,
         )
 
     def test_t89_iono_n_n(self):
         trace_iono_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3
+            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3, km=False,
         )
 
     def test_t89_iono_n_s(self):
@@ -179,12 +179,12 @@ class LoadTestCases(unittest.TestCase):
             time_double("2007-03-23/00:00:00"),
             np.array([-2.0, 0.0, 1.0]),
             iopt=3,
-            south=True,
+            south=True, km=False,
         )
 
     def test_t89_iono_s_n(self):
         trace_iono_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3
+            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3, km=False,
         )
 
     def test_t89_iono_s_s(self):
@@ -192,7 +192,7 @@ class LoadTestCases(unittest.TestCase):
             time_double("2007-03-23/00:00:00"),
             np.array([-2.0, 0.0, -1.0]),
             iopt=3,
-            south=True,
+            south=True, km=False,
         )
 
     def test_t96_roi(self):
