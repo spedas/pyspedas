@@ -494,9 +494,11 @@ def tplotxy3(tvars,
             proj_y = d.y[:,1] * unit_conv
             proj_z = d.y[:,2] * unit_conv
         elif ndims == 3: # multiple field line traces
-            proj_x = d.y[:,:,0] * unit_conv
-            proj_y = d.y[:,:,1] * unit_conv
-            proj_z = d.y[:,:,2] * unit_conv
+            # Matplotlib interprets 2D arrays as one trace per column.
+            # So we need to transpose here for the plots to come out right.
+            proj_x = d.y[:,:,0].T * unit_conv
+            proj_y = d.y[:,:,1].T * unit_conv
+            proj_z = d.y[:,:,2].T * unit_conv
         else:
             logging.error(f"Input variable {tvar} with {ndims} dimensions is not supported")
             return None
@@ -543,17 +545,17 @@ def tplotxy3(tvars,
         this_axis = xz_plane
         this_line = this_axis.plot(proj_x, proj_z, color=thiscolor, linestyle=thisstyle, linewidth=thiswidth, marker=thismarker, markersize=markersize, markevery=markevery)
         if thisstartmarker is not None:
-            this_axis.plot(proj_x[0], proj_y[0], color=thiscolor, linestyle=thisstyle, marker=thisstartmarker, markersize=markersize)
+            this_axis.plot(proj_x[0], proj_z[0], color=thiscolor, linestyle=thisstyle, marker=thisstartmarker, markersize=markersize)
         if thisendmarker is not None:
-            this_axis.plot(proj_x[-1], proj_y[-1], color=thiscolor, linestyle=thisstyle, marker=thisendmarker, markersize=markersize)
+            this_axis.plot(proj_x[-1], proj_z[-1], color=thiscolor, linestyle=thisstyle, marker=thisendmarker, markersize=markersize)
 
         # YZ plane
         this_axis = yz_plane
         this_axis.plot(proj_y, proj_z, color=thiscolor, linestyle=thisstyle, linewidth=thiswidth, marker=thismarker, markersize=markersize, markevery=markevery)
         if thisstartmarker is not None:
-            this_axis.plot(proj_x[0], proj_y[0], color=thiscolor, linestyle=thisstyle, marker=thisstartmarker, markersize=markersize)
+            this_axis.plot(proj_y[0], proj_z[0], color=thiscolor, linestyle=thisstyle, marker=thisstartmarker, markersize=markersize)
         if thisendmarker is not None:
-            this_axis.plot(proj_x[-1], proj_y[-1], color=thiscolor, linestyle=thisstyle, marker=thisendmarker, markersize=markersize)
+            this_axis.plot(proj_y[-1], proj_z[-1], color=thiscolor, linestyle=thisstyle, marker=thisendmarker, markersize=markersize)
 
         if legend_names is not None:
             try:
