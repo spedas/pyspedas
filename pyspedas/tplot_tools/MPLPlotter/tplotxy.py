@@ -224,17 +224,19 @@ def tplotxy(tvars,
                 proj_x = d.y[:,1] * unit_conv
                 proj_y = d.y[:,2] * unit_conv
         elif ndim == 3: # multiple field line traces
+            # Matplotlib interprets 2D arrays as one trace per column.
+            # So we need to transpose here to get the plots to come out right.
             if plane == 'xy':
-                proj_x = d.y[:,:, 0] * unit_conv
-                proj_y = d.y[:,:, 1] * unit_conv
+                proj_x = d.y[:,:, 0].T * unit_conv
+                proj_y = d.y[:,:, 1].T * unit_conv
 
             elif plane == 'xz':
-                proj_x = d.y[:,:, 0] * unit_conv
-                proj_y = d.y[:,:, 2] * unit_conv
+                proj_x = d.y[:,:, 0].T * unit_conv
+                proj_y = d.y[:,:, 2].T * unit_conv
 
             elif plane == 'yz':
-                proj_x = d.y[:,:, 1] * unit_conv
-                proj_y = d.y[:,:, 2] * unit_conv
+                proj_x = d.y[:,:, 1].T * unit_conv
+                proj_y = d.y[:,:, 2].T * unit_conv
         else:
             logging.error(f"Input variable {tvar} with {ndim} dimensions is not supported")
             return None
