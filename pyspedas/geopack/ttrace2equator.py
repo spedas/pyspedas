@@ -1,6 +1,4 @@
 import numpy as np
-from scipy.integrate import RK45, solve_ivp
-from geopack import geopack, t89
 from pyspedas import get_coords, set_coords, get_units, set_units, get_data, store_data, time_string
 import logging
 
@@ -8,40 +6,9 @@ R_E_KM = 6371.2
 #R_IONO_RE = 1.0 + 100.0 / R_E_KM  # 1 Re + 100 km
 R_IONO_RE = 6468.4 / R_E_KM
 
-def trace_to_equator_solveivp(f_B, pos_init, *, direction=1.0, max_s=200.0, max_step=0.05,
-                             rtol=1e-6, atol=1e-9, s_min_event=0.1):
-    """
-    f_B(s, pos) returns the *full* B vector (not normalized).
-    We normalize internally for dx/ds, but use B_r=0 as event.
-    """
-
-    def br_event(s, pos):
-        # avoid triggering immediately at s~0 if you start near equator
-        if s < s_min_event:
-            return 1.0
-        r = np.linalg.norm(pos)
-        if r == 0.0:
-            return 1.0
-        rhat = pos / r
-        b = np.asarray(f_B(s, pos), dtype=float)
-        return float(np.dot(b, rhat))
-
-    br_event.terminal = True
-    br_event.direction = 0.0  # accept either sign crossing
-
-    sol = solve_ivp(f_B, (0.0, max_s), pos_init, method="RK45",
-                    max_step=max_step, rtol=rtol, atol=atol,
-                    events=[br_event], dense_output=True)
-
-    pts = sol.y.T
-    if sol.t_events[0].size > 0:
-        s_event = sol.t_events[0][0]
-        pts = np.vstack([pts, sol.sol(s_event)])
-
-    return pts, sol
 
 def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
-    from .refactored_gp_interface import make_model, make_rhs_direction
+    from .generic_geopack_adapters import make_model
     from pyspedas.geopack import trace_to_event
     coords=get_coords(tvar)
     units=get_units(tvar)
@@ -68,7 +35,7 @@ def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
         #print(f"Tracing from point {i} at {startpos[i,:]}")
         model = make_model(model_str,time, parmod)
         if (i> 0) and (i % 100 == 0):
-            logging.info(f"Traced {i} points so far, current trace time {time_string(time)}")
+            logging.info(f"Computed {i}/{npts} traces so far, current trace time {time_string(time)}")
         # Figure out direction by looking at radial field component at startpos
 
         b_init = model.B_gsm(startpos[i,:])

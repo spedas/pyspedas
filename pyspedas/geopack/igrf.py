@@ -1,8 +1,7 @@
 import logging
 import numpy as np
 from pyspedas.tplot_tools import get_data, store_data
-from geopack import geopack, t89
-from .refactored_gp_interface import make_model
+from .generic_geopack_adapters import make_model
 
 
 def tigrf(pos_var_gsm, suffix=''):

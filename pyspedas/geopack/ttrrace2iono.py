@@ -11,46 +11,8 @@ R_E_KM = 6371.2
 #R_IONO_RE = 1.0 + 100.0 / R_E_KM  # 1 Re + 100 km
 R_IONO_RE = 6468.4 / R_E_KM
 
-def trace_to_iono_solveivp(f_dir, pos_init, *, max_s=100.0, max_step=0.05,
-                          r_iono=R_IONO_RE, rtol=1e-6, atol=1e-9):
-    """
-    Trace using dx/ds = f_dir(s, x), where f_dir returns a *direction* (unit-ish vector).
-    s is interpreted as distance along curve in Re.
-    """
-
-    def hit_iono(s, y):
-        # root when ||y|| - r_iono = 0
-        return np.linalg.norm(y) - r_iono
-
-    hit_iono.terminal = True
-    hit_iono.direction = -1.0  # radius decreasing (inward) toward ionosphere
-
-    sol = solve_ivp(
-        fun=f_dir,
-        t_span=(0.0, max_s),
-        y0=pos_init,
-        method="RK45",
-        max_step=max_step,
-        rtol=rtol,
-        atol=atol,
-        events=[hit_iono],
-        dense_output=True,
-    )
-
-    # Build Nx3 array of points
-    pts = sol.y.T  # (N,3)
-
-    # If event fired, append the interpolated event point as the last point
-    if sol.t_events[0].size > 0:
-        s_event = sol.t_events[0][0]
-        y_event = sol.sol(s_event)
-        # Replace last point with event point (or append, your choice)
-        pts = np.vstack([pts, y_event])
-
-    return pts, sol
-
 def ttrace2iono(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True, south=False):
-    from .refactored_gp_interface import make_model, make_rhs_direction
+    from .generic_geopack_adapters import make_model
     from pyspedas.geopack import trace_to_event
     coords=get_coords(tvar)
     units=get_units(tvar)

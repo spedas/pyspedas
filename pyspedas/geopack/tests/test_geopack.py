@@ -14,7 +14,7 @@ from pyspedas import (
     del_data,
     set_coords,
 )
-from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf, trace_equator_89, trace_iono_89
+from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 
@@ -158,42 +158,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertIsNone(notrange)
         invalidtrange = get_w(trange=["2050-01-01", "2050-01-02"])
         self.assertIsNone(invalidtrange)
-
-    def test_t89_equ_n(self):
-        trace_equator_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3, km=False,
-        )
-
-    def test_t89_equ_s(self):
-        trace_equator_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3, km=False,
-        )
-
-    def test_t89_iono_n_n(self):
-        trace_iono_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, 1.0]), iopt=3, km=False,
-        )
-
-    def test_t89_iono_n_s(self):
-        trace_iono_89(
-            time_double("2007-03-23/00:00:00"),
-            np.array([-2.0, 0.0, 1.0]),
-            iopt=3,
-            south=True, km=False,
-        )
-
-    def test_t89_iono_s_n(self):
-        trace_iono_89(
-            time_double("2007-03-23/00:00:00"), np.array([-2.0, 0.0, -1.0]), iopt=3, km=False,
-        )
-
-    def test_t89_iono_s_s(self):
-        trace_iono_89(
-            time_double("2007-03-23/00:00:00"),
-            np.array([-2.0, 0.0, -1.0]),
-            iopt=3,
-            south=True, km=False,
-        )
 
     def test_t96_roi(self):
         gen_circle()

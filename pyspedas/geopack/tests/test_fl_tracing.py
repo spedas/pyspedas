@@ -21,7 +21,6 @@ from pyspedas import (
 
 from pyspedas.utilities.min_distance_point_to_trace import symmetric_trace_distance, \
     directed_trace_distance_with_worst_point, directed_trace_distance
-from pyspedas.geopack import tt89, tt96, tt01, tts04, trace_equator_89, trace_iono_89, ttrace2iono_89, ttrace2equator_89
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file

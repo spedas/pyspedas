@@ -1,8 +1,30 @@
 import numpy as np
 from scipy.integrate import solve_ivp
-from .refactored_gp_interface import make_rhs_direction, make_event_br_zero
+from .generic_geopack_adapters import MagneticFieldModel
 
 R_E_KM = 6371.2
+
+def make_event_br_zero(model_rhs, *, s_min_event: float = 0.1):
+    def br_event(s, pos):
+        if s < s_min_event:
+            return 1.0
+        r = np.linalg.norm(pos)
+        if r == 0.0:
+            return 1.0
+        rhat = pos / r
+        return float(np.dot(model_rhs(s,pos), rhat))
+    br_event.terminal = True
+    br_event.direction = 0.0
+    return br_event
+
+def make_rhs_direction(model: MagneticFieldModel, *, direction: float):
+    def rhs(s, pos):
+        B = model.B_gsm(pos)
+        n = np.linalg.norm(B)
+        if not np.isfinite(n) or n == 0.0:
+            return np.zeros(3)
+        return direction * (B / n)
+    return rhs
 
 def trace_to_event(model, startpos_re, *,
                    event: str,
