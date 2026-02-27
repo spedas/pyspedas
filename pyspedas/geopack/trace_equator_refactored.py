@@ -15,15 +15,6 @@ def trace_to_equator_solveivp(f_B, pos_init, *, direction=1.0, max_s=200.0, max_
     We normalize internally for dx/ds, but use B_r=0 as event.
     """
 
-    pos_init = np.asarray(pos_init, dtype=float)
-
-    def rhs(s, pos):
-        b = np.asarray(f_B(s, pos), dtype=float)
-        bn = np.linalg.norm(b)
-        if not np.isfinite(bn) or bn == 0.0:
-            return np.zeros(3)
-        return direction * (b / bn)
-
     def br_event(s, pos):
         # avoid triggering immediately at s~0 if you start near equator
         if s < s_min_event:
@@ -38,7 +29,7 @@ def trace_to_equator_solveivp(f_B, pos_init, *, direction=1.0, max_s=200.0, max_
     br_event.terminal = True
     br_event.direction = 0.0  # accept either sign crossing
 
-    sol = solve_ivp(rhs, (0.0, max_s), pos_init, method="RK45",
+    sol = solve_ivp(f_B, (0.0, max_s), pos_init, method="RK45",
                     max_step=max_step, rtol=rtol, atol=atol,
                     events=[br_event], dense_output=True)
 
@@ -49,53 +40,9 @@ def trace_to_equator_solveivp(f_B, pos_init, *, direction=1.0, max_s=200.0, max_
 
     return pts, sol
 
-def trace_equator_89(time, startpos, iopt=3.0, km=True):
-    ps = geopack.recalc(time)
-
-    # Figure out direction by looking at radial field component at startpos
-    b0_t89=t89.t89(iopt,ps,startpos[0],startpos[1],startpos[2])
-    b0_igrf=geopack.igrf_gsm(startpos[0],startpos[1],startpos[2])
-    b_init=np.array(b0_t89)+np.array(b0_igrf)
-    radial_component=np.dot(b_init,startpos)
-    if radial_component < 0.0:
-        direction=-1.0 # Field points inward, go the opposite direction
-    else:
-        direction=1.0 # Field points outward, follow that direction
-
-    startpos = np.asarray(startpos, dtype=float)
-    if km:
-        startpos = startpos / R_E_KM  # to Re
-
-    def t89_dir(s, pos):
-        b_igrf = np.array(geopack.igrf_gsm(pos[0], pos[1], pos[2]), dtype=float)
-        b_t89  = np.array(t89.t89(iopt, ps, pos[0], pos[1], pos[2]), dtype=float)
-        b = b_igrf + b_t89
-
-        bnorm = np.linalg.norm(b)
-        if not np.isfinite(bnorm) or bnorm == 0.0:
-            # stop integration gracefully by returning zeros
-            return np.zeros(3)
-
-        return direction * (b / bnorm)
-
-    trace_points, sol = trace_to_equator_solveivp(
-        t89_dir, startpos,
-        max_s=200.0,
-        max_step=0.1,
-        rtol=1e-6,
-        atol=1e-9,
-    )
-
-    foot_point = trace_points[-1] if len(trace_points) else None
-
-    if km:
-        foot_point = foot_point*R_E_KM
-        trace_points = trace_points*R_E_KM
-        #sol = sol*R_E_KM
-
-    return trace_points, foot_point, sol
-
-def ttrace2equator_89(tvar, foot_name, trace_name, iopt=3.0, km=True):
+def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
+    from .refactored_gp_interface import make_model, make_rhs_direction
+    from pyspedas.geopack import trace_to_event
     coords=get_coords(tvar)
     units=get_units(tvar)
     if coords != 'gsm':
@@ -114,14 +61,52 @@ def ttrace2equator_89(tvar, foot_name, trace_name, iopt=3.0, km=True):
     min_trace_points = 1000000
     min_trace_points_idx=-1
     max_trace_points_idx=-1
+    parmod = np.zeros(10)
+    parmod[0] = iopt
+
     for i,time in enumerate(data.times):
         #print(f"Tracing from point {i} at {startpos[i,:]}")
+        model = make_model(model_str,time, parmod)
         if (i> 0) and (i % 100 == 0):
             logging.info(f"Traced {i} points so far, current trace time {time_string(time)}")
-        trace_points, foot, sol = trace_equator_89(time, startpos[i,:], iopt=iopt, km=False)
+        # Figure out direction by looking at radial field component at startpos
+
+        b_init = model.B_gsm(startpos[i,:])
+
+        radial_component = np.dot(b_init, startpos[i,:])
+        if radial_component < 0.0:
+            direction = -1.0  # Field points inward, go the opposite direction
+        else:
+            direction = 1.0  # Field points outward, follow that direction
+
+        """
+        fdir = make_rhs_direction(model, direction=direction)
+        trace_points, sol = trace_to_equator_solveivp(
+            fdir, startpos[i,:],
+            direction=direction,
+            max_s=200.0,
+            max_step=0.5,
+            rtol=1e-6,
+            atol=1e-9,
+        )
+        """
+
+        trace_points, status, sol = trace_to_event(
+            model, startpos[i,:],
+            event='equator',
+            direction=direction,
+            max_s=200.0,
+            max_step=0.5,
+            rtol=1e-6,
+            atol=1e-9,
+        )
+
+        foot_point = trace_points[-1] if len(trace_points) else None
+
         if km:
             trace_points = trace_points*R_E_KM
-            foot = foot*R_E_KM
+            foot_point = foot_point*R_E_KM
+
         trace_count = len(trace_points)
         if trace_count > max_trace_points:
             max_trace_points_idx = i
@@ -129,7 +114,7 @@ def ttrace2equator_89(tvar, foot_name, trace_name, iopt=3.0, km=True):
         if trace_count < min_trace_points:
             min_trace_points_idx = i
             min_trace_points = trace_count
-        all_foot_points[i,:] = foot
+        all_foot_points[i,:] = foot_point
         ragged_list.append(trace_points)
         #print(f"Traced {len(trace_points)} points to foot point {foot}")
 

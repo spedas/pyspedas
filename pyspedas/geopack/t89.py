@@ -1,8 +1,6 @@
 import logging
 import numpy as np
 from pyspedas.tplot_tools import get_data, store_data
-from geopack import geopack, t89
-
 
 def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     """
@@ -34,6 +32,7 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
         str
             Name of the tplot variable containing the model data
     """
+    from .refactored_gp_interface import make_model
     pos_data = get_data(pos_var_gsm)
 
     if pos_data is None:
@@ -42,11 +41,20 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
 
     b0gsm = np.zeros((len(pos_data.times), 3))
     dbgsm = np.zeros((len(pos_data.times), 3))
-
+    bgsm = np.zeros((len(pos_data.times),3))
     # convert to Re
     pos_re = pos_data.y/6371.2
 
+    parmod = np.zeros(10)
+    parmod[0] = iopt
     for idx, time in enumerate(pos_data.times):
+        if igrf_only:
+            model=make_model("igrf",time,parmod)  # doesn't actually use parmod at all
+        else:
+            model=make_model("t89",time,parmod)
+
+        bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
+        """
         tilt = geopack.recalc(time)
 
         # IGRF B in GSM
@@ -54,11 +62,7 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
 
         # T89 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t89.t89(iopt, tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
-
-    if igrf_only:
-        bgsm = b0gsm
-    else:
-        bgsm = b0gsm + dbgsm
+        """
 
     saved = store_data(pos_var_gsm + '_bt89' + suffix, data={'x': pos_data.times, 'y': bgsm})
 

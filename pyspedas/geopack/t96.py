@@ -1,8 +1,6 @@
 import logging
 import numpy as np
 from pyspedas.tplot_tools import get_data, store_data
-from geopack import geopack, t96
-
 
 def tt96(pos_var_gsm, parmod=None, suffix=''):
     """
@@ -34,14 +32,14 @@ def tt96(pos_var_gsm, parmod=None, suffix=''):
         str
             Name of the tplot variable containing the model data
     """
+    from .refactored_gp_interface import make_model
     pos_data = get_data(pos_var_gsm)
 
     if pos_data is None:
         logging.error('Variable not found: ' + pos_var_gsm)
         return
 
-    b0gsm = np.zeros((len(pos_data.times), 3))
-    dbgsm = np.zeros((len(pos_data.times), 3))
+    bgsm = np.zeros((len(pos_data.times), 3))
 
     # convert to Re
     pos_re = pos_data.y/6371.2
@@ -56,6 +54,9 @@ def tt96(pos_var_gsm, parmod=None, suffix=''):
         return
 
     for idx, time in enumerate(pos_data.times):
+        model = make_model("t96",time,par[idx,:])
+        bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
+        """
         tilt = geopack.recalc(time)
 
         # IGRF B in GSM
@@ -63,8 +64,7 @@ def tt96(pos_var_gsm, parmod=None, suffix=''):
 
         # T96 dB in GSM
         dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t96.t96(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
-
-    bgsm = b0gsm + dbgsm
+        """
 
     saved = store_data(pos_var_gsm + '_bt96' + suffix, data={'x': pos_data.times, 'y': bgsm})
 

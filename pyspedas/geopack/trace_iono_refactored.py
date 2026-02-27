@@ -18,8 +18,6 @@ def trace_to_iono_solveivp(f_dir, pos_init, *, max_s=100.0, max_step=0.05,
     s is interpreted as distance along curve in Re.
     """
 
-    pos_init = np.asarray(pos_init, dtype=float)
-
     def hit_iono(s, y):
         # root when ||y|| - r_iono = 0
         return np.linalg.norm(y) - r_iono
@@ -51,46 +49,9 @@ def trace_to_iono_solveivp(f_dir, pos_init, *, max_s=100.0, max_step=0.05,
 
     return pts, sol
 
-def trace_iono_89(time, startpos, iopt=3.0, km=True, south=False):
-    ps = geopack.recalc(time)
-    direction = -1.0 if south else 1.0
-
-    startpos = np.asarray(startpos, dtype=float)
-    if km:
-        startpos = startpos / R_E_KM  # to Re
-
-    def t89_dir(s, pos):
-        b_igrf = np.array(geopack.igrf_gsm(pos[0], pos[1], pos[2]), dtype=float)
-        b_t89  = np.array(t89.t89(iopt, ps, pos[0], pos[1], pos[2]), dtype=float)
-        b = b_igrf + b_t89
-
-        bnorm = np.linalg.norm(b)
-        if not np.isfinite(bnorm) or bnorm == 0.0:
-            # stop integration gracefully by returning zeros
-            return np.zeros(3)
-        #print(s, pos, b, direction*(b/bnorm))
-        return direction * (b / bnorm)
-
-    # started with max_step 0.05, 311 points, foot point distance 2.818, max distance 105
-    # 0.1, 157 points, foot point distance 2.818
-    # 0.5, 38 points, foot point distance 2.818
-    trace_points, sol = trace_to_iono_solveivp(
-        t89_dir, startpos,
-        max_s=200.0,
-        max_step=0.5,
-        r_iono=R_IONO_RE,
-        rtol=1e-6,
-        atol=1e-9,
-    )
-
-    foot_point = trace_points[-1] if len(trace_points) else None
-    if km:
-        foot_point = foot_point*R_E_KM
-        trace_points = trace_points*R_E_KM
-        #sol = sol*R_E_KM
-    return trace_points, foot_point, sol
-
-def ttrace2iono_89(tvar, foot_name, trace_name, iopt=3.0, km=True, south=False):
+def ttrace2iono(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True, south=False):
+    from .refactored_gp_interface import make_model, make_rhs_direction
+    from pyspedas.geopack import trace_to_event
     coords=get_coords(tvar)
     units=get_units(tvar)
     if coords != 'gsm':
@@ -102,20 +63,41 @@ def ttrace2iono_89(tvar, foot_name, trace_name, iopt=3.0, km=True, south=False):
     else:
         startpos=data.y
 
+    direction = 1.0
+    if south:
+        direction = -1.0
+
     npts = len(data.times)
     all_foot_points = np.zeros((npts, 3))
     max_trace_points = 1
     ragged_list = []
+    parmod = np.zeros(10)
+    parmod[0] = iopt
     for i,time in enumerate(data.times):
         #print(f"Tracing from point {i} at {startpos[i,:]}")
+        model = make_model(model_str,time, parmod)
         if (i> 0) and (i % 100 == 0):
             logging.info(f"Traced {i} points so far, current trace time {time_string(time)}")
-        trace_points, foot, sol = trace_iono_89(time, startpos[i,:], iopt=iopt, km=False, south=south)
+
+        #fdir = make_rhs_direction(model, direction=direction)
+        trace_points, status, sol = trace_to_event(
+            model, startpos[i,:],
+            direction=direction,
+            event='iono',
+            max_s=200.0,
+            max_step=0.5,
+            r_iono_re=R_IONO_RE,
+            rtol=1e-6,
+            atol=1e-9,
+        )
+
+        foot_point = trace_points[-1] if len(trace_points) else None
         if km:
-            trace_points = trace_points*R_E_KM
-            foot = foot*R_E_KM
+            foot_point = foot_point * R_E_KM
+            trace_points = trace_points * R_E_KM
+
         max_trace_points = np.max((max_trace_points, len(trace_points)))
-        all_foot_points[i,:] = foot
+        all_foot_points[i,:] = foot_point
         ragged_list.append(trace_points)
         #print(f"Traced {len(trace_points)} points to foot point {foot}")
 

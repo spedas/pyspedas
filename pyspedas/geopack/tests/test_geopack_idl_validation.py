@@ -20,7 +20,7 @@ from pyspedas import (
     get_data,
     tkm2re,
 )
-from pyspedas.geopack import tt89, tt96, tt01, tts04
+from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
@@ -228,9 +228,15 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         py_tilt = get_data("py_tilt")
         assert_allclose(idl_tilt.y, py_tilt.y, atol=0.0003)
 
-    def test_igrf(self):
+    def test_tt89_igrf(self):
         tt89("tha_state_pos_gsm", igrf_only=True)
         py_b = get_data("tha_state_pos_gsm_bt89")
+        idl_b = get_data("bt89_igrf")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
+
+    def test_igrf(self):
+        tigrf("tha_state_pos_gsm")
+        py_b = get_data("tha_state_pos_gsm_btigrf")
         idl_b = get_data("bt89_igrf")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
 

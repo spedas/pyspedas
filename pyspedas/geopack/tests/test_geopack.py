@@ -14,7 +14,7 @@ from pyspedas import (
     del_data,
     set_coords,
 )
-from pyspedas.geopack import tt89, tt96, tt01, tts04, trace_equator_89, trace_iono_89
+from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf, trace_equator_89, trace_iono_89
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 
@@ -69,9 +69,9 @@ def get_params(model, g_variables=None):
 class LoadTestCases(unittest.TestCase):
     def test_igrf(self):
         mec_vars = pyspedas.projects.mms.mec(trange=trange)
-        tt89("mms1_mec_r_gsm", igrf_only=True)
+        tigrf("mms1_mec_r_gsm")
         self.assertTrue(mec_vars)
-        self.assertTrue(data_exists("mms1_mec_r_gsm_bt89"))
+        self.assertTrue(data_exists("mms1_mec_r_gsm_btigrf"))
 
     def test_tt89(self):
         mec_vars = pyspedas.projects.mms.mec(trange=trange)
