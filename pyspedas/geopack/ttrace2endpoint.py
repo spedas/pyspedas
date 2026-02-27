@@ -47,6 +47,10 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         logging.error('ttrace2endpoint: endpoint must be either "iono" or "equator"')
         return
 
+    if model_str not in ['igrf', 't89', 't96', 't01', 't204']:
+        logging.error(f"ttrace2endpoint: Invalid model_str {model_str}, must be one of ['igrf', 't89', 't96', 't01', 't204']")
+        return
+
     coords=get_coords(tvar)
     if coords.lower() != 'gsm':
         logging.error(f"ttrace2endpoint: input variable {tvar} has coords {coords}, must transform to GSM first")
@@ -139,7 +143,13 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
     # Create output tplot variables
     store_data(foot_name, data={'x':data.times, 'y':all_foot_points})
     set_coords(foot_name, 'GSM')
-    set_units(foot_name, 'km')
+
+    if km:
+        output_units = 'km'
+    else:
+        output_units = 'Re'
+
+    set_units(foot_name, output_units)
     store_data(trace_name, data={'x':data.times, 'y':all_trace_points})
     set_coords(trace_name, 'GSM')
-    set_units(trace_name, 'km')
+    set_units(trace_name, output_units)

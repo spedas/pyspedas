@@ -75,18 +75,6 @@ def trace_to_event(model, startpos_re, *,
     """
 
     startpos_re = np.asarray(startpos_re, dtype=float)
-    """
-    # RHS: geometry-only tracing
-    def rhs(s, pos):
-        B = np.asarray(model.B_gsm(pos), dtype=float)
-        n = np.linalg.norm(B)
-        if not np.isfinite(n) or n == 0.0:
-            # Returning zeros will stall; solve_ivp will keep stepping but not move.
-            # For QA, it's often better to just stall and let max_s stop it,
-            # or you can raise an exception instead.
-            return np.zeros(3)
-        return direction * (B / n)
-    """
     model_rhs = make_rhs_direction(model, direction=direction)
 
     # Choose event
@@ -98,20 +86,6 @@ def trace_to_event(model, startpos_re, *,
 
     elif event == "equator":
         evt = make_event_br_zero(model_rhs, s_min_event=s_min_event)
-        """
-        def evt(s, pos):
-            if s < s_min_event:
-                return 1.0
-            r = np.linalg.norm(pos)
-            if r == 0.0:
-                return 1.0
-            rhat = pos / r
-            B = np.asarray(model_rhs(s, pos), dtype=float)
-            return float(np.dot(B, rhat))  # Br
-        evt.terminal = True
-        evt.direction = br_direction
-        """
-
     else:
         raise ValueError('event must be "iono" or "equator"')
 
