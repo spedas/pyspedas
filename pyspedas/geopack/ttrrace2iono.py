@@ -16,8 +16,8 @@ def ttrace2iono(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True, south
     from pyspedas.geopack import trace_to_event
     coords=get_coords(tvar)
     units=get_units(tvar)
-    if coords != 'gsm':
-        logging.warning(f"ttrace2iono_89: input variable has coords {coords}, must transform to GSM first")
+    if coords.lower() != 'gsm':
+        logging.warning(f"ttrace2iono: input variable has coords {coords}, must transform to GSM first")
 
     data = get_data(tvar)
     if km:

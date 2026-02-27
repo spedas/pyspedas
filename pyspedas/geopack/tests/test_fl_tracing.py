@@ -105,12 +105,12 @@ class LoadTestCases(unittest.TestCase):
 
 
     def test_trace_iono_s_idl_all_refactored(self):
-        from pyspedas.geopack import ttrace2iono
+        from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_iono_t89_trace_s')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_s')
-        ttrace2iono('tha_state_pos', "t89", 'py_foot_s', 'py_trace_s', iopt=3, km=True, south=True)
+        ttrace2endpoint('tha_state_pos', "t89", 'iono', 'py_foot_s', 'py_trace_s', iopt=3, km=True, south=True)
         py_trace_data = get_data('py_trace_s')
         py_foot_data = get_data('py_foot_s')
         idl_trace_data = d2.y
@@ -199,12 +199,12 @@ class LoadTestCases(unittest.TestCase):
         tplotxy3(['py_foot_s', 'ifoot_t89_s'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
 
     def test_trace_iono_n_idl_all_refactored(self):
-        from pyspedas.geopack import ttrace2iono
+        from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_iono_t89_trace_n')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_n')
-        ttrace2iono('tha_state_pos', "t89", 'py_foot_n', 'py_trace_n', iopt=3, km=True)
+        ttrace2endpoint('tha_state_pos', "t89", 'iono', 'py_foot_n', 'py_trace_n', iopt=3, km=True)
         py_trace_data = get_data('py_trace_n')
         py_foot_data = get_data('py_foot_n')
         idl_trace_data = d2.y
@@ -293,12 +293,12 @@ class LoadTestCases(unittest.TestCase):
         tplotxy3(['py_foot_n', 'ifoot_t89_n'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
 
     def test_t89_equ_idl_all_refactored(self):
-        from pyspedas.geopack import ttrace2equator
+        from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_eq_t89_trace')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('eq_foot_t89')
-        ttrace2equator('tha_state_pos',"t89",'py_eq_foot', 'py_eq_trace', iopt=3, km=True)
+        ttrace2endpoint('tha_state_pos',"t89", "equator", 'py_eq_foot', 'py_eq_trace', iopt=3, km=True, south=False)
         py_trace_data = get_data('py_eq_trace')
         py_foot_data = get_data('py_eq_foot')
         idl_trace_data = d2.y
@@ -392,6 +392,12 @@ class LoadTestCases(unittest.TestCase):
         tplotxy3(['py_eq_trace1', 'idl_eq_trace1'], legend_names=['py','idl'], colors=['black', 'red'], markers = ['+', '<'], markevery=1,linewidths=[2,1], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
         tplotxy3(['py_eq_trace', 'tha_eq_t89_trace', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
         tplotxy3(['py_eq_foot', 'eq_foot_t89'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
+
+    def test_calculate_lshell(self):
+        from pyspedas.geopack.calculate_lshell import calculate_lshell
+
+        calculate_lshell('tha_state_pos','tha_state_lshell')
+        pyspedas.tplot('tha_state_lshell')
 
 if __name__ == "__main__":
     unittest.main()

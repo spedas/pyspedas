@@ -7,13 +7,60 @@ R_E_KM = 6371.2
 R_IONO_RE = 6468.4 / R_E_KM
 
 
-def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
+def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, km=None, south=False):
+    """
+    Trace magnetic field lines to the north ionosphere, south ionosphere, or equator
+
+    Parameters
+    ----------
+    tvar:str
+        A tplot variable name specifying the times and start positions to be traced.  Coordinates should be in GSM.
+    model_str:str
+        A string specifying the field model to use.  Valid options are 'igrf', 't89', 't96', 't01', 't204'.
+    endpoint: str
+        A string specifying the endpoint to trace to, either 'iono' or 'equator'.
+    foot_name:str
+        A string specifying the tplot variable to receive the foot point locations.
+    trace_name
+        A string specifying the tplot variable to receive the trace points.
+    iopt: float
+        The model parameter to use for the t89 model.
+    km:bool
+        (Optional) Override whatever units may be in the input variable metadata. If True, the
+        input variable is assumed to be in units of km, otherwise Re.  If false, the input
+        units are determined from metadata.
+
+    south: bool
+        When tracing to the ionosphere, determines whether the trace should be performed to the northern or
+        southern foot point.
+
+    Returns
+    -------
+    None
+
+    """
+
     from .generic_geopack_adapters import make_model
     from pyspedas.geopack import trace_to_event
+
+    if endpoint not in ['iono', 'equator']:
+        logging.error('ttrace2endpoint: endpoint must be either "iono" or "equator"')
+        return
+
     coords=get_coords(tvar)
-    units=get_units(tvar)
-    if coords != 'gsm':
-        logging.warning(f"ttrace2iono_89: input variable has coords {coords}, must transform to GSM first")
+    if coords.lower() != 'gsm':
+        logging.error(f"ttrace2endpoint: input variable {tvar} has coords {coords}, must transform to GSM first")
+        return
+
+    if km is None:
+        units=get_units(tvar)
+        if units is None or units.lower() not in ['km', 're']:
+            logging.error("ttrace2endpoint: Unable to determine units for input variable {tvar}" )
+            return
+        elif units.lower() == 'km':
+            km = True
+        else:
+            km = False
 
     data = get_data(tvar)
     if km:
@@ -36,31 +83,27 @@ def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
         model = make_model(model_str,time, parmod)
         if (i> 0) and (i % 100 == 0):
             logging.info(f"Computed {i}/{npts} traces so far, current trace time {time_string(time)}")
-        # Figure out direction by looking at radial field component at startpos
 
-        b_init = model.B_gsm(startpos[i,:])
-
-        radial_component = np.dot(b_init, startpos[i,:])
-        if radial_component < 0.0:
-            direction = -1.0  # Field points inward, go the opposite direction
+        if endpoint.lower() == 'iono':
+            # For tracing to ionosphere, direction is -1 for south, 1 otherwise
+            direction = 1.0
+            if south:
+                direction = -1.0
         else:
-            direction = 1.0  # Field points outward, follow that direction
+            # For tracing to the equator, we need to look at the radial component of the
+            # field at the start point.  If it points outward, direction = 1, otherwise -1
 
-        """
-        fdir = make_rhs_direction(model, direction=direction)
-        trace_points, sol = trace_to_equator_solveivp(
-            fdir, startpos[i,:],
-            direction=direction,
-            max_s=200.0,
-            max_step=0.5,
-            rtol=1e-6,
-            atol=1e-9,
-        )
-        """
+            b_init = model.B_gsm(startpos[i,:])
+
+            radial_component = np.dot(b_init, startpos[i,:])
+            if radial_component < 0.0:
+                direction = -1.0  # Field points inward, go the opposite direction
+            else:
+                direction = 1.0  # Field points outward, follow that direction
 
         trace_points, status, sol = trace_to_event(
             model, startpos[i,:],
-            event='equator',
+            event=endpoint,
             direction=direction,
             max_s=200.0,
             max_step=0.5,
@@ -88,7 +131,7 @@ def ttrace2equator(tvar, model_str, foot_name, trace_name, iopt=3.0, km=True):
     # Initialize final trace point array to all-nan
     all_trace_points = np.zeros((npts, max_trace_points, 3))
     all_trace_points[:,:,:] = np.nan
-    print(f"Max/min trace points: {max_trace_points} {min_trace_points} at indices {max_trace_points_idx} {min_trace_points_idx}")
+    logging.info(f"Max/min trace points: {max_trace_points} {min_trace_points} at indices {max_trace_points_idx} {min_trace_points_idx}")
     for i,thistrace in enumerate(ragged_list):
         n_trace_points = thistrace.shape[0]
         all_trace_points[i,0:n_trace_points,:] = thistrace
