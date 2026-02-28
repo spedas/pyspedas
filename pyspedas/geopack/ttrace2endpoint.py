@@ -21,7 +21,7 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         A string specifying the endpoint to trace to, either 'iono' or 'equator'.
     foot_name:str
         A string specifying the tplot variable to receive the foot point locations.
-    trace_name
+    trace_name: str
         A string specifying the tplot variable to receive the trace points.
     iopt: float
         The model parameter to use for the t89 model.
@@ -29,7 +29,6 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         (Optional) Override whatever units may be in the input variable metadata. If True, the
         input variable is assumed to be in units of km, otherwise Re.  If false, the input
         units are determined from metadata.
-
     south: bool
         When tracing to the ionosphere, determines whether the trace should be performed to the northern or
         southern foot point.
