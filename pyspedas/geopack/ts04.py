@@ -4,7 +4,9 @@ from pyspedas.tplot_tools import get_data, store_data
 
 def tts04(pos_var_gsm, parmod=None, suffix=''):
     """
-    tplot wrapper for the functional interface to Sheng Tian's implementation of the 
+    Evaluate the TS04 field model at the times and locations specified by an input tplot variable.
+
+    This is a tplot wrapper for the functional interface to Sheng Tian's implementation of the
     Tsyganenko-Sitnov (2004) storm-time geomagnetic field model
 
     https://github.com/tsssss/geopack

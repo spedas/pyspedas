@@ -4,7 +4,9 @@ from pyspedas.tplot_tools import get_data, store_data
 
 def tt01(pos_var_gsm, parmod=None, suffix=''):
     """
-    tplot wrapper for the functional interface to Sheng Tian's implementation of the Tsyganenko 2001 and IGRF model:
+    Evaluate the T01 field model at the times and positions specified by an input tplot variable.
+
+    This is a tplot wrapper for the functional interface to Sheng Tian's implementation of the Tsyganenko 2001 and IGRF model:
 
     https://github.com/tsssss/geopack
 

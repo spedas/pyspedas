@@ -4,7 +4,9 @@ from pyspedas.tplot_tools import get_data, store_data
 
 def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
     """
-    tplot wrapper for the functional interface to Sheng Tian's implementation 
+    Evaluate the T89 field model at the times/positions specified by an input tplot variable.
+
+    This is a tplot wrapper for the functional interface to Sheng Tian's implementation
     of the Tsyganenko T89 and IGRF model:
 
     https://github.com/tsssss/geopack
@@ -26,6 +28,10 @@ def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
 
         suffix: str
             Suffix to append to the tplot output variable
+
+        igrf_only: bool
+            If True, only return the IGRF field, without adding the T89 correction.
+            This usage is deprecated...please use the tigrf() routine if that's what you need.
 
     Returns
     --------
