@@ -145,14 +145,18 @@ from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
 from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
-# Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
-#from .geopack.get_tsy_params import get_tsy_params
-#from .geopack.get_w_params import get_w
-#from .geopack.kp2iopt import kp2iopt
-#from .geopack.t01 import t01, tt01
-#from .geopack.t89 import t89, tt89
-#from .geopack.t96 import t96, tt96
-#from .geopack.ts04 import tts04
+
+from .geopack import get_tsy_params
+from .geopack.get_w_params import get_w
+from .geopack import kp2iopt
+from .geopack import tt01
+from .geopack import tt89
+from .geopack import tt96
+from .geopack import tts04
+from .geopack import tigrf
+from .geopack import calculate_lshell
+from .geopack import ttrace2endpoint
+
 from .hapi_tools.hapi import hapi
 
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
