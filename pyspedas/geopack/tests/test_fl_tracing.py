@@ -394,10 +394,17 @@ class LoadTestCases(unittest.TestCase):
         tplotxy3(['py_eq_foot', 'eq_foot_t89'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
 
     def test_calculate_lshell(self):
-        from pyspedas.geopack.calculate_lshell import calculate_lshell
+        from pyspedas.geopack import calculate_lshell
 
-        calculate_lshell('tha_state_pos','tha_state_lshell')
-        pyspedas.tplot('tha_state_lshell')
+        calculate_lshell('tha_state_pos','py_tha_state_lshell')
+        pyspedas.tplot('py_tha_state_lshell')
+        py_data = get_data('py_tha_state_lshell')
+        idl_data = get_data('tha_state_pos_lshell')
+        diff = np.abs(idl_data.y - py_data.y)
+        max_diff = np.max(diff)
+        median_diff = np.median(diff)
+        print(f"Max diff: {max_diff}, median diff: {median_diff}")
+        self.assertTrue(median_diff < 1.0e-05)
 
 if __name__ == "__main__":
     unittest.main()
