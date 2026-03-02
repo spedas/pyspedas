@@ -41,11 +41,11 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
     >>> from pyspedas import ttrace2endpoint, tplotxy3
     >>> state(trange=['2007-03-23', '2007-03-23'], probe='a')
     >>> # Trace to north ionosphere with T89 model
-    >>> ttrace2endpoint('tha_pos_gsm','t89','iono',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True,south=False)
+    >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True)
     >>> tplotxy3('ifoot89_n',legend_names=['North ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_n_foot.png')
     >>>
     >>> # Trace to south ionosphere with T89 model
-    >>> ttrace2endpoint('tha_pos_gsm','t89','iono',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True,south=True)
+    >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
     >>> tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
 
     >>> # Trace to equator with T89 model

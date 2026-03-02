@@ -168,10 +168,10 @@ PySPEDAS can perform field line tracing for any of the available models.  Option
 to the north ionosphere, the south ionosphere, or the field line "apex" or "equator" (the point where
 the radial component switches sign toward or away from Earth).
 
-The field line traces are implemented as solutions to a differential equation IVP (initial value problem),
-using the RK45 (Runge-Kutta order 4/5) method, from the scipy library.  There is a single tracing routine
-ttrace2endpoint, where an 'endpoint' parameter ('iono' or 'equator') and a boolean 'south' parameter for 'iono'
-traces, determine which of the three endpoints to trace to.  endpoint='iono' corresponds to the IDL SPEDAS routine
+The field line traces are implemented as solutions to a differential equation initial value problem,
+using the solve_ivp method from the scipy library, with a Runge-Kutte order 4/5 solver.  There is a single tracing routine
+ttrace2endpoint, where an 'endpoint' parameter ('ionoshere-north', 'ionosphere-south', or 'equator') determinea
+which of the three endpoints to trace to.  endpoint='ionosphere-north' or 'ionosphere-south' correspond to the IDL SPEDAS routine
 ttrace2iono, and endpoint='equator' corresponds to IDL SPEDAS 'ttrace2equator' routine.
 
 .. autofunction:: pyspedas.ttrace2endpoint
@@ -185,11 +185,11 @@ Field line tracing examples
    from pyspedas import ttrace2endpoint, tplotxy3
    state(trange=['2007-03-23', '2007-03-23'], probe='a')
    # Trace to north ionosphere with T89 model
-   ttrace2endpoint('tha_pos_gsm','t89','iono',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True,south=False)
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True)
    tplotxy3('ifoot89_n',legend_names=['North ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_n_foot.png')
 
    # Trace to south ionosphere with T89 model
-   ttrace2endpoint('tha_pos_gsm','t89','iono',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True,south=True)
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
    tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
 
    # Trace to equator with T89 model
