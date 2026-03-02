@@ -50,7 +50,7 @@ def trace_to_event(model, startpos_re, *,
     direction: float
         1.0 to trace parallel to the B vector, -1.0 for anti-parallel
     event:
-        "iono" or "equator"
+        "ionosphere-north", "ionosphere-south", or "equator"
     max_s:
         Max path length in Re before giving up.
     max_step:
@@ -78,7 +78,7 @@ def trace_to_event(model, startpos_re, *,
     model_rhs = make_rhs_direction(model, direction=direction)
 
     # Choose event
-    if event == "iono":
+    if event in ["ionosphere-north", "ionosphere-south"]:
         def evt(s, pos):
             return np.linalg.norm(pos) - r_iono_re
         evt.terminal = True
@@ -87,7 +87,7 @@ def trace_to_event(model, startpos_re, *,
     elif event == "equator":
         evt = make_event_br_zero(model_rhs, s_min_event=s_min_event)
     else:
-        raise ValueError('event must be "iono" or "equator"')
+        raise ValueError('event must be one of "ionosphere-north", "ionosphere-south", or "equator"')
 
     sol = solve_ivp(
         fun=model_rhs,

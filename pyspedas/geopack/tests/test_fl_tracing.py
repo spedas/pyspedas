@@ -40,6 +40,7 @@ if not os.path.exists(save_dir):
 validation_dir = TESTING_CONFIG["remote_validation_dir"]
 
 trange = ["2015-10-16", "2015-10-17"]
+global_display = True
 
 
 def gen_circle():
@@ -97,20 +98,20 @@ class LoadTestCases(unittest.TestCase):
         #     "geopack_idl_validate_multi_gp14.tplot",
         #     save_dir,
         # )
-        filename = '/tmp/ttrace_iono_t89.tplot'
+        filename = '/tmp/ttrace_validate_jumbo.tplot'
         del_data("*")
         tplot_restore(filename)
 
         pass
 
 
-    def test_trace_iono_s_idl_all_refactored(self):
+    def test_trace_iono_s_idl_all(self):
         from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_iono_t89_trace_s')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_s')
-        ttrace2endpoint('tha_state_pos', "t89", 'iono', 'py_foot_s', 'py_trace_s', iopt=3, km=True, south=True)
+        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-south', 'py_foot_s', 'py_trace_s', iopt=3, km=True)
         py_trace_data = get_data('py_trace_s')
         py_foot_data = get_data('py_foot_s')
         idl_trace_data = d2.y
@@ -194,17 +195,17 @@ class LoadTestCases(unittest.TestCase):
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
         #tplotxy(['py_trace'], plane='xy')
-        tplotxy3(['py_trace1_s', 'idl_trace1_s'], legend_names=['py','idl'], colors=['black', 'red'], markers=['+','>'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_trace_s', 'tha_iono_t89_trace_s', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_foot_s', 'ifoot_t89_s'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
+        tplotxy3(['py_trace1_s', 'idl_trace1_s'], legend_names=['py','idl'], colors=['black', 'red'], markers=['+','>'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_trace_iono_s_singletrace.png')
+        tplotxy3(['py_trace_s', 'tha_iono_t89_trace_s', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_trace_iono_s_full.png')
+        tplotxy3(['py_foot_s', 'ifoot_t89_s'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=global_display, save_png='tha_trace_iono_s_foot.png')
 
-    def test_trace_iono_n_idl_all_refactored(self):
+    def test_trace_iono_n_idl_all(self):
         from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_iono_t89_trace_n')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_n')
-        ttrace2endpoint('tha_state_pos', "t89", 'iono', 'py_foot_n', 'py_trace_n', iopt=3, km=True)
+        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', 'py_foot_n', 'py_trace_n', iopt=3, km=True)
         py_trace_data = get_data('py_trace_n')
         py_foot_data = get_data('py_foot_n')
         idl_trace_data = d2.y
@@ -288,17 +289,17 @@ class LoadTestCases(unittest.TestCase):
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
         #tplotxy(['py_trace'], plane='xy')
-        tplotxy3(['py_trace1_n', 'idl_trace1_n'], legend_names=['py','idl'], colors=['black', 'red'], markers=['+','>'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_trace_n', 'tha_iono_t89_trace_n', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_foot_n', 'ifoot_t89_n'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
+        tplotxy3(['py_trace1_n', 'idl_trace1_n'], legend_names=['py','idl'], colors=['black', 'red'], markers=['+','>'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_iono_n_singletrace.png')
+        tplotxy3(['py_trace_n', 'tha_iono_t89_trace_n', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_iono_n_all.png')
+        tplotxy3(['py_foot_n', 'ifoot_t89_n'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=global_display, save_png='tha_iono_n_foot.png')
 
-    def test_t89_equ_idl_all_refactored(self):
+    def test_t89_equ_idl_all(self):
         from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
         d2=get_data('tha_eq_t89_trace')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('eq_foot_t89')
-        ttrace2endpoint('tha_state_pos',"t89", "equator", 'py_eq_foot', 'py_eq_trace', iopt=3, km=True, south=False)
+        ttrace2endpoint('tha_state_pos',"t89", "equator", 'py_eq_foot', 'py_eq_trace', iopt=3, km=True)
         py_trace_data = get_data('py_eq_trace')
         py_foot_data = get_data('py_eq_foot')
         idl_trace_data = d2.y
@@ -365,12 +366,14 @@ class LoadTestCases(unittest.TestCase):
         n=max_foot_dist_idx
         idl_single_trace = idl_trace_data[n-3:n+4,:,:]
         py_single_trace = py_trace_data.y[n-3:n+4,:,:]
+        orbit_single_trace = d1.y[n-3:n+4,:]
         store_data('py_eq_trace1',data={'x':d1.times[n-3:n+4], 'y':py_single_trace})
         pyspedas.set_coords('py_eq_trace1','gsm')
         pyspedas.set_units('py_eq_trace1','km')
         store_data('idl_eq_trace1',data={'x':d1.times[n-3:n+4], 'y':idl_single_trace})
         pyspedas.set_coords('idl_eq_trace1','gsm')
         pyspedas.set_units('idl_eq_trace1','km')
+        store_data('orbit_trace1',data={'x':d1.times[n-3:n+4], 'y':orbit_single_trace})
 
         #print(f"Max directed trace distance: {max_trace_dist}")
         print(f"Max foot distance: {max_foot_dist} at index {max_foot_dist_idx}")
@@ -389,15 +392,15 @@ class LoadTestCases(unittest.TestCase):
         print(f"py foot point {foot_point}, idl foot point {d3.y[0,:]}")
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
-        tplotxy3(['py_eq_trace1', 'idl_eq_trace1'], legend_names=['py','idl'], colors=['black', 'red'], markers = ['+', '<'], markevery=1,linewidths=[2,1], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_eq_trace', 'tha_eq_t89_trace', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=True)
-        tplotxy3(['py_eq_foot', 'eq_foot_t89'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=True)
+        tplotxy3(['py_eq_trace1', 'idl_eq_trace1', 'orbit_trace1'], legend_names=['py','idl','orbit'], colors=['black', 'red', 'blue'], markers = ['+', '<', None], markevery=1,linewidths=[2,1,1], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_equ_singletrace.png')
+        tplotxy3(['py_eq_trace', 'tha_eq_t89_trace', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_equ_all.png')
+        tplotxy3(['py_eq_foot', 'eq_foot_t89'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=global_display, save_png='tha_equ_foot.png')
 
     def test_calculate_lshell(self):
         from pyspedas.geopack import calculate_lshell
 
         calculate_lshell('tha_state_pos','py_tha_state_lshell')
-        pyspedas.tplot('py_tha_state_lshell')
+        pyspedas.tplot('py_tha_state_lshell', display=global_display, save_png='tha_state_lshell.png')
         py_data = get_data('py_tha_state_lshell')
         idl_data = get_data('tha_state_pos_lshell')
         diff = np.abs(idl_data.y - py_data.y)

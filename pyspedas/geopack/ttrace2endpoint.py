@@ -7,7 +7,7 @@ R_E_KM = 6371.2
 R_IONO_RE = 6468.4 / R_E_KM
 
 
-def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, km=None, south=False):
+def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, km=None):
     """
     Trace magnetic field lines to the north ionosphere, south ionosphere, or equator
 
@@ -18,7 +18,7 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
     model_str:str
         A string specifying the field model to use.  Valid options are 'igrf', 't89', 't96', 't01', 't204'.
     endpoint: str
-        A string specifying the endpoint to trace to, either 'iono' or 'equator'.
+        A string specifying the endpoint to trace to: 'ionosphere-north', 'ionosphere-south', or 'equator'.
     foot_name:str
         A string specifying the tplot variable to receive the foot point locations.
     trace_name: str
@@ -29,9 +29,6 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         (Optional) Override whatever units may be in the input variable metadata. If True, the
         input variable is assumed to be in units of km, otherwise Re.  If false, the input
         units are determined from metadata.
-    south: bool
-        When tracing to the ionosphere, determines whether the trace should be performed to the northern or
-        southern foot point.
 
     Returns
     -------
@@ -61,8 +58,8 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
     from .generic_geopack_adapters import make_model
     from pyspedas.geopack import trace_to_event
 
-    if endpoint not in ['iono', 'equator']:
-        logging.error('ttrace2endpoint: endpoint must be either "iono" or "equator"')
+    if endpoint not in ['ionosphere-north', 'ionosphere-south', 'equator']:
+        logging.error('ttrace2endpoint: endpoint must be one of "ionosphere-north", "ionosphere-south", or "equator"')
         return
 
     if model_str not in ['igrf', 't89', 't96', 't01', 't204']:
@@ -106,11 +103,11 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         if (i> 0) and (i % 100 == 0):
             logging.info(f"Computed {i}/{npts} traces so far, current trace time {time_string(time)}")
 
-        if endpoint.lower() == 'iono':
+        if endpoint == 'ionosphere-north':
             # For tracing to ionosphere, direction is -1 for south, 1 otherwise
             direction = 1.0
-            if south:
-                direction = -1.0
+        elif endpoint == 'ionosphere-south':
+            direction = -1.0
         else:
             # For tracing to the equator, we need to look at the radial component of the
             # field at the start point.  If it points outward, direction = 1, otherwise -1
