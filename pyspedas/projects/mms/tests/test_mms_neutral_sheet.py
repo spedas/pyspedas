@@ -2,7 +2,7 @@ import numpy as np
 import unittest
 import pyspedas
 from pyspedas import tkm2re
-from pyspedas.analysis.neutral_sheet import neutral_sheet
+from pyspedas import neutral_sheet
 from pyspedas.tplot_tools import get_data
 
 pyspedas.projects.mms.mec()

@@ -1,7 +1,7 @@
 .. _getting-started:
 
-Getting Started
-====================================
+Getting Started with Python and PySPEDAS
+=========================================
 
 
 
@@ -9,7 +9,9 @@ Requirements
 --------------
 PySPEDAS supports Windows, macOS and Linux.
 
-At this writing (October 2025), PySPEDAS is compatible with Python versions 3.10 through 3.14.
+At this writing (October 2025), the core PySPEDAS features are compatible with Python versions 3.10 through 3.14.
+Some optional extras (for example, the basemap package used to render SECS/EICS data) may only be
+compatible through Python 3.13.
 
 The following installation guide represents a somewhat minimal approach to getting a working PySPEDAS
 installation.   It assumes you are starting from scratch, with no pre-existing Python version or developer tools installed.
@@ -251,18 +253,23 @@ Install support for Jupyter notebooks
 
 
 Many PySPEDAS examples are distributed as jupyter notebooks, so you will probably
-want the "jupyter" package:
+want to install the "jupyter" and "ipympl" packages:
 
 .. code-block:: bash
 
    pip install jupyter
+   pip install ipympl
 
 .. _check_pycharm_settings:
 
-Check PyCharm setting for Python plots
---------------------------------------
+Check PyCharm setting for Python plots (PyCharm Professional version only)
+---------------------------------------------------------------------------
 
-By default, PyCharm may display plots in its own interface.  This is not what you want,
+If you are just using the base PyCharm installation, and have not paid for a PyCharm
+Professional license, you may skip this section: this feature is only available to
+PyCharm Professional users, and the settings described here don't exist in the base version.
+
+By default, PyCharm (Professional version) may display plots in its own interface.  This is not what you want,
 because it doesn't allow interactive usage like panning or zooming into a plot. Select
 the "Settings..." menu, then find "Tools" in the left hand pane and expand it.
 You should see something like this:
@@ -382,6 +389,9 @@ with the command
 (If you omit the filename and just do "jupyter notebook", you will get a list of whatever
 notebooks are in your project, and you can click on the one you want to run).
 
+You may be prompted to select a kernel (the Python installation to be used when runnng your notebook).
+If so, select the default kernel and continue.
+
 This will open a browser window (or open a new tab in your existing browser) which should look something like this:
 
 .. image:: _static/jupyter_window.png
@@ -400,9 +410,93 @@ step through the notebook cell-by-cell and see what happens at each step.
 
 For more information, you might want to check out the official documentation: https://jupyter-notebook.readthedocs.io/en/latest/notebook.html
 
+PySPEDAS Example Notebooks
+--------------------------
+
+The PySPEDAS team maintains several GitHub repositories containing Jupyter notebooks showing many different
+examples of how to use PySPEDAS for loading, analyzing, and plotting heliophysics data.
+
+At this time we offer three repositories of PySPEDAS examples:
+
+Basic PySPEDAS usage and simple workflows: https://github.com/spedas/pyspedas_examples/blob/master/pyspedas_examples/
+
+Simple workflows using THEMIS data: https://github.com/spedas/themis-examples/blob/master/themis-examples/
+
+Workflows (beginning through somewhat advanced) using MMS data: https://github.com/spedas/mms-examples/blob/master/mms-examples
+
+To use them, go to one of the URLs above, find a notebook you're interested it, then use the steps described
+in the previous section to download the notebook and run it in your own PySPEDAS environment.
+
+PySPEDAS Examples on Google Colab (PySPEDAS in the cloud: no local installation required!)
+-------------------------------------------------------------------------------------------
+
+Google's Colab service offers a cloud environment that is capable of running Jupyter notebooks.
+This is a good option if you want to try PySPEDAS without worrying about installing it locally, or
+if you want to share a workflow with a colleague who may not have PySPEDAS installed.
+
+Google Colab has a built-in capability to run Jupyter notebooks directly from a GitHub repository.
+
+To run a PySPEDAS notebook from one of our example repositories in Google Colab:
+
+Open your browser to https://colab.research.google.com/ .
+
+From that page, you should be able to select “GitHub” from the left hand pane, then enter the
+Github organization ‘spedas’ in the search box. This will bring up a list of repositories associated with
+SPEDAS, as shown in the image below:
+
+.. image:: _static/google_colab_window.png
+   :align: center
+   :class: imgborder
+
+
+Scroll through the list of SPEDAS repositories, find the examples you're interested in running (pyspedas_examples, themis-examples,
+or mms-examples), and click on that entry.  The screenshot below shows the list of notebooks available if you
+select the pyspedas_examples repository:
+
+
+
+.. image:: _static/colab_notebook_list.png
+   :align: center
+   :class: imgborder
+
+
+
+The next screen will show a list of available notebooks from that repository. Find one that you're interested in, and click on it -- that should bring up
+an interactive Jupyter session with that notebook loaded:
+
+
+.. image:: _static/colab_notebook_page.png
+   :align: center
+   :class: imgborder
+
+
+
+All the PySPEDAS example notebooks are designed to be runnable on Google Colab.  In the above image,
+you can see that the first code cell in the notebook contains a command to install PySPEDAS:
+
+.. code-block:: bash
+
+   !pip install pyspedas
+
+PySPEDAS wouldn't normally be installed in a fresh Google Colab environment, so this line is included to
+let you install pyspedas (in Google's cloud environment) without leaving the notebook.  You may skip this
+line if you've downloaded the notebook and are running it in an environment that already has PySPEDAS installed.
+
+
 
 Creating Jupyter notebooks
 --------------------------
 
+The Jupyter notebook interface also allows you to create your own notebooks.  From a terminal
+window, start the Jupyter server:
 
-TBD
+.. code-block:: bash
+
+   jupyter notebook
+
+Accept the default kernel if prompted, then go to the browser window that Jupyter should have opened.
+You will see that the Jupyter browser page has its own "File" menu.  Select File->New->Notebook .
+This should open another browser tab or window with an empty notebook you can edit.   To save it,
+from that notebook's browser window, use the Jupyter File menu to select File->Save As (if you haven't
+named the notebook yet), or File->Save (if you've already named it via Save As, and are just saving incremental
+changes.

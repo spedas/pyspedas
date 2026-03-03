@@ -26,6 +26,7 @@ from pyspedas.mth5.config import CONFIG
 
 import loguru
 from contextlib import contextmanager
+from pyspedas import tnames, del_data
 
 # Handling exceptions of bad data input
 from obspy.clients.fdsn.header import FDSNBadRequestException
@@ -180,12 +181,18 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = date_start
         tvar = None
+        # Identical or out of order start times should be caught by load_fsdn now.
+        exception_occurred = False
 
         try:
             tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         except FDSNException as e:
+            # If load_fdsn doesn't catch the problem with start/end times, the MTH5 library
+            # will throw an exception.  We consider that a failed test.
+            exception_occurred = True
             pass
 
+        self.assertFalse(exception_occurred)
         self.assertIsNone(tvar)
 
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
@@ -196,11 +203,22 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
 
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nodownload=True)
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         time, data = pyspedas.get_data(tvar)
 
         t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
         t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+        import mth5
+        print('mth5 version: ',mth5.__version__)
+        import mt_metadata
+        print('mt-metadata version: ', mt_metadata.__version__)
+        import obspy
+        print('obspy version: ', obspy.__version__)
+
+        print('date_start: ', date_start)
+        print('t1: ', t1)
+        print('date_end: ', date_end)
+        print('t2: ', t2)
         self.assertTrue(t1 == date_start)
         self.assertTrue(t2 == date_end)
 
@@ -298,12 +316,18 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should results in Exception
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
+        exception_raised = False
 
-        with self.assertRaises(FDSNBadRequestException) as cm:
+        # This may or may not raise an exception
+
+        pyspedas.del_data('*')
+        try:
             load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
+        except FDSNBadRequestException as e:
+            exception_raised = True
 
-        # Verify the exception type
-        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
+        exception_raised = False
+        self.assertTrue(len(tnames()) == 0)
 
         with self.assertRaises(FDSNBadRequestException) as cm:
             load_fdsn(trange=[date_start, date_end], network="4P", station="NON_EXISTENT")

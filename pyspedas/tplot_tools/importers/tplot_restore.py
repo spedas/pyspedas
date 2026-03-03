@@ -8,7 +8,7 @@ import pickle
 import numpy as np
 import pyspedas
 from pyspedas.tplot_tools import options, store_data
-from pyspedas.tplot_tools import tplot_options
+from pyspedas.tplot_tools.tplot_options import tplot_options
 from scipy.io import readsav
 import logging
 

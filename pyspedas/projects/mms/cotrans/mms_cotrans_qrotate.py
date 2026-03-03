@@ -1,14 +1,13 @@
 """
 This module provides functions for transforming MMS vector fields from one coordinate system to another using quaternion rotation.
 
-To use this module, you will need to install the SpacePy package: pip install spacepy.
-
 The main function of this module is mms_cotrans_qrotate, which performs a quaternion rotation on a tplot variable. The function takes in the names of the input and quaternion tplot variables, the name of the output tplot variable, and the coordinate system for the output data. An optional inverse flag allows the user to use the quaternion conjugate on the quaternion data prior to rotating. If the data and quaternion tplot variables are not the same length, the function will interpolate the data to the quaternion timestamps.
 """
 import logging
 from pyspedas.tplot_tools import get_data, store_data, set_coords
 from pyspedas import tinterpol
-
+import spacepy.coordinates as coord
+from pyspedas import qslerp
 
 def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
     """
@@ -31,11 +30,6 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
         inverse: bool:
             Flag to use the quaternionConjugate on the quaternion data prior to rotating
     """
-    try:
-        import spacepy.coordinates as coord
-    except ImportError:
-        logging.error("SpacePy must be installed to use this module.")
-        logging.error("Please install it using: pip install spacepy")
 
     data = get_data(in_name)
     metadata = get_data(in_name, metadata=True)
@@ -51,14 +45,21 @@ def mms_cotrans_qrotate(in_name, q_name, out_name, out_coord, inverse=False):
         return
 
     if len(data.times) != len(q_data.times):
-        logging.info("Interpolating the data to the MEC quaternion time stamps.")
-        tinterpol(in_name, q_name)
-        data = get_data(in_name + "-itrp")
+        #logging.info("Interpolating the data to the MEC quaternion time stamps.")
+        #tinterpol(in_name, q_name)
+        #data = get_data(in_name + "-itrp")
+        logging.info("Interpolating the MEC quaternions to the data time stamps.")
+        # MMS quaternions are represented as x, y, z, w -- qslerp expects w, x, y, z
+        q_wxyz = q_data.y[:,[3, 0, 1, 2]]
+        q_interp_wxyz = qslerp(q_wxyz, q_data.times, data.times)
+        q_interp_xyzw = q_interp_wxyz[:,[1,2,3,0]]
+    else:
+        q_interp_xyzw = q_data.y
 
     if inverse:
-        quaternion = coord.quaternionConjugate(q_data.y)
+        quaternion = coord.quaternionConjugate(q_interp_xyzw)
     else:
-        quaternion = q_data.y
+        quaternion = q_interp_xyzw
 
     out_data = coord.quaternionRotateVector(quaternion, data.y)
 

@@ -39,7 +39,7 @@ to be adjusted to make things easier or more clear. You can ask a question by op
 **Report Issues**
 
 The easiest way to contribute to pySPEDAS is to report bugs or issues that you come across; you can submit bug reports by opening an issue on our
-Github repository (the preferred channel, if you are already on Github), or by emailing one of the project maintainers directly.
+Github repository (the preferred channel, if you are already on Github), or by emailing one the project maintainers at jwl@ssl.berkeley.edu.
 
 Try to include as much information as possible about your environment (operating system, Python version, PySPEDAS version), what you were trying to do
 (code snippet that we can use to reproduce the issue), what you expected to happen, and what actually happened (log output or error messages, system

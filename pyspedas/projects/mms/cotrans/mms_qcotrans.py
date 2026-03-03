@@ -59,12 +59,6 @@ def mms_qcotrans(
 
     """
 
-    try:
-        import spacepy.coordinates as coord
-    except ImportError:
-        logging.error("SpacePy must be installed to use this module.")
-        logging.error("Please install it using: pip install spacepy")
-
     valid_probes = ["1", "2", "3", "4"]
     valid_coords = [
         "bcs",
@@ -130,6 +124,7 @@ def mms_qcotrans(
 
         if new_coords not in valid_coords:
             logging.error("Unsupported output coordinate system: " + new_coords)
+            return
 
         if var_coords in ["bcs", "ssl"] or new_coords in ["bcs", "ssl"]:
             logging.warning(

@@ -84,7 +84,6 @@ def rbspice(trange=['2018-11-5', '2018-11-6'],
     --------
     >>> rbspice_vars = pyspedas.projects.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype='TOFxEH', level='l3')
     >>> tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
-
     # Calculate the pitch angle distributions
     >>> from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
     >>> rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')

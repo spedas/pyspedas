@@ -181,7 +181,8 @@ def moments_3d(data_in, sc_pot=0, no_unit_conversion=False):
     mp=data['mass']  # mass units are eV/(km/sec)^2, for working with eflux units.  In these units, proton mass = 0.010453500
     q = eV_J
 
-    v = np.sqrt(2.0 * energy/mp)  # convert energy array to velocity (km/sec)
+    # v = np.sqrt(2.0 * energy/mp)  # convert energy array to velocity (km/sec)
+    v = np.sqrt(2.0 * e_inf/mp)  # convert energy array to velocity (km/sec), accounting for s/c potential
 
     vx = v*np.cos(data['theta']/180.*np.pi)*np.cos(data['phi']/180.*np.pi)
     vy = v*np.cos(data['theta']/180.*np.pi)*np.sin(data['phi']/180.*np.pi)

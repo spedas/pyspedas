@@ -148,7 +148,8 @@ class LunCotransDataValidation(unittest.TestCase):
         pos_sse = get_data('tha_state_pos_sse')
         pos_meta = get_data('tha_state_pos_sse',metadata=True)
         self.assertEqual(pos_meta['data_att']['units'],'km')
-        assert_allclose(pos_sse.y, self.tha_state_pos_sse.y, atol=0.1)
+        # absolute tolerance 0.0529 before normalizing sse_y in gse2sse, went down to 0.0459 after
+        assert_allclose(pos_sse.y, self.tha_state_pos_sse.y, atol=0.046, rtol=0.0)
         self.assertEqual(get_coords('tha_state_pos_sse').lower(),'sse')
 
     def test_gse2sse_pos_rotate_only(self):

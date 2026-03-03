@@ -12,6 +12,7 @@ from pyspedas.tplot_tools import tplot_wildcard_expand, tname_byindex, get_data,
 from pyspedas.tplot_tools import lineplot, count_traces, makegap
 from pyspedas.tplot_tools import specplot, specplot_make_1d_ybins, reduce_spec_dataset
 from pyspedas.tplot_tools import get_var_label_ticks
+from .save_plot import save_plot
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -815,7 +816,7 @@ def tplot(variables,
     # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:
         if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
-            varlabels_extra_axes(num_panels, this_axis, var_label)
+            varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_extras=plot_extras)
         else:
             var_label_panel(variables, var_label, axes,  axis_font_size)
 
@@ -870,30 +871,7 @@ def tplot(variables,
     # plt.tight_layout()
     fig.canvas.draw()
 
-    if save_png is not None and save_png != '':
-        if not save_png.endswith('.png'):
-            save_png += '.png'
-        plt.savefig(save_png, dpi=dpi)
-
-    if save_eps is not None and save_eps != '':
-        if not save_eps.endswith('.eps'):
-            save_eps += '.eps'
-        plt.savefig(save_eps, dpi=dpi)
-
-    if save_svg is not None and save_svg != '':
-        if not save_svg.endswith('.svg'):
-            save_svg += '.svg'
-        plt.savefig(save_svg, dpi=dpi)
-
-    if save_pdf is not None and save_pdf != '':
-        if not save_pdf.endswith('.pdf'):
-            save_pdf += '.pdf'
-        plt.savefig(save_pdf, dpi=dpi)
-
-    if save_jpeg is not None and save_jpeg != '':
-        if not save_jpeg.endswith('.jpeg'):
-            save_jpeg += '.jpeg'
-        plt.savefig(save_jpeg, dpi=dpi)
+    save_plot(save_png=save_png, save_eps=save_eps, save_jpeg=save_jpeg, save_pdf=save_pdf, save_svg=save_svg, dpi=dpi)
 
     if slice:
         slice_fig, slice_axes = plt.subplots(nrows=1)
@@ -908,11 +886,18 @@ def tplot(variables,
         return fig, axes
 
 
-def varlabels_extra_axes(num_panels, this_axis, var_label):
+def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_extras):
     # apply any addition x-axes specified by the var_label keyword
     if var_label is not None:
         if not isinstance(var_label, list):
             var_label = [var_label]
+
+        char_size = pyspedas.tplot_tools.tplot_opt_glob.get('charsize')
+        if char_size is None:
+            char_size = 12
+
+        if plot_extras.get('char_size') is not None:
+            char_size = plot_extras['char_size']
 
         axis_delta = 0.0
 
@@ -933,6 +918,10 @@ def varlabels_extra_axes(num_panels, this_axis, var_label):
             # set up the new x-axis
             axis_delta = axis_delta - num_panels * 0.1
             new_xaxis = this_axis.secondary_xaxis(axis_delta)
+            if axis_font_size is not None:
+                new_xaxis.tick_params(axis='x', labelsize=axis_font_size)
+                new_xaxis.tick_params(axis='y', labelsize=axis_font_size)
+
             xaxis_ticks = this_axis.get_xticks().tolist()
             xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).replace(tzinfo=None).isoformat(), 'ns') for
                               tick_val in xaxis_ticks]
@@ -941,7 +930,7 @@ def varlabels_extra_axes(num_panels, this_axis, var_label):
             new_xaxis.set_xticks(xaxis_ticks_dt)
             new_xaxis.set_xticklabels(xaxis_labels)
             ytitle = pyspedas.tplot_tools.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
-            new_xaxis.set_xlabel(ytitle)
+            new_xaxis.set_xlabel(ytitle, fontsize=char_size)
 
         # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
 
@@ -1066,5 +1055,4 @@ def replace_common_exp(title):
     if exp:
         title_out += '}$'
     return title_out
-
 

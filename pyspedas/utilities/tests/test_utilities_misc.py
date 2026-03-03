@@ -20,6 +20,10 @@ from pyspedas import (
     get_data,
     store_data,
     options,
+    get_units,
+    set_units,
+    set_coords,
+    bshock_2,
 )
 
 
@@ -63,11 +67,52 @@ class UtilTestCases(unittest.TestCase):
     def test_tkm2re(self):
         store_data("test", data={"x": [1, 2, 3], "y": [5, 5, 5]})
         options("test", "ysubtitle", "[Re]")
+        set_units("test", "Re")
+        self.assertTrue(get_units("test").lower() == 're')
         # convert to km
         tkm2re("test", km=True)
+        self.assertTrue(data_exists("test_km"))
+        self.assertTrue(get_units("test_km").lower() == 'km')
+        test_d = get_data('test_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
         # convert back
         tkm2re("test_km")
         self.assertTrue(data_exists("test_km_re"))
+        self.assertTrue(get_units("test_km_re").lower() == 're')
+        test_d = get_data('test_km_re')
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        # try converting km to km
+        tkm2re("test_km", km=True)
+        self.assertTrue(data_exists("test_km_km"))
+        self.assertTrue(get_units("test_km_km").lower() == 'km')
+        test_d = get_data('test_km_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
+        self.assertTrue(np.max(test_d.y) < 100000.0)
+
+        # try converting re to re
+        tkm2re("test_km_re", km=False)
+        self.assertTrue(data_exists("test_km_re_re"))
+        self.assertTrue(get_units("test_km_re_re").lower() == 're')
+        test_d = get_data('test_km_re_re')
+        self.assertTrue(np.min(test_d.y) > 4.0)
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        # Ensure that a conversion gets performed if the units are missing or unrecognized
+        set_units('test_km', 'unknown')
+        tkm2re("test_km", km=False)
+        self.assertTrue(data_exists("test_km_re"))
+        self.assertTrue(get_units("test_km_re").lower() == 're')
+        test_d = get_data('test_km_re')
+        self.assertTrue(np.max(test_d.y) < 6.0)
+
+        set_units('test_km_re', None)
+        tkm2re("test_km_re", km=True)
+        self.assertTrue(data_exists("test_km_re_km"))
+        self.assertTrue(get_units("test_km_re_km").lower() == 'km')
+        test_d = get_data('test_km_re_km')
+        self.assertTrue(np.min(test_d.y) > 30000.0)
+
         nothing = tkm2re("doesnt_exist")
         self.assertTrue(nothing is None)
         tkm2re("test_km", newname="another_test_km")
@@ -380,6 +425,67 @@ class UtilTestCases(unittest.TestCase):
         self.assertTrue(xmp.max() > 10.77)
         self.assertTrue(ymp.min() < -68.0)
         self.assertTrue(ymp.max() > 77.8)
+
+    def test_bshock_2(self):
+        result=bshock_2()
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 2000)
+        self.assertTrue(len(result[1]) == 2000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,190.05394])
+
+        result=bshock_2([])  # empty xsh array
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 2000)
+        self.assertTrue(len(result[1]) == 2000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,190.05394])
+
+        result=bshock_2(short=True)
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 1000)
+        self.assertTrue(len(result[1]) == 1000)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[-300,14.3,-120.87395,-0.82224500],rtol=1e-3)
+
+        result=bshock_2([1,2,3,4,5])
+        self.assertTrue(len(result)==2)
+        self.assertTrue(len(result[0]) == 10)
+        self.assertTrue(len(result[1]) == 10)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[1,5, -22.124428,26.168026],rtol=1e-3)
+
+        result=bshock_2([1,2,3,4,5], return_west=True)
+        self.assertTrue(len(result)==3)
+        self.assertTrue(len(result[0]) == 10)
+        self.assertTrue(len(result[1]) == 10)
+        self.assertTrue(len(result[2]) == 5)
+        xmin=np.min(result[0])
+        xmax=np.max(result[0])
+        ymin=np.min(result[1])
+        ymax=np.max(result[1])
+        bounds=np.array([xmin,xmax,ymin,ymax])
+        assert_allclose(bounds,[1,5, -22.124428, 26.168026],rtol=1e-3)
+        ymin=np.min(result[2])
+        ymax=np.max(result[2])
+        bounds=np.array([ymin,ymax])
+        assert_allclose(bounds,[21.693228, 26.168026],rtol=1e-3)
 
     def test_find_datasets_quiet(self):
         ds = find_datasets(mission="MMS", instrument="FGM", quiet=True)

@@ -1,38 +1,25 @@
 PySPEDAS 2.0 Migration Guide
 ============================
 
-Upcoming changes
-----------------
+PySPEDAS 2.0 changes
+---------------------
 
-In the near future, we will be releasing version 2.0.0 of PySPEDAS, and there will be
-some changes that affect how PySPEDAS and PyTplot routines are imported and called in
-your applications that use these packages.
+Version 2.0 of PySPEDAS introduced some changes that affect how PySPEDAS and PyTplot routines are imported and called in
+your applications that use these packages.  Code that was written for older PySPEDAS versions may need
+some small changes to run under PySPEDAS 2.0 and above.
 
-PyTplot will become part of PySPEDAS
+PyTplot is now part of PySPEDAS
 ------------------------------------
 
-There is currently a rather confusing situation with the relationship between the
-PySPEDAS and PyTplot packages.  This has to do with their development history. In the original IDL version of SPEDAS,
-there was no real distinction between SPEDAS and tplot, just a subdirectory of the SPEDAS source
-code with a relatively self-contained set of tools for storing data as "tplot variables",
-and plotting or performing various operations on them.
+Prior to PySPEDAS 2.0, many utilities were implemented in a separate PyTplot package.  There
+were two versions of PyTplot available (one based on the Matplotlib plotting tools, another
+based on the Qt framework), and only the Matplotlib version was compatible with PySPEDAS.
+It was very easy to install the wrong PyTplot version, and end up with a broken PySPEDAS environment.
 
-This subset of SPEDAS was first ported to Python by Bryan Harter and some other developers at LASP,
-and became the first iteration of the PyTplot package.  PySPEDAS came a few years later, with Eric Grimes at UCLA
-doing most of the initial heavy lifting.  It turned out that having PyQt as a PyTplot dependency caused some difficulty
-when installing and using PySPEDAS under certain circumstances.  This led to the creation of a fork of the PyTplot
-package that used matplotlib, rather than QT, as the back end plotting toolkit.  The forked version was
-released as the pytplot-mpl-temp package, and this is what PySPEDAS now uses.
-
-This is an ongoing source of confusion and problems for PySPEDAS users.  It is very easy
-to make the mistake of doing ``pip install pytplot`` rather than ``pip install pytplot-mpl-temp``
-when setting up or upgrading one's PySPEDAS environment, especially since the pytplot-mpl-temp
-is also imported as ``import pytplot``.
-
-To eliminate this source of confusion, the pytplot-mpl-temp routines will be
+To eliminate this source of confusion, the routines from the pytplot-mpl-temp package have been
 incorporated directly into the PySPEDAS package, beginning with version 2.0.0.
-It will no longer be necessary to ``import pytplot`` -- all the pytplot tools will
-be available directly from the pyspedas namespace.
+It is longer be necessary to ``import pytplot`` -- all the pytplot tools are
+now available directly from the pyspedas namespace.
 
 Some dependencies (basemap, viresclient, mth5) are now considered "extras" and not installed by default
 --------------------------------------------------------------------------------------------------------
@@ -92,16 +79,16 @@ using 'conda' rather than 'pip' to install the dependencies.
 PySPEDAS mission-specific code moved to 'projects' directory
 -------------------------------------------------------------
 
-We have moved the load routines and other tools for individual missions (MMS, THEMIS, GOES, OMNI, etc.)
+In later releases of the PySPEDAS 1.0 series, we moved the load routines and other tools for individual missions (MMS, THEMIS, GOES, OMNI, etc.)
 to a 'projects' subdirectory and module.   For backward compatibility, we
-have set up the pyspedas import structure so that ``from pyspedas import mms``
-or ``pyspedas.themis.fgm()`` still work as before, but the workaround isn't
-perfect -- this involves some runtime management of the available modules,
-and some IDEs (e.g. PyCharm) will mark them as potential errors because they
+had set up the pyspedas import structure so that ``from pyspedas import mms``
+or ``pyspedas.themis.fgm()`` still work as before, but the workaround wasn't
+perfect -- this involved some runtime management of the available modules,
+and some IDEs (e.g. PyCharm) marked them as potential errors because they
 only do static analysis of the import structures, even though they work perfectly
 at runtime.
 
-In PySPEDAS 2.0, this workaround will be removed, and users will need to import
+In PySPEDAS 2.0 and later, this workaround was removed, and users now need to import
 and call these routines from the 'pyspedas.projects' namespace:  ``from pyspedas.projects import mms``
 or ``pyspedas.projects.themis.fgm()``
 
@@ -111,8 +98,6 @@ Converting older PySPEDAS code for version 2.0 compatibility
 
 The changes needed to make your code work with PySPEDAS 2.0 are very straightforward, and mostly involve your import statements, and
 any fully-qualified calls that include the pytplot or pyspedas.mission prefixes.
-There is no need to wait until the PySPEDAS 2.0 release to update your code -- all the new constructs have
-been supported by PySPEDAS versions released since early 2024.
 
 There are several types of changes that you may need to make:
 
@@ -229,7 +214,7 @@ PySPEDAS 2.0 compatible rewrites:
 
 
 Updating obsolete parameter names
----------------------------------
+++++++++++++++++++++++++++++++++++
 Old style, pre-2.0:
 
 .. code-block:: python
@@ -266,7 +251,7 @@ PySPEDAS 2.0 compatible rewrites:
 Updating your environment after upgrading to PySPEDAS 2.0 or later
 --------------------------------------------------------------------
 
-After upgrading PySPEDAS to version 2.0, we recommend that you remove the pytplot and pytplot-mpl-temp packages:
+After upgrading PySPEDAS to version 2.0 or later, we recommend that you remove the pytplot and pytplot-mpl-temp packages:
 
 .. code-block:: bash
 
@@ -278,9 +263,6 @@ Most users will only have pytplot-mpl-temp, but it would be a good idea to check
 Once you install PySPEDAS 2.0, the pytplot package will no longer be needed.  Removing it ensures that you'll catch any stray
 references to the old pytplot versions of pyspedas tools, which, if left in place, could lead to using obsolete code.
 
-For a period of time after PySPEDAS 2.0 is released, we may add code to detect, when pyspedas is imported, whether pytplot is still installed, and
-remind you that we recommend uninstalling it.
-
-If you're installing PySPEDAS 2.0 for the first time in a fresh virtual environment, you shouldn't have
-to do anything special. Pytplot will no longer be listed as a package dependency for PySPEDAS, and your new
+If you're installing PySPEDAS 2.0 or later for the first time in a fresh virtual environment, you shouldn't have
+to do anything special. PyTplot will no longer be listed as a package dependency for PySPEDAS, and your new
 environment won't include it.

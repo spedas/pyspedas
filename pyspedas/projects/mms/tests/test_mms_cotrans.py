@@ -3,6 +3,7 @@ import pyspedas
 from pyspedas.tplot_tools import data_exists, tplot_rename, set_coords
 from pyspedas.projects.mms.cotrans.mms_qcotrans import mms_qcotrans
 from pyspedas.projects.mms.cotrans.mms_cotrans_lmn import mms_cotrans_lmn
+from numpy.testing import assert_allclose
 
 
 class CotransTestCases(unittest.TestCase):
@@ -16,11 +17,23 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms1_mec_r_sm_2gse'))
         mms_qcotrans(['mms1_mec_r_sm', 'mms1_mec_v_sm'], ['mms1_mec_r_sm_2gse', 'mms1_mec_v_sm_2gse'], out_coord=['gse', 'gse'])
 
-    def test_qcotrans_fgm_sm_to_gse(self):
+    def test_qcotrans_fgm_srvy_gsm_to_gse(self):
         pyspedas.projects.mms.mec()
         pyspedas.projects.mms.fgm()
-        mms_qcotrans('mms1_fgm_b_gsm_srvy_l2_bvec', 'mms1_fgm_b_gsm_brst_l2_bvec_2gse', probe=1, out_coord='gse')
-        self.assertTrue(data_exists('mms1_fgm_b_gsm_brst_l2_bvec_2gse'))
+        mms_qcotrans('mms1_fgm_b_gsm_srvy_l2_bvec', 'mms1_fgm_b_gsm_srvy_l2_bvec_2gse', probe=1, out_coord='gse')
+        #pyspedas.tplot(['mms1_fgm_b_gsm_srvy_l2_bvec_2gse','mms1_fgm_b_gse_srvy_l2_bvec'],trange=['2015-10-16/10:15','2015-10-16/10:45'])
+        self.assertTrue(data_exists('mms1_fgm_b_gsm_srvy_l2_bvec_2gse'))
+        d1=pyspedas.get_data('mms1_fgm_b_gsm_srvy_l2_bvec_2gse')
+        d2=pyspedas.get_data('mms1_fgm_b_gse_srvy_l2_bvec')
+        diff = d2.y - d1.y
+        #pyspedas.store_data('diff',data={'x':d1.times, 'y':diff})
+        #pyspedas.tplot(['mms1_fgm_b_gsm_srvy_l2_bvec_2gse','mms1_fgm_b_gse_srvy_l2_bvec','diff'])
+        assert_allclose(d1.y, d2.y,atol=1.0, rtol=1e-6)
+        # Test inverse transform
+        mms_qcotrans('mms1_fgm_b_gsm_srvy_l2_bvec_2gse', out_name='mms1_fgm_b_gsm_srvy_l2_bvec_2gse2gsm', probe=1, out_coord='gsm')
+        d3 = pyspedas.get_data('mms1_fgm_b_gsm_srvy_l2_bvec_2gse2gsm')
+        d4 = pyspedas.get_data('mms1_fgm_b_gsm_srvy_l2_bvec')
+        assert_allclose(d3.y, d4.y,atol=1.0, rtol=1e-6)
 
     def test_qcotrans_errors(self):
         with self.assertLogs(level='WARNING') as log:
@@ -51,23 +64,21 @@ class CotransTestCases(unittest.TestCase):
 
             # trouble extracting probe from var name
             tplot_rename('mms1_mec_v_sm', 'mmsx_mec_v_sm')
-            mms_qcotrans(in_name='mmsx_mec_v_sm', out_name='mms1_mec_v_sm_2gse2', out_coord='gse2')
+            mms_qcotrans(in_name='mmsx_mec_v_sm', out_name='mms1_mec_v_sm_2gse2', out_coord='gse')
+            self.assertIn("Unknown probe for variable: mmsx_mec_v_sm", log.output[5])
             tplot_rename('mms1_mec_v_sm', 'smvar')
             mms_qcotrans(in_name='smvar', out_name='mms1_mec_v_sm_2gse', out_coord='gse')
-            self.assertIn("Problem occurred during the transformation", log.output[5])
-            self.assertIn("Unsupported output coordinate system: gse2", log.output[6])
-            self.assertIn("Unknown probe for variable: mmsx_mec_v_sm", log.output[7])
-            self.assertIn("Could not determine coordinate system for: smvar", log.output[8])
+            self.assertIn("Could not determine coordinate system for: smvar", log.output[6])
 
             # should warn when you're transforming to ssl/bcs coordinates
             mms_qcotrans(out_name='mms1_mec_v_sm_2ssl', out_coord='ssl')
+            self.assertIn("Input variable name is missing", log.output[7])
             mms_qcotrans(out_name='mms1_mec_v_sm_2bcs', out_coord='bcs')
-            self.assertIn("Input variable name is missing", log.output[9])
-            self.assertIn("Input variable name is missing", log.output[10])
+            self.assertIn("Input variable name is missing", log.output[8])
 
             # unsupported coordinate system
             mms_qcotrans(in_name='mms1_mec_v_sm', out_name='mms1_mec_v_sm_2gse', in_coord='unsupported', out_coord='gse')
-            self.assertIn("Unsupported input coordinate system: unsupported", log.output[11])
+            self.assertIn("Unsupported input coordinate system: unsupported", log.output[9])
             
 
 

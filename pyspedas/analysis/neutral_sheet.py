@@ -1,8 +1,8 @@
 import logging
 import numpy as np
 import math
-from geopack.geopack import recalc as geopack_recalc
-from pyspedas import cotrans, time_double
+from pyspedas.cotrans_tools.cotrans import cotrans
+from pyspedas.tplot_tools import time_double
 
 
 def sm_ns_model(time, gsm_pos, sc2NS=False):
@@ -62,6 +62,9 @@ def themis_ns_model(time, gsm_pos, sc2NS=False):
     The themis model uses z-sm (converted from z-gsm) for the inner probes and the Hammond model (default) for the outer probes.
     The algorithm can be found in ssllib neutralsheet.pro.
     """
+
+    from geopack.geopack import recalc as geopack_recalc
+
     # initialize constants and variables
     re = 6378.0
     h0 = 8.6  # 10.5 # hinge point of the neutral sheet
@@ -152,6 +155,8 @@ def aen_ns_model(time, gsm_pos, sc2NS=False):
         magnetopause shape, location, and motion, J. Grophys. Res., 96, 5489, 1991
     """
     # initialize constants
+
+    from geopack.geopack import recalc as geopack_recalc
     h0 = 12.6 / np.pi
 
     dz2ns = np.zeros(len(time))
@@ -216,6 +221,8 @@ def den_ns_model(time, gsm_pos, sc2NS=False):
     The original source code only calculated to 10.05 RE. In this IDL version
     that restriction was increased to 25.
     """
+
+    from geopack.geopack import recalc as geopack_recalc
 
     # calculate the position of the neutral sheet along z axis
     H = 25.5
@@ -347,6 +354,8 @@ def fairfield_ns_model(time, gsm_pos, sc2NS=False):
     Vol. 85, No A2, pages 775-780, February 1, 1980
     Author - D. Fairfield
     """
+
+    from geopack.geopack import recalc as geopack_recalc
 
     # constants (in re)
     h0 = 10.5
@@ -500,6 +509,8 @@ def lopez_ns_model(time, gsm_pos, kp=None, mlt=None, sc2NS=False):
     Author - Ramon E. Lopez
     The lopez model is best used for distances <8.8 RE
     """
+    from geopack.geopack import recalc as geopack_recalc
+
     # constants
     rad = np.pi / 180.0
     if kp is None:
@@ -727,6 +738,8 @@ def tag14_ns_model(time, gsm_pos, pdyn=0.0, byimf=0.0, bzimf=0.0, sc2NS=False):
         Returns Z displacement of the neutral sheet above or below the XY plane in Re (zgsm of the NS).
         Value is positive if NS is above z=0 gsm plane, negative if below.
     """
+    from geopack.geopack import recalc as geopack_recalc
+
     dz2NS = np.zeros(len(time))
 
     for i in range(len(time)):
