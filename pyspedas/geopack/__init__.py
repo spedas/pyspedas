@@ -9,3 +9,4 @@ from .kp2iopt import kp2iopt
 from .ttrace2endpoint import ttrace2endpoint
 from .calculate_lshell import calculate_lshell
 from .trace_to_event import trace_to_event
+from .clean_model_parameters import clean_model_parameters
