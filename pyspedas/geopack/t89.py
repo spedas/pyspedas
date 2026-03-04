@@ -2,41 +2,44 @@ import logging
 import numpy as np
 from pyspedas.tplot_tools import get_data, store_data
 
-def tt89(pos_var_gsm, iopt=3, suffix='', igrf_only=False):
+def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='', igrf_only=False):
     """
     Evaluate the T89 field model at the times/positions specified by an input tplot variable.
 
-    This is a tplot wrapper for the functional interface to Sheng Tian's implementation
-    of the Tsyganenko T89 and IGRF model:
-
-    https://github.com/tsssss/geopack
-
-    Input
-    ------
-        pos_gsm_tvar: str
-            tplot variable containing the position data (km) in GSM coordinates
-
     Parameters
     -----------
-        iopt: int
-            Specifies the ground disturbance level:
+    pos_gsm_tvar: str
+        tplot variable containing the position data (km) in GSM coordinates.
+    iopt: str | int (Optional)
+        If present, specifies the ground disturbance level. If iopt is a string, it is interpreted as a
+        tplot variable name and interpolated to the times in pos_gsm_tvar.  iopt is related to the Kp index::
 
-                =========  ======== =======  =======  =======  =======  =======
-                iopt= 1       2        3        4        5        6      7
-                kp=  0,0+  1-,1,1+  2-,2,2+  3-,3,3+  4-,4,4+  5-,5,5+  &gt =6-
-                =========  ======== =======  =======  =======  =======  =======
+            =========  ======== =======  =======  =======  =======  =======
+            iopt= 1       2        3        4        5        6      7
+            kp=  0,0+  1-,1,1+  2-,2,2+  3-,3,3+  4-,4,4+  5-,5,5+  >= 6-
+            =========  ======== =======  =======  =======  =======  =======
 
-        suffix: str
-            Suffix to append to the tplot output variable
-
-        igrf_only: bool
-            If True, only return the IGRF field, without adding the T89 correction.
-            This usage is deprecated...please use the tigrf() routine if that's what you need.
+    kp: str | float (Optional)
+        If present, specifies the Kp index, which will be converted to the equivalent iopt value.
+        If kp is a string, it is interpreted as a tplot variable name and interpolated to the times in pos_gsm_tvar.
+    parmod: str | array[float] (Optional)
+        If present, specifies an  n by 10 elements floating point array of parameters. The first
+        element is interpreted as the iopt value, and the rest are ignored.  If parmod is a string,
+        it is interpreted as a tplot variable name and interpolated to the times in pos_gsm_tvar.
+    autoload: boolean (Optional)
+        If True, ignore any other parameters provided, load Kp index data from the Kyoto WDC,
+        and convert to iopt values.
+    suffix: str (Optional)
+        Suffix to append to the tplot output variable
+    igrf_only: bool
+        If True, only return the IGRF field, without adding the T89 correction.
+        This usage is deprecated...please use the tigrf() routine if that's what you need.
+        Default: False
 
     Returns
     --------
-        str
-            Name of the tplot variable containing the model data
+    str
+        Name of the tplot variable containing the model data
     """
     from .generic_geopack_adapters import make_model
     pos_data = get_data(pos_var_gsm)
