@@ -1,6 +1,23 @@
 Magnetic Field Models
 ====================================
-The routines in this module can be used to calculate Tsyganenko magnetic field models using Sheng Tian's implementation of the `geopack` library (https://github.com/tsssss/geopack).
+This module provides a set of routines that can be used to calculate various magnetic field models,
+using Sheng Tian's implementation of the `geopack` library (https://github.com/tsssss/geopack).
+
+The routines documented here each accept an input tplot variable, specifying the times and GSM positions
+at which the field models are to be evaluated.
+
+Each field model has its own set of parameters. The parameters may be passed as tplot variables names,
+in which case they are interpolated to the times specified in the input position variable.  If a scalar value
+is passed, it is used for all input times.  If an n-element array is passed. n is expected to match the
+number of input times/positions, and the n-th array element will be used as the parameter value for the
+n-th model evaluation.
+
+Most of these routines also accept a boolean 'autoload' parameter.  If True, any provided model parameters
+will be ignored, and the parameters will be derived from data loaded from various data sources: Kyoto WDC for Kp/iopt values,
+OMNIweb for solar wind parameters, or directly from K. Tysganenko's web site for certain models and parameters.
+
+The modeled B vectors are returned as tplot variables in GSM coordinates, with units of nT.
+
 
 IGRF (IGRF)
 ------------
@@ -170,7 +187,7 @@ the radial component switches sign toward or away from Earth).
 
 The field line traces are implemented as solutions to a differential equation initial value problem,
 using the solve_ivp method from the scipy library, with a Runge-Kutte order 4/5 solver.  There is a single tracing routine
-ttrace2endpoint, where an 'endpoint' parameter ('ionoshere-north', 'ionosphere-south', or 'equator') determinea
+ttrace2endpoint, where an 'endpoint' parameter ('ionoshere-north', 'ionosphere-south', or 'equator') determines
 which of the three endpoints to trace to.  endpoint='ionosphere-north' or 'ionosphere-south' correspond to the IDL SPEDAS routine
 ttrace2iono, and endpoint='equator' corresponds to IDL SPEDAS 'ttrace2equator' routine.
 
