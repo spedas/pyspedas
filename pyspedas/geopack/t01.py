@@ -12,17 +12,17 @@ def get_t01_parameters(pos_var, pdyn=None, dst=None, byimf=None, bzimf=None, g1=
     pos_var: str
         Input times and positions to be used
     pdyn: Any
-        For the t96, t01, and ts04 models: solar wind dynamic pressure in nPa
+        Solar wind dynamic pressure in nPa
     dst: Any
-        For the t96, t01, and ts04 models: Dst storm time index in nT
+        Dst index in nT
     byimf: Any
-        For the t96, t01, and ts04 models: Y component of interplanetary magnetic field
+        Y component of interplanetary magnetic field
     bzimf: Any
-        for the t96, t01, and ts04 models: Z component of interplanetary magnetic field
+        Z component of interplanetary magnetic field
     g1: Any
-        For the t01 and ts04 models: g1 index value
+        g1 index value
     g2: Any
-        For the t01 and ts04 models: g2 index value
+        g2 index value
     parmod: Any
         A 10-element or n-by-10 array of parameter values (or equivalent tplot variable) to be replicated or used as-is for model parameters
     autoload: bool
@@ -65,20 +65,20 @@ def get_t01_parameters(pos_var, pdyn=None, dst=None, byimf=None, bzimf=None, g1=
         cleaned_dst = clean_model_parameters(pos_dat.times, dst)
         output_parmod[:,1] = cleaned_dst
     else:
-        logging.warning('get_t01_parameters: No dst parameter specified, defaulting to 2.0')
-        output_parmod[:,1] = 2.0
+        logging.warning('get_t01_parameters: No dst parameter specified, defaulting to -30.0')
+        output_parmod[:,1] = -30.0
     if byimf is not None:
         cleaned_byimf = clean_model_parameters(pos_dat.times, byimf)
         output_parmod[:,2] = cleaned_byimf
     else:
-        logging.warning('get_t01_parameters: No byimf parameter specified, defaulting to 2.0')
-        output_parmod[:,2] = 2.0
+        logging.warning('get_t01_parameters: No byimf parameter specified, defaulting to 0.0')
+        output_parmod[:,2] = 0.0
     if bzimf is not None:
         cleaned_bzimf = clean_model_parameters(pos_dat.times, bzimf)
         output_parmod[:,3] = cleaned_bzimf
     else:
-        logging.warning('No bximf parameter specified, defaulting to 2.0')
-        output_parmod[:,3] = 2.0
+        logging.warning('No bzimf parameter specified, defaulting to -5.0')
+        output_parmod[:,3] = -5.0
     if g1 is not None:
         cleaned_g1 = clean_model_parameters(pos_dat.times, g1)
         output_parmod[:,4] = cleaned_g1

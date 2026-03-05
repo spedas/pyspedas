@@ -12,25 +12,25 @@ def get_ts04_parameters(pos_var, pdyn, dst, byimf, bzimf, w1, w2, w3, w4, w5, w6
     pos_var: str
         Input times and positions to be used
     pdyn: Any
-        For the t96, t01, and ts04 models: solar wind dynamic pressure in nPa
+        Solar wind dynamic pressure in nPa
     dst: Any
-        For the t96, t01, and ts04 models: Dst storm time index in nT
+        Dst index in nT
     byimf: Any
-        For the t96, t01, and ts04 models: Y component of interplanetary magnetic field
+        Y component of interplanetary magnetic field
     bzimf: Any
-        for the t96, t01, and ts04 models: Z component of interplanetary magnetic field
+        Z component of interplanetary magnetic field
     w1: Any
-        For the t01 and ts04 models: w1 index value
+        w1 index value
     w2: Any
-        For the t01 and ts04 models: w2 index value
+        w2 index value
     w3: Any
-        For the ts04 models: w3 index value
+        w3 index value
     w4: Any
-        For the ts04 models: w4 index value
+        w4 index value
     w5: Any
-        For the ts04 models: w5 index value
+        w5 index value
     w6: Any
-        For the ts04 models: w6 index value
+        w6 index value
     parmod: ndarray
         A 10-element or n-by-10 array of parameter values to be replicated or used as-is for model parameters
     autoload: bool
@@ -73,56 +73,56 @@ def get_ts04_parameters(pos_var, pdyn, dst, byimf, bzimf, w1, w2, w3, w4, w5, w6
         cleaned_dst = clean_model_parameters(pos_dat.times, dst)
         output_parmod[:,1] = cleaned_dst
     else:
-        logging.warning('get_ts04_parameters: No dst parameter specified, defaulting to 2.0')
-        output_parmod[:,1] = 2.0
+        logging.warning('get_ts04_parameters: No dst parameter specified, defaulting to -30.0')
+        output_parmod[:,1] = -30.0
     if byimf is not None:
         cleaned_byimf = clean_model_parameters(pos_dat.times, byimf)
         output_parmod[:,2] = cleaned_byimf
     else:
-        logging.warning('get_ts04_parameters: No byimf parameter specified, defaulting to 2.0')
-        output_parmod[:,2] = 2.0
+        logging.warning('get_ts04_parameters: No byimf parameter specified, defaulting to 0.0')
+        output_parmod[:,2] = 0.0
     if bzimf is not None:
         cleaned_bzimf = clean_model_parameters(pos_dat.times, bzimf)
         output_parmod[:,3] = cleaned_bzimf
     else:
-        logging.warning('get_ts04_parameters: No bzimf parameter specified, defaulting to 2.0')
-        output_parmod[:,3] = 2.0
+        logging.warning('get_ts04_parameters: No bzimf parameter specified, defaulting to -5.0')
+        output_parmod[:,3] = -5.0
     if w1 is not None:
         cleaned_w1 = clean_model_parameters(pos_dat.times, w1)
         output_parmod[:,4] = cleaned_w1
     else:
-        logging.warning('get_ts04_parameters: No w1 parameter specified, defaulting to 6.0')
-        output_parmod[:,4] = 6.0
+        logging.warning('get_ts04_parameters: No w1 parameter specified, defaulting to 8.0')
+        output_parmod[:,4] = 8.0
     if w2 is not None:
         cleaned_w2 = clean_model_parameters(pos_dat.times, w2)
         output_parmod[:,5] = cleaned_w2
     else:
-        logging.warning('get_ts04_parameters: No w2 parameter specified, defaulting to 10.0')
-        output_parmod[:,5] = 10.0
+        logging.warning('get_ts04_parameters: No w2 parameter specified, defaulting to 5.0')
+        output_parmod[:,5] = 5.0
     if w3 is not None:
         cleaned_w3 = clean_model_parameters(pos_dat.times, w3)
         output_parmod[:,6] = cleaned_w3
     else:
-        logging.warning('get_ts04_parameters: No w3 parameter specified, defaulting to 6.0')
-        output_parmod[:,6] = 6.0
+        logging.warning('get_ts04_parameters: No w3 parameter specified, defaulting to 9.5')
+        output_parmod[:,6] = 9.5
     if w4 is not None:
         cleaned_w4 = clean_model_parameters(pos_dat.times, w4)
         output_parmod[:,7] = cleaned_w4
     else:
-        logging.warning('get_ts04_parameters: No w4 parameter specified, defaulting to 10.0')
-        output_parmod[:,7] = 10.0
+        logging.warning('get_ts04_parameters: No w4 parameter specified, defaulting to 30.0')
+        output_parmod[:,7] = 30.0
     if w5 is not None:
         cleaned_w5 = clean_model_parameters(pos_dat.times, w5)
         output_parmod[:,8] = cleaned_w5
     else:
-        logging.warning('get_ts04_parameters: No w5 parameter specified, defaulting to 6.0')
-        output_parmod[:,8] = 6.0
+        logging.warning('get_ts04_parameters: No w5 parameter specified, defaulting to 18.5')
+        output_parmod[:,8] = 18.5
     if w6 is not None:
         cleaned_w6 = clean_model_parameters(pos_dat.times, w6)
         output_parmod[:,9] = cleaned_w6
     else:
-        logging.warning('get_ts04_parameters: No w6 parameter specified, defaulting to 10.0')
-        output_parmod[:,9] = 10.0
+        logging.warning('get_ts04_parameters: No w6 parameter specified, defaulting to 60.0')
+        output_parmod[:,9] = 60.0
 
     return output_parmod
 
