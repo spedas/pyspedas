@@ -6,8 +6,32 @@ R_E_KM = 6371.2
 #R_IONO_RE = 1.0 + 100.0 / R_E_KM  # 1 Re + 100 km
 R_IONO_RE = 6468.4 / R_E_KM
 
+from .t89 import get_t89_parameters
+from .t96 import get_t96_parameters
+from .t01 import get_t01_parameters
+from .ts04 import get_ts04_parameters
 
-def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, km=None):
+def ttrace2endpoint(tvar=None,
+                    model_str=None,
+                    endpoint=None,
+                    foot_name=None,
+                    trace_name=None,
+                    parmod=None,
+                    kp=None,
+                    iopt=None,
+                    igrf_only=None,
+                    pdyn=None,
+                    dst=None,
+                    byimf=None,
+                    bzimf=None,
+                    g1=None,
+                    g2=None,
+                    g3=None,
+                    g4=None,
+                    g5=None,
+                    g6=None,
+                    autoload=False,
+                    km=None):
     """
     Trace magnetic field lines to the north ionosphere, south ionosphere, or equator
 
@@ -23,12 +47,40 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
         A string specifying the tplot variable to receive the foot point locations.
     trace_name: str
         A string specifying the tplot variable to receive the trace points.
-    iopt: float
-        The model parameter to use for the t89 model.
+    parmod: Any
+        A 10-element or nx10 element array (or equivalent tplot variable) of model parameter values
+    kp: Any
+        The Kp parameter to use for the t89 model (scalar, array, or tplot variable name)
+    iopt: Any
+        The model parameter to use for the t89 model (scalar, array, or tplot variable name)
+    igrf_only: bool
+        For the t89 model, if true, only include the IGRF standard field.
+    pdyn: Any
+        For the t96, t01, and ts04 models: solar wind dynamic pressure in nPa
+    dst: Any
+        For the t96, t01, and ts04 models: Dst storm time index in nT
+    byimf: Any
+        For the t96, t01, and ts04 models: Y component of interplanetary magnetic field
+    bzimf: Any
+        for the t96, t01, and ts04 models: Z component of interplanetary magnetic field
+    g1: Any
+        For the t01 and ts04 models: g1 index value
+    g2: Any
+        For the t01 and ts04 models: g2 index value
+    g3: Any
+        For the ts04 models: g3 index value
+    g4: Any
+        For the ts04 models: g4 index value
+    g5: Any
+        For the ts04 models: g5 index value
+    g6: Any
+        For the ts04 models: g6 index value
     km:bool
         (Optional) Override whatever units may be in the input variable metadata. If True, the
         input variable is assumed to be in units of km, otherwise Re.  If false, the input
         units are determined from metadata.
+    autoload: boolean
+        If true, automatically load model parameters from an appropriate data source.
 
     Returns
     -------
@@ -94,12 +146,26 @@ def ttrace2endpoint(tvar, model_str, endpoint, foot_name, trace_name, iopt=3.0, 
     min_trace_points = 1000000
     min_trace_points_idx=-1
     max_trace_points_idx=-1
-    parmod = np.zeros(10)
-    parmod[0] = iopt
+    input_parmod = parmod
+    if model_str == 't89':
+        parmod = get_t89_parameters(tvar,kp=kp, iopt=iopt, parmod=input_parmod, autoload=autoload, igrf_only=igrf_only)
+    elif model_str == 'igrf':
+        parmod = np.zeros((npts, 10))
+    elif model_str == 't96':
+        parmod = get_t96_parameters(tvar,pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, parmod=input_parmod, autoload=autoload)
+    elif model_str == 't01':
+        parmod = get_t01_parameters(tvar, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2,
+                                    parmod=input_parmod, autoload=autoload)
+    elif model_str == 'ts04':
+        parmod = get_ts04_parameters(tvar, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2,
+                                     g3=g3, g4=g4, g5=g5, g6=g6, parmod=input_parmod, autoload=autoload)
+    else:
+        logging.error(f"Unsupported model {model_str}")
+        return
 
     for i,time in enumerate(data.times):
         #print(f"Tracing from point {i} at {startpos[i,:]}")
-        model = make_model(model_str,time, parmod)
+        model = make_model(model_str,time, parmod[i,:])
         if (i> 0) and (i % 100 == 0):
             logging.info(f"Computed {i}/{npts} traces so far, current trace time {time_string(time)}")
 

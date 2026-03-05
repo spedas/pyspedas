@@ -149,10 +149,10 @@ from .cotrans_tools.xyz_to_polar import xyz_to_polar
 from .geopack import get_tsy_params
 from .geopack.get_w_params import get_w
 from .geopack import kp2iopt
-from .geopack import tt01
-from .geopack import tt89
-from .geopack import tt96
-from .geopack import tts04
+from .geopack import tt01, get_t01_parameters
+from .geopack import tt89, get_t89_parameters
+from .geopack import tt96, get_t96_parameters
+from .geopack import tts04, get_ts04_parameters
 from .geopack import tigrf
 from .geopack import calculate_lshell
 from .geopack import ttrace2endpoint

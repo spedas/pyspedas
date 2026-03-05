@@ -1,6 +1,71 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data
+from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from .clean_model_parameters import clean_model_parameters, clean_parmod_data
+from .kp2iopt import kp2iopt
+
+def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
+    """
+    Construct an array of T89 model parameters from individual scalar values, arrays, or tplot variables.
+
+    Parameters
+    ----------
+    pos_var: str
+        Input times and positions to be used
+    kp: Any
+        The Kp parameter to use for the t89 model (scalar, array, or tplot variable name)
+    iopt: Any
+        The model parameter to use for the t89 model (scalar, array, or tplot variable name)
+    igrf_only: bool
+        For the t89 model, if true, only include the IGRF standard field.
+    parmod: Any
+        A 10-element or n-by-10 array of parameter values (or an equivalent tplot variable) to be replicated or used as-is for model parameters
+    autoload: bool
+        If True, ignore any passed parameters and download model parameters from an appropriate source.
+
+    Returns
+    -------
+    ndarray of floats
+        An n by 10, cleaned array of floating point parameters interpolated or replicated to the input timestamps
+
+    """
+    pos_trange = get_timespan(pos_var)
+    pos_dat = get_data(pos_var)
+    ntimes = len(pos_dat.times)
+    output_parmod = np.zeros((ntimes,10))
+
+    if autoload:
+        logging.error('Autoload not yet supported for t89')
+        raise ValueError('Autoload not supported')
+    if isinstance(parmod, np.ndarray):
+        if len(parmod.shape) == 1 and parmod.shape[0] == 10:
+            output_parmod[:] = parmod
+            return output_parmod
+        elif parmod.shape == (ntimes,10):
+            output_parmod = parmod
+            return output_parmod
+        else:
+            logging.error('Parmod array not a 10-element or nx10 element array')
+            raise ValueError('Parmod array not a 10-element or nx10 element array')
+    elif isinstance(parmod, str):
+        output_parmod = clean_parmod_data(pos_dat.times, parmod)
+        return output_parmod
+    if igrf_only:
+        output_parmod[:,:] = 0.0
+        return output_parmod
+    if iopt is not None:
+        cleaned_iopt = clean_model_parameters(pos_dat.times, iopt)
+        output_parmod[:,0] = cleaned_iopt
+        return output_parmod
+    if kp is not None:
+        cleaned_kp = clean_model_parameters(pos_dat.times, kp)
+        cleaned_iopt = kp2iopt(cleaned_kp)
+        output_parmod[:,0] = cleaned_iopt
+    else:
+        logging.warning('get_t89_parameters: No kp, iopt, or parmod data provided, defaulting to iopt=3')
+        output_parmod[:,0] = 3
+
+    return output_parmod # notreached
 
 def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='', igrf_only=False):
     """
@@ -52,13 +117,13 @@ def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='',
     # convert to Re
     pos_re = pos_data.y/6371.2
 
-    parmod = np.zeros(10)
-    parmod[0] = iopt
+    input_parmod = parmod
+    parmod = get_t89_parameters(pos_var=pos_var_gsm, kp=kp, iopt=iopt, parmod=input_parmod, igrf_only=igrf_only, autoload=False)
     for idx, time in enumerate(pos_data.times):
         if igrf_only:
-            model=make_model("igrf",time,parmod)  # doesn't actually use parmod at all
+            model=make_model("igrf",time,parmod[idx,:])  # doesn't actually use parmod at all
         else:
-            model=make_model("t89",time,parmod)
+            model=make_model("t89",time,parmod[idx,:])
 
         bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
 
