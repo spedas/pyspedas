@@ -26,10 +26,12 @@ def ttrace2endpoint(tvar=None,
                     bzimf=None,
                     g1=None,
                     g2=None,
-                    g3=None,
-                    g4=None,
-                    g5=None,
-                    g6=None,
+                    w1=None,
+                    w2=None,
+                    w3=None,
+                    w4=None,
+                    w5=None,
+                    w6=None,
                     autoload=False,
                     km=None):
     """
@@ -64,17 +66,21 @@ def ttrace2endpoint(tvar=None,
     bzimf: Any
         for the t96, t01, and ts04 models: Z component of interplanetary magnetic field
     g1: Any
-        For the t01 and ts04 models: g1 index value
+        For the t01 model: g1 index value
     g2: Any
-        For the t01 and ts04 models: g2 index value
-    g3: Any
-        For the ts04 models: g3 index value
-    g4: Any
-        For the ts04 models: g4 index value
-    g5: Any
-        For the ts04 models: g5 index value
-    g6: Any
-        For the ts04 models: g6 index value
+        For the t01 model: g2 index value
+    w1: Any
+        For the ts04 models: w1 index value
+    w2: Any
+        For the ts04 models: w2 index value
+    w3: Any
+        For the ts04 models: w3 index value
+    w4: Any
+        For the ts04 models: w4 index value
+    w5: Any
+        For the ts04 models: w5 index value
+    w6: Any
+        For the ts04 models: w6 index value
     km:bool
         (Optional) Override whatever units may be in the input variable metadata. If True, the
         input variable is assumed to be in units of km, otherwise Re.  If false, the input
@@ -157,8 +163,8 @@ def ttrace2endpoint(tvar=None,
         parmod = get_t01_parameters(tvar, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2,
                                     parmod=input_parmod, autoload=autoload)
     elif model_str == 'ts04':
-        parmod = get_ts04_parameters(tvar, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2,
-                                     g3=g3, g4=g4, g5=g5, g6=g6, parmod=input_parmod, autoload=autoload)
+        parmod = get_ts04_parameters(tvar, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, w1=w1, w2=w2,
+                                     w3=w3, w4=w4, w5=w5, w6=w6, parmod=input_parmod, autoload=autoload)
     else:
         logging.error(f"Unsupported model {model_str}")
         return
