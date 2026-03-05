@@ -1,8 +1,8 @@
 import numpy as np
 import numbers
 import logging
-from pyspedas.tplot_tools import interp_nan, get_data, time_string, data_exists
-from pyspedas.utilities.interpol import interpol
+from pyspedas.tplot_tools import get_data, time_string, data_exists, tdeflag
+from pyspedas.analysis.tinterpol import tinterpol
 
 def clean_model_parameters(input_times, model_param) -> np.ndarray:
     """
@@ -32,52 +32,81 @@ def clean_model_parameters(input_times, model_param) -> np.ndarray:
     if isinstance(model_param, np.ndarray):
         # Check that array is 1-d, matches input times, and contains non-nan numeric values
         if len(model_param.shape)  != 1:
-            raise ValueError(f'Model parameter array must have 1 dimension, but received {model_param.shape}')
+            txt = f'Model parameter array must have 1 dimension, but received {model_param.shape}'
+            logging.error(txt)
+            raise ValueError(txt)
         if len(model_param) != ntimes:
-            raise ValueError(f'Array size mismatch: {ntimes} input times, {len(model_param)} parameter values')
+            txt = f'Array size mismatch: {ntimes} input times, {len(model_param)} parameter values'
+            logging.error(txt)
+            raise ValueError(txt)
         if not isinstance(model_param[0], numbers.Number):
-            raise ValueError('Parameter values must be numeric')
+            txt='Parameter values must be numeric'
+            logging.error(txt)
+            raise ValueError(txt)
         if np.isnan(model_param).any():
-            raise ValueError('Model parameter array cannot contain NaN values')
+            txt='Model parameter array cannot contain NaN values'
+            logging.error(txt)
+            raise ValueError(txt)
         output_array[:] = model_param
 
     elif isinstance(model_param, list):
         # Convert to numpy array, check for array size and non-nan
         inp = np.array(model_param)
         if len(inp.shape)  != 1:
-            raise ValueError(f'Model parameter array must have 1 dimension, but received {inp.shape}')
+            txt=f'Model parameter array must have 1 dimension, but received {inp.shape}'
+            logging.error(txt)
+            raise ValueError(txt)
+
         if len(inp) != ntimes:
-            raise ValueError(f'Array size mismatch: {ntimes} input times, {len(inp)} parameter values')
+            txt=f'Array size mismatch: {ntimes} input times, {len(inp)} parameter values'
+            logging.error(txt)
+            raise ValueError(txt)
         if not isinstance(inp[0], numbers.Number):
-            raise ValueError('Parameter values must be numeric')
+            txt='Parameter values must be numeric'
+            logging.error(txt)
+            raise ValueError(txt)
         if np.isnan(inp).any():
-            raise ValueError('Model parameter array cannot contain NaN values')
+            txt='Model parameter array cannot contain NaN values'
+            logging.error(txt)
+            raise ValueError(txt)
         output_array[:] = inp
 
     elif isinstance(model_param, (float, int, np.int64, np.integer, np.float64, np.float16, np.float32)):
         if np.isfinite(model_param):
             output_array[:] = model_param
         else:
-            raise ValueError('Scalar model values must be non-NaN')
+            txt='Scalar model values must be non-NaN'
+            logging.error(txt)
+            raise ValueError(txt)
 
     elif isinstance(model_param, str):
         if not data_exists(model_param):
-            raise ValueError(f'tplot variable {model_param} does not exist')
+            txt=f'tplot variable {model_param} does not exist'
+            logging.error(txt)
+            raise ValueError(txt)
 
         inp_data = get_data(model_param)
         # Check that variable times overlap input times
         if inp_data.times[0] > input_times[0]:
-            raise ValueError(f'Parameter start time {time_string(inp_data.times[0])} is after input start time {time_string(input_times[0])} (no extrapolation allowed)')
+            txt=f'Parameter start time {time_string(inp_data.times[0])} is after input start time {time_string(input_times[0])} (no extrapolation allowed)'
+            logging.error(txt)
+            raise ValueError(txt)
         elif inp_data.times[-1] < input_times[-1]:
-            raise ValueError(f'Parameter end time {time_string(inp_data.times[-1])} is before input end time {time_string(input_times[-1])} (no extrapolation allowed)')
+            txt=f'Parameter end time {time_string(inp_data.times[-1])} is before input end time {time_string(input_times[-1])} (no extrapolation allowed)'
+            logging.error(txt)
+            raise ValueError(txt)
         # remove nans
-        clean_name = model_param + '_cleaned'
-        interp_nan(model_param,newname=clean_name)
-        cleaned_data = get_data(clean_name)
-        clean_interpolated = interpol(cleaned_data.y, cleaned_data.times, input_times)
-        output_array[:] = clean_interpolated
+        clean_name = model_param + '_deflag'
+        tdeflag(model_param, method='remove_nan', newname=clean_name)
+        # interpolate to input times
+        interp_name = model_param + '_itrp'
+        tinterpol(clean_name, input_times, newname=interp_name)
+        cleaned_interp_data = get_data(interp_name)
+        output_array[:] = cleaned_interp_data.y
     else:
-        raise ValueError('Invalid model parameter type: must be tplot variable name or numeric scalar or array')
+        txt='Invalid model parameter type: must be tplot variable name or numeric scalar or array'
+        logging.error(txt)
+        raise ValueError(txt)
 
     return output_array
 
@@ -103,24 +132,28 @@ def clean_parmod_data(input_times, parmod_var) -> np.ndarray:
     ntimes = len(input_times)
 
     if not isinstance(parmod_var, str) or not data_exists(parmod_var):
-        logging.error(f"Parmod tplot variable {parmod_var} does not exist.")
-        raise ValueError(f'tplot variable {parmod_var} does not exist')
-
+        txt=f"Parmod tplot variable {parmod_var} does not exist."
+        logging.error(txt)
+        raise ValueError(txt)
     inp_data = get_data(parmod_var)
     if inp_data.y.shape[1] != 10:
-        logging.error(f"Parmod variable {parmod_var} has {inp_data.y.shape[1]} samples per timestamp, but expected 10-element array")
-        raise ValueError("bad parmod variable")
+        txt=f"Parmod variable {parmod_var} has {inp_data.y.shape[1]} samples per timestamp, but expected 10-element array"
+        logging.error(txt)
+        raise ValueError(txt)
     # Check that variable times overlap input times
     if inp_data.times[0] > input_times[0]:
-        logging.error(f'Parmod start time {time_string(inp_data.times[0])} is after input start time {time_string(input_times[0])} (no extrapolation allowed)')
-        raise ValueError(f'Parmod start time {time_string(inp_data.times[0])} is after input start time {time_string(input_times[0])} (no extrapolation allowed)')
+        txt=f'Parmod start time {time_string(inp_data.times[0])} is after input start time {time_string(input_times[0])} (no extrapolation allowed)'
+        logging.error(txt)
+        raise ValueError(txt)
     elif inp_data.times[-1] < input_times[-1]:
-        logging.error(f'Parmod end time {time_string(inp_data.times[-1])} is before input end time {time_string(input_times[-1])} (no extrapolation allowed)')
-        raise ValueError(f'Parmod end time {time_string(inp_data.times[-1])} is before input end time {time_string(input_times[-1])} (no extrapolation allowed)')
+        txt=f'Parmod end time {time_string(inp_data.times[-1])} is before input end time {time_string(input_times[-1])} (no extrapolation allowed)'
+        logging.error(txt)
+        raise ValueError(txt)
     # remove nans
     clean_name = parmod_var + '_cleaned'
-    interp_nan(parmod_var,newname=clean_name)
-    cleaned_data = get_data(clean_name)
-    clean_interpolated = interpol(cleaned_data.y, cleaned_data.times, input_times)
-
-    return clean_interpolated
+    tdeflag(parmod_var, method='remove_nan', newname=clean_name)
+    # interpolate to input times
+    interp_name = parmod_var + '_itrp'
+    tinterpol(clean_name, input_times, newname=interp_name)
+    cleaned_interp_data = get_data(interp_name)
+    return cleaned_interp_data.y
