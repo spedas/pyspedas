@@ -173,7 +173,7 @@ class LoadTestCases(unittest.TestCase):
         parmod_data[0,:] = 5.0
         parmod_data[1,:] = 15.0
         parmod_data[2,:] = 25.0
-        parmod_data[3,:] = 35.0
+        parmod_data[3,:] = np.nan
         parmod_data[4,:] = 45.0
         parmod_data[5,:] = 55.0
         store_data('parmod_vals', data={'x':parmod_times, 'y':parmod_data})
@@ -202,7 +202,7 @@ class LoadTestCases(unittest.TestCase):
     def test_tvar(self):
         input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
         tvar_times = np.array([0.0, 100.0, 200.0])
-        tvar_vals = np.array([0.0, 100.0, 200.0])
+        tvar_vals = np.array([0.0, np.nan, 200.0])
         store_data('param_tvar1', data={'x':tvar_times, 'y':tvar_vals})
         params = clean_model_parameters(input_times, 'param_tvar1')
         assert_allclose(params,[10.0, 20.0, 30.0, 40.0, 50.0])
