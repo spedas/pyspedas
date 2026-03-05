@@ -18,6 +18,25 @@ OMNIweb for solar wind parameters, or directly from K. Tysganenko's web site for
 
 The modeled B vectors are returned as tplot variables in GSM coordinates, with units of nT.
 
+Managing model parameters
+=========================
+
+Parameters to each model can be supplied as tplot variables (to be interpolated to the input times),
+scalars (to be applied to all times), as arrays (length equal to number of input times), or
+as 10-element or n-by-10 element 'parmod' arrays (all model parameters passed in a single array).
+
+The clean_model_parameters routine takes a single model parameter and performs the necessary
+NaN-stripping, replication, or interpolation to return a properly sized array matching the input data.
+
+.. autofunction:: pyspedas.geopack.clean_model_parameters
+
+.. autofunction:: pyspedas.get_t89_parameters
+
+.. autofunction:: pyspedas.get_t96_parameters
+
+.. autofunction:: pyspedas.get_t01_parameters
+
+.. autofunction:: pyspedas.get_ts04_parameters
 
 IGRF (IGRF)
 ------------

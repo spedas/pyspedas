@@ -21,7 +21,7 @@ from pyspedas.geopack.get_w_params import get_w
 
 trange = ["2015-10-16", "2015-10-17"]
 
-from pyspedas.geopack import clean_model_parameters
+from pyspedas.geopack import clean_model_parameters, clean_parmod_data
 
 class LoadTestCases(unittest.TestCase):
     def test_bad_inputs(self):
@@ -124,6 +124,63 @@ class LoadTestCases(unittest.TestCase):
         except ValueError as e:
             got_exception = True
         self.assertTrue(got_exception)
+
+    def test_clean_parmod_errors(self):
+        input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+
+        got_exception = False
+        try:
+            out_array = clean_parmod_data(input_times, 'nonexistent')
+        except ValueError as e:
+            got_exception = True
+        self.assertTrue(got_exception)
+
+        parmod_times = np.array([5.0, 15.0, 25.0, 35.0, 45.0, 55.0])
+        parmod_data = np.zeros((6,9))
+        store_data('parmod_baddata', data={'x':parmod_times, 'y':parmod_data})
+
+        got_exception = False
+        try:
+            out_array = clean_parmod_data(input_times, 'parmod_baddata')
+        except ValueError as e:
+            got_exception = True
+        self.assertTrue(got_exception)
+
+        parmod_times = np.array([15.0, 25.0, 35.0, 45.0, 55.0])
+        parmod_data = np.zeros((5,10))
+        store_data('parmod_badstart', data={'x':parmod_times, 'y':parmod_data})
+        parmod_times = np.array([5.0, 15.0, 25.0, 35.0, 45.0])
+        store_data('parmod_badend', data={'x':parmod_times, 'y':parmod_data})
+
+        got_exception = False
+        try:
+            out_array = clean_parmod_data(input_times, 'parmod_badstart')
+        except ValueError as e:
+            got_exception = True
+        self.assertTrue(got_exception)
+
+        got_exception = False
+        try:
+            out_array = clean_parmod_data(input_times, 'parmod_badend')
+        except ValueError as e:
+            got_exception = True
+        self.assertTrue(got_exception)
+
+    def test_clean_parmod_data(self):
+        input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+        parmod_times = np.array([5.0, 15.0, 25.0, 35.0, 45.0, 55.0])
+        parmod_data = np.zeros((6,10))
+        parmod_data[0,:] = 5.0
+        parmod_data[1,:] = 15.0
+        parmod_data[2,:] = 25.0
+        parmod_data[3,:] = 35.0
+        parmod_data[4,:] = 45.0
+        parmod_data[5,:] = 55.0
+        store_data('parmod_vals', data={'x':parmod_times, 'y':parmod_data})
+        parmod_out = clean_parmod_data(input_times, 'parmod_vals')
+        assert_allclose(parmod_out[:,0], input_times)
+        assert_allclose(parmod_out[:,9], input_times)
+
 
     def test_scalar(self):
         input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
