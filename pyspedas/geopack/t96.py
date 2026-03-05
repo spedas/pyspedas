@@ -73,7 +73,7 @@ def get_t96_parameters(pos_var, pdyn, dst, byimf, bzimf, parmod, autoload):
         cleaned_bzimf = clean_model_parameters(pos_dat.times, bzimf)
         output_parmod[:,3] = cleaned_bzimf
     else:
-        logging.warning('No bximf parameter specified, defaulting to -5.0')
+        logging.warning('No bzimf parameter specified, defaulting to -5.0')
         output_parmod[:,3] = -5.0
 
     return output_parmod
