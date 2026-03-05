@@ -65,7 +65,7 @@ def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
         logging.warning('get_t89_parameters: No kp, iopt, or parmod data provided, defaulting to iopt=3')
         output_parmod[:,0] = 3
 
-    return output_parmod # notreached
+    return output_parmod
 
 def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='', igrf_only=False):
     """
