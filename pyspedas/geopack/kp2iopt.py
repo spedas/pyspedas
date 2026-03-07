@@ -1,5 +1,5 @@
 import numpy as np
-from pyspedas import tnames,data_exists
+from pyspedas import tnames,data_exists, get_data
 from pyspedas import tinterpol
 
 
@@ -41,6 +41,9 @@ def kp2iopt(kp, varname=None, plus1=False):
 
         # Interpolate kp values
         tinterpol(kp, varname, newname='kp_int_tmp',method="nearest")
+        tpdat = get_data('kp_int_tmp')
+        kp_dat = tpdat.y
+    else:
         kp_dat = kp
 
     # Convert kp_dat to iopt values
