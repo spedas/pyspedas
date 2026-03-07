@@ -30,14 +30,24 @@ def get_t96_parameters(pos_var, pdyn, dst, byimf, bzimf, parmod, autoload):
         An n by 10, cleaned array of floating point parameters interpolated or replicated to the input timestamps
 
     """
+    from pyspedas.projects.kyoto.load_dst import dst
+    from pyspedas.projects.omni.load import load as load_omni
     pos_trange = get_timespan(pos_var)
     pos_dat = get_data(pos_var)
     ntimes = len(pos_dat.times)
     output_parmod = np.zeros((ntimes,10))
 
     if autoload:
-        logging.error('Autoload not yet supported for t96')
-        raise ValueError('Autoload not supported')
+        # Pad input time interval by +/- 30 minutes when loading support data
+        support_trange = [pos_trange[0] - 3600.0, pos_trange[1] + 3600.0]
+        dst(trange=support_trange)
+        load_omni(trange=support_trange)
+        pdyn = 'OMNI_HRO_1min_Pressure'
+        byimf = 'OMNI_HRO_1min_BY_GSM'
+        bzimf = 'OMNI_HRO_1min_BZ_GSM'
+        dst='kyoto_dst'
+
+
     if isinstance(parmod, np.ndarray):
         if len(parmod.shape) == 1 and parmod.shape[0] == 10:
             output_parmod[:] = parmod

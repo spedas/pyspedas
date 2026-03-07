@@ -29,14 +29,17 @@ def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
         An n by 10, cleaned array of floating point parameters interpolated or replicated to the input timestamps
 
     """
+    from pyspedas.projects.noaa.noaa_load_kp import noaa_load_kp
     pos_trange = get_timespan(pos_var)
     pos_dat = get_data(pos_var)
     ntimes = len(pos_dat.times)
     output_parmod = np.zeros((ntimes,10))
 
     if autoload:
-        logging.error('Autoload not yet supported for t89')
-        raise ValueError('Autoload not supported')
+        # Pad the input time range by 30 minutes on each side for loading support data
+        support_trange = [pos_trange[0] - 1800.0, pos_trange[1] + 1800]
+        noaa_load_kp(trange=support_trange)
+        kp='Kp'
     if isinstance(parmod, np.ndarray):
         if len(parmod.shape) == 1 and parmod.shape[0] == 10:
             output_parmod[:] = parmod
@@ -67,7 +70,7 @@ def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
 
     return output_parmod
 
-def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='', igrf_only=False):
+def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=False, suffix='', igrf_only=False):
     """
     Evaluate the T89 field model at the times/positions specified by an input tplot variable.
 
@@ -118,7 +121,7 @@ def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=True, suffix='',
     pos_re = pos_data.y/6371.2
 
     input_parmod = parmod
-    parmod = get_t89_parameters(pos_var=pos_var_gsm, kp=kp, iopt=iopt, parmod=input_parmod, igrf_only=igrf_only, autoload=False)
+    parmod = get_t89_parameters(pos_var=pos_var_gsm, kp=kp, iopt=iopt, parmod=input_parmod, igrf_only=igrf_only, autoload=autoload)
     for idx, time in enumerate(pos_data.times):
         if igrf_only:
             model=make_model("igrf",time,parmod[idx,:])  # doesn't actually use parmod at all
