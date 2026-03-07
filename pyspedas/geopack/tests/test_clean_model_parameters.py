@@ -181,6 +181,18 @@ class LoadTestCases(unittest.TestCase):
         assert_allclose(parmod_out[:,0], input_times)
         assert_allclose(parmod_out[:,9], input_times)
 
+    def test_clean_parmod_data_nearest(self):
+        input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+        parmod_times = np.array([0.0, 200.0])
+        parmod_data = np.zeros((2,10))
+        parmod_data[0,:] = 2.0
+        parmod_data[1,:] = 200.0
+
+        store_data('parmod_vals', data={'x':parmod_times, 'y':parmod_data})
+        parmod_out = clean_parmod_data(input_times, 'parmod_vals', method='nearest')
+        assert_allclose(parmod_out[:,0], [2.0, 2.0, 2.0, 2.0, 2.0])
+        assert_allclose(parmod_out[:,9], [2.0, 2.0, 2.0, 2.0, 2.0])
+
 
     def test_scalar(self):
         input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
@@ -199,13 +211,21 @@ class LoadTestCases(unittest.TestCase):
         assert_allclose(params,[1.0, 2.0, 3.0, 4.0, 5.0])
         self.assertTrue(isinstance(params, np.ndarray))
 
-    def test_tvar(self):
+    def test_tvar_linear(self):
         input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
         tvar_times = np.array([0.0, 100.0, 200.0])
         tvar_vals = np.array([0.0, np.nan, 200.0])
         store_data('param_tvar1', data={'x':tvar_times, 'y':tvar_vals})
         params = clean_model_parameters(input_times, 'param_tvar1')
         assert_allclose(params,[10.0, 20.0, 30.0, 40.0, 50.0])
+
+    def test_tvar_nearest(self):
+        input_times=np.array([10.0, 20.0, 30.0, 40.0, 50.0])
+        tvar_times = np.array([0.0, 200.0])
+        tvar_vals = np.array([2.0,  200.0])
+        store_data('param_tvar1', data={'x':tvar_times, 'y':tvar_vals})
+        params = clean_model_parameters(input_times, 'param_tvar1', method='nearest')
+        assert_allclose(params,[2.0, 2.0, 2.0, 2.0, 2.0])
 
 if __name__ == "__main__":
     unittest.main()
