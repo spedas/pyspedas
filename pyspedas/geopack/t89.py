@@ -48,17 +48,17 @@ def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
             logging.error('Parmod array not a 10-element or nx10 element array')
             raise ValueError('Parmod array not a 10-element or nx10 element array')
     elif isinstance(parmod, str):
-        output_parmod = clean_parmod_data(pos_dat.times, parmod)
+        output_parmod = clean_parmod_data(pos_dat.times, parmod, method="nearest")
         return output_parmod
     if igrf_only:
         output_parmod[:,:] = 0.0
         return output_parmod
     if iopt is not None:
-        cleaned_iopt = clean_model_parameters(pos_dat.times, iopt)
+        cleaned_iopt = clean_model_parameters(pos_dat.times, iopt, method="nearest")
         output_parmod[:,0] = cleaned_iopt
         return output_parmod
     if kp is not None:
-        cleaned_kp = clean_model_parameters(pos_dat.times, kp)
+        cleaned_kp = clean_model_parameters(pos_dat.times, kp, method="nearest")
         cleaned_iopt = kp2iopt(cleaned_kp)
         output_parmod[:,0] = cleaned_iopt
     else:

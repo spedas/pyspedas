@@ -4,7 +4,7 @@ import logging
 from pyspedas.tplot_tools import get_data, time_string, data_exists, tdeflag
 from pyspedas.analysis.tinterpol import tinterpol
 
-def clean_model_parameters(input_times, model_param) -> np.ndarray:
+def clean_model_parameters(input_times, model_param, method="linear") -> np.ndarray:
     """
     Create a 1D array of model parameter values from a scalar, array, or tplot variable name.
 
@@ -17,7 +17,9 @@ def clean_model_parameters(input_times, model_param) -> np.ndarray:
         A scalar floating point value, array of values, or tplot variable name.  Scalars are repeated
         to match the number of input timestamps.  Arrays are taken as-is, after checking that the array size
         matches the number of timestamps. tplot variables are interpolated to input_times after removing NaN values.
-
+    method: str
+        The interpolation method to use.  Kp and iopt values are not from a continuous scale, so they should be
+        interpolated with method="nearest". Default: "linear"
 
     Returns
     -------
@@ -100,7 +102,7 @@ def clean_model_parameters(input_times, model_param) -> np.ndarray:
         tdeflag(model_param, method='remove_nan', newname=clean_name)
         # interpolate to input times
         interp_name = model_param + '_itrp'
-        tinterpol(clean_name, input_times, newname=interp_name)
+        tinterpol(clean_name, input_times, method=method, newname=interp_name)
         cleaned_interp_data = get_data(interp_name)
         output_array[:] = cleaned_interp_data.y
     else:
@@ -110,7 +112,7 @@ def clean_model_parameters(input_times, model_param) -> np.ndarray:
 
     return output_array
 
-def clean_parmod_data(input_times, parmod_var) -> np.ndarray:
+def clean_parmod_data(input_times, parmod_var, method="linear") -> np.ndarray:
     """
     Create a 2D n-by-10 array of model parameter values from a parmod tplot variable.
 
@@ -121,6 +123,9 @@ def clean_parmod_data(input_times, parmod_var) -> np.ndarray:
        times.
     parmod_var: str
         A tplot variable name containing 10-element arrays at each sample time
+    method: str
+        The interpolation method to use.  Kp and iopt values are not from a continuous scale, so they should be
+        interpolated with method="nearest". Default: "linear"
 
     Returns
     -------
@@ -154,6 +159,6 @@ def clean_parmod_data(input_times, parmod_var) -> np.ndarray:
     tdeflag(parmod_var, method='remove_nan', newname=clean_name)
     # interpolate to input times
     interp_name = parmod_var + '_itrp'
-    tinterpol(clean_name, input_times, newname=interp_name)
+    tinterpol(clean_name, input_times, method=method, newname=interp_name)
     cleaned_interp_data = get_data(interp_name)
     return cleaned_interp_data.y
