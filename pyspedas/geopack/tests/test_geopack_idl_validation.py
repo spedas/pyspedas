@@ -416,6 +416,54 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         idl_b = get_data("tst5re_2014_bt01")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
+    def test_t89_actual(self):
+        tt89("tha_state_pos_gsm", kp='Kp', suffix='_actual')
+        py_b = get_data("tha_state_pos_gsm_bt89_actual")
+        idl_b = get_data("bt89_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_t89_autoload(self):
+        tt89("tha_state_pos_gsm", autoload=True, suffix='_autoload')
+        py_b = get_data("tha_state_pos_gsm_bt89_autoload")
+        idl_b = get_data("bt89_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_t96_actual(self):
+        tt96("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
+            bzimf='OMNI_HRO_1min_BZ_GSM', suffix='_actual')
+        py_b = get_data("tha_state_pos_gsm_bt96_actual")
+        idl_b = get_data("bt96_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_t96_autoload(self):
+        tt96("tha_state_pos_gsm", autoload=True, suffix='_autoload')
+        py_b = get_data("tha_state_pos_gsm_bt96_autoload")
+        idl_b = get_data("bt96_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_t01_actual(self):
+        tt01("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
+           bzimf='OMNI_HRO_1min_BZ_GSM', g1='g1', g2='g2', suffix='_actual')
+        py_b = get_data("tha_state_pos_gsm_bt01_actual")
+        idl_b = get_data("bt01_actual")
+        diff = py_b.y - idl_b.y
+        store_data('bdiff',{'x':py_b.times, 'y':diff})
+        bydat = get_data('OMNI_HRO_1min_BY_GSM')
+        bzdat = get_data('OMNI_HRO_1min_BZ_GSM')
+        theta = np.arctan2(bzdat.y, bydat.y)
+        store_data('theta',data={'x':bydat.times, 'y':theta})
+        pyspedas.tplot('bdiff theta OMNI_HRO_1min_BY_GSM OMNI_HRO_1min_BZ_GSM', display=global_display, save_png='t01_realsw_diags.png')
+        # This assertion will fail until Sheng can get the geopack bug fix pushed out to pypi.
+        #assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_ts04_actual(self):
+        # Note that w1-w6 take their default non-time-varying values here
+        tts04("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
+            bzimf='OMNI_HRO_1min_BZ_GSM', w1='w1',w2='w2',w3='w3',w4='w4',w5='w5',w6='w6',suffix='_actual')
+        py_b = get_data("tha_state_pos_gsm_bts04_actual")
+        idl_b = get_data("bts04_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
 
 if __name__ == "__main__":
     unittest.main()
