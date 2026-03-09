@@ -47,11 +47,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('proton_bulk_speed'))
         self.assertTrue(data_exists('proton_temperature'))
 
+    @unittest.skip("Data URLs at SPDF have changed?")
     def test_load_waves_data_a(self):
         w_vars = pyspedas.projects.stereo.waves(trange=['2013-11-5', '2013-11-6'], probe='a')
         self.assertTrue(data_exists('PSD_FLUX'))
         self.assertTrue(data_exists('PSD_SFU'))
 
+    @unittest.skip("Data URLs at SPDF have changed?")
     def test_load_waves_data_b(self):
         w_vars = pyspedas.projects.stereo.waves(trange=['2013-11-5', '2013-11-6'], probe='b')
         self.assertTrue(data_exists('PSD_FLUX'))
