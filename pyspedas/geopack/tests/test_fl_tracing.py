@@ -19,8 +19,6 @@ from pyspedas import (
     tplotxy,
 )
 
-from pyspedas.utilities.min_distance_point_to_trace import symmetric_trace_distance, \
-    directed_trace_distance_with_worst_point, directed_trace_distance
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.geopack.get_w_params import get_w
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
@@ -157,7 +155,6 @@ class LoadTestCases(unittest.TestCase):
         max_idl_foot_idx = -1
 
         for i,time in enumerate(idl_time_array):
-            #trace_distance = symmetric_trace_distance(py_trace_data.y[i,:,:],idl_trace_data[i,:,:])
             foot_distance = np.linalg.norm(py_foot_data.y[i,:] - idl_foot_data[i,:])
             py_foot_radius = np.linalg.norm(py_foot_data.y[i,:])
             idl_foot_radius = np.linalg.norm(idl_foot_data[i,:])
@@ -174,12 +171,10 @@ class LoadTestCases(unittest.TestCase):
             if min_idl_foot_radius == idl_foot_radius:
                 min_idl_foot_idx = i
 
-            #max_trace_dist = np.max([max_trace_dist,trace_distance])
             max_foot_dist = np.max([max_foot_dist,foot_distance])
             if max_foot_dist == foot_distance:
                 max_foot_dist_idx = i
 
-        #print(f"Max symmetric trace distance: {max_trace_dist}")
         print(f"Max foot distance: {max_foot_dist} at index {max_foot_dist_idx}")
         print(f"Max idl foot radius: {max_idl_foot_radius} at index {max_idl_foot_idx}")
         print(f"Min idl foot radius: {min_idl_foot_radius} at index {min_idl_foot_idx}")
@@ -188,8 +183,6 @@ class LoadTestCases(unittest.TestCase):
 
         print(f"Foot points at max idx: py {py_foot_data.y[max_foot_dist_idx,:]} idl {idl_foot_data[max_foot_dist_idx,:]}")
         print(f"Foot radius at max idx: py {np.linalg.norm(py_foot_data.y[max_foot_dist_idx,:])}, idl {np.linalg.norm(idl_foot_data[max_foot_dist_idx,:])}")
-        #print(symmetric_trace_distance(py_tp_array, idl_tp_array))
-        #print(directed_trace_distance_with_worst_point(py_tp_array,idl_tp_array))
         print(f"py foot point {foot_point}, idl foot point {d3.y[0,:]}")
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
@@ -251,7 +244,6 @@ class LoadTestCases(unittest.TestCase):
         max_idl_foot_idx = -1
 
         for i,time in enumerate(idl_time_array):
-            #trace_distance = symmetric_trace_distance(py_trace_data.y[i,:,:],idl_trace_data[i,:,:])
             foot_distance = np.linalg.norm(py_foot_data.y[i,:] - idl_foot_data[i,:])
             py_foot_radius = np.linalg.norm(py_foot_data.y[i,:])
             idl_foot_radius = np.linalg.norm(idl_foot_data[i,:])
@@ -268,12 +260,10 @@ class LoadTestCases(unittest.TestCase):
             if min_idl_foot_radius == idl_foot_radius:
                 min_idl_foot_idx = i
 
-            #max_trace_dist = np.max([max_trace_dist,trace_distance])
             max_foot_dist = np.max([max_foot_dist,foot_distance])
             if max_foot_dist == foot_distance:
                 max_foot_dist_idx = i
 
-        #print(f"Max symmetric trace distance: {max_trace_dist}")
         print(f"Max foot distance: {max_foot_dist} at index {max_foot_dist_idx}")
         print(f"Max idl foot radius: {max_idl_foot_radius} at index {max_idl_foot_idx}")
         print(f"Min idl foot radius: {min_idl_foot_radius} at index {min_idl_foot_idx}")
@@ -282,8 +272,6 @@ class LoadTestCases(unittest.TestCase):
 
         print(f"Foot points at max idx: py {py_foot_data.y[max_foot_dist_idx,:]} idl {idl_foot_data[max_foot_dist_idx,:]}")
         print(f"Foot radius at max idx: py {np.linalg.norm(py_foot_data.y[max_foot_dist_idx,:])}, idl {np.linalg.norm(idl_foot_data[max_foot_dist_idx,:])}")
-        #print(symmetric_trace_distance(py_tp_array, idl_tp_array))
-        #print(directed_trace_distance_with_worst_point(py_tp_array,idl_tp_array))
         print(f"py foot point {foot_point}, idl foot point {d3.y[0,:]}")
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
@@ -331,7 +319,6 @@ class LoadTestCases(unittest.TestCase):
         min_py_foot_radius = 1000000
         all_foot_distances = np.zeros(len(d1.times))
         for i, time in enumerate(d1.times):
-            #trace_distance = directed_trace_distance(py_trace_data.y[i,:,:],idl_trace_data[i,:,:])
             foot_distance = np.linalg.norm(py_foot_data.y[i,:] - idl_foot_data[i,:])
             all_foot_distances[i] = foot_distance
             py_foot_radius = np.linalg.norm(py_foot_data.y[i,:])
@@ -340,7 +327,6 @@ class LoadTestCases(unittest.TestCase):
             min_py_foot_radius = np.min([py_foot_radius, min_py_foot_radius])
             max_idl_foot_radius = np.max([idl_foot_radius, max_idl_foot_radius])
             min_idl_foot_radius = np.min([idl_foot_radius, min_idl_foot_radius])
-            #max_trace_dist = np.max([max_trace_dist,trace_distance])
             max_foot_dist = np.max([max_foot_dist,foot_distance])
             if max_foot_dist == foot_distance:
                 max_foot_dist_idx = i
@@ -398,8 +384,6 @@ class LoadTestCases(unittest.TestCase):
 
         print(f"Foot points at max idx: py {py_foot_data.y[max_foot_dist_idx,:]} idl {idl_foot_data[max_foot_dist_idx,:]}")
         print(f"Foot radius at max idx: py {np.linalg.norm(py_foot_data.y[max_foot_dist_idx,:])}, idl {np.linalg.norm(idl_foot_data[max_foot_dist_idx,:])}")
-        #print(symmetric_trace_distance(py_tp_array, idl_tp_array))
-        #print(directed_trace_distance_with_worst_point(py_tp_array,idl_tp_array))
         print(f"py foot point {foot_point}, idl foot point {d3.y[0,:]}")
         print(f"foot point distance: {np.linalg.norm(foot_point-d3.y[0,:])}")
         print(f"foot point r: python {np.linalg.norm(foot_point)} idl: {np.linalg.norm(d3.y[0,:])}")
