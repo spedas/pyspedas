@@ -16,8 +16,8 @@ def get_esa_hapi_connection():
         ``{"Authorization": "Bearer <token>"}`` when successful, else ``None``.
     """
     issuer = "https://sso.s2p.esa.int/realms/swe/.well-known/openid-configuration"
-    client_id = "d2908e964bbfc8cd25bdf2dcaa4e5e1b"
-    client_secret = "y3akZhgnoj9cDDsPRPATrPBjgo2pNpRU"
+    client_id = "ed039925634925f75da9075ff297fd0c"
+    client_secret = "dpX1Gzy8sp7DNfIqQpxz8r6se7m2Ae8C"
     scope = "openid swe_hapiserver"
 
     try:
