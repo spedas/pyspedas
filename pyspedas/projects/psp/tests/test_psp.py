@@ -21,6 +21,7 @@ class LoadTestCases(unittest.TestCase):
         fields_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_RTN_4_Sa_per_Cyc', username='hello', password='world')
         fields_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='mag_SC_4_Sa_per_Cyc', username='hello', password='world')
         fields_vars = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='sqtn_rfs_V1V2', username='hello', password='world')
+        fields_vars = pyspedas.projects.psp.fields(trange=['2025-12-08', '2025-12-08/06:00'], datatype='sqtn_rfs_V3V4', username='hello', password='world')
         spc = pyspedas.projects.psp.spc(trange=['2018-11-5', '2018-11-5/06:00'], username='hello', password='world')
         spi = pyspedas.projects.psp.spi(trange=['2018-11-5', '2018-11-5/06:00'], username='hello', password='world')
 
@@ -66,6 +67,19 @@ class LoadTestCases(unittest.TestCase):
         fields_vars = pyspedas.projects.psp.fields(trange=trange,
                                                    datatype='sqtn_rfs_v1v2',
                                                    time_clip=True,version='v2.1')
+        self.assertTrue('electron_density' in fields_vars)
+
+    def test_fields_sqtn_rfs_v3v4_explicit_version(self):
+        trange = ['2025-12-08/00:00:00', '2025-12-08/00:00:00']
+
+        # 2026-03-12  CDAWeb has not been running their normal ingest processes due to a server
+        # relocation.  They haven't picked these files up from Berkeley yet, so I've used the uppercase
+        # datatype and specified a username and password to get the load routine to use the SPRG server
+        # instead of SPDF.
+
+        fields_vars = pyspedas.projects.psp.fields(trange=trange,
+                                                   datatype='sqtn_rfs_V3V4',
+                                                   time_clip=True,version='v2.1',username='hello', password='world')
         self.assertTrue('electron_density' in fields_vars)
 
     def test_load_dfb_dbm_dvac(self):
@@ -116,6 +130,15 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_sqtn_rfs_v1v2(self):
         fields = pyspedas.projects.psp.fields(trange=['2018-11-5', '2018-11-5/06:00'], datatype='sqtn_rfs_v1v2')
+        filtered = pyspedas.projects.psp.filter_fields('electron_density', [4, 16])
+        self.assertTrue(data_exists('electron_density'))
+        self.assertTrue(data_exists('electron_core_temperature'))
+
+    def test_load_sqtn_rfs_v3v4(self):
+        # 2026-03-12  Using upper case datatype and specifying username/password to force the request
+        # to go to the Berkeley SPRG server rather than SPDF.  SPDF has paused their ingest process and
+        # hasn't picked these files up yet.
+        fields = pyspedas.projects.psp.fields(trange=['2025-12-08', '2025-12-08/06:00'], datatype='sqtn_rfs_V3V4', username='hello', password='world')
         filtered = pyspedas.projects.psp.filter_fields('electron_density', [4, 16])
         self.assertTrue(data_exists('electron_density'))
         self.assertTrue(data_exists('electron_core_temperature'))
