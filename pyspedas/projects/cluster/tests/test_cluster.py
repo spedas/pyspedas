@@ -63,6 +63,7 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.cluster.cis(trange, probe=probe, varformat='V_p_xyz_gse__C1_PP_CIS')
         pyspedas.projects.cluster.fgm(trange, probe=probe, datatype='cp')
         dist = pyspedas.projects.cluster.cluster_get_codif_dist('ions_3d__C1_CP_CIS_CODIF_HS_H1_PSD', probe)
+        self.assertTrue(isinstance(dist[0], dict))
 
         slice_xy = pyspedas.slice2d(dist, time=event, rotation='xy', interpolation='2d')
         slice_xz = pyspedas.slice2d(dist, time=event, rotation='xz', interpolation='2d')
@@ -91,6 +92,7 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.cluster.fgm(trange, probe=probe, datatype='cp')
         md = pyspedas.get_data('ions_3d__C1_CP_CIS_HIA_HS_MAG_IONS_PSD', metadata=True)
         dist = cluster_get_hia_dist('ions_3d__C1_CP_CIS_HIA_HS_MAG_IONS_PSD', probe)
+        self.assertTrue(isinstance(dist[0], dict))
         slice_xy = pyspedas.slice2d(dist, time=event, rotation='xy', interpolation='2d')
         slice_xz = pyspedas.slice2d(dist, time=event, rotation='xz', interpolation='2d')
         slice_yz = pyspedas.slice2d(dist, time=event, rotation='yz', interpolation='2d')
