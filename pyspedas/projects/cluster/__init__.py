@@ -16,3 +16,4 @@ from .wbd import wbd
 from .whi import whi
 from .datasets import datasets
 from .codif_tools.cluster_get_codif_dist import cluster_get_codif_dist
+from .codif_tools.cluster_get_hia_dist import cluster_get_hia_dist
