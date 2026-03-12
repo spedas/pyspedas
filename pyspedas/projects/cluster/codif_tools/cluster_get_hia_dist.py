@@ -26,6 +26,7 @@ def cluster_get_hia_dist(tname, probe=None):
 
     Returns
     ----------
+    list of dict
         3D particle data structure(s) containing Cluster HIA distribution functions
     """
     data = get_data(tname)

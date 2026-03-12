@@ -24,6 +24,7 @@ def cluster_get_codif_dist(tname, probe=None):
 
     Returns
     ----------
+    list of dict
         3D particle data structure(s) containing Cluster CODIF distribution functions
     """
     data = get_data(tname)
