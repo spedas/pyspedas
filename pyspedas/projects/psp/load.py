@@ -158,7 +158,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                                             'mag_SC_1min',
                                             'mag_SC_4_Sa_per_Cyc',
                                             'sqtn_rfs_V1V2',
-                                            'sqtn_rfs_V3V4'
+                                            'sqtn_rfs_V3V4',
                                             ]):
         pass
     else:
@@ -179,11 +179,11 @@ def load(trange=['2018-11-5', '2018-11-6'],
         last_version = False
     else:
         last_version = True
-        if datatype.lower() == 'sqtn_rfs_v1v2' or datatype.lower() == 'sqtn_rfs_v3v4':
+        if datatype.lower() in ['sqtn_rfs_v1v2','sqtn_rfs_v3v4']:
             cdf_version = "v?.?"
         else:
             cdf_version = "v??"
-    
+
     file_resolution = 24*3600.
     if instrument == 'fields':
         prefix = user_prefix + '' #CDF Variables are already prefixed with psp_fld_
@@ -198,7 +198,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             pathformat = instrument + '/' + level + '/mag_rtn_4_per_cycle/%Y/psp_fld_' + level + '_mag_rtn_4_sa_per_cyc_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype in ['mag_sc_4_per_cycle', 'mag_sc_4_sa_per_cyc']:
             pathformat = instrument + '/' + level + '/mag_sc_4_per_cycle/%Y/psp_fld_' + level + '_mag_sc_4_sa_per_cyc_%Y%m%d_'+cdf_version+'.cdf'
-        elif datatype == 'sqtn_rfs_v1v2' or datatype == 'sqtn_rfs_v3v4':
+        elif datatype == 'sqtn_rfs_v1v2':
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'rfs_lfr_qtn':
             pathformat = instrument + '/' + level + '/' + datatype + '/psp_fld_' + level + '_' + datatype + '_%Y%m*_'+cdf_version+'.cdf'
@@ -219,10 +219,10 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 dtype_tmp = datatype[:11]
                 stype_tmp = datatype[12:]
             pathformat = instrument + '/' + level + '/' + dtype_tmp + '/' + stype_tmp + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
-        elif datatype == 'sqtn_rfs_v1v2' or datatype == 'sqtn_rfs_v3v4':
+        elif datatype == 'sqtn_rfs_v1v2':
             # unfortunately the naming format of quasi-thermal-noise cdf file is different from others
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
-        elif datatype == 'sqtn_rfs_V1V2' or datatype == 'sqtn_rfs_V3V4':
+        elif datatype == 'sqtn_rfs_V1V2':
             # unpublished QTN data
             pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
         elif datatype == 'merged_scam_wf':
@@ -240,7 +240,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
             elif datatype in ['mag_RTN_1min', 'mag_RTN_4_Sa_per_Cyc', 'mag_SC_1min', 'mag_SC_4_Sa_per_Cyc']:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
 
-            elif datatype == 'sqtn_rfs_V1V2' or datatype == 'sqtn_rfs_V3V4':
+            elif datatype ==  'sqtn_rfs_V1V2':
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/psp_fld_' + level + '_' + datatype + '_%Y%m%d_'+cdf_version+'.cdf'
             elif datatype in ['ephem_spp_rtn']:
                 pathformat = instrument + '/' + level + '/' + datatype + '/%Y/%m/spp_fld_' + level + '_' + datatype + '_%Y%m%d_v01.cdf'
