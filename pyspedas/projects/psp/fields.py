@@ -135,7 +135,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         prefix = ''    
 
     # SCaM and QTN data are Level 3
-    if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:
+    if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2', 'sqtn_rfs_v3v4']:
         level = 'l3'
         print("Using LEVEL=L3")
 
