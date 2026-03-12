@@ -35,7 +35,8 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
             Default: '1'
 
         option: str
-            The data option to load. Valid options: 'mom' (moments), 'psd_h1' (H+ PSD), 'psd_he1' (He+ PSD), 'psd_o1' (O+ PSD)
+            The data option to load. 
+            Valid options: 'mom' (moments), 'psd_h1' (H+ codif PSD), 'psd_he1' (He+ codif PSD), 'psd_o1' (O+ codif PSD), 'psd_ions' (ion hia PSD)
             Default: 'mom'
 
         datatype: str
@@ -102,10 +103,11 @@ def cis(trange:List[str]=['2018-11-5', '2018-11-6'],
     
     if option == 'mom':
         species = None
-    elif option.startswith('psd'):
+    elif option.startswith('psd') or option.startswith('def') or option.startswith('dpf'): # so far only working for psd
+        datatype = option.split('_')[0] 
         species = option.split('_')[1]
     else:
-        raise ValueError("Invalid option: " + option + ". Valid options are 'mom', 'psd_h1' 'psd_he1', 'psd_o1'.")
+        raise ValueError("Invalid option: " + option + ". Valid options are 'mom', 'psd_h1' 'psd_he1', 'psd_o1', 'psd_ions'.")
 
     return load(instrument='cis', trange=trange, probe=probe, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, no_update=no_update, time_clip=time_clip, force_download=force_download, species=species)
 
