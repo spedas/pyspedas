@@ -41,51 +41,6 @@ trange = ["2015-10-16", "2015-10-17"]
 global_display = False
 
 
-def gen_circle():
-    # Generate a circle at 5 RE in the XZ plane
-    angle = np.arange(0.0, 361.0, 1.0)
-    angle_rad = np.deg2rad(angle)
-    y = np.zeros(len(angle_rad), np.float64)
-    x = 5.0 * np.sin(angle_rad) * 6371.2
-    z = 5.0 * np.cos(angle_rad) * 6371.2
-    t = np.zeros(len(angle_rad))
-    t[:] = time_double("2024-01-01/06:31:00") + np.arange(0.0, 361.0, 1.0)
-    pos = np.zeros((len(angle_rad), 3), np.float64)
-    pos[:, 0] = x
-    pos[:, 1] = y
-    pos[:, 2] = z
-    store_data("circle_magpoles_5re", data={"x": t, "y": pos})
-    set_coords("circle_magpoles_5re", "GSM")
-
-
-def get_params(model, g_variables=None):
-    support_trange = [
-        time_double(trange[0]) - 60 * 60 * 24,
-        time_double(trange[1]) + 60 * 60 * 24,
-    ]
-    pyspedas.projects.kyoto.dst(trange=support_trange)
-    pyspedas.projects.omni.data(trange=trange)
-    join_vec(["BX_GSE", "BY_GSM", "BZ_GSM"])
-    if model == "t01" and g_variables is None:
-        g_variables = [6.0, 10.0]
-    else:
-        if g_variables is not None:
-            if not isinstance(g_variables, str) and not isinstance(
-                g_variables, np.ndarray
-            ):
-                g_variables = None
-    return get_tsy_params(
-        "kyoto_dst",
-        "BX_GSE-BY_GSM-BZ_GSM_joined",
-        "proton_density",
-        "flow_speed",
-        model,
-        pressure_tvar="Pressure",
-        g_variables=g_variables,
-        speed=True,
-    )
-
-
 class LoadTestCases(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
