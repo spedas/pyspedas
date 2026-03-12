@@ -20,7 +20,7 @@ from pyspedas import (
     get_data,
     tkm2re,
 )
-from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf
+from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf, kp2iopt
 from pyspedas.geopack.get_tsy_params import get_tsy_params
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 
@@ -246,7 +246,41 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         idl_b = get_data("bt89")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
-    def test_tt96(self):
+    def test_tt89_parmod_1d_array(self):
+        parmod_1d = np.zeros(10)
+        parmod_1d[0] = 3.0
+        tt89("tha_state_pos_gsm", parmod=parmod_1d)
+        py_b = get_data("tha_state_pos_gsm_bt89")
+        idl_b = get_data("bt89")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt89_parmod_2d_array(self):
+        pos_data = get_data('tha_state_pos_gsm')
+        input_times = pos_data.times
+        parmod_2d = np.zeros((len(input_times),10))
+        parmod_2d[:,0] = 3.0
+        tt89("tha_state_pos_gsm", parmod=parmod_2d)
+        py_b = get_data("tha_state_pos_gsm_bt89")
+        idl_b = get_data("bt89")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt89_parmod_var(self):
+        pos_data = get_data('tha_state_pos_gsm')
+        input_start = pos_data.times[0]
+        input_stop = pos_data.times[-1]
+        # Make sure all the times in the pos variable are nearest neighbor to first point in parmod
+        interp_stop = input_stop + 3*(input_stop - input_start)
+        parmod_2d = np.zeros((2,10))
+        parmod_2d[0,0] = 3.0
+        parmod_2d[1,0] = 10.0
+        parmod_times = [input_start, interp_stop]
+        store_data('parmod_t89', data={"x": parmod_times, "y": parmod_2d})
+        tt89("tha_state_pos_gsm", parmod='parmod_t89')
+        py_b = get_data("tha_state_pos_gsm_bt89")
+        idl_b = get_data("bt89")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt96_parmod_var(self):
         tv_pos = get_data("tha_state_pos_gsm")
         t1 = tv_pos.times[0]
         t2 = tv_pos.times[-1]
@@ -260,6 +294,70 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
             "parmod", "tha_state_pos_gsm", method="nearest", newname="parmod_interp"
         )
         tt96("tha_state_pos_gsm", parmod="parmod_interp")
+        tkm2re("tha_state_pos_gsm")
+        tvectot("tha_state_pos_gsm_re", join_component=True)
+        py_b = get_data("tha_state_pos_gsm_bt96")
+        idl_b = get_data("bt96")
+        subtract("bt96", "tha_state_pos_gsm_bt96", "bt96_diff")
+        var_names = [
+            "bt96",
+            "tha_state_pos_gsm_bt96",
+            "bt96_diff",
+            "tha_state_pos_gsm_re_tot",
+        ]
+        local_png = os.path.join(save_dir, "t96_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        tlimit(["2007-03-23/15:00", "2007-03-23/17:00"])
+        local_png = os.path.join(save_dir, "t96_diffs1.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        tlimit(full=True)
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt96_parmod_1d(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        t1 = tv_pos.times[0]
+        t2 = tv_pos.times[-1]
+        params = np.zeros(10)
+        params[0] = self.pdyn
+        params[1] = self.dsti
+        params[2] = self.yimf
+        params[3] = self.zimf
+        parmod_1d = params
+        tt96("tha_state_pos_gsm", parmod=parmod_1d)
+        tkm2re("tha_state_pos_gsm")
+        tvectot("tha_state_pos_gsm_re", join_component=True)
+        py_b = get_data("tha_state_pos_gsm_bt96")
+        idl_b = get_data("bt96")
+        subtract("bt96", "tha_state_pos_gsm_bt96", "bt96_diff")
+        var_names = [
+            "bt96",
+            "tha_state_pos_gsm_bt96",
+            "bt96_diff",
+            "tha_state_pos_gsm_re_tot",
+        ]
+        local_png = os.path.join(save_dir, "t96_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        tlimit(["2007-03-23/15:00", "2007-03-23/17:00"])
+        local_png = os.path.join(save_dir, "t96_diffs1.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        tlimit(full=True)
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt96_parmod_2d(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        t1 = tv_pos.times[0]
+        t2 = tv_pos.times[-1]
+        params = np.zeros((len(tv_pos.times),10))
+        params[:,0] = self.pdyn
+        params[:,1] = self.dsti
+        params[:,2] = self.yimf
+        params[:,3] = self.zimf
+        parmod_2d = params
+        tt96("tha_state_pos_gsm", parmod=parmod_2d)
         tkm2re("tha_state_pos_gsm")
         tvectot("tha_state_pos_gsm_re", join_component=True)
         py_b = get_data("tha_state_pos_gsm_bt96")
@@ -305,7 +403,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         idl_b = get_data("tst5re_2014_bt96")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
-    def test_tt01(self):
+    def test_tt01_parmod_var(self):
         tv_pos = get_data("tha_state_pos_gsm")
         t1 = tv_pos.times[0]
         t2 = tv_pos.times[-1]
@@ -338,7 +436,61 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
 
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
-    def test_tts04(self):
+    def test_tt01_parmod_1d(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        params = np.zeros(10)
+        params[0] = self.pdyn
+        params[1] = self.dsti
+        params[2] = self.yimf
+        params[3] = self.zimf
+        params[4] = self.g1
+        params[5] = self.g2
+        tt01("tha_state_pos_gsm", parmod=params)
+        py_b = get_data("tha_state_pos_gsm_bt01")
+        idl_b = get_data("bt01")
+        subtract("bt01", "tha_state_pos_gsm_bt01", "bt01_diff")
+        tkm2re("tha_state_pos_gsm")
+        tvectot("tha_state_pos_gsm_re", join_component=True)
+
+        var_names = [
+            "bt01",
+            "tha_state_pos_gsm_bt01",
+            "bt01_diff",
+            "tha_state_pos_gsm_re_tot",
+        ]
+        local_png = os.path.join(save_dir, "t01_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt01_parmod_2d(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        params = np.zeros((len(tv_pos.times),10))
+        params[:,0] = self.pdyn
+        params[:,1] = self.dsti
+        params[:,2] = self.yimf
+        params[:,3] = self.zimf
+        params[:,4] = self.g1
+        params[:,5] = self.g2
+        tt01("tha_state_pos_gsm", parmod=params)
+        py_b = get_data("tha_state_pos_gsm_bt01")
+        idl_b = get_data("bt01")
+        subtract("bt01", "tha_state_pos_gsm_bt01", "bt01_diff")
+        tkm2re("tha_state_pos_gsm")
+        tvectot("tha_state_pos_gsm_re", join_component=True)
+
+        var_names = [
+            "bt01",
+            "tha_state_pos_gsm_bt01",
+            "bt01_diff",
+            "tha_state_pos_gsm_re_tot",
+        ]
+        local_png = os.path.join(save_dir, "t01_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tts04_parmod_var(self):
         tv_pos = get_data("tha_state_pos_gsm")
         t1 = tv_pos.times[0]
         t2 = tv_pos.times[-1]
@@ -358,6 +510,53 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
             "parmod", "tha_state_pos_gsm", method="nearest", newname="parmod_interp"
         )
         tts04("tha_state_pos_gsm", parmod="parmod_interp")
+        py_b = get_data("tha_state_pos_gsm_bts04")
+        idl_b = get_data("bts04")
+        subtract("bts04", "tha_state_pos_gsm_bts04", "bts04_diff")
+
+        var_names = ["bts04", "tha_state_pos_gsm_bts04", "bts04_diff"]
+        local_png = os.path.join(save_dir, "ts04_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tts04_parmod_2d(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        params = np.zeros((len(tv_pos.times),10))
+        params[:, 0] = self.pdyn
+        params[:, 1] = self.dsti
+        params[:, 2] = self.yimf
+        params[:, 3] = self.zimf
+        params[:, 4] = self.w1
+        params[:, 5] = self.w2
+        params[:, 6] = self.w3
+        params[:, 7] = self.w4
+        params[:, 8] = self.w5
+        params[:, 9] = self.w6
+        tts04("tha_state_pos_gsm", parmod=params)
+        py_b = get_data("tha_state_pos_gsm_bts04")
+        idl_b = get_data("bts04")
+        subtract("bts04", "tha_state_pos_gsm_bts04", "bts04_diff")
+
+        var_names = ["bts04", "tha_state_pos_gsm_bts04", "bts04_diff"]
+        local_png = os.path.join(save_dir, "ts04_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tts04_parmod_1d(self):
+        params = np.zeros(10)
+        params[0] = self.pdyn
+        params[1] = self.dsti
+        params[2] = self.yimf
+        params[3] = self.zimf
+        params[4] = self.w1
+        params[5] = self.w2
+        params[6] = self.w3
+        params[7] = self.w4
+        params[8] = self.w5
+        params[9] = self.w6
+        tts04("tha_state_pos_gsm", parmod=params)
         py_b = get_data("tha_state_pos_gsm_bts04")
         idl_b = get_data("bts04")
         subtract("bts04", "tha_state_pos_gsm_bts04", "bts04_diff")
@@ -418,6 +617,13 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
 
     def test_t89_actual(self):
         tt89("tha_state_pos_gsm", kp='Kp', suffix='_actual')
+        py_b = get_data("tha_state_pos_gsm_bt89_actual")
+        idl_b = get_data("bt89_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_t89_actual_kp2iopt(self):
+        iopt = kp2iopt('Kp','tha_state_pos_gsm')
+        tt89("tha_state_pos_gsm", iopt=iopt, suffix='_actual')
         py_b = get_data("tha_state_pos_gsm_bt89_actual")
         idl_b = get_data("bt89_actual")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
