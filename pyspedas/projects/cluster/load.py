@@ -142,16 +142,28 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         elif instrument == 'aspoc':
             pathformat = 'c'+prb+'/'+datatype+'/asp/%Y/c'+prb+'_'+datatype+'_asp_%Y%m%d_v??.cdf'
         elif instrument == 'cis':
-            if species == None:
+            if species == None: # load moments
                 pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
-            else: 
-                if species == 'h1':
-                    scd = 'proton' # second name for H+
-                if species == 'he1':
-                    scd = 'heplus' # second name for He+
-                if species == 'o1':
-                    scd = 'oplus' # second name for O+
-                pathformat = 'c'+prb+'/'+instrument+'-codif/'+scd+'_3ddist_highsens_phasespacedens'+'/%Y/c'+prb+'_cp_'+instrument+'-codif_hs_'+species+'_psd'+'_%Y%m%d_v????????.cdf'
+            else: # load dist data 
+                if datatype == 'psd': # possibility to load def / dpf in future
+                    dattyp = 'phasespacedens' 
+                if species == 'ions': # hia path
+                    cis_instrument = 'hia'
+                    scd = species
+                    mode = 'magmode_highsens' 
+                    md = 'hs_mag'
+                else: # codif path
+                    cis_instrument = 'codif'
+                    if datatype == 'psd':
+                        mode = 'highsens'
+                        md = 'hs'
+                    if species == 'h1':
+                        scd = 'proton' # second name for H+
+                    if species == 'he1':
+                        scd = 'heplus' # second name for He+
+                    if species == 'o1':
+                        scd = 'oplus' # second name for O+
+                pathformat = 'c'+prb+'/'+instrument+'-'+cis_instrument+'/'+scd+'_3ddist_'+mode+'_'+dattyp+'/%Y/c'+prb+'_cp_'+instrument+'-'+cis_instrument+'_'+md+'_'+species+'_'+datatype+'_%Y%m%d_v????????.cdf'
         elif instrument == 'dwp':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
         elif instrument == 'edi':
