@@ -120,8 +120,8 @@ def ttrace2endpoint(tvar=None,
         logging.error('ttrace2endpoint: endpoint must be one of "ionosphere-north", "ionosphere-south", or "equator"')
         return
 
-    if model_str not in ['igrf', 't89', 't96', 't01', 't204']:
-        logging.error(f"ttrace2endpoint: Invalid model_str {model_str}, must be one of ['igrf', 't89', 't96', 't01', 't204']")
+    if model_str not in ['igrf', 't89', 't96', 't01', 'ts04']:
+        logging.error(f"ttrace2endpoint: Invalid model_str {model_str}, must be one of ['igrf', 't89', 't96', 't01', 'ts04']")
         return
 
     coords=get_coords(tvar)
