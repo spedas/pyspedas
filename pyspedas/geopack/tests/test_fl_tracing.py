@@ -24,6 +24,7 @@ from pyspedas.geopack.get_w_params import get_w
 from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
 import os
 
+R_E_KM = 6371.2
 
 # Whether to display plots during testing
 global_display = TESTING_CONFIG["global_display"]
@@ -52,7 +53,7 @@ class LoadTestCases(unittest.TestCase):
             save_dir,
         )
         # Uncomment this if you want to use locally generated comparison data including the huge IDL trace variable.
-        # filename = '/tmp/ttrace_validate_reduced.tplot'
+        filename = '/tmp/ttrace_validate_reduced.tplot'
         del_data("*")
         tplot_restore(filename)
 
@@ -616,6 +617,74 @@ class LoadTestCases(unittest.TestCase):
         median_diff = np.median(diff)
         print(f"Max diff: {max_diff}, median diff: {median_diff}")
         self.assertTrue(median_diff < 1.0e-05)
+
+    def test_t89_poles(self):
+        from pyspedas.geopack import ttrace2endpoint
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True)
+        d3 = get_data('ifoot_t89_5re_magpoles')
+        py_foot_data = get_data('py_iono_t89_foot')
+        idl_foot_data = d3.y
+        idl_time_array = d3.times
+
+        set_coords('py_iono_t89_foot','GSM')
+        set_units('py_iono_t89_foot','km')
+
+        max_foot_dist = 0
+        max_foot_dist_idx = 0
+        max_idl_foot_radius = 0
+        min_idl_foot_radius = 1000000
+        max_py_foot_radius = 0
+        max_py_foot_idx = -1
+        min_py_foot_radius = 1000000
+        min_py_foot_idx = -1
+        min_idl_foot_idx = -1
+        max_idl_foot_idx = -1
+
+        foot_distances = np.zeros(len(idl_time_array))
+        for i,time in enumerate(idl_time_array):
+            foot_distance = np.linalg.norm(py_foot_data.y[i,:] - idl_foot_data[i,:])
+            foot_distances[i] = foot_distance
+            py_foot_radius = np.linalg.norm(py_foot_data.y[i,:])
+            idl_foot_radius = np.linalg.norm(idl_foot_data[i,:])
+            max_py_foot_radius = np.max([py_foot_radius,max_py_foot_radius])
+            if max_py_foot_radius == py_foot_radius:
+                max_py_foot_idx = i
+            min_py_foot_radius = np.min([py_foot_radius, min_py_foot_radius])
+            if min_py_foot_radius == py_foot_radius:
+                min_py_foot_idx = i
+            max_idl_foot_radius = np.max([idl_foot_radius, max_idl_foot_radius])
+            if max_idl_foot_radius == idl_foot_radius:
+                max_idl_foot_idx = i
+            min_idl_foot_radius = np.min([idl_foot_radius, min_idl_foot_radius])
+            if min_idl_foot_radius == idl_foot_radius:
+                min_idl_foot_idx = i
+
+            max_foot_dist = np.max([max_foot_dist,foot_distance])
+            if max_foot_dist == foot_distance:
+                max_foot_dist_idx = i
+
+        print(f"Max foot distance: {max_foot_dist} at index {max_foot_dist_idx}")
+        print(f"Median foot distance: {np.median(foot_distances)}")
+        print(f"Max idl foot radius: {max_idl_foot_radius} ({max_idl_foot_radius/R_E_KM} Re) at index {max_idl_foot_idx}")
+        print(f"Min idl foot radius: {min_idl_foot_radius} at index {min_idl_foot_idx}")
+        print(f"Max py foot radius: {max_py_foot_radius} ({max_py_foot_radius/R_E_KM} Re) at index {max_py_foot_idx}")
+        print(f"Min py foot radius: {min_py_foot_radius} at index {min_py_foot_idx}")
+
+        print(f"Foot points at max idx: py {py_foot_data.y[max_foot_dist_idx,:]} idl {idl_foot_data[max_foot_dist_idx,:]}")
+        print(f"Foot radius at max idx: py {np.linalg.norm(py_foot_data.y[max_foot_dist_idx,:])}, idl {np.linalg.norm(idl_foot_data[max_foot_dist_idx,:])}")
+
+        tplotxy3(['py_iono_t89_foot'], colors=['green'],reverse_x=True, display=True)
+        tplotxy3(['py_iono_trace'], colors=['green'],reverse_x=True, display=True)
+
+    def test_trace_diags(self):
+        from pyspedas.geopack import ttrace2endpoint
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True,
+                        bvec_name='trace_bvec', diag_nevals_name='trace_nevals', diag_reached_name='trace_reached', diag_s_max_name='trace_s_max', diag_npts_name='trace_npts')
+
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True,
+                        bvec_name='trace_bvec2', diag_nevals_name='trace_nevals2', diag_reached_name='trace_reached2', diag_s_max_name='trace_s_max2', diag_npts_name='trace_npts2',
+                        max_s=100.0)
+        pyspedas.tplot('trace_nevals trace_reached trace_s_max trace_npts trace_nevals2 trace_reached2 trace_s_max2 trace_npts2', display=global_display, save_png='trace_diags.png')
 
 if __name__ == "__main__":
     unittest.main()
