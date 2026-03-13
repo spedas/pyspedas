@@ -127,7 +127,7 @@ def make_model(name: ModelName, time: float, parmod_any) -> MagneticFieldModel:
     if name == "t01":
         return T01Model(name="t01", ctx=ctx, parmod=parmod)
 
-    if name == "t04":
+    if name in ["t04", "ts04", "t04s"]:
         return T04Model(name="t04", ctx=ctx, parmod=parmod)
 
     raise ValueError(f"Unknown model: {name}")
