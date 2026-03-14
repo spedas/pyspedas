@@ -339,7 +339,7 @@ def ttrace2endpoint(tvar:str = None,
             all_trace_vecs[i,0:n_trace_points,:] = thistrace
         store_data(bvec_name, data={'x': data.times, 'y': all_trace_vecs})
         set_coords(bvec_name, 'GSM')
-        set_units(trace_name, 'nT')
+        set_units(bvec_name, 'nT')
 
     if s_max_flag:
         store_data(diag_s_max_name, data={'x':data.times, 'y':s_max})
