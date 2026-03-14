@@ -496,6 +496,19 @@ class LoadTestCases(unittest.TestCase):
         tplotxy3(['py_trace_n', 'tha_iono_t89_trace_n', 'tha_state_pos'], legend_names=['py','idl','orbit'], colors=['black', 'red','blue'], markers=[None, None, '+'], reverse_x=True,plot_units='km',show_centerbody=False, display=global_display, save_png='tha_iono_n_all.png')
         tplotxy3(['py_foot_n', 'ifoot_t89_n'], legend_names=['py','idl'], colors=['green','red'],markers=['+',None], reverse_x=True, plot_units = 'km',show_centerbody=True, display=global_display, save_png='tha_iono_n_foot.png')
 
+    def test_trace_iono_radius_all(self):
+        from pyspedas.geopack import ttrace2endpoint
+        d1=get_data('tha_state_pos')
+        d2=get_data('tha_iono_t89_trace_n')
+        #tplotxy3(['tha_iono_t89_trace'])
+        d3=get_data('ifoot_t89_n')
+        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', 'py_foot_n', 'py_trace_n', iopt=3, km=True,
+                        r_iono_re=6800.0/R_E_KM)
+        pyspedas.tvectot('py_foot_n',newname='py_foot_r',join_component=False)
+        r_data = get_data('py_foot_r')
+        self.assertTrue(np.nanmin(r_data.y) > 6799.5)
+        self.assertTrue(np.nanmax(r_data.y) < 6800.5)
+
     def test_t89_equ_idl_all(self):
         from pyspedas.geopack import ttrace2endpoint
         d1=get_data('tha_state_pos')
@@ -681,7 +694,8 @@ class LoadTestCases(unittest.TestCase):
         ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True,
                         bvec_name='trace_bvec', diag_nevals_name='trace_nevals', diag_reached_name='trace_reached', diag_s_max_name='trace_s_max', diag_npts_name='trace_npts')
 
-        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True,
+        # Don't request trace points the second time, use a different max_s parameter
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', iopt=3, km=True,
                         bvec_name='trace_bvec2', diag_nevals_name='trace_nevals2', diag_reached_name='trace_reached2', diag_s_max_name='trace_s_max2', diag_npts_name='trace_npts2',
                         max_s=100.0)
         pyspedas.tplot('trace_nevals trace_reached trace_s_max trace_npts trace_nevals2 trace_reached2 trace_s_max2 trace_npts2', display=global_display, save_png='trace_diags.png')
