@@ -1,0 +1,246 @@
+name: build
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        env:
+          MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+          MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+          VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pdm uv
+          pdm config use_uv true
+          pdm install -dG lint -dG test -dG setup --no-default
+
+      - name: Lint with flake8
+        run: |
+          source ../.venv/bin/activate
+          flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
+          flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+
+      - name: Lint with ruff
+        run: |
+          source ../.venv/bin/activate
+          ruff check . --select=E9,F63,F7,F82 --statistics
+          ruff check . --exit-zero --statistics --line-length=127 -- --max-complexity=10
+
+  build_wheel:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: dist-wheel
+          path: dist/*.whl
+          if-no-files-found: error
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: build_wheel
+    if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: hapi
+            shard_script: |
+              echo "Starting hapi tests at $(date)"
+              coverage run -m pyspedas.hapi_tools.tests.test_hapi
+
+              echo "Disk usage after hapi:"
+              df -h
+              du -sh "$DATA_ROOT"/* 2>/dev/null || true
+
+              echo "Cleaning downloaded files"
+              rm -rf "$DATA_ROOT"/*
+
+          - shard: mms
+            shard_script: |
+              echo "Starting mms data rate seg tests at $(date)"
+              coverage run -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
+
+              echo "Disk usage after MMS test:"
+              df -h
+              du -sh "$MMS_DATA_DIR" 2>/dev/null || true
+
+              echo "Cleaning MMS downloads"
+              rm -rf "$MMS_DATA_DIR"
+
+              # Example of adding another test later:
+              # echo "Starting second MMS test at $(date)"
+              # coverage run -a -m pyspedas.projects.mms.tests.test_mms_other
+
+    env:
+      DATA_ROOT: ${{ runner.temp }}/spedas-${{ matrix.shard }}
+      SPEDAS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/data
+      ACE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/ace_data
+      BARREL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/barrel_data
+      CLUSTER_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cluster_data
+      DSC_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/dsc_data
+      CSSWE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/csswe_data
+      EQUATORS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/eqs_data
+      FAST_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/fast_data
+      GEOTAIL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/geotail_data
+      GOES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/goes_data
+      IMAGE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/img_data
+      MICA_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mica_data
+      MMS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mms_data
+      OMNI_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/omni_data
+      POES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/poes_data
+      POLAR_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/polar_data
+      PSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/psp_data
+      RBSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/rbsp_data
+      SOLO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/solo_data
+      STEREO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/stereo_data
+      THM_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/themis_data
+      TWINS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/twins_data
+      ULY_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/uly_data
+      WIND_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/wind_data
+      LANL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/lanl_data
+      CNOFS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cnofs_data
+      ST5_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/st5_data
+      PYTPLOT_LOGGING_LEVEL: error
+      VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
+      MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+      MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: dist-wheel
+          path: dist
+
+      - name: Install dependencies and wheel
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pdm uv
+          pdm config use_uv true
+          pdm install -dG lint -dG test -dG setup --no-default
+          wheelbase=$(echo dist/*.whl)
+          pip install "${wheelbase}[all]"
+          python -m pyspedas.projects.mms.tests.test_mms_setup
+
+      - name: Hide the repo copy so imports use site-packages
+        run: |
+          if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
+
+      - name: Sanity check import location
+        run: |
+          source ../.venv/bin/activate
+          python - <<'PY'
+          import pyspedas, pathlib, sys
+          p = pathlib.Path(pyspedas.__file__).resolve()
+          print("sys.executable:", sys.executable)
+          print("pyspedas import path:", p)
+          print("sys.path[0]:", sys.path[0])
+          assert "site-packages" in str(p), f"Still importing from repo: {p}"
+          PY
+
+      - name: Run shard script
+        run: |
+          source ../.venv/bin/activate
+          mkdir -p "$DATA_ROOT"
+          export COVERAGE_FILE=".coverage.${{ matrix.shard }}"
+          ${{ matrix.shard_script }}
+
+      - name: Restore repo copy
+        if: ${{ always() }}
+        run: |
+          if [ -d __repo_pyspedas ]; then mv __repo_pyspedas pyspedas; fi
+
+      - name: Upload raw coverage data
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-${{ matrix.shard }}
+          path: .coverage.${{ matrix.shard }}
+          if-no-files-found: error
+
+      - name: Final cleanup
+        if: ${{ always() }}
+        run: |
+          rm -rf "$DATA_ROOT"
+
+  combine_coverage:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev') }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip coverage
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+          path: coverage-files
+
+      - name: Combine coverage and generate XML
+        run: |
+          ls -la coverage-files
+          cp coverage-files/.coverage.* .
+          coverage combine .coverage.*
+          coverage xml --debug=pathmap
+          grep avg_data coverage.xml || true
+
+      - name: Upload combined report to Coveralls
+        uses: coverallsapp/github-action@v2
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: coverage.xml
+          format: cobertura
