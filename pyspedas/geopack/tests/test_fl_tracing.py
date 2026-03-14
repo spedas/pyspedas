@@ -686,9 +686,6 @@ class LoadTestCases(unittest.TestCase):
         print(f"Foot points at max idx: py {py_foot_data.y[max_foot_dist_idx,:]} idl {idl_foot_data[max_foot_dist_idx,:]}")
         print(f"Foot radius at max idx: py {np.linalg.norm(py_foot_data.y[max_foot_dist_idx,:])}, idl {np.linalg.norm(idl_foot_data[max_foot_dist_idx,:])}")
 
-        tplotxy3(['py_iono_t89_foot'], colors=['green'],reverse_x=True, display=True)
-        tplotxy3(['py_iono_trace'], colors=['green'],reverse_x=True, display=True)
-
     def test_trace_diags(self):
         from pyspedas.geopack import ttrace2endpoint
         ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', 'py_iono_trace', iopt=3, km=True,
@@ -698,7 +695,11 @@ class LoadTestCases(unittest.TestCase):
         ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", 'py_iono_t89_foot', iopt=3, km=True,
                         bvec_name='trace_bvec2', diag_nevals_name='trace_nevals2', diag_reached_name='trace_reached2', diag_s_max_name='trace_s_max2', diag_npts_name='trace_npts2',
                         max_s=100.0)
+        # We'll have to implement a new plot type to show the trace_bvecs:  plot the vectors on top of the
+        # trace lines/points to show that they're tangent to the trace
         pyspedas.tplot('trace_nevals trace_reached trace_s_max trace_npts trace_nevals2 trace_reached2 trace_s_max2 trace_npts2', display=global_display, save_png='trace_diags.png')
+        d=get_data('trace_s_max2')
+        self.assertTrue(np.nanmax(d.y) <= 100.0)
 
 if __name__ == "__main__":
     unittest.main()
