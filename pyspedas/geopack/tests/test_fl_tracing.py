@@ -53,7 +53,7 @@ class LoadTestCases(unittest.TestCase):
             save_dir,
         )
         # Uncomment this if you want to use locally generated comparison data including the huge IDL trace variable.
-        filename = '/tmp/ttrace_validate_reduced.tplot'
+        # filename = '/tmp/ttrace_validate_reduced.tplot'
         del_data("*")
         tplot_restore(filename)
 
