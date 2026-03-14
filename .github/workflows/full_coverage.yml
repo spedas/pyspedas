@@ -191,13 +191,21 @@ jobs:
         run: |
           if [ -d __repo_pyspedas ]; then mv __repo_pyspedas pyspedas; fi
 
+      - name: Debug coverage files
+        if: ${{ always() }}
+        run: |
+          pwd
+          ls -la
+          find . -maxdepth 2 -name '.coverage*' -ls
+
       - name: Upload raw coverage data
         if: ${{ always() }}
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: coverage-${{ matrix.shard }}
           path: .coverage.${{ matrix.shard }}
           if-no-files-found: error
+          include-hidden-files: true
 
       - name: Final cleanup
         if: ${{ always() }}
