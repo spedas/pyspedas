@@ -103,40 +103,6 @@ jobs:
               # echo "Starting second MMS test at $(date)"
               # coverage run -a -m pyspedas.projects.mms.tests.test_mms_other
 
-    env:
-      DATA_ROOT: ${{ runner.temp }}/spedas-${{ matrix.shard }}
-      SPEDAS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/data
-      ACE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/ace_data
-      BARREL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/barrel_data
-      CLUSTER_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cluster_data
-      DSC_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/dsc_data
-      CSSWE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/csswe_data
-      EQUATORS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/eqs_data
-      FAST_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/fast_data
-      GEOTAIL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/geotail_data
-      GOES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/goes_data
-      IMAGE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/img_data
-      MICA_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mica_data
-      MMS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mms_data
-      OMNI_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/omni_data
-      POES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/poes_data
-      POLAR_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/polar_data
-      PSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/psp_data
-      RBSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/rbsp_data
-      SOLO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/solo_data
-      STEREO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/stereo_data
-      THM_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/themis_data
-      TWINS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/twins_data
-      ULY_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/uly_data
-      WIND_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/wind_data
-      LANL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/lanl_data
-      CNOFS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cnofs_data
-      ST5_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/st5_data
-      PYTPLOT_LOGGING_LEVEL: error
-      VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
-      MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
-      MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
-
     steps:
       - uses: actions/checkout@v5
 
@@ -180,6 +146,40 @@ jobs:
           PY
 
       - name: Run shard script
+        env:
+          DATA_ROOT: ${{ runner.temp }}/spedas-${{ matrix.shard }}
+          SPEDAS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/data
+          ACE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/ace_data
+          BARREL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/barrel_data
+          CLUSTER_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cluster_data
+          DSC_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/dsc_data
+          CSSWE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/csswe_data
+          EQUATORS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/eqs_data
+          FAST_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/fast_data
+          GEOTAIL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/geotail_data
+          GOES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/goes_data
+          IMAGE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/img_data
+          MICA_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mica_data
+          MMS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mms_data
+          OMNI_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/omni_data
+          POES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/poes_data
+          POLAR_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/polar_data
+          PSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/psp_data
+          RBSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/rbsp_data
+          SOLO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/solo_data
+          STEREO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/stereo_data
+          THM_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/themis_data
+          TWINS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/twins_data
+          ULY_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/uly_data
+          WIND_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/wind_data
+          LANL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/lanl_data
+          CNOFS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cnofs_data
+          ST5_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/st5_data
+          PYTPLOT_LOGGING_LEVEL: error
+          VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
+          MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+          MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+
         run: |
           source ../.venv/bin/activate
           mkdir -p "$DATA_ROOT"
