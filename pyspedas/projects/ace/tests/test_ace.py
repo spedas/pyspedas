@@ -64,7 +64,8 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('vHe2'))
 
     def test_data_dir(self):
-        self.assertTrue(pyspedas.projects.ace.config.CONFIG['local_data_dir'] == 'ace_data/')
+        print(f"local_data_dir {pyspedas.projects.ace.config.CONFIG['local_data_dir']}, expecting ace_data/")
+        self.assertEqual(pyspedas.projects.ace.config.CONFIG['local_data_dir'], 'ace_data/')
 
 
 if __name__ == '__main__':
