@@ -77,6 +77,9 @@ jobs:
         include:
           - shard: spdf_themis_etc
             shard_script: |
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
               echo "Starting spdf/cdaweb/hapi tests at $(date)"
               coverage run -m pyspedas.hapi_tools.tests.test_hapi
               echo Starting ace tests at `date`
@@ -200,6 +203,9 @@ jobs:
             shard_script: |
               echo IP address for this test:
               coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
               echo "Starting mms data rate seg tests at $(date)"
               coverage run -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
               echo Starting mms cotrans tests at `date`
@@ -252,6 +258,9 @@ jobs:
 
           - shard: erg_maven_etc
             shard_script: |
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
               echo Starting erg tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg
               echo Starting erg cotrans tests at `date`
@@ -310,6 +319,10 @@ jobs:
 
           - shard: elfin_goes_poes_etc
             shard_script: |
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
+
               echo Starting elfin epd_l1 tests at `date`
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
               echo Starting elfin epd_l2 tests at `date`
