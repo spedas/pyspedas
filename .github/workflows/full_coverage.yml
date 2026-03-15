@@ -64,6 +64,7 @@ jobs:
         with:
           name: dist-wheel
           path: dist/*.whl
+          retention-days: 7
           if-no-files-found: error
 
   tests:
@@ -475,6 +476,7 @@ jobs:
         with:
           name: coverage-${{ matrix.shard }}
           path: .coverage.${{ matrix.shard }}
+          retention-days: 7
           if-no-files-found: error
           include-hidden-files: true
 
