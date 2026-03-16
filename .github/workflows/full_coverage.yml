@@ -78,6 +78,7 @@ jobs:
         include:
           - shard: spdf_themis_etc
             shard_script: |
+              # This set of tests mostly exercises load routines using SPDF and THEMIS servers
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               python -m pyspedas.projects.mms.tests.test_mms_setup
@@ -202,6 +203,7 @@ jobs:
 
           - shard: mms
             shard_script: |
+              # This set of tests is mostly for MMS
               echo IP address for this test:
               coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
               # This is good to have in case any tests access MMS data
@@ -259,6 +261,7 @@ jobs:
 
           - shard: erg_maven_etc
             shard_script: |
+              # This set of tests exercises mostly MAVEN and ERG routines
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               python -m pyspedas.projects.mms.tests.test_mms_setup
@@ -320,10 +323,10 @@ jobs:
 
           - shard: elfin_goes_poes_etc
             shard_script: |
+              # This set of tests exercises ELFIN, GOES, POES and a few other routines
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
-              python -m pyspedas.projects.mms.tests.test_mms_setup
-
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
               echo Starting elfin epd_l1 tests at `date`
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
               echo Starting elfin epd_l2 tests at `date`
