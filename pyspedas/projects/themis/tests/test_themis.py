@@ -37,10 +37,39 @@ class GmagTestCases(unittest.TestCase):
         self.assertTrue(check_gmag('ccnv') == 1)
         self.assertTrue(check_gmag('abcd') == 0)
 
+    def test_check_greenland(self):
+        """Check if a gmag station is in the greenland group."""
+        from pyspedas.projects.themis.ground.gmag import check_greenland
+        self.assertTrue(check_greenland('bfe') == 1)
+        self.assertTrue(check_greenland('bou') == 0)
+
+    def test_check_variometer(self):
+        """Check if a gmag station is in the 1 Hz variometer group or 10 Hz variometer group or not."""
+        from pyspedas.projects.themis.ground.gmag import check_variometer
+        self.assertTrue(check_variometer('anmo') == 1)
+        self.assertTrue(check_variometer('anmo_100ms') == 10)
+        self.assertTrue(check_variometer('bou') == 0)
+
     def test_load_gmag_data(self):
         """Load gmag."""
         pyspedas.projects.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
         self.assertTrue(data_exists('thg_mag_amer'))
+
+    def test_load_gmag_variometer_1_hz_data(self):
+        """Load gmag variometer 1 Hz data."""
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a'], sites='s61a',trange=['2026-02-24', '2026-02-25'])
+        self.assertTrue(data_exists('thg_mag_s61a'))
+    
+    def test_load_gmag_variometer_10_hz_data_notag(self):
+        """Load gmag variometer 10 Hz data using the sampling_rate argument and not the time resolution tag."""
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a',sampling_rate=10,trange=['2026-02-24', '2026-02-25'])
+        self.assertTrue(data_exists('thg_mag_s61a_100ms'))
+
+    def test_load_gmag_variometer_10_hz_data_tag(self):
+        """Load gmag variometer 10 Hz data using the time resolution tag and not the sampling_rate argument."""
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a_100ms',trange=['2026-02-24', '2026-02-25'])
+        self.assertTrue(data_exists('thg_mag_s61a_100ms'))
+    
 
 
 class LoadTestCases(unittest.TestCase):
