@@ -294,7 +294,7 @@ def gmag(
             "k50a",
             "k62a",
             "kbs",
-            "kev",
+            "kevo",
             "kono",
             "ksu1",
             "m63a",
