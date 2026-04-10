@@ -9,9 +9,9 @@ The THEMIS mission defines coordinate systems related to the spacecraft spin axe
 The two ARTEMIS probes (aka THEMIS-B and THEMIS-C) are in lunar orbits, so
 so a few selenocentric coordinate transforms are required.
 
-* DSL (Despun Solar Spinaxis)
-* SSE (Spinning Solar SpinAxis)
-* SSL (Selenocentric Solar Ecliptic)
+* DSL (Despun Solar L-(angular momentum) vector)
+* SSL (Spinning Solar L-(angular momentum) vector)
+* SSE (Selenocentric Solar Ecliptic)
 * SEL (Selenographic)
 
 The GSE system serves as a bridge between the THEMIS-specific and selenocentric coordinates,
