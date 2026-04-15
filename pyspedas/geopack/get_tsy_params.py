@@ -87,6 +87,23 @@ def get_tsy_params(dst_tvar,
     tinterpol(dst_tvar, Np_tvar, newname=dst_tvar+'_interp')
     tinterpol(Vp_tvar, Np_tvar, newname=Vp_tvar+'_interp')
 
+    if pressure_tvar is None:
+        if not speed:
+            vel_vec=get_data(Vp_tvar+'_interp')
+            speed_arr=np.linalg.norm(vel_vec.y,axis=1)
+            numb_ion=get_data(Np_tvar)
+            mi=1.672621E-27#ion mass
+            pdyn=mi*numb_ion.y*speed_arr**2
+            store_data('pressure',data={'x':numb_ion.times,'y':pdyn})
+            P_data = get_data('pressure')
+        if speed:
+            speed=get_data(Vp_tvar+'_interp')
+            numb_ion=get_data(Np_tvar)
+            mi=1.672621E-27#ion mass
+            pdyn=mi*numb_ion.y*speed.y**2
+            store_data('pressure',data={'x':numb_ion.times,'y':pdyn})
+            P_data = get_data('pressure')
+            
     if pressure_tvar is not None:
         tdeflag(pressure_tvar, method='remove_nan', overwrite=True)
         tinterpol(pressure_tvar, Np_tvar, newname=pressure_tvar+'_interp')
