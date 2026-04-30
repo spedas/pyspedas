@@ -2,6 +2,8 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import cdf_to_tplot
+from pyspedas.tplot_tools import netcdf_to_tplot
+import re
 
 from .config import CONFIG
 
@@ -15,6 +17,7 @@ def load(
     suffix="",
     get_support_data=False,
     ncei_server=False,
+    ncei_l1b_server=False,
     varformat=None,
     varnames=[],
     downloadonly=False,
@@ -91,6 +94,14 @@ def load(
             remote_path = CONFIG["ncei_remote_data_dir"]
             num = prb[-2:]
             pathformat = "%Y/" + prb + "/poes_n" + num + "_%Y%m%d.cdf"
+        elif ncei_l1b_server:
+            remote_path = CONFIG["ncei_l1b_remote_data_dir"]
+            num = re.search("[0-9]+",prb)[0]
+            prb_name=prb.split(num)[0]
+            prb_l = prb[0:1]
+
+            prb_name_num_formatted=prb_name + num.zfill(2)
+            pathformat = "%Y/" + prb_name_num_formatted + "/poes_" + prb_l + num.zfill(2) + "_%Y%m%d_proc.nc"
         else:
             remote_path = CONFIG["remote_data_dir"]
             if instrument == "sem":
@@ -120,15 +131,22 @@ def load(
     if downloadonly:
         return out_files
 
-    tvars = cdf_to_tplot(
-        out_files,
-        prefix=prefix,
-        suffix=suffix,
-        get_support_data=get_support_data,
-        varformat=varformat,
-        varnames=varnames,
-        notplot=notplot,
-    )
+    if ncei_l1b_server:
+        tvars = netcdf_to_tplot(
+            out_files,
+            prefix=prefix,
+            suffix=suffix,
+        )
+    else:
+        tvars = cdf_to_tplot(
+            out_files,
+            prefix=prefix,
+            suffix=suffix,
+            get_support_data=get_support_data,
+            varformat=varformat,
+            varnames=varnames,
+            notplot=notplot,
+        )
 
     if notplot:
         return tvars
