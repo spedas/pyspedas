@@ -4,6 +4,7 @@ CONFIG = {
     "local_data_dir": "poes_data/",
     "remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/noaa/",
     "ncei_remote_data_dir": "https://www.ncei.noaa.gov/data/poes-metop-space-environment-monitor/access/l2/v01r00/cdf/",
+    "ncei_l1b_remote_data_dir": "https://www.ncei.noaa.gov/data/poes-metop-space-environment-monitor/access/l1b/v01r00/"
 }
 
 # override local data directory with environment variables

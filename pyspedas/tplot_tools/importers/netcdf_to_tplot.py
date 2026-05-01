@@ -23,7 +23,15 @@ def change_time_to_unix_time(time_var):
     # ICON uses nonstandard units strings
     if units == "ms":
         units = "milliseconds since 1970-01-01 00:00:00"
-    dates = num2date(time_var[:], units=units)
+    # Check if the long_name attribute has stored the epoch description (POES/METOP):
+    elif hasattr(time_var, "long_name"):
+        if time_var.long_name == "milliseconds since 1970":
+            units = "milliseconds since 1970-01-01 00:00:00"
+
+    time_data=time_var[:]
+    if hasattr(time_data,"data"):
+        time_data=time_var[:].data
+    dates = num2date(time_data, units=units)
     unix_times = list()
     for date in dates:
         unix_time = calendar.timegm(date.timetuple()) + date.microsecond/1e6
@@ -130,17 +138,27 @@ def netcdf_to_tplot(
                     # If multiple matching keys are found, the one that appears latest in the above list
                     # will take precedence
                     var_fill_value = atts_dict[key]
+            
+            if hasattr(reg_var[:],"get_fill_value"):
+                var_fill_value=reg_var[:].get_fill_value()
 
             # If var_fill_value is None, or already NaN, there's nothing to do here.
             # Integer arrays can't be NaN-filled, so if var_fill_value is any kind of integer, skip those too.
             # Some missions have strings defined as fill values.  (ICON)
             if var_fill_value is not None and not isinstance(var_fill_value, np.integer) and not isinstance(var_fill_value, str) and not np.isnan(var_fill_value):
                 # We want to force missing values to be nan so that plots don't look strange
-                var_mask = np.ma.masked_where(
-                    reg_var == np.float32(var_fill_value), reg_var
-                )
-                var_filled = np.ma.filled(var_mask, np.nan)
-                masked_vars[var] = var_filled
+                if hasattr(reg_var[:],"data"):
+                        var_mask = np.ma.masked_where(
+                            reg_var[:].data == np.float32(var_fill_value), reg_var[:].data
+                        )
+                        var_filled = np.ma.filled(var_mask, np.nan)
+                        masked_vars[var] = var_filled
+                else:    
+                    var_mask = np.ma.masked_where(
+                        reg_var == np.float32(var_fill_value), reg_var
+                    )
+                    var_filled = np.ma.filled(var_mask, np.nan)
+                    masked_vars[var] = var_filled
             else:
                 var_filled = reg_var
                 masked_vars[var] = var_filled
@@ -168,8 +186,19 @@ def netcdf_to_tplot(
                     # If this_time does not exist, we can't save this as tplot variable.
                     continue
                 elif this_time == var:
-                    # If this_time has the same name as the current variable, do not save it.
-                    continue
+                    # The time the variable depends on may not have been set.
+                    # Check if time is a variable:
+                    if 'time' in vars_and_atts.keys():
+                        # If it is, check if the sizes match:
+                        if vfile[var].size == vfile['time'].size:
+                            # If they do, we can infer that the time variable is the one we want here.
+                            this_time = "time"
+                        else:
+                            # If not, it probably depends on something else / nothing.    
+                            continue
+                    else:        
+                        # If this_time has the same name as the current variable, do not save it.
+                        continue
 
                 # Find the time values (as unix times).
                 if this_time in times_dict:

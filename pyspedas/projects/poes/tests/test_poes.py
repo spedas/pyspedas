@@ -40,6 +40,13 @@ class LoadTestCases(unittest.TestCase):
         vars = load(trange=['1999-01-03', '1999-01-04'], probe=['noaa15'], ncei_server=True, time_clip=True)
         self.assertTrue('geogLL' in vars)
 
+    def test_ncei_l1b_server(self):
+        vars = load(trange=['2026-04-05', '2026-04-06'], probe=['metop03'], ncei_l1b_server=True, time_clip=True)
+        self.assertTrue('ted_ele_tel30_hi_eflux' in vars)    
+
+    def test_ncei_l1b_server_metop_varient(self):
+        vars = load(trange=['2026-04-05', '2026-04-06'], probe=['metop3'], ncei_l1b_server=True, time_clip=True)
+        self.assertTrue('ted_ele_tel30_hi_eflux' in vars)
 
 if __name__ == '__main__':
     unittest.main()
