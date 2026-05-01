@@ -14,7 +14,7 @@ Get started by importing pyspedas and tplot; these are required to load and plot
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 ```
 
 #### Electric and Magnetic Field Instrument Suite and Integrated Science (EMFISIS)
@@ -41,7 +41,7 @@ rbspice_vars = pyspedas.rbsp.rbspice(trange=['2018-11-5', '2018-11-6'], datatype
 tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_spin')
 
 # calculate the pitch angle distributions
-from pyspedas.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
+from pyspedas.projects.rbsp.rbspice_lib.rbsp_rbspice_pad import rbsp_rbspice_pad
 rbsp_rbspice_pad(probe='a', datatype='TOFxEH', level='l3')
 
 tplot('rbspa_rbspice_l3_TOFxEH_proton_omni_0-1000keV_pad_spin')

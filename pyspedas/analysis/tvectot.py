@@ -23,7 +23,6 @@ def _tvectot(tvar: str, new_name: str, join_component: bool):
 
 def tvectot(tvars: Union[str, List[str]],
             newname=None,
-            newnames: Union[str, List[str]] = None,
             suffix=None,
             join_component=True) -> Union[str , List[str]]:
     """
@@ -33,12 +32,10 @@ def tvectot(tvars: Union[str, List[str]],
     ----------
     tvars : str or list[str]
         Names of the tplot variables.
-    newnames: str or list[str]
-        (Deprecated) Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
     newname: str or list[str]
         Names for the resultant magnitude tplot variables. If not provided, it appends the suffix to `tvars`.
     suffix: str
-        The suffix to append to tvars to form newnames if newnames is not provided.
+        The suffix to append to tvars to form newname if newname is not provided.
     join_component: bool
         If True, the magnitude tplot variable is joined with the component tplot variables.
 
@@ -47,11 +44,6 @@ def tvectot(tvars: Union[str, List[str]],
     str or list[str]
         Names of the magnitude tplot variables.
     """
-
-    # newnames is deprecated in favor of newname
-    if newnames is not None:
-        logging.info("tvectot: The newnames parameter is deprecated. Please use newname instead.")
-        newname = newnames
 
     tvars = tplot_wildcard_expand(tvars)
     if len(tvars) == 0:

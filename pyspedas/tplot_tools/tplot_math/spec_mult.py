@@ -16,7 +16,6 @@ import logging
 def spec_mult(
         tvar,
         newname=None,
-        new_tvar=None
 ):
 
     """
@@ -33,8 +32,6 @@ def spec_mult(
         newname : str
             Name of new tvar in which to store interpolated data.
             Default: If none is specified, a name will be created of the form tvar_specmult.
-        new_tvar : str (Deprecated)
-            Name of new tvar in which to store interpolated data.  If none is specified, a name will be created.
 
     Returns
     -------
@@ -46,11 +43,6 @@ def spec_mult(
         >>> pyspedas.spec_mult('h')
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("spec_mult: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     if newname is None:
         newname = tvar+'_specmult'

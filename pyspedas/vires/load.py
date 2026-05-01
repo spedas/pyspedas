@@ -1,5 +1,5 @@
 import logging
-from viresclient import SwarmRequest
+
 from pyspedas.tplot_tools import time_datetime
 from pyspedas.tplot_tools import store_data, options
 
@@ -14,6 +14,14 @@ def load(trange=None,
     """
 
     """
+
+    try:
+        from viresclient import SwarmRequest
+    except ImportError:
+        logging.info('The viresclient package is needed for this operation, but does not appear to be installed.')
+        logging.info('To use this feature, install viresclient with "pip install viresclient".')
+        logging.info('If pip install fails, try "conda install viresclient".')
+
     from .config import CONFIG
 
     if CONFIG['access_token'] == '':

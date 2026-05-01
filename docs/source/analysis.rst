@@ -1,6 +1,55 @@
 Analysis Tools
 ==============
 
+Wavelet Analysis Tools
+-----------------------
+
+
+There are several tools in PySPEDAS for performing wavelet analysis on tplot variables or data arrays.
+
+The wavelet98 routine implements wavelet transforms as described in Torrence & Compo (1998).  It works with bare data arrays.
+
+Reference: Torrence, C. and G. P. Compo, 1998: A Practical Guide to Wavelet Analysis. <I>Bull. Amer. Meteor. Soc.</I>, 79, 61-78.
+
+.. autofunction:: pyspedas.wavelet98
+
+The wavelet2 routine is a wrapper for wavelet98.  It also works with bare data arrays.
+
+.. autofunction:: pyspedas.wavelet2
+
+The wavelet routine provides an interface to the external pywavelets package, and works with tplot variables.
+If the wavelet scales are unspecified, they are derived using an algorithm similar to that used by the IDL SPEDAS wav_data routine.
+
+.. autofunction:: pyspedas.wavelet
+
+The wav_data routine is a Python implementation of the IDL SPEDAS wav_data routine.   This is the routine to use
+if you want to reproduce results from IDL SPEDAS.
+
+.. autofunction:: pyspedas.wav_data
+
+The wave_signif routine computes significance levels for a wavelet transform.
+
+.. autofunction:: pyspedas.wave_signif
+
+Available wavelet definitions
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+The following routines are the predefined wavelet functions used by the wavelet98 routines.
+
+Morlet wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.morlet
+
+Paul wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.paul
+
+Difference of gaussians wavelet:
+
+.. autofunction:: pyspedas.analysis.wavelet98.dog
+
+
+
 Generalized 3-D Particle Distribution Tools
 --------------------------------------------
 
@@ -19,6 +68,11 @@ Plasma Moments
 This group of routines calculates plasma moments (density, velocity, fluxes, pressure tensors, etc.) from
 3-D particle distributions (with two dimensions being azimuthal and elevation angles, and the third dimension
 representing energy bins).
+
+Zijin Zhang has written a useful guide to the mathematical definitions of the various moment quantities, and
+how the calculations are discretized in order to apply them to observed particle distributions:
+
+https://juliaspacephysics.github.io/VelocityDistributionFunctions.jl/dev/moment_note/
 
 moments_3d
 ^^^^^^^^^^

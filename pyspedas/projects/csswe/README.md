@@ -10,7 +10,7 @@ Get started by importing pyspedas and tplot; these are required to load and plot
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 ```
 
 #### Relativistic Electron and Proton Telescope integrated little experiment (REPTile)

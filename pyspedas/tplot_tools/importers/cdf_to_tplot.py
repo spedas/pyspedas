@@ -22,7 +22,7 @@ from collections.abc import Iterable
 def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None, get_support_data=False, get_metadata=False,
                  get_ignore_data=False, string_encoding='ascii',
                  prefix='', suffix='', plot=False, merge=False,
-                 center_measurement=False, notplot=False, varnames=[]):
+                 center_measurement=False, notplot=False, varnames=None):
     """
     This function will automatically create tplot variables from CDF files.  In general, the files should be
     ISTP compliant for this importer to work.  Each variable is read into a new tplot variable (a.k.a an xarray DataArray),
@@ -76,7 +76,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
             being stored in tplot variables (useful for debugging, and
             access to multi-dimensional data products)
         varnames: str or list of str
-            Load these variables only. If [] or ['*'], then load everything.
+            Load these variables only. If None or [] or ['*'], then load everything.
 
     Returns:
         List of tplot variables created (unless notplot keyword is used).
@@ -106,10 +106,20 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if prefix != '' or suffix != '':
         check_pre_suff = True
 
+    # If nontrivial varnames or varformat are explicitly supplied, load the requested data whether or not
+    # it's marked as support_data in the CDF.
+
+    if varformat is not None:
+        get_support_data = True
+
+    if varnames is None:
+        varnames = []
+
     if not isinstance(varnames, list):
         varnames = [varnames]
 
     if len(varnames) > 0:
+        get_support_data = True
         if '*' in varnames:
             varnames = []
 
@@ -117,7 +127,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     if isinstance(filenames, str):
         filenames = [filenames]
     elif isinstance(filenames, list):
-        filenames = filenames
+        pass
     else:
         logging.warning("Invalid filenames input. Must be string or list of strings.")
         return stored_variables
@@ -804,7 +814,24 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 units = filter_greater_than(unit_ptr_array.flatten().tolist())
                         except:
                             pass
-                metadata[var_name]['units'] = str(units)
+                if isinstance(units, (list,np.ndarray)):
+                    # If units is a list or array, and are all the same, replace with the single value
+                    # Otherwise, stringify the whole array
+                    firstunit=units[0].lower()
+                    allsame=True
+                    for u in units:
+                        if u.lower() != firstunit:
+                            allsame=False
+                    if allsame:
+                        # Return units as a scalar
+                        metadata[var_name]['units'] = units[0]
+                    else:
+                        # Go ahead and stringify the whole mess to force it to bw a scalar
+                        # TODO: there must be a better way to handle this!
+                        logging.warning(f'Variable {var_name} in file {cdf_file} has non-homogeneous unit values {units}')
+                        metadata[var_name]['units'] = str(units)
+                else:
+                     metadata[var_name]['units'] = str(units)
 
                 if metadata[var_name]['scale_type'] is None:
                     alt_scale_type = var_atts.get("SCALETYP", "linear")

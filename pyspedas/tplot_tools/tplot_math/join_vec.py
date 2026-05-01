@@ -1,16 +1,17 @@
 import pyspedas
-from pyspedas.tplot_tools import store_data
+from pyspedas.tplot_tools import store_data, tplot_wildcard_expand
 import pandas as pd
 import copy
 import xarray as xr
 import logging
+import numpy as np
 
 from pyspedas.tplot_tools import convert_tplotxarray_to_pandas_dataframe
 
 
 # JOIN TVARS
 # join TVars into single TVar with multiple columns
-def join_vec(tvars, newname=None, new_tvar=None, merge=False):
+def join_vec(tvars, newname=None, merge=False):
     """
     Joins 1D tplot variables into one tplot variable.
 
@@ -23,8 +24,6 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
         Name of tplot variables to join together.
     newname : str, optional
         The name of the new tplot variable. If not specified (the default), a name will be assigned.
-    new_tvar : str, optional (Deprecated)
-        The name of the new tplot variable. If not specified, a name will be assigned.
     merge : bool, optional
         Whether or not to merge the created variable into an older variable.
         Default is False.
@@ -43,49 +42,81 @@ def join_vec(tvars, newname=None, new_tvar=None, merge=False):
     >>> pyspedas.join_vec(['d','e','g'],newname='deg')
 
     """
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info(
-            "join_vec: The new_tvar parameter is deprecated. Please use newname instead."
-        )
-        newname = new_tvar
-
-    if not isinstance(tvars, list):
-        tvars = [tvars]
-    if newname is None:
-        newname = "-".join(tvars) + "_joined"
 
     to_merge = False
     if newname in pyspedas.tplot_tools.data_quants.keys() and merge:
         prev_data_quant = pyspedas.tplot_tools.data_quants[newname]
         to_merge = True
 
+    # Allow wildcard specification
+    tvars=tplot_wildcard_expand(tvars)
+
+    if newname is None:
+        newname = "-".join(tvars) + "_joined"
+
+    has_extra_v_values = False
+    v_shape = None
+    data_shape = None
+    combined_v = None
+
+    # Make sure all the components exist and are compatible to be joined
     for i, val in enumerate(tvars):
+        dq = pyspedas.tplot_tools.data_quants[val]
+        data_shape = dq.values.shape
+        if len(data_shape) != 1:
+            logging.error(f"join_vec: variable {val} must be 1-dimensional, but has shape {data_shape}.")
+            return None
         if i == 0:
-            if "spec_bins" in pyspedas.tplot_tools.data_quants[tvars[i]].coords:
-                df, s = convert_tplotxarray_to_pandas_dataframe(
-                    tvars[i]
-                )
-            else:
-                df = convert_tplotxarray_to_pandas_dataframe(
-                    tvars[i], no_spec_bins=True
-                )
-                s = None
+            if 'extra_v_values' in dq.attrs.keys():
+                has_extra_v_values = True
+                extra_v_values = dq.attrs['extra_v_values']
+                v_shape = extra_v_values.shape
+                # If extra_v_values has multiple elements, maybe it's time varying....it should match the number of timestamps.
+                # We'll create the array here, and populate each row as we go.
+                if has_extra_v_values:
+                    if len(extra_v_values) == 1:
+                        combined_v = np.empty((len(tvars),),dtype=extra_v_values.dtype)
+                        combined_v[0] = extra_v_values[0]
+                    elif len(extra_v_values) == data_shape[0]:
+                        combined_v = np.empty((data_shape[0],len(tvars)), dtype=extra_v_values.dtype)
+                        combined_v[:,0] = extra_v_values
+                    else:
+                        logging.error(f"join_vec: variable {val} has shape {data_shape}, but has incompatible extra_v_values shape {v_shape}.")
+                        return None
+            df = convert_tplotxarray_to_pandas_dataframe(tvars[i], no_spec_bins=True)
+
         else:
-            if "spec_bins" in pyspedas.tplot_tools.data_quants[tvars[i]].coords:
-                d = convert_tplotxarray_to_pandas_dataframe(
-                    tvars[i], no_spec_bins=True
-                )
+            if 'extra_v_values' in dq.attrs.keys():
+                current_has_extra_v_values = True
+                current_extra_v_values = dq.attrs['extra_v_values']
+                current_v_shape = current_extra_v_values.shape
             else:
-                d = convert_tplotxarray_to_pandas_dataframe(
-                    tvars[i], no_spec_bins=True
-                )
+                current_has_extra_v_values = False
+                current_extra_v_values = None
+                current_v_shape = None
+            current_data_shape = dq.values.shape
+
+            if current_has_extra_v_values != has_extra_v_values:
+                logging.error(f"join_vec: Unable to combine {tvars[0]} and {tvars[i]}, mismatched extra_v_values attributes.")
+                return None
+            elif has_extra_v_values and v_shape != current_v_shape:
+                logging.error(f"join_vec: Unable to combine {tvars[0]} and {tvars[i]}, mismatched extra_v_values shapes {v_shape} and {current_v_shape}.")
+                return None
+            elif data_shape != current_data_shape:
+                logging.error(f"join_vec: Unable to combine {tvars[0]} and {tvars[i]}, mismatched data shapes {data_shape} and {current_data_shape}")
+                return None
+
+            if has_extra_v_values and v_shape[0] == 1:
+                combined_v[i] = current_extra_v_values[0]
+            elif has_extra_v_values and v_shape[0] > 1:
+                combined_v[:,i] = current_extra_v_values
+            d = convert_tplotxarray_to_pandas_dataframe(tvars[i], no_spec_bins=True)
             df = pd.concat([df, d], axis=1)
 
-    if s is None:
+    if combined_v is None:
         store_data(newname, data={"x": df.index, "y": df.values})
     else:
-        store_data(newname, data={"x": df.index, "y": df.values, "v": s.values})
+        store_data(newname, data={"x": df.index, "y": df.values, "v": combined_v})
 
     if to_merge is True:
         cur_data_quant = pyspedas.tplot_tools.data_quants[newname]

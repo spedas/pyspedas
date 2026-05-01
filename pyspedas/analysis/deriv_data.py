@@ -13,7 +13,7 @@ import numpy as np
 import pyspedas
 
 
-def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None, edge_order=1):
+def deriv_data(names, newname=None, suffix=None, overwrite=None, edge_order=1):
     """
     Compute the derivative.
 
@@ -22,9 +22,6 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
     names: str/list of str
         List of pytplot names.
     newname: str/list of str, optional
-        List of new names for tplot variables.
-        If not given, then a suffix is applied.
-    new_names: str/list of str, optional (Deprecated)
         List of new names for tplot variables.
         If not given, then a suffix is applied.
     suffix: str, optional
@@ -39,11 +36,6 @@ def deriv_data(names, newname=None, new_names=None, suffix=None, overwrite=None,
     None.
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("deriv_data: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     old_names = pyspedas.tnames(names)
 

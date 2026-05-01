@@ -158,6 +158,10 @@ def load_fdsn(trange=None, network=None, station=None,
     _validate_date_format(request_df.start[0])
     _validate_date_format(request_df.end[0])
 
+    if request_end <= request_start:
+        pyspedas.logging.error(f'End time {request_end} earlier or equal to start time {request_start}')
+        return
+
     # Determine where data will be stored
     mth5dir = CONFIG['local_data_dir']
     # if os.environ.get('SPEDAS_DATA_DIR'):

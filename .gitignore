@@ -5,6 +5,16 @@
 *.tmp
 *.sav
 *.bat
+*.cdf
+*.nc
+*.fits
+*.tplot
+*.dat
+*.gz
+*.tar
+*.tgz
+# PySPEDAS uses pdm.lock, but uv also produces a uv.lock file, which we don't want to check in.
+uv.lock
 
 *~
 
@@ -225,7 +235,7 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
-*.cdf
+
 
 # Mynotes
 .notes.txt
@@ -237,6 +247,7 @@ dmypy.json
 
 # Visual Studio Code dir
 .vscode
+.flake8
 
 # PyCharm
 .idea

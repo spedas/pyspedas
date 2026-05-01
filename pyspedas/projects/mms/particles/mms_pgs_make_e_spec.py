@@ -1,13 +1,5 @@
 import numpy as np
 
-# use nansum from bottleneck if it's installed, otherwise use the numpy one
-try:
-    import bottleneck as bn
-    nansum = bn.nansum
-except ImportError:
-    nansum = np.nansum
-
-
 def mms_pgs_make_e_spec(data_in):
     """
     Builds an energy spectrogram from a simplified particle data structure.

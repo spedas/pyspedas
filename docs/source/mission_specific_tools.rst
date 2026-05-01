@@ -14,3 +14,4 @@ mission-specific wrappers to format the data for use with PySPEDAS general purpo
    erg_analysis
    mms_analysis
    rbsp_analysis
+   cluster_analysis

@@ -8,7 +8,7 @@ import copy
 import logging
 from pyspedas.tplot_tools import store_data, tinterp
 
-def add(tvar1,tvar2,newname=None, new_tvar=None):
+def add(tvar1,tvar2,newname=None):
     """
     Adds two tplot variables together.  Will interpolate if the two are not on the same time cadence.
 
@@ -18,8 +18,6 @@ def add(tvar1,tvar2,newname=None, new_tvar=None):
         tvar2 : int/float
             Name of second tplot variable
         newname : str
-            Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
-        new_tvar : str (Deprecated)
             Name of new tvar for added data.  If not set, then the data in tvar1 is replaced.
 
     Returns:
@@ -33,11 +31,6 @@ def add(tvar1,tvar2,newname=None, new_tvar=None):
         >>> pyspedas.add('a','c',newname='a+c')
         >>> pyspedas.get_data('a+c')
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("add: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     # interpolate tvars
     tv2 = tinterp(tvar1, tvar2)

@@ -61,14 +61,14 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 In all the following examples, we start by importing pyspedas and tplot.
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 ```
 
 #### Fluxgate Magnetometer (FGM)
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 fgm_vars = pyspedas.mms.mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1')
 
 tplot('mms1_fgm_b_gsm_srvy_l2')
@@ -77,7 +77,7 @@ tplot('mms1_fgm_b_gsm_srvy_l2')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 fsm_data = pyspedas.mms.mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06:01'], probe='1')
 tplot(['mms1_fsm_b_mag_brst_l3','mms1_fsm_b_gse_brst_l3','mms1_fsm_r_gse_brst_l3'])
 
@@ -86,7 +86,7 @@ tplot(['mms1_fsm_b_mag_brst_l3','mms1_fsm_b_gse_brst_l3','mms1_fsm_r_gse_brst_l3
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 scm_vars = pyspedas.mms.mms_load_scm(trange=['2015-10-16', '2015-10-17'], probe='1')
 
 tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
@@ -96,7 +96,7 @@ tplot('mms1_scm_acb_gse_scsrvy_srvy_l2')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 edp_vars = pyspedas.mms.mms_load_edp(trange=['2015-10-16', '2015-10-17'], probe='1')
 
 tplot('mms1_edp_dce_gse_fast_l2')
@@ -106,7 +106,7 @@ tplot('mms1_edp_dce_gse_fast_l2')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 edi_vars = pyspedas.mms.mms_load_edi(trange=['2016-10-16', '2016-10-17'], probe='1')
 
 tplot('mms1_edi_e_gse_srvy_l2')
@@ -116,7 +116,7 @@ tplot('mms1_edi_e_gse_srvy_l2')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 fpi_vars = pyspedas.mms.mms_load_fpi(trange=['2015-10-16', '2015-10-17'], probe='1', datatype='dis-moms')
 
 tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
@@ -126,7 +126,7 @@ tplot(['mms1_dis_bulkv_gse_fast', 'mms1_dis_numberdensity_fast'])
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 mom_vars = pyspedas.mms.mms_load_hpca(trange=['2015-10-16', '2015-10-17'], datatype='moments', probe='1')
 
 tplot(['mms1_hpca_hplus_number_density', 'mms1_hpca_hplus_ion_bulk_velocity'])
@@ -154,7 +154,7 @@ tplot(['mms1_hpca_hplus_flux_elev_0-360_spin',
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 from pyspedas import mms_eis_pad
 
 eis_vars = pyspedas.mms.mms_load_eis(trange=['2015-10-16', '2015-10-17'], datatype=['phxtof', 'extof'], probe='1')
@@ -175,7 +175,7 @@ tplot(['mms1_epd_eis_extof_56-535keV_proton_flux_omni_pad_spin', 'mms1_epd_eis_e
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 from pyspedas import mms_feeps_pad
 
 feeps_data = pyspedas.mms.mms_load_feeps(trange=['2015-10-16', '2015-10-17'], datatype='electron', probe='1')
@@ -192,7 +192,7 @@ tplot(['mms1_epd_feeps_srvy_l2_electron_intensity_70-600keV_pad_spin', 'mms1_epd
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 asp_data = pyspedas.mms.mms_load_aspoc(trange=['2015-10-16', '2015-10-17'], probe='1')
 
 tplot('mms1_aspoc_ionc')
@@ -202,7 +202,7 @@ tplot('mms1_aspoc_ionc')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 mec_data = pyspedas.mms.mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1')
 
 tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
@@ -212,7 +212,7 @@ tplot(['mms1_mec_r_gsm', 'mms1_mec_v_gsm'])
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 dsp_data = pyspedas.mms.mms_load_dsp(trange=['2015-10-16', '2015-10-17'], data_rate='fast', datatype='bpsd', probe='1')
 
 tplot('mms1_dsp_bpsd_omni_fast_l2')
@@ -222,7 +222,7 @@ tplot('mms1_dsp_bpsd_omni_fast_l2')
 
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 pos_data = pyspedas.mms.mms_load_state(trange=['2015-10-16', '2015-10-17'], probe='1', datatypes='pos', level='def')
 
 tplot('mms1_defeph_pos')
@@ -231,7 +231,7 @@ tplot('mms1_defeph_pos')
 #### Tetrahedron quality factor data (tetrahedron_qf)
 ```python
 import pyspedas
-from pytplot import tplot
+from pyspedas import tplot
 qf_vars = pyspedas.mms.mms_load_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], probe='1')
 tplot('mms_tetrahedron_qf')
 

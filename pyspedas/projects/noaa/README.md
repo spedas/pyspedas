@@ -13,7 +13,7 @@ For all other variables, there is one data point per day.
 To download the indices you can use:
 
 ```python
-from pyspedas.noaa.noaa_load_kp import noaa_load_kp
+from pyspedas.projects.noaa.noaa_load_kp import noaa_load_kp
 
 trange = ["2017-03-23/00:00:00", "2017-04-23/23:59:59"]
 vars = noaa_load_kp(trange=trange)

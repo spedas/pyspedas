@@ -14,18 +14,28 @@
 import os
 import sys
 sys.path.insert(0, os.path.abspath('../..'))
+import tomli
 
 import pyspedas
 import pyspedas.cotrans_tools.cotrans
 
 # -- Project information -----------------------------------------------------
 
+try:
+    with open("../../pyproject.toml", "rb") as f:
+        toml_dict = tomli.load(f)
+
+    pyproj_version = toml_dict['project']['version']
+except (KeyError, FileNotFoundError):
+    pyproj_version = 'unknown'
+
+print(f"Pyproj_version: {pyproj_version}")
 project = 'PySPEDAS'
 copyright = '2018-2025, Regents of the University of California, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
-release = '1.7.28'
+release = pyproj_version
 
 
 # -- General configuration ---------------------------------------------------
@@ -80,7 +90,7 @@ autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.Qt
 intersphinx_mapping = {
     "python": ("https://docs.python.org/3", None),
     "numpy": ("https://numpy.org/doc/stable/", None),
-    "scipy": ("https://docs.scipy.org/doc/scipy/reference/", None),
+    "scipy": ("https://docs.scipy.org/doc/scipy/", None),
     "pandas": ("https://pandas.pydata.org/pandas-docs/stable/", None),
     "astropy": ("https://docs.astropy.org/en/stable/", None),
     "sphinx_automodapi": (

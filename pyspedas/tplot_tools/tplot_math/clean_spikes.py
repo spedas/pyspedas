@@ -17,7 +17,7 @@ from pyspedas.tplot_tools import replace_data
 from pyspedas.tplot_tools import data_quants
 
 def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
-                 new_names=None,newname=None, suffix=None, overwrite=None):
+                 newname=None, suffix=None, overwrite=None):
     """
     Clean spikes from data.
 
@@ -25,9 +25,6 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     ----------
     names: str/list of str
         List of pyspedas names (wildcards accepted)
-    new_names: str/list of str, optional (Deprecated)
-        List of new names for tplot variables.
-        If not given, then a suffix is applied.
     newname: str/list of str, optional
         List of new names for tplot variables.
         If not given, then a suffix is applied.
@@ -48,10 +45,6 @@ def clean_spikes(names, nsmooth=10, thresh=0.3, sub_avg=False,
     None.
 
     """
-    # new_names is deprecated in favor of newname
-    if new_names is not None:
-        logging.info("clean_spikes: The new_names parameter is deprecated. Please use newname instead.")
-        newname = new_names
 
     old_names = tnames(names)
 

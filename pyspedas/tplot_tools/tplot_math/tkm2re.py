@@ -1,6 +1,6 @@
 import logging
 import pyspedas
-from pyspedas.tplot_tools import store_data, get_data, tnames
+from pyspedas.tplot_tools import store_data, get_data, tnames, get_units, set_units
 
 
 def tkm2re(name, km=False, newname=None, suffix=''):
@@ -70,17 +70,31 @@ def tkm2re(name, km=False, newname=None, suffix=''):
         if data is None:
             logging.error('Problem reading variable: ' + in_tvar)
             continue
-
+        data_in_units = get_units(in_tvar)
+        if data_in_units is None:
+            data_in_units = 'None'
         if km == False:
-            data_out = data.y/km_in_re
+            new_units = 'Re'
+            if 're' in data_in_units.lower():
+                logging.warning(f'Tplot variable {in_tvar} is already in units of Re!')
+                data_out = data.y
+            else:
+                data_out = data.y/km_in_re
         else:
-            data_out = data.y*km_in_re
+            new_units = 'km'
+            if 'km' in data_in_units.lower():
+                logging.warning(f'Tplot variable {in_tvar} is already in units of km!')
+                data_out = data.y
+            else:
+                data_out = data.y*km_in_re
 
         saved = store_data(out_tvar, data={'x': data.times, 'y': data_out}, attr_dict=metadata)
 
         if not saved:
             logging.error('Problem creating tplot variable.')
             continue
+        else:
+            set_units(out_tvar, new_units)
 
         # update the subtitle, if needed
         yaxis_opt = pyspedas.tplot_tools.data_quants[out_tvar].attrs['plot_options'].get('yaxis_opt')

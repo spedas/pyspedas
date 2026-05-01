@@ -18,7 +18,9 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
          notplot:bool=False,
          no_update:bool=False,
          time_clip:bool=False,
-         force_download=False) -> List[str]:
+         force_download=False,
+         species=None
+         ) -> List[str]:
     """
     Load data from Cluster instruments
 
@@ -85,6 +87,9 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
             Download file even if local version is more recent than server version
             Default: False
 
+        species: str
+            Species to load psd data for. Valid options are: 'h1', 'he1', 'o1'.
+            Default: None
 
     Returns
     -------
@@ -137,7 +142,37 @@ def load(trange:List[str]=['2018-11-5', '2018-11-6'],
         elif instrument == 'aspoc':
             pathformat = 'c'+prb+'/'+datatype+'/asp/%Y/c'+prb+'_'+datatype+'_asp_%Y%m%d_v??.cdf'
         elif instrument == 'cis':
-            pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
+            if species == None: # load moments
+                pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
+            else: # load dist data 
+                # choose datatype
+                if datatype == 'psd': # possibility to load def / dpf in future
+                    dattyp = 'phasespacedens' 
+                elif datatype == 'def': 
+                    dattyp = 'diffenergyflux'
+                    dtp = 'pef'
+                # choose instrument, mode and species
+                if species == 'ions': # hia path
+                    cis_instrument = 'hia'
+                    scd = species
+                    mode = 'magmode_highsens' 
+                    md = 'hs_mag'
+                else: # codif path
+                    cis_instrument = 'codif'
+                    if datatype == 'psd' or datatype == 'def':
+                        mode = 'highsens'
+                        md = 'hs'
+                    if species == 'h1':
+                        scd = 'proton' # second name for H+
+                    if species == 'he1':
+                        scd = 'heplus' # second name for He+
+                    if species == 'o1':
+                        scd = 'oplus' # second name for O+
+                # create path
+                if datatype == 'psd':
+                    pathformat = 'c'+prb+'/'+instrument+'-'+cis_instrument+'/'+scd+'_3ddist_'+mode+'_'+dattyp+'/%Y/c'+prb+'_cp_'+instrument+'-'+cis_instrument+'_'+md+'_'+species+'_'+datatype+'_%Y%m%d_v????????.cdf'
+                elif datatype == 'def':
+                    pathformat = 'c'+prb+'/'+instrument+'-'+cis_instrument+'/'+scd+'_3ddist_'+mode+'_'+dattyp+'/%Y/c'+prb+'_cp_'+instrument+'-'+cis_instrument+'_'+md+'_'+species+'_'+dtp+'_%Y%m%d_v????????.cdf'
         elif instrument == 'dwp':
             pathformat = 'c'+prb+'/'+datatype+'/'+instrument+'/%Y/c'+prb+'_'+datatype+'_'+instrument+'_%Y%m%d_v??.cdf'
         elif instrument == 'edi':

@@ -1,9 +1,12 @@
 
-from .t89 import tt89
-from .t96 import tt96
-from .t01 import tt01
-from .ts04 import tts04
+from .igrf import tigrf
+from .t89 import tt89, get_t89_parameters
+from .t96 import tt96, get_t96_parameters
+from .t01 import tt01, get_t01_parameters
+from .ts04 import tts04, get_ts04_parameters
 from .get_tsy_params import get_tsy_params
 from .kp2iopt import kp2iopt
-from .t89_trace_equator import trace_equator_89
-from .t89_trace_iono import trace_iono_89
+from .ttrace2endpoint import ttrace2endpoint
+from .calculate_lshell import calculate_lshell
+from .trace_to_event import trace_to_event
+from .clean_model_parameters import clean_model_parameters, clean_parmod_data

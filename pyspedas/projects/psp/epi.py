@@ -18,7 +18,8 @@ def epi(trange=['2018-11-5', '2018-11-6'],
         no_update=False,
         time_clip=False,
         last_version=False,
-        force_download=False):
+        force_download=False,
+        version=None,):
     """
     This function loads Parker Solar Probe ISoIS/EPI (merged summary) data
     
@@ -75,6 +76,11 @@ def epi(trange=['2018-11-5', '2018-11-6'],
             If True, downloads the file even if a newer version exists locally. 
             Default: False.
 
+        version: str
+            If supplied, the load routine will look for this specific CDF version, rather than a wildcard pattern
+            matching any version.  Valid version strings look like "vN.M" for FIELDS sqtn_rfs_v1v1 data, or
+            "vNN" for all other data types. Default: None
+
     Returns
     ----------
         List of tplot variables created.
@@ -82,5 +88,6 @@ def epi(trange=['2018-11-5', '2018-11-6'],
     """
     return load(instrument='epi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
-        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version, force_download=force_download)
+        downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,last_version=last_version, force_download=force_download,
+        version=version)
 

@@ -42,8 +42,8 @@ Levels can be 'k0' or 'h0' (high precision). However, there is very limited 'h0'
 Get started by importing pyspedas and tplot; these are required to load and plot the data:
 
 ```python
-from pyspedas.lanl import load
-from pytplot import tplot
+from pyspedas.projects.lanl import load
+from pyspedas import tplot
 ```
 
 #### Magnetospheric Plasma Analyzer (MPA)

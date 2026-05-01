@@ -46,11 +46,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         right_axis              bool         If true,display a second Y axis on the right side of the plot.
         second_axis_size        numeric      The size of the second axis to display
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
+        (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
+        (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
         annotations             dict         A dictionary or list of dictionaries of matplotlib text annotation parameters (see annotate() routine)
         visible                 bool         If False, do not display lines for this variable.
         nodata                  bool         If True, do not display lines for this variable.
-        (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
-        (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
         ======================  ===========  ===========================================================================================================================
 
         ======================  ===========  ===========================================================================================================================

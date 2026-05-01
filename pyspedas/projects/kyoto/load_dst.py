@@ -128,13 +128,19 @@ def dst(
     kyoto_dst
     """
 
+
     vars = []  # list of tplot variables created
 
     if trange is None or len(trange) != 2:
-        logging.error("Keyword trange with two datetimes is required to download data.")
+        logging.error("dst: Keyword trange with two datetimes is required to download data.")
         return vars
-    if trange[0] >= trange[1]:
-        logging.error("Invalid time range. End time must be greater than start time.")
+    trange_dbl = time_double(trange)
+    earliest_data = time_double('1957-01-01')
+    if trange_dbl[0] >= trange_dbl[1]:
+        logging.error(f"dst: Invalid time range. End time {trange[1]} must be greater than start time {trange[0]}.")
+        return vars
+    if trange_dbl[1] < earliest_data:
+        logging.error(f"dst: Invalid time range: specified end date {trange[1]} is earlier than 1957-01-01")
         return vars
 
     if local_data_dir == "":

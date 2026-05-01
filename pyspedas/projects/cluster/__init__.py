@@ -15,3 +15,5 @@ from .staff import staff
 from .wbd import wbd
 from .whi import whi
 from .datasets import datasets
+from .particle_tools.cluster_get_codif_dist import cluster_get_codif_dist
+from .particle_tools.cluster_get_hia_dist import cluster_get_hia_dist

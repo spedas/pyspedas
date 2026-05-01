@@ -34,7 +34,7 @@ def change_time_to_unix_time(time_var):
     dates = num2date(time_data, units=units)
     unix_times = list()
     for date in dates:
-        unix_time = calendar.timegm(date.timetuple())
+        unix_time = calendar.timegm(date.timetuple()) + date.microsecond/1e6
         unix_times.append(unix_time)
     return unix_times
 

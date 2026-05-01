@@ -71,9 +71,9 @@ Minimum Variance (MVA) Coordinates
 In this coordinate system, a set of right-handed basis vectors i,j,k representing
 the maximum, intermediate, and minimum variance directions is produced from an input variable,
 using a sliding window for the variance, eigenvalue, and eigenvector calculations. To resolve ambiguity
-in the direction of the basis vectors, the signs are manipulated such that the Z components on the j and k
-components in the j and k directions are positive, while maintaining a right-handed coordinate system. The output is a
-set of rotation matrices over time, suitable for use with the tvector_rotate utility.
+in the direction of the basis vectors (i, j, and k), the signs are manipulated such that the Z components in the j and k
+directions are positive, and the signs of the i components are chosen so that (i,j,k) form a right-handed coordinate system.
+The output is a set of rotation matrices over time, suitable for use with the tvector_rotate utility.
 
 Minimum Variance Analysis shares several similarities with Principal Component Analysis (PCA): both approaches
 involve setting up a covariance matrix, and finding eigenvalues and eigenvectors to form an orthnormal coordinate system.

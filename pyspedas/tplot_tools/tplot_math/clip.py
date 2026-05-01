@@ -9,7 +9,7 @@ import numpy as np
 import copy
 import logging
 
-def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
+def clip(tvar,ymin,ymax,newname=None):
     """
     Change out-of-bounds data to NaN.
 
@@ -21,9 +21,6 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
             Minimum value to keep (inclusive)
         ymax : int/float
             Maximum value to keep (inclusive)
-        new_tvar : str (Deprecated)
-            Name of new tvar for clipped data storage.  If not specified, tvar will be replaced
-            THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten. 
         newname : str
             Name of new tvar for clipped data storage.  If not specified, tvar will be replaced
             THIS is not an option for multiple variable input, for multiple or pseudo variables, the data is overwritten.
@@ -40,11 +37,6 @@ def clip(tvar,ymin,ymax,newname=None,new_tvar=None):
         >>> pyspedas.clip('d',2,6,'e')
 
     """
-
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("clip: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     #check for globbed or array input, and call recursively
     tn = tnames(tvar)

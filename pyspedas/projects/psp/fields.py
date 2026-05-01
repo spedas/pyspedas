@@ -22,6 +22,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         password=None,
         last_version=False,
         force_download=False,
+        version=None,
         ):
     """
     This function loads Parker Solar Probe FIELDS data
@@ -117,6 +118,11 @@ def fields(trange=['2018-11-5', '2018-11-6'],
             If True, downloads the file even if a newer version exists locally. 
             Default: False.
 
+        version: str
+            If supplied, the load routine will look for this specific CDF version, rather than a wildcard pattern
+            matching any version.  Valid version strings look like "vN.M" for FIELDS sqtn_rfs_v1v1 data, or
+            "vNN" for all other data types. Default: None
+
     Returns
     ----------
         List of tplot variables created.
@@ -129,7 +135,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         prefix = ''    
 
     # SCaM and QTN data are Level 3
-    if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2']:
+    if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2', 'sqtn_rfs_v3v4']:
         level = 'l3'
         print("Using LEVEL=L3")
 
@@ -154,13 +160,13 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
         suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
         downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-        username=username, password=password,last_version=last_version, force_download=force_download
+        username=username, password=password,last_version=last_version, force_download=force_download, version=version,
     )
     
     if loaded_vars is None or notplot or downloadonly:
         return loaded_vars
 
-    qf_root = prefix + 'psp_fld_l2_quality_flags'+suffix
+    qf_root = prefix + 'psp_fld_' + level + '_quality_flags'+suffix
 
     # If variables are loaded that quality flag filtering supports --
     # Make sure the quality flag variable is also loaded and linked. 
@@ -168,14 +174,14 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     mag_scvars = [x for x in loaded_vars if 'fld_l2_mag_SC' in x ]
     rfs_vars = [x for x in loaded_vars if 'rfs_lfr' in x or 'rfs_hfr' in x]
     if (len(mag_rtnvars + mag_scvars + rfs_vars) > 0) \
-        & ('psp_fld_l2_quality_flags'+suffix not in loaded_vars):
+        & ('psp_fld_' + level + '_quality_flags'+suffix not in loaded_vars):
         loaded_extra = load(
             instrument='fields', trange=trange, datatype=datatype, spec_types=spec_types, level=level, 
-            suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld_l2_quality_flags'],
+            suffix=suffix, prefix=prefix, get_support_data=True, varformat=varformat, varnames=['psp_fld_' + level + '_quality_flags'],
             downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update,
-            username=username, password=password,last_version=last_version, force_download=force_download
+            username=username, password=password,last_version=last_version, force_download=force_download, version=version,
         )
-        qf_root = prefix+'psp_fld_l2_quality_flags'+suffix if prefix+'psp_fld_l2_quality_flags'+suffix in loaded_extra else None
+        qf_root = prefix+'psp_fld_' + level + '_quality_flags'+suffix if prefix+'psp_fld_' + level + '_quality_flags'+suffix in loaded_extra else None
         loaded_vars += loaded_extra
 
     for var in mag_rtnvars:

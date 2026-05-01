@@ -9,7 +9,7 @@ import numpy as np
 import copy
 import logging
 
-def divide(tvar1,tvar2,newname=None, new_tvar=None):
+def divide(tvar1,tvar2,newname=None):
     """
     Divides two tplot variables.  Will interpolate if the two are not on the same time cadence.
 
@@ -19,8 +19,6 @@ def divide(tvar1,tvar2,newname=None, new_tvar=None):
             Name of first tplot variable.
         tvar2 : int/float
             Name of second tplot variable
-        new_tvar : str (Deprecated)
-            Name of new tvar for divided data.  If not set, then the data in tvar1 is replaced.
         newname : str
             Name of new tvar for divided data.  If not set, then the data in tvar1 is replaced.
 
@@ -35,10 +33,6 @@ def divide(tvar1,tvar2,newname=None, new_tvar=None):
         >>> pyspedas.store_data('c', data={'x':[0,4,8,12,16,19,21], 'y':[1,4,1,7,1,9,1]})
         >>> pyspedas.divide('a','c','a_over_c')
         """
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("divide: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     # interpolate tvars
     tv2 = tinterp(tvar1, tvar2)
@@ -58,4 +52,4 @@ def divide(tvar1,tvar2,newname=None, new_tvar=None):
        store_data(newname, data={'x':pyspedas.tplot_tools.data_quants[tvar1].coords['time'].values, 'y': data})
        pyspedas.tplot_tools.data_quants[newname].attrs = copy.deepcopy(pyspedas.tplot_tools.data_quants[tvar1].attrs)
 
-    return new_tvar
+    return newname

@@ -64,7 +64,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
             pathformat = direction + '/' + level + '/impact/' + instrument + f'/%Y/st{prb}_' + level + '_' + instrument + '_%Y%m%d_v??.cdf'
         elif instrument == "waves" :
             CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
-            pathformat = direction + '/' + level + '/waves/' + datatype + f'/%Y/st{prb}_' + level + '_wav_' + datatype + '_%Y%m%d_v??.cdf'
+            pathformat = direction + '/' + level + '/waves/' + 'hfr-direction-finding' + f'/%Y/st{prb}_' + level + '_wav_' + datatype + '_%Y%m%d_v??.cdf'
         elif instrument == 'beacon':
             CONFIG['remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/stereo/'
             pathformat = direction + '/' + instrument + f'/%Y/st{prb}_lb_impact_'+'%Y%m%d_v??.cdf'

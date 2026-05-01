@@ -1,0 +1,530 @@
+name: coverage
+
+on: [workflow_dispatch]
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        env:
+          MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+          MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+          VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pdm uv
+          pdm config use_uv true
+          pdm install -dG lint -dG test -dG setup --no-default
+
+      - name: Lint with flake8
+        run: |
+          source ../.venv/bin/activate
+          flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
+          flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+
+      - name: Lint with ruff
+        run: |
+          source ../.venv/bin/activate
+          ruff check . --select=E9,F63,F7,F82 --statistics
+          ruff check . --exit-zero --statistics --line-length=127 -- --max-complexity=10
+
+  build_wheel:
+    runs-on: ubuntu-latest
+    needs: lint
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Build wheel
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install build
+          python -m build
+
+      - name: Upload wheel artifact
+        uses: actions/upload-artifact@v6
+        with:
+          name: dist-wheel
+          path: dist/*.whl
+          retention-days: 7
+          if-no-files-found: error
+
+  tests:
+    runs-on: ubuntu-latest
+    needs: build_wheel
+    if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev'
+
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - shard: spdf_themis_etc
+            shard_script: |
+              # This set of tests mostly exercises load routines using SPDF and THEMIS servers
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
+              echo "Starting spdf/cdaweb/hapi tests at $(date)"
+              coverage run -m pyspedas.hapi_tools.tests.test_hapi
+              echo Starting ace tests at `date`
+              coverage run -a -m pyspedas.projects.ace.tests.test_ace
+              #echo Starting cluster tests at `date`
+              #coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
+              #echo Starting cluster S3 tests at `date`
+              #coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
+              echo Starting CDAWeb tests at `date`
+              coverage run -a -m pyspedas.cdagui_tools.tests.test_cdagui
+              echo Starting soho tests at `date`
+              coverage run -a -m pyspedas.projects.soho.tests.test_soho
+              echo Starting de2 tests at `date`
+              coverage run -a -m pyspedas.projects.de2.tests.test_de2
+              echo Starting st5 tests at `date`
+              coverage run -a -m pyspedas.projects.st5.tests.test_st5
+              echo Starting lanl tests at `date`
+              coverage run -a -m pyspedas.projects.lanl.tests.test_lanl
+              echo Starting cotrans quaternion tests at `date`
+              coverage run -a -m pyspedas.cotrans_tools.tests.test_quaternions
+              echo Starting cnofs tests at `date`
+              coverage run -a -m pyspedas.projects.cnofs.tests.test_cnofs
+              echo Starting kompsat tests at `date`
+              coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
+              echo Starting dscovr tests at `date`
+              coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
+              echo Starting utilities download tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_download
+              echo Starting utilities misc tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
+              echo Starting tplot wildcard tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_tplot_wildcard
+              echo Starting plotting tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot
+              echo Starting orbit plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
+              echo Starting utilities time_tests tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_time
+              echo Starting utilities libs_tests tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_libs
+              echo Starting utilities S3 tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_download_uri
+              echo Starting cotrans tests at `date`
+              coverage run -a -m pyspedas.cotrans_tools.tests.test_cotrans
+              echo Starting utilities xdegap tests at `date`
+              coverage run -a -m  pyspedas.utilities.tests.test_xdegap
+              echo Starting utilities tplot_math tests at `date`
+              coverage run -a -m  pyspedas.utilities.tests.test_math
+              echo Starting cotrans minvar tests at `date`
+              coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
+              echo Starting cotrans fac tests at `date`
+              coverage run -a -m  pyspedas.cotrans_tools.tests.test_fac
+              echo Starting cotrans lmn tests at `date`
+              coverage run -a -m  pyspedas.cotrans_tools.tests.test_lmn
+              echo Starting csswe tests at `date`
+              coverage run -a -m pyspedas.projects.csswe.tests.test_csswe
+              echo Starting equator_s tests at `date`
+              coverage run -a -m pyspedas.projects.equator_s.tests.test_equator_s
+              echo Starting image tests at `date`
+              coverage run -a -m pyspedas.projects.image.tests.test_image
+              echo Starting psp tests at `date`
+              coverage run -a -m pyspedas.projects.psp.tests.test_psp
+              echo Starting rbsp tests at `date`
+              coverage run -a -m pyspedas.projects.rbsp.tests.test_rbsp
+              echo Starting stereo tests at `date`
+              coverage run -a -m pyspedas.projects.stereo.tests.test_stereo
+              echo Starting twins tests at `date`
+              coverage run -a -m pyspedas.projects.twins.tests.test_twins
+              echo Starting wind tests at `date`
+              coverage run -a -m pyspedas.projects.wind.tests.test_wind
+              echo Starting poes tests at `date`
+              echo "Disk usage mid spdf"
+              df -h
+              du -sh "$DATA_ROOT"/* 2>/dev/null || true
+              echo Starting fast tests at `date`
+              coverage run -a -m pyspedas.projects.fast.tests.test_fast
+              echo Starting omni tests at `date`
+              coverage run -a -m pyspedas.projects.omni.tests.test_omni
+              echo Starting themis tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis
+              echo Starting mica tests at `date`
+              coverage run -a -m pyspedas.projects.mica.tests.test_mica
+              echo Starting ulysses tests at `date`
+              coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
+              echo Starting solo tests at `date`
+              coverage run -a -m pyspedas.projects.solo.tests.test_solo
+              echo Starting themis_check_args tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_check_args
+              echo Starting themis autoload support tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_autoload_support
+              echo Starting themis cal_fit tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_cal_fit
+              echo Starting themis dsl_cotrans tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_dsl_cotrans
+              echo Starting themis lunar_cotrans tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_lunar_cotrans
+              echo Starting themis spinmodel tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_spinmodel
+              echo Starting themis state tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_state
+              echo Starting themis scpot2dens tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_scpot2dens
+              echo Starting themis tplot_time  tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_tplot_time
+              echo Starting barrel tests at `date`
+              coverage run -a -m pyspedas.projects.barrel.tests.test_barrel
+              echo "========================================================="
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after spdf, themis, etc test:"
+              df -h
+
+              echo "Cleaning downloaded files"
+              rm -rf "$DATA_ROOT"/*
+              rm -rf "$SPEDAS_DATA_DIR"/*
+
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after cleanup:"
+              df -h
+
+          - shard: mms
+            shard_script: |
+              # This set of tests is mostly for MMS
+              echo IP address for this test:
+              coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
+              echo "Starting mms data rate seg tests at $(date)"
+              coverage run -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
+              echo Starting mms cotrans tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_cotrans
+              echo Starting mms events tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_events
+              echo Starting mms orbit_plots tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_orbit_plots
+              echo Starting mms overview_plots tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_overview_plots
+              echo Starting mms neutral sheet tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_neutral_sheet
+              echo Starting mms ql_lib_sitl tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_ql_l1b_sitl
+              echo Starting mms_part_getspec tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_part_getspec
+              echo Starting mms_part_getspec FPI bulk velocity subtraction tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_getspec_bulkv
+              echo Starting mms load routine tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_load_routine
+              echo Starting mms feeps tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_feeps
+              echo Starting mms eis tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_eis
+              echo Starting mms fpi tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_fpi
+              echo Starting mms file_filter tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_file_filter
+              echo Starting mms curlometer tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_curlometer
+              echo Starting mms wavpol tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_wavpol
+              echo Starting mms slice2d tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_slice2d
+              #echo Starting mms S3 tests at `date`
+              #coverage run -a -m pyspedas.projects.mms.tests.test_mms_load_uri
+              echo "========================================================="
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after MMS test group:"
+              df -h
+              du -sh "$MMS_DATA_DIR" 2>/dev/null || true
+              echo "Cleaning MMS downloads"
+              rm -rf "$MMS_DATA_DIR"/*
+              rm -rf "$DATA_ROOT"/*
+              rm -rf "$SPEDAS_DATA_DIR"/*
+              
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after cleanup:"
+              df -h
+
+          - shard: erg_maven_etc
+            shard_script: |
+              # This set of tests exercises mostly MAVEN and ERG routines
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              python -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting erg tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg
+              echo Starting erg cotrans tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_cotrans
+              echo Starting erg ground data tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_ground
+              echo Starting erg mepe particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_mepe
+              echo Starting erg mepi particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_mepi
+              echo Starting erg lepe particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_lepe
+              echo Starting erg lepi particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_lepi
+              echo Starting erg xep particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_xep
+              echo Starting erg hep particle tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_hep
+              echo "========================================================="
+              # Show the free disk space on this filesystem
+              echo "Disk space after ERG tests:"
+              df -h .
+              # Clean up files downloaded so far
+              /bin/rm -rf data/*
+              echo "Disk space after cleanup:"
+              df -h .
+              echo "========================================================="
+              echo Starting MTH5 import test at `date`
+              coverage run -a -m pyspedas.mth5.tests.test_mth5_import
+              echo Starting MTH5 load_fdsn test at `date`
+              coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
+              echo Starting akebono tests at `date`
+              coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
+              #echo Starting maven S3 tests at `date`
+              #coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
+              echo Starting maven tests at `date`
+              coverage run -a -m pyspedas.projects.maven.tests.test_maven
+              echo Starting VIRES client tests at `date`
+              coverage run -a -m pyspedas.vires.tests.test_vires
+              echo Starting secs tests at `date`
+              coverage run -a -m pyspedas.projects.secs.tests.test_secs
+              echo Starting particles tests at `date`
+              coverage run -a -m pyspedas.particles.tests.test_particles
+              echo "========================================================="
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after ERG,MAVEN,etc test group:"
+              df -h
+              du -sh "$MMS_DATA_DIR" 2>/dev/null || true
+              echo "Cleaning downloads"
+              rm -rf "$DATA_ROOT"/*
+              rm -rf "$SPEDAS_DATA_DIR"/*
+              
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after cleanup:"
+              df -h
+
+          - shard: elfin_goes_poes_etc
+            shard_script: |
+              # This set of tests exercises ELFIN, GOES, POES and a few other routines
+              # This is good to have in case any tests access MMS data
+              echo "Setting up credentials for MMS tests"
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting elfin epd_l1 tests at `date`
+              coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l1
+              echo Starting elfin epd_l2 tests at `date`
+              coverage run -a -m pyspedas.projects.elfin.tests.test_epd_l2
+              echo Starting elfin state tests at `date`      
+              coverage run -a -m pyspedas.projects.elfin.tests.test_state
+              echo Starting elfin tests at `date`      
+              coverage run -a -m pyspedas.projects.elfin.tests.test_elfin
+              echo Starting elfin epd calibration tests at `date`      
+              coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+              echo Starting noaa tests at `date`
+              coverage run -a -m pyspedas.projects.noaa.tests.test_noaa
+              echo "========================================================="        
+              coverage run -a -m pyspedas.projects.poes.tests.test_poes
+              echo Starting polar tests at `date`
+              coverage run -a -m pyspedas.projects.polar.tests.test_polar
+              echo Starting geopack tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_geopack
+              echo Starting geopack-IDL validation tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_geopack_idl_validation
+              echo Starting geopack clean_model_parameters tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_clean_model_parameters
+              echo Starting geopack-IDL field line tracing validation tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_fl_tracing
+              echo Starting geotail tests at `date`
+              coverage run -a -m pyspedas.projects.geotail.tests.test_geotail
+              echo Starting analysis tests at `date`
+              coverage run -a -m pyspedas.analysis.tests.test_analysis
+              echo Starting analysis wavpol tests at `date`
+              coverage run -a -m pyspedas.analysis.tests.test_twavpol
+              echo Starting analysis wavelet tests at `date`
+              coverage run -a -m  pyspedas.analysis.tests.test_wavelet
+              echo Starting analysis magnetic nulls tests at `date`
+              coverage run -a -m pyspedas.analysis.tests.test_magnetic_nulls
+              echo Starting goes tests at `date`
+              coverage run -a -m pyspedas.projects.goes.tests.test_goes
+              echo Starting kyoto tests at `date`
+              coverage run -a -m pyspedas.projects.kyoto.tests.test_kyoto
+              echo Starting swarm tests at `date`
+              coverage run -a -m pyspedas.projects.swarm.tests.test_swarm
+              echo "========================================================="
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after elfin, goes, poes etc test group:"
+              df -h
+              rm -rf "$DATA_ROOT"/*
+              rm -rf "$SPEDAS_DATA_DIR"/*
+              
+              # Show the free disk space on this filesystem      
+              echo "Disk usage after cleanup:"
+              df -h
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Download wheel artifact
+        uses: actions/download-artifact@v8
+        with:
+          name: dist-wheel
+          path: dist
+
+      - name: Install dependencies and wheel
+        run: |
+          python -m venv ../.venv
+          source ../.venv/bin/activate
+          python -m pip install --upgrade pip
+          pip install pdm uv
+          pdm config use_uv true
+          pdm install -dG lint -dG test -dG setup --no-default
+          wheelbase=$(echo dist/*.whl)
+          pip install "${wheelbase}[all]"
+          python -m pyspedas.projects.mms.tests.test_mms_setup
+
+      - name: Hide the repo copy so imports use site-packages
+        run: |
+          if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
+
+      - name: Sanity check import location
+        run: |
+          source ../.venv/bin/activate
+          python - <<'PY'
+          import pyspedas, pathlib, sys
+          p = pathlib.Path(pyspedas.__file__).resolve()
+          print("sys.executable:", sys.executable)
+          print("pyspedas import path:", p)
+          print("sys.path[0]:", sys.path[0])
+          assert "site-packages" in str(p), f"Still importing from repo: {p}"
+          PY
+
+      - name: Run shard script
+        env:
+          DATA_ROOT: ${{ runner.temp }}/spedas-${{ matrix.shard }}/
+          SPEDAS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/data/
+          ACE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/ace_data/
+          BARREL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/barrel_data/
+          CLUSTER_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cluster_data/
+          DSC_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/dsc_data/
+          CSSWE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/csswe_data/
+          EQUATORS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/eqs_data/
+          FAST_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/fast_data/
+          GEOTAIL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/geotail_data/
+          GOES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/goes_data/
+          IMAGE_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/img_data/
+          MICA_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mica_data/
+          MMS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/mms_data/
+          OMNI_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/omni_data/
+          POES_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/poes_data/
+          POLAR_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/polar_data/
+          PSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/psp_data/
+          RBSP_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/rbsp_data/
+          SOLO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/solo_data/
+          STEREO_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/stereo_data/
+          THM_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/themis_data/
+          TWINS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/twins_data/
+          ULY_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/uly_data/
+          WIND_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/wind_data/
+          LANL_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/lanl_data/
+          CNOFS_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/cnofs_data/
+          ST5_DATA_DIR: ${{ runner.temp }}/spedas-${{ matrix.shard }}/st5_data/
+          PYTPLOT_LOGGING_LEVEL: error
+          VIRES_TOKEN: ${{ secrets.VIRES_AUTH }}
+          MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
+          MMS_AUTH_P: ${{ secrets.MMS_AUTH_P }}
+
+        run: |
+          source ../.venv/bin/activate
+          mkdir -p "$DATA_ROOT"
+          export COVERAGE_FILE=".coverage.${{ matrix.shard }}"
+          ${{ matrix.shard_script }}
+
+      - name: Restore repo copy
+        if: ${{ always() }}
+        run: |
+          if [ -d __repo_pyspedas ]; then mv __repo_pyspedas pyspedas; fi
+
+      - name: Debug coverage files
+        if: ${{ always() }}
+        run: |
+          pwd
+          ls -la
+          find . -maxdepth 2 -name '.coverage*' -ls
+
+      - name: Upload raw coverage data
+        if: ${{ always() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: coverage-${{ matrix.shard }}
+          path: .coverage.${{ matrix.shard }}
+          retention-days: 7
+          if-no-files-found: error
+          include-hidden-files: true
+
+      - name: Final cleanup
+        if: ${{ always() }}
+        run: |
+          rm -rf "$DATA_ROOT"
+
+  combine_coverage:
+    runs-on: ubuntu-latest
+    needs: tests
+    if: ${{ always() && ((github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev') }}
+
+    steps:
+      - uses: actions/checkout@v5
+
+      - name: Set up Python 3.12
+        uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install tools
+        run: |
+          python -m pip install --upgrade pip coverage
+
+      - name: Download coverage artifacts
+        uses: actions/download-artifact@v8
+        with:
+          pattern: coverage-*
+          merge-multiple: true
+          path: coverage-files
+
+      - name: Combine coverage and generate XML
+        run: |
+          ls -la coverage-files
+          cp coverage-files/.coverage.* .
+          coverage combine .coverage.*
+          coverage xml --debug=pathmap
+          grep avg_data coverage.xml || true
+
+      - name: Upload combined report to Coveralls
+        uses: coverallsapp/github-action@v2
+        env:
+          COVERALLS_REPO_TOKEN: ${{ secrets.COVERALLS_REPO_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          file: coverage.xml
+          format: cobertura

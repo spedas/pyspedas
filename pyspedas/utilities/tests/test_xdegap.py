@@ -51,5 +51,5 @@ class TestXdegap(unittest.TestCase):
         self.assertTrue(np.all(np.isnan(result)))
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     unittest.main()

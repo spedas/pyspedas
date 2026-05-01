@@ -9,7 +9,7 @@ import numpy as np
 import copy
 import logging
 
-def derive(tvar,newname=None, new_tvar=None):
+def derive(tvar,newname=None):
     """
     Takes the derivative of the tplot variable.
 
@@ -17,8 +17,6 @@ def derive(tvar,newname=None, new_tvar=None):
     ----------
         tvar : str
             Name of tplot variable.
-        new_tvar : str (Deprecated)
-            Name of new tplot variable.  If not set, then the data in tvar is replaced.
         newname : str
             Name of new tplot variable.  If not set, then the data in tvar is replaced.
 
@@ -33,10 +31,6 @@ def derive(tvar,newname=None, new_tvar=None):
         >>> pyspedas.derive('b','dbdt')
 
     """
-    # new_tvar is deprecated in favor of newname
-    if new_tvar is not None:
-        logging.info("derive: The new_tvar parameter is deprecated. Please use newname instead.")
-        newname = new_tvar
 
     a = pyspedas.tplot_tools.data_quants[tvar].differentiate('time')
     if newname is None:

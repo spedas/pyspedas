@@ -197,14 +197,16 @@ def tplot_wildcard_expand(patterns, case_sensitive=True, quiet=False):
             # tplot names can have embedded spaces, but we also want to allow space-delimited
             # lists. If a space-delimited list is provided, check to see if the un-split version is
             # a valid tplot name.  If not, try splitting it and look for the subpatterns.
-            if item in tn or '*' in item or '?' in item:
+            # This case used to also be triggered if there were wildcard characters present.  But this prevented
+            # using space-delimited patterns with wildcards.
+            if item in tn:
                 string_patterns.append(item)
             elif ' ' in item:
                 expanded = item.split(' ')
                 string_patterns.extend(expanded)
             else:
-                # No wildcard characters, no spaces, and not found in list of names.
-                # This item won't be found!  But add it to the pattern list anyway, and let wildcard_expand complain about it.
+                # No embedded spaces, and not found in list of names.
+                # But there might be wildcards to expand.
                 string_patterns.append(item)
         else:
             logging.warning("tplot_wildcard_expand: bad input: "+str(item) +" Patterns must be a string or int")

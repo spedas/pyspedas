@@ -4,6 +4,7 @@
 
 #from .pytplot import *
 
+from .utilities.is_timezone_aware import is_timezone_aware
 from .tplot_tools import get_y_range
 from .tplot_tools import tplot_rename
 from .tplot_tools import del_data
@@ -101,8 +102,13 @@ from .tplot_tools import ctime
 from .tplot_tools import highlight
 from .tplot_tools import annotate
 from .tplot_tools import tplot
+from .tplot_tools import tplotxy
+from .tplot_tools import tplotxy3
+from .tplot_tools import tplotxy3_add_mpause
+from .tplot_tools import tplotxy3_add_neutral_sheet
 from .tplot_tools import cdf_to_tplot
 from .tplot_tools import netcdf_to_tplot
+from .tplot_tools import tplot_ascii
 
 
 
@@ -115,9 +121,12 @@ from .analysis.twavpol import twavpol
 from .analysis.wavelet import wavelet
 from .analysis.wavelet98 import wavelet98
 from .analysis.wave_signif import wave_signif
+from .analysis.wav_data import wav_data
+from .analysis.wavelet2 import wavelet2
 from .analysis.time_domain_filter import time_domain_filter
 from .analysis.find_magnetic_nulls import find_magnetic_nulls_fote, classify_null_type
 from .analysis.lingradest import lingradest
+from .analysis.neutral_sheet import neutral_sheet
 from .cdagui_tools.cdagui import cdagui
 from .cdagui_tools.cdaweb import CDAWeb
 from .cotrans_tools.cotrans import cotrans
@@ -136,14 +145,18 @@ from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
 from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
-# Importing geopack causes IGRF coefficients to be loaded by the external geopack package, which may not be desired.
-#from .geopack.get_tsy_params import get_tsy_params
-#from .geopack.get_w_params import get_w
-#from .geopack.kp2iopt import kp2iopt
-#from .geopack.t01 import t01, tt01
-#from .geopack.t89 import t89, tt89
-#from .geopack.t96 import t96, tt96
-#from .geopack.ts04 import tts04
+
+from .geopack import get_tsy_params
+from .geopack.get_w_params import get_w
+from .geopack import kp2iopt
+from .geopack import tt01, get_t01_parameters
+from .geopack import tt89, get_t89_parameters
+from .geopack import tt96, get_t96_parameters
+from .geopack import tts04, get_ts04_parameters
+from .geopack import tigrf
+from .geopack import calculate_lshell
+from .geopack import ttrace2endpoint
+
 from .hapi_tools.hapi import hapi
 
 from .particles.moments import moments_3d, spd_pgs_moments, spd_pgs_moments_tplot
@@ -161,6 +174,7 @@ from .utilities.leap_seconds import load_leap_table
 from .utilities.libs import libs
 from .utilities.mpause_2 import mpause_2
 from .utilities.mpause_t96 import mpause_t96
+from .utilities.bshock_2 import bshock_2
 from .utilities.tcopy import tcopy
 from .utilities.is_gzip import is_gzip
 from .utilities.xdegap import xdegap

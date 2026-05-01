@@ -1,4 +1,4 @@
-from pyspedas.tplot_tools import get, store
+from pyspedas.tplot_tools import get, store, get_data
 from .mms_feeps_energy_table import mms_feeps_energy_table
 from pyspedas.tplot_tools import tnames
 
@@ -47,6 +47,7 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
                         var_name = var_name[0]
 
                     var_data = get(var_name)
+                    md = get_data(var_name,metadata=True)
                     if var_data is not None:
                         times, data, energies = var_data
                     else:
@@ -55,6 +56,6 @@ def mms_feeps_correct_energies(probes, data_rate, level='l2', suffix=''):
                     energy_map = mms_feeps_energy_table(probe, sensor_type[0:3], sensor)
 
                     try:
-                        store(var_name, data={'x': times, 'y': data, 'v': energy_map})
+                        store(var_name, data={'x': times, 'y': data, 'v': energy_map}, metadata=md)
                     except:
                         continue

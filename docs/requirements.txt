@@ -10,6 +10,8 @@ geopack>=1.0.11
 scipy
 hapiclient>=0.2.2
 viresclient
+mth5
+obspy
 fsspec
 s3fs
 aioboto3
@@ -18,3 +20,4 @@ matplotlib>=3.6.2
 xarray
 sphinx>=1.7.6
 sphinx-rtd-theme
+tomli

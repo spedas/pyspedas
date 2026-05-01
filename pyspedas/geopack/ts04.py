@@ -1,12 +1,136 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data
-from geopack import geopack, t04
+from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from .clean_model_parameters import clean_model_parameters, clean_parmod_data
 
-
-def tts04(pos_var_gsm, parmod=None, suffix=''):
+def get_ts04_parameters(pos_var, pdyn, dst, byimf, bzimf, w1, w2, w3, w4, w5, w6, parmod, autoload):
     """
-    tplot wrapper for the functional interface to Sheng Tian's implementation of the 
+    Construct an array of  TS04 model parameters from individual scalar values, arrays, or tplot variables.
+
+    Parameters
+    ----------
+    pos_var: str
+        Input times and positions to be used
+    pdyn: Any
+        Solar wind dynamic pressure in nPa
+    dst: Any
+        Dst index in nT
+    byimf: Any
+        Y component of interplanetary magnetic field
+    bzimf: Any
+        Z component of interplanetary magnetic field
+    w1: Any
+        w1 index value
+    w2: Any
+        w2 index value
+    w3: Any
+        w3 index value
+    w4: Any
+        w4 index value
+    w5: Any
+        w5 index value
+    w6: Any
+        w6 index value
+    parmod: ndarray
+        A 10-element or n-by-10 array of parameter values to be replicated or used as-is for model parameters
+    autoload: bool
+        If True, ignore any passed parameters and download model parameters from an appropriate source.
+
+    Returns
+    -------
+    ndarray of floats
+        An n by 10, cleaned array of floating point parameters interpolated or replicated to the input timestamps
+
+    """
+    pos_trange = get_timespan(pos_var)
+    pos_dat = get_data(pos_var)
+    ntimes = len(pos_dat.times)
+    output_parmod = np.zeros((ntimes,10))
+
+    if autoload:
+        logging.error('Autoload not yet supported for ts04')
+        raise ValueError('Autoload not supported')
+    if isinstance(parmod, np.ndarray):
+        if len(parmod.shape) == 1 and parmod.shape[0] == 10:
+            output_parmod[:] = parmod
+            return output_parmod
+        elif parmod.shape == (ntimes,10):
+            output_parmod = parmod
+            return output_parmod
+        else:
+            logging.error('get_ts04_parameters: Parmod array not a 10-element or nx10 element array')
+            raise ValueError('Parmod array not a 10-element or nx10 element array')
+    elif isinstance(parmod, str):
+        output_parmod = clean_parmod_data(pos_dat.times, parmod)
+        return output_parmod
+    if pdyn is not None:
+        cleaned_pdyn = clean_model_parameters(pos_dat.times, pdyn)
+        output_parmod[:,0] = cleaned_pdyn
+    else:
+        logging.warning('get_ts04_parameters: No pdyn parameter specified, defaulting to 2.0')
+        output_parmod[:,0] = 2.0
+    if dst is not None:
+        cleaned_dst = clean_model_parameters(pos_dat.times, dst)
+        output_parmod[:,1] = cleaned_dst
+    else:
+        logging.warning('get_ts04_parameters: No dst parameter specified, defaulting to -30.0')
+        output_parmod[:,1] = -30.0
+    if byimf is not None:
+        cleaned_byimf = clean_model_parameters(pos_dat.times, byimf)
+        output_parmod[:,2] = cleaned_byimf
+    else:
+        logging.warning('get_ts04_parameters: No byimf parameter specified, defaulting to 0.0')
+        output_parmod[:,2] = 0.0
+    if bzimf is not None:
+        cleaned_bzimf = clean_model_parameters(pos_dat.times, bzimf)
+        output_parmod[:,3] = cleaned_bzimf
+    else:
+        logging.warning('get_ts04_parameters: No bzimf parameter specified, defaulting to -5.0')
+        output_parmod[:,3] = -5.0
+    if w1 is not None:
+        cleaned_w1 = clean_model_parameters(pos_dat.times, w1)
+        output_parmod[:,4] = cleaned_w1
+    else:
+        logging.warning('get_ts04_parameters: No w1 parameter specified, defaulting to 8.0')
+        output_parmod[:,4] = 8.0
+    if w2 is not None:
+        cleaned_w2 = clean_model_parameters(pos_dat.times, w2)
+        output_parmod[:,5] = cleaned_w2
+    else:
+        logging.warning('get_ts04_parameters: No w2 parameter specified, defaulting to 5.0')
+        output_parmod[:,5] = 5.0
+    if w3 is not None:
+        cleaned_w3 = clean_model_parameters(pos_dat.times, w3)
+        output_parmod[:,6] = cleaned_w3
+    else:
+        logging.warning('get_ts04_parameters: No w3 parameter specified, defaulting to 9.5')
+        output_parmod[:,6] = 9.5
+    if w4 is not None:
+        cleaned_w4 = clean_model_parameters(pos_dat.times, w4)
+        output_parmod[:,7] = cleaned_w4
+    else:
+        logging.warning('get_ts04_parameters: No w4 parameter specified, defaulting to 30.0')
+        output_parmod[:,7] = 30.0
+    if w5 is not None:
+        cleaned_w5 = clean_model_parameters(pos_dat.times, w5)
+        output_parmod[:,8] = cleaned_w5
+    else:
+        logging.warning('get_ts04_parameters: No w5 parameter specified, defaulting to 18.5')
+        output_parmod[:,8] = 18.5
+    if w6 is not None:
+        cleaned_w6 = clean_model_parameters(pos_dat.times, w6)
+        output_parmod[:,9] = cleaned_w6
+    else:
+        logging.warning('get_ts04_parameters: No w6 parameter specified, defaulting to 60.0')
+        output_parmod[:,9] = 60.0
+
+    return output_parmod
+
+def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=None, w3=None, w4=None, w5=None, w6=None, autoload=False, parmod=None, suffix=''):
+    """
+    Evaluate the TS04 field model at the times and locations specified by an input tplot variable.
+
+    This is a tplot wrapper for the functional interface to Sheng Tian's implementation of the
     Tsyganenko-Sitnov (2004) storm-time geomagnetic field model
 
     https://github.com/tsssss/geopack
@@ -37,41 +161,27 @@ def tts04(pos_var_gsm, parmod=None, suffix=''):
             Name of the tplot variable containing the model data
 
     """
+    from .generic_geopack_adapters import make_model
     pos_data = get_data(pos_var_gsm)
 
     if pos_data is None:
         logging.error('Variable not found: ' + pos_var_gsm)
         return
 
-    b0gsm = np.zeros((len(pos_data.times), 3))
-    dbgsm = np.zeros((len(pos_data.times), 3))
+    bgsm = np.zeros((len(pos_data.times), 3))
 
     # convert to Re
     pos_re = pos_data.y/6371.2
 
-    if parmod is not None:
-        par = get_data(parmod)
-
-        if par is not None:
-            par = par.y
-    else:
-        logging.error('parmod keyword required.')
-        return
+    input_parmod = parmod
+    parmod = get_ts04_parameters(pos_var=pos_var_gsm, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, w1=w1, w2=w2, w3=w3, w4=w4, w5=w5, w6=w6, parmod=input_parmod, autoload=autoload)
 
     for idx, time in enumerate(pos_data.times):
-        tilt = geopack.recalc(time)
-
-        if not np.isfinite(par[idx, :]).all():
+        if not np.isfinite(parmod[idx, :]).all():
             # skip if there are any NaNs in the input
             continue
-
-        # IGRF in GSM
-        b0gsm[idx, 0], b0gsm[idx, 1], b0gsm[idx, 2] = geopack.igrf_gsm(pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
-
-        # T96 dB in GSM
-        dbgsm[idx, 0], dbgsm[idx, 1], dbgsm[idx, 2] = t04.t04(par[idx, :], tilt, pos_re[idx, 0], pos_re[idx, 1], pos_re[idx, 2])
-
-    bgsm = b0gsm + dbgsm
+        model = make_model("t04", time, parmod[idx, :])
+        bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
 
     saved = store_data(pos_var_gsm + '_bts04' + suffix, data={'x': pos_data.times, 'y': bgsm})
 
