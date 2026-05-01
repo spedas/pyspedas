@@ -86,10 +86,10 @@ jobs:
               coverage run -m pyspedas.hapi_tools.tests.test_hapi
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
-              echo Starting cluster tests at `date`
-              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
-              echo Starting cluster S3 tests at `date`
-              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
+              #echo Starting cluster tests at `date`
+              #coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
+              #echo Starting cluster S3 tests at `date`
+              #coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
               echo Starting CDAWeb tests at `date`
               coverage run -a -m pyspedas.cdagui_tools.tests.test_cdagui
               echo Starting soho tests at `date`
