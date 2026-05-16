@@ -48,11 +48,15 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('I_ion__C1_PP_ASP'))
         self.assertTrue('I_ion__C1_PP_ASP' in asp_vars)
 
-    def test_load_cis_data(self):
+
+    def test_load_cis_def_data(self):
         del_data('*')
-        cis_vars = pyspedas.projects.cluster.cis()
-        self.assertTrue(data_exists('N_p__C1_PP_CIS'))
-        self.assertTrue('N_p__C1_PP_CIS' in cis_vars)
+        trange = ['2002-04-18 12:00:00', '2002-04-18 18:00:00']
+        event = '2002-04-18 17:30:03'
+        probe = '1'
+        cis_vars = pyspedas.projects.cluster.cis(trange,probe=probe,option='def_h1')
+        self.assertTrue(data_exists('ions_3d__C1_CP_CIS_CODIF_HS_H1_PEF'))
+        self.assertTrue('ions_3d__C1_CP_CIS_CODIF_HS_H1_PEF' in cis_vars)
 
     def test_codif_2dslices(self):
         del_data('*')

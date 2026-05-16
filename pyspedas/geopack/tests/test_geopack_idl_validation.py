@@ -659,8 +659,7 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         theta = np.arctan2(bzdat.y, bydat.y)
         store_data('theta',data={'x':bydat.times, 'y':theta})
         pyspedas.tplot('bdiff theta OMNI_HRO_1min_BY_GSM OMNI_HRO_1min_BZ_GSM', display=global_display, save_png='t01_realsw_diags.png')
-        # This assertion will fail until Sheng can get the geopack bug fix pushed out to pypi.
-        #assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
     def test_ts04_actual(self):
         # Note that w1-w6 take their default non-time-varying values here

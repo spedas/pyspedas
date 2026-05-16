@@ -44,6 +44,7 @@ def gmag(
     no_update=False,
     time_clip=False,
     force_download=False,
+    sampling_rate=1,
 ):
     """
     Load ground magnetometer data from the THEMIS mission.
@@ -84,7 +85,9 @@ def gmag(
     force_download: bool, optional
         Download file even if local version is more recent than server version
         Default: False
-
+    sampling_rate: int, optional
+        Specify a sampling rate for loading variometer data. Accepts 1 (Hz) or 10 (Hz).
+        Default: 1
     Returns
     -------
     dict
@@ -94,10 +97,28 @@ def gmag(
     --------
     >>> from pyspedas.projects.themis import gmag
     >>> from pyspedas import tplot
+    >>> from pyspedas import subtract_median
     >>>
     >>> # Load ground magnetometer data for specific sites and time range
     >>> gmag_vars = gmag(sites=['ccnv','bmls'], trange=['2013-11-05', '2013-11-06'])
     >>> tplot(['thg_mag_bmls', 'thg_mag_ccnv'])
+    >>>
+    >>> # Load variometer data for specific sites and time range:
+    >>> gmag_vars = gmag(sites=['s61a','anmo'], trange=['2026-02-24', '2026-02-25'])
+    >>> subtract_median(['thg_mag_s61a', 'thg_mag_anmo'])    
+    >>> tplot(['thg_mag_s61a-m', 'thg_mag_anmo-m'])
+    >>>
+    >>> # Load 10 Hz variometer data for specific sites and time range:
+    >>> gmag_vars = gmag(sites=['s61a','anmo'], sampling_rate=10, trange=['2026-02-24', '2026-02-25'])
+    >>> subtract_median(['thg_mag_s61a_100ms', 'thg_mag_anmo_100ms']) 
+    >>> tplot(['thg_mag_s61a_100ms-m', 'thg_mag_anmo_100ms-m'])
+    >>>
+    >>> # Load 10 Hz variometer data for specific sites and time range using the 10 Hz file name format:
+    >>> gmag_vars = gmag(sites=['s61a_100ms','anmo_100ms'], trange=['2026-02-24', '2026-02-25'])
+    >>> subtract_median(['thg_mag_s61a_100ms', 'thg_mag_anmo_100ms'])
+    >>> tplot(['thg_mag_s61a_100ms-m', 'thg_mag_anmo_100ms-m'])
+    >>>
+    
     """
 
     if sites is None:
@@ -250,6 +271,59 @@ def gmag(
             "weyb",
             "wgry",
         ]
+        variometer_sites=[
+            "154a",
+            "352a",
+            "456a",
+            "anmo",
+            "bouv",
+            "casy",
+            "ccm",
+            "cola",
+            "cor",
+            "dgmt",
+            "dwpf",
+            "e46a",
+            "e62a",
+            "ecsd",
+            "eymn",
+            "goga",
+            "hrv",
+            "j47a",
+            "k30b",
+            "k50a",
+            "k62a",
+            "kbs",
+            "kevo",
+            "kono",
+            "ksu1",
+            "m63a",
+            "mbwa",
+            "midw",
+            "mstx",
+            "n51a",
+            "n53a",
+            "o20a",
+            "p57a",
+            "pab",
+            "qspa",
+            "r49a",
+            "rssd",
+            "s39b",
+            "s61a",
+            "sba",
+            "sfjd",
+            "spmn",
+            "sspa",
+            "t47a",
+            "t57a",
+            "u38b",
+            "wci",
+            "whtx",
+            "wvt",
+            "x48a",
+            "y49a"
+        ]
         sites = (
             thm_sites
             + tgo_sites
@@ -266,6 +340,7 @@ def gmag(
             + fmi_sites
             + aair_sites
             + carisma_sites
+            + variometer_sites
         )
 
     if group is not None:
@@ -273,6 +348,29 @@ def gmag(
 
     if not isinstance(sites, list):
         sites = [sites]
+
+    # check for sites in Variometer group
+    variometer = []
+    for site in sites:
+        s_rate=check_variometer(site)
+        # if check_variometer determines site
+        # to be 1 Hz sampling rate, check if 
+        # sampling_rate argument has been set
+        if (s_rate == 1) and (sampling_rate is not None):
+            # if so, pass sampling_rate value
+            # (case where variometer base names
+            # are passed, but 10 Hz sampling rate
+            # data is to be loaded)
+            
+            # check if sampling_rate is valid:
+            if sampling_rate not in [1,10]:
+                # throw error
+                logging.error('sampling_rate must be either 1 or 10. Setting to default value of 1')
+                sampling_rate=1
+            
+            variometer.append(sampling_rate) 
+        else:
+            variometer.append(s_rate)
 
     # check for sites in Greenland
     greenland = []
@@ -295,6 +393,7 @@ def gmag(
         notplot=notplot,
         stations=sites,
         greenland=greenland,
+        variometer=variometer,
         time_clip=time_clip,
         no_update=no_update,
         force_download=force_download,
@@ -481,4 +580,52 @@ def check_greenland(station_name):
             ):
                 return 1
 
+    return 0
+
+def check_variometer(station_name):
+    """
+    Check if a given station belongs to the Variometers group. 
+    If so, check if the given stationname is formatted to request 
+    data in the 10 Hz sampling rate.
+
+    Parameters
+    ----------
+    station_name : str
+        The name of the station to check.
+
+    Returns
+    -------
+    int
+        Returns sampling rate (1 or 10) if the station is in the variometers group, otherwise returns 0.
+
+    Examples
+    --------
+    >>> from pyspedas.projects.themis.ground.gmag import check_variometer
+    >>> check_variometer("s61a")
+    1
+    >>> check_variometer("s61a_100ms")
+    10
+    """
+
+    # check if station_name contains "_100ms". If it does,
+    # create copy of station name with the "_100ms" 
+    # substring removed
+    if "_100ms" in station_name.lower():
+        station_name_base=station_name.lower()
+        station_name_base=station_name_base.replace("_100ms","")
+    else:
+        station_name_base=station_name.lower()
+    
+    gmag_dict = themis_gmag_dict.get_gmag_list()
+    for station in gmag_dict:
+        # compare a copy of station name with any "_100ms" 
+        # substring removed with the station ccode
+        if station["ccode"].lower() == station_name_base:
+            if (
+                station["variom"] is not None and station["variom"].lower() == "y"
+            ):
+                if "_100ms" in station_name.lower():
+                    return 10
+                else:
+                    return 1
     return 0

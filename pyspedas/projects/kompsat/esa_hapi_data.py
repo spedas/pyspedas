@@ -16,9 +16,11 @@ def get_esa_hapi_connection():
         ``{"Authorization": "Bearer <token>"}`` when successful, else ``None``.
     """
     issuer = "https://sso.s2p.esa.int/realms/swe/.well-known/openid-configuration"
+    scope = "openid swe_hapiserver"
+    # The following values are temporary.
+    # Users should obtain and use their own "client_id" and "client_secret" as described in the readme file.
     client_id = "ed039925634925f75da9075ff297fd0c"
     client_secret = "dpX1Gzy8sp7DNfIqQpxz8r6se7m2Ae8C"
-    scope = "openid swe_hapiserver"
 
     try:
         metadata_response = requests.get(issuer, timeout=30)

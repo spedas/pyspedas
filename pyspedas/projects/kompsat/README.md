@@ -12,6 +12,19 @@ For more information, see:
 - [Space Weather Magnetometer Aboard GEO-KOMPSAT-2A](https://link.springer.com/article/10.1007/s11214-020-00742-2)
 
 
+### Authentication
+
+The ESA HAPI server requires registration.
+
+To use KOMPSAT data from the ESA HAPI server, the user must do the following:
+
+1. The user should register at: https://swe.ssa.esa.int/registration/
+2. Then, the user should request an M2M client profile at the OIDC console: https://sso.s2p.esa.int/oidc-console/swe/
+3. The user will receive a "Client ID" and a "secret key". 
+	These should replace the temporary values of the variables "client_id" and "client_secret" 
+	in the function get_esa_hapi_connection (file: esa_hapi_data.py).
+	 
+
 ### Data available
 
 The routines in this module can be used to load real-time and calibrated data from the Service Oriented Spacecraft Magnetometer (SOSMAG),

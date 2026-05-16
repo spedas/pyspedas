@@ -14,6 +14,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          datatype=None, # ASK data, ESD (3d L2 ESA)
          stations=None,  # ground mag and ASK data
          greenland=None,  # also for ground mag data
+         variometer=None, # variometer check and sampling rate
          prefix='',
          suffix='',
          get_support_data=False,
@@ -177,10 +178,20 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 return
             else:
                 pathformat = []
-                for site, in_greenland in zip(stations, greenland):
+                for site, in_greenland, s_variometer in zip(stations, greenland, variometer):
                     if site == 'idx':
                         # THEMIS GMAG index files are only L1
                         pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
+                    elif s_variometer == 1:
+                        pathformat.append('thg/' + level + '/variometers/' + site
+                                          + '/%Y/thg_' + level + '_mag_' + site
+                                          + '_%Y%m%d_v??.cdf')
+                    elif s_variometer == 10:
+                        if "_100ms" in site.lower():
+                            site=site.replace("_100ms","")
+                        pathformat.append('thg/' + level + '/variometers/' + site
+                                          + '/%Y/thg_' + level + '_mag_' + site
+                                          + '_100ms_%Y%m%d_v??.cdf')
                     elif in_greenland:
                         pathformat.append('thg/greenland_gmag/' + level
                                           + '/' + site + '/%Y/thg_' + level

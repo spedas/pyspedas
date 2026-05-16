@@ -48,13 +48,13 @@ def cluster_get_hia_dist(tname, probe=None):
             'species': species,
             'data_name': 'HIA ' + species,
             'charge': charge,
-            'units_name': 'df_m', # because we are transforming data to s3/m6
+            'units_name': 'df_km', # because we are transforming data to s3/m6
             'mass': mass}
 
     # --- Now we need to reformat the data
     # we shuffle the output to be [time, energy, phi, theta] 
     # (data[1] is currently [time, theta, phi, energy])
-    out_data = data[1].transpose([0, 3, 2, 1]) * 1.0E-18 # convert from s^3 km^-6 to s^3 m^-6
+    out_data = data[1].transpose([0, 3, 2, 1]) # * 1.0E-18 # convert from s^3 km^-6 to s^3 m^-6
     out_bins = np.zeros(out_data.shape) + 1
     out_dphi = np.zeros(out_data.shape) + 22.5   # 16 pixels in 360 degree window
     out_dtheta = np.zeros(out_data.shape) + 22.5 # 8 pixels in 180 degree window
