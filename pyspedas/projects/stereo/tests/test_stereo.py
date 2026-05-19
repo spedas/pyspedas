@@ -57,6 +57,14 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('PSD_FLUX'))
         self.assertTrue(data_exists('PSD_SFU'))
 
+    def test_load_waves_hfr_lfr(self):
+        trange = ['2019-04-02/15:00', '2019-04-02/16:30']
+        pyspedas.projects.stereo.waves(trange=trange, time_clip=True, datatype='hfr', probe='a', prefix='sta_swaves_hfr_')
+        pyspedas.projects.stereo.waves(trange=trange, time_clip=True, datatype='lfr', probe='a', prefix='sta_swaves_lfr_')
+        self.assertTrue(data_exists('sta_swaves_lfr_PSD_FLUX'))
+        self.assertTrue(data_exists('sta_swaves_hfr_PSD_FLUX'))
+
+
     def test_load_beacon_data_a(self):
         w_vars = pyspedas.projects.stereo.beacon(trange=['2013-11-5', '2013-11-6'], probe='a')
         self.assertTrue(data_exists('MAGBField'))
