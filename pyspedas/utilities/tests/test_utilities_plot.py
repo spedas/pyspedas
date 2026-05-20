@@ -560,8 +560,17 @@ class PlotTestCases(unittest.TestCase):
             display=global_display,
             save_png=os.path.join(save_dir, "tha_peef_en_eflux_interp_y.png"),
         )
+        # Regression test: make sure interp_y works when using linear scaling
+        options("tha_peef_en_eflux", "ylog", False)
+        tplot(
+            "tha_peef_en_eflux",
+            display=global_display,
+            save_png=os.path.join(save_dir, "tha_peef_en_eflux_interp_y_linear.png"),
+        )
+
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
         options("tha_peef_en_eflux", "y_interp", 0)  # reset for other tests
+        options("tha_peef_en_eflux", "ylog", True)
 
     def test_themis_peef_bins_interp_both(self):
         del_data("*")

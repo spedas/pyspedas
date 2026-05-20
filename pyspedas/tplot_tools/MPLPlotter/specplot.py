@@ -677,6 +677,8 @@ def specplot(
 
             if ylog:
                 bin_boundaries_1d = 10**rebinned_boundaries
+            else:
+                bin_boundaries_1d = rebinned_boundaries
 
     # check for negatives if zlog is requested
     if zlog:
