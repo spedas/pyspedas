@@ -237,8 +237,11 @@ def load_fdsn(trange=None, network=None, station=None,
                 run_data = station_data.get_run(run_name=run_name)
 
                 # Check run time coverage
-                run_start = datetime.fromisoformat(run_data.metadata.time_period.start).replace(tzinfo=None)
-                run_end = datetime.fromisoformat(run_data.metadata.time_period.end).replace(tzinfo=None)
+                # The times in the metadata may already be strings, or objects that are convertible to strings,
+                # depending on which versions of mth5, obspy, and mt-metadata are being used.
+                # We'll just call str() on whatever we get back and hope for the best...
+                run_start = datetime.fromisoformat(str(run_data.metadata.time_period.start)).replace(tzinfo=None)
+                run_end = datetime.fromisoformat(str(run_data.metadata.time_period.end)).replace(tzinfo=None)
 
                 # Skip processing if run is outside requested time range
                 if run_start > request_end or run_end < request_start or request_end <= request_start:
