@@ -376,7 +376,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
             }
         )
 
-        fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
+        fdsn_object = FDSN(mth5_version='0.2.0', client="EARTHSCOPE")
         try:
             # This will raise an error because the date format is wrong. But the h5 files will be created and open
             fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=CONFIG['local_data_dir'])

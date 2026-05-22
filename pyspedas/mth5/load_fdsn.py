@@ -175,7 +175,7 @@ def load_fdsn(trange=None, network=None, station=None,
         mth5_path = mth5_pathfile
     else:
         # Initialize FDSN object
-        fdsn_object = FDSN(mth5_version='0.2.0', client="IRIS")
+        fdsn_object = FDSN(mth5_version='0.2.0', client="EARTHSCOPE")
         try:
             mth5_path = fdsn_object.make_mth5_from_fdsn_client(request_df, interact=False, path=mth5dir)
             if os.path.isfile(mth5_pathfile):
