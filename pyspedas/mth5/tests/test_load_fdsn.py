@@ -4,6 +4,8 @@ import urllib.error
 from urllib.error import URLError, HTTPError
 import socket
 
+# PyCharm doesn't like this import of FDSN when mth5 version 0.6.7 is installed, but
+# everything still works. so there must be some runtime magic in play...
 from mth5.clients.make_mth5 import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
 from pyspedas.mth5.utilities import _list_of_fdsn_channels
@@ -453,12 +455,12 @@ class TestDatasetsFunction(unittest.TestCase):
 4P|ALW48||LFZ|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
 """
 
-    # Set to True if we can get to https://service.iris.edu
+    # Set to True if we can get to https://service.earthscope.org
     PING_IRIS = False
 
     @classmethod
     def setUpClass(cls):
-        host = "service.iris.edu"
+        host = "service.earthscope.org"
         try:
             # Create a socket object
             with socket.create_connection((host, 443), timeout=5) as sock:

@@ -10,6 +10,8 @@ from .config import CONFIG
 from pyspedas.tplot_tools import store_data, options
 
 # MTH5 installation is checked in __init__
+# PyCharm doesn't like this import of FDSN when mth5 version 0.6.7 is installed, but
+# everything still seems to work....perhaps a static analysis vs runtime magic issue?
 from mth5.clients.make_mth5 import FDSN
 from mth5.mth5 import MTH5
 

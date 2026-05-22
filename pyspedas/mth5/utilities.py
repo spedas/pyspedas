@@ -137,10 +137,10 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
         # URL of the data limited to USA coordinate box
         # lat 24 49
         # lon -127 -59
-        url = f'https://service.iris.edu/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&maxlat=49&minlon=-127&maxlon=-59&minlat=24&includecomments=false&nodata=404'
+        url = f'https://service.earthscope.org/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&maxlat=49&minlon=-127&maxlon=-59&minlat=24&includecomments=false&nodata=404'
     else:
         # URL of the data unlimited in location
-        url = f'https://service.iris.edu/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&includecomments=false&nodata=404'
+        url = f'https://service.earthscope.org/fdsnws/station/1/query?{net_str}&{sta_str}&loc=*&cha={cha}&starttime={t1}&endtime={t2}&level=channel&format=text&includecomments=false&nodata=404'
 
     # Initialize the result dictionary
     res = {}
