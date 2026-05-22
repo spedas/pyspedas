@@ -8,7 +8,7 @@ from pyspedas.tplot_tools import options, data_quants
 # Loading
 def fields(trange=['2018-11-5', '2018-11-6'], 
         datatype='mag_rtn', 
-        level='l2',
+        level= None,
         suffix='',  
         prefix='',
         get_support_data=False, 
@@ -132,7 +132,14 @@ def fields(trange=['2018-11-5', '2018-11-6'],
         suffix = ''
 
     if prefix is None:
-        prefix = ''    
+        prefix = ''
+
+    # From Marc Pulupa: Default level for RFS data types is L3; for all others L2
+    if level is None:
+        if datatype.lower() in ['rfs_hfr', 'rfs_lfr', 'rfs_burst']:
+            level = 'l3'
+        else:
+            level='l2'
 
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2', 'sqtn_rfs_v3v4']:

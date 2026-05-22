@@ -255,6 +255,16 @@ class LoadTestCases(unittest.TestCase):
         epilo_vars = pyspedas.projects.psp.epi(suffix=None)
         self.assertTrue(data_exists('psp_isois_HET_A_Electrons_Rate_TS'))
 
+    def test_fields_rfs_default_l3(self):
+        trange = ['2020-08-05/12:00', '2020-08-05/20:00']
+        vars = pyspedas.projects.psp.fields(trange=trange, time_clip=True, datatype='rfs_hfr')
+        self.assertTrue('psp_fld_l3_rfs_hfr_auto_averages_ch0_V1V2' in vars)
+
+    def test_fields_non_rfs_default_l2(self):
+        trange = ['2020-08-05/12:00', '2020-08-05/20:00']
+        vars = pyspedas.projects.psp.fields(trange=trange, time_clip=True, datatype='mag_RTN_4_Sa_per_Cyc')
+        self.assertTrue('psp_fld_l2_mag_RTN_4_Sa_per_Cyc' in vars)
+
     def test_l3_filtering(self):
         import pyspedas.projects.psp as psp
         from pyspedas import tplot, options
