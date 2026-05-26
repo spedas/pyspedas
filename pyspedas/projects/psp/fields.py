@@ -134,12 +134,12 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     if prefix is None:
         prefix = ''
 
-    # From Marc Pulupa: Default level for RFS data types is L3; for all others L2
+    # From Marc Pulupa: Default level for RFS HFR and LFR data types is L3; for all others L2
     if level is None:
-        if datatype.lower() in ['rfs_hfr', 'rfs_lfr', 'rfs_burst']:
+        if datatype.lower() in ['rfs_hfr', 'rfs_lfr']:
             level = 'l3'
         else:
-            level='l2'
+            level = 'l2'
 
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2', 'sqtn_rfs_v3v4']:
