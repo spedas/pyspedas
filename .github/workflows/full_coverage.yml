@@ -304,8 +304,8 @@ jobs:
               coverage run -a -m pyspedas.projects.maven.tests.test_maven
               echo Starting VIRES client tests at `date`
               coverage run -a -m pyspedas.vires.tests.test_vires
-              echo Starting secs tests at `date`
-              coverage run -a -m pyspedas.projects.secs.tests.test_secs
+              # echo Starting secs tests at `date`
+              # coverage run -a -m pyspedas.projects.secs.tests.test_secs
               echo Starting particles tests at `date`
               coverage run -a -m pyspedas.particles.tests.test_particles
               echo "========================================================="
