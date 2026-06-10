@@ -8,6 +8,14 @@ from pyspedas.tplot_tools import data_exists, del_data
 
 
 class SegmentTestCases(unittest.TestCase):
+    @classmethod
+    def setUpClass(cls):
+        """
+        Ensure that the segments are loaded from MMS SDC and cached, so they don't need to be
+        repeatedly loaded for each test.
+        """
+        mms_update_brst_intervals()
+
     def test_sroi(self):
         del_data("*")
         sroi = mms_load_sroi_segments(trange=['2019-10-01', '2019-11-01'])
@@ -34,7 +42,21 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_brst(self):
         del_data("*")
-        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'])
+        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], no_query=True)
+        self.assertTrue(len(brst[0]) == 53)
+        self.assertTrue(brst[0][0] == 1444975174.0)
+        self.assertTrue(brst[1][0] == 1444975244.0)
+        self.assertTrue(data_exists('mms_bss_burst'))
+        with self.assertLogs(level='ERROR') as log:
+            # error, no trange specified
+            brst = mms_load_brst_segments()
+            self.assertIn("Error; no trange specified.", log.output[0])
+
+    def test_brst_new(self):
+        "Test the new version of the MMS SDC qyery to minimize the download traffic"
+
+        del_data("*")
+        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], use_new=True)
         self.assertTrue(len(brst[0]) == 53)
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
@@ -46,7 +68,7 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_update_brst_intervals(self):
         del_data("*")
-        intervals = mms_update_brst_intervals()
+        intervals = mms_update_brst_intervals(no_query=True)
         self.assertTrue('start_times' in intervals)
         self.assertTrue('end_times' in intervals)
         self.assertTrue(intervals['start_times'][0] == 1430876725.0)
@@ -54,9 +76,9 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_spd_mms_load_bss(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'])
+        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], no_query=True)
         self.assertTrue(data_exists('mms_bss_burst'))
-        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
+        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'], no_query=True)
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms1_bss_sroi'))
 

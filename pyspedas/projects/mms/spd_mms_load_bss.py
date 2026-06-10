@@ -5,7 +5,7 @@ from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 
 
 def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'burst'], 
-                     include_labels=False, probe='1', nodownload=False):
+                     include_labels=False, probe='1', no_query:bool = False):
     """
     Creates tplot variables which allow you to display horizontal color bars 
     indicating burst data availability.
@@ -23,6 +23,10 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
 
         probe: str or int
             S/C probe # for SRoI bars (used as fast survey segments after 6Nov15; default: 1)
+
+        no_query: bool
+            Use cached time intervals file rather than querying MMS SDC.  This option is for testing
+            purpose only, and will soon be removed.
     """
 
     if not isinstance(datatype, list):
@@ -45,7 +49,7 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
                 # use SRoI code for dates on and after 6Nov15
                 out = mms_load_sroi_segments(trange=trange, probe=probe)
         elif dtype == 'burst':
-            out = mms_load_brst_segments(trange=trange)
+            out = mms_load_brst_segments(trange=trange, no_query=no_query)
         else:
             logging.error('Unsupported datatype: ' + dtype + '; valid options: "fast" and "burst"')
             continue

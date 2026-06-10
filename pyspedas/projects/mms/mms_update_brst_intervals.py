@@ -11,11 +11,22 @@ from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix
 
 
-def mms_update_brst_intervals():
+def mms_update_brst_intervals(no_query: bool = False) -> dict:
     """
     This function downloads and caches the current mms_burst_data_segment.csv
     file from the MMS SDC
+
+    If called with no_query=True, intervals will be loaded from an existing pickle file
+    in the default place.  This option is for testing purposes only, and will be removed
+    in a near-future release.
+
     """
+
+    if no_query:
+        with open(os.path.join(CONFIG['local_data_dir'], 'mms_brst_intervals.pickle'), "rb") as file:
+            brst_intervals = pickle.load(file)
+            return brst_intervals
+
     # not sure if logging in is still important for these
     # so this code might be unnecessary now; for now it
     # remains to match the IDL functionality
