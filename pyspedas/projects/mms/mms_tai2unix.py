@@ -35,3 +35,19 @@ def mms_tai2unix(values):
         tinput_1970 = values[idx] - tai_minus_unix
         out[idx] = tinput_1970 - current_leap
     return out
+
+from astropy.time import Time
+
+MMS_TAI_MINUS_UNIX_TAI = 378691200.0
+
+def mms_unix2tai(values):
+    """
+    Convert UTC/POSIX unix timestamps to MMS TAI seconds since 1958-01-01 TAI.
+    """
+    scalar = np.isscalar(values)
+    arr = np.atleast_1d(values).astype(float)
+
+    t = Time(arr, format="unix", scale="utc")
+    out = t.tai.unix_tai + MMS_TAI_MINUS_UNIX_TAI
+
+    return out[0] if scalar else np.asarray(out)
