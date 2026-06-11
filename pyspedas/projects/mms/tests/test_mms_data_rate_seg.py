@@ -1,10 +1,14 @@
 import unittest
+import logging
+import numpy as np
+from numpy.testing import assert_allclose
 from pyspedas.projects.mms.spd_mms_load_bss import spd_mms_load_bss
 from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments, get_mms_srois
 from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
-from pyspedas.tplot_tools import data_exists, del_data
+from pyspedas.tplot_tools import data_exists, del_data, time_string, time_double
+from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 
 
 class SegmentTestCases(unittest.TestCase):
@@ -66,6 +70,25 @@ class SegmentTestCases(unittest.TestCase):
             brst = mms_load_brst_segments()
             self.assertIn("Error; no trange specified.", log.output[0])
 
+    def test_brst_old_new(self):
+        del_data('*')
+        tranges = [
+            ["2015-10-01", "2015-10-05"],
+            ["2016-12-31T23:55:00", "2017-01-01T00:05:00"],
+            ["2016-12-31T23:59:55", "2017-01-01T00:00:05"],
+            ["2017-01-01T00:00:00", "2017-01-01T12:00:00"],
+        ]
+        for trange in tranges:
+            logging.info(f"Testing old and new methods for trange{trange}")
+            brst_old = mms_load_brst_segments(trange=trange,no_query=True,use_new=False)
+            brst_new = mms_load_brst_segments(trange=trange,use_new=True)
+            if brst_old is None:
+                self.assertTrue(brst_new is None)
+            else:
+                assert_allclose(brst_old[0],brst_new[0],atol=0.0001)
+                assert_allclose(brst_old[1],brst_new[1],atol=0.0001)
+
+
     def test_update_brst_intervals(self):
         del_data("*")
         intervals = mms_update_brst_intervals(no_query=True)
@@ -89,6 +112,19 @@ class SegmentTestCases(unittest.TestCase):
             self.assertFalse(data_exists('mms_bss_fast'))
             self.assertIn("Unsupported datatype: brst; valid options: \"fast\" and \"burst\"", log.output[0])
 
+    def test_tai_unix_conversions(self):
+        dates = [
+            '2015-10-01 00:00',
+            '2016-12-31 23:59:58',
+            '2016-12-31 23:59:59',
+            '2017-01-01 00:00:00',
+            '2017-01-01 00:00:01',
+        ]
+
+        unix_times = np.array(time_double(dates))
+        tai_times = np.array(mms_unix2tai(unix_times))
+        rt_unix = np.array(mms_tai2unix(tai_times))
+        np.testing.assert_allclose(unix_times, rt_unix, atol=0.0001)
 
 if __name__ == '__main__':
     unittest.main()
