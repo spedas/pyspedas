@@ -25,8 +25,8 @@ def mms_update_brst_intervals_new(trange, padding:float = 300.0):
     tr = time_double(trange)
     tr_tai = mms_unix2tai(tr)
 
-    start_str = time_string(tr[0], fmt='%d-%b-%Y')
-    end_str = time_string(tr[1], fmt='%d-%b-%Y')
+    start_str = time_string(tr[0])
+    end_str = time_string(tr[1])
 
     duration = tr[1] - tr[0]
 
