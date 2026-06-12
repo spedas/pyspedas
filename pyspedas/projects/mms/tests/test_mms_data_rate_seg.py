@@ -76,7 +76,7 @@ class SegmentTestCases(unittest.TestCase):
         unix_times = np.array(time_double(dates))
         tai_times = np.array(mms_unix2tai(unix_times))
         rt_unix = np.array(mms_tai2unix(tai_times))
-        np.testing.assert_allclose(unix_times, rt_unix, atol=0.0001)
+        assert_allclose(unix_times, rt_unix, atol=0.0001)
 
 if __name__ == '__main__':
     unittest.main()
