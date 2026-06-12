@@ -10,7 +10,7 @@ from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 
 
-def mms_update_brst_intervals_new(trange, padding:float = 300.0):
+def mms_update_brst_intervals(trange, padding:float = 300.0):
     """
     This function downloads and caches the current mms_burst_data_segment.csv
     file from the MMS SDC
