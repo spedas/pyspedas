@@ -30,10 +30,6 @@ def mms_update_brst_intervals(trange, padding:float = 300.0):
 
     duration = tr[1] - tr[0]
 
-    if duration > 30*86400:
-        logging.error(f'Time range [{start_str}, {end_str}] is longer than 30 days.' )
-        return {}
-
     # not sure if logging in is still important for these
     # so this code might be unnecessary now; for now it
     # remains to match the IDL functionality

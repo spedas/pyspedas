@@ -6,10 +6,9 @@ from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
-from pyspedas.projects.mms.mms_update_brst_intervals_new import mms_update_brst_intervals_new
 
 
-def mms_load_brst_segments(trange=None, suffix='', use_new= False, no_query= False):
+def mms_load_brst_segments(trange=None, suffix=''):
     """
     This function loads the burst segment intervals
     
@@ -23,15 +22,6 @@ def mms_load_brst_segments(trange=None, suffix='', use_new= False, no_query= Fal
         suffix: str
             String to append to the end of the tplot variable names
 
-        use_new: bool
-            For internal testing only, will be removed in a future release
-            If True, use the new, more efficient query strategy. Default: False
-
-        no_query: bool
-            For internal testing only, will be removed in a future release.
-            If True, load date from a previously downloaded pickle file rather than
-            querying the MMS SDC.  Default: False
-
     Returns
     ---------
         Tuple containing (start_times, end_times)
@@ -43,12 +33,9 @@ def mms_load_brst_segments(trange=None, suffix='', use_new= False, no_query= Fal
 
     tr = time_double(trange)
 
-    if use_new:
-        intervals = mms_update_brst_intervals_new(tr)
-    else:
-        intervals = mms_update_brst_intervals(no_query=no_query)
+    intervals = mms_update_brst_intervals(tr)
 
-    if intervals is not None:
+    if intervals:
         unix_start = np.array(intervals['start_times'])
         unix_end = np.array(intervals['end_times'])
     else:

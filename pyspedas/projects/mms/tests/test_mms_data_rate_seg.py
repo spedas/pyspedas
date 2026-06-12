@@ -12,13 +12,6 @@ from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 
 
 class SegmentTestCases(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        """
-        Ensure that the segments are loaded from MMS SDC and cached, so they don't need to be
-        repeatedly loaded for each test.
-        """
-        mms_update_brst_intervals()
 
     def test_sroi(self):
         del_data("*")
@@ -46,7 +39,7 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_brst(self):
         del_data("*")
-        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], no_query=True)
+        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'])
         self.assertTrue(len(brst[0]) == 53)
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
@@ -55,53 +48,12 @@ class SegmentTestCases(unittest.TestCase):
             # error, no trange specified
             brst = mms_load_brst_segments()
             self.assertIn("Error; no trange specified.", log.output[0])
-
-    def test_brst_new(self):
-        "Test the new version of the MMS SDC qyery to minimize the download traffic"
-
-        del_data("*")
-        brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], use_new=True)
-        self.assertTrue(len(brst[0]) == 53)
-        self.assertTrue(brst[0][0] == 1444975174.0)
-        self.assertTrue(brst[1][0] == 1444975244.0)
-        self.assertTrue(data_exists('mms_bss_burst'))
-        with self.assertLogs(level='ERROR') as log:
-            # error, no trange specified
-            brst = mms_load_brst_segments()
-            self.assertIn("Error; no trange specified.", log.output[0])
-
-    def test_brst_old_new(self):
-        del_data('*')
-        tranges = [
-            ["2015-10-01", "2015-10-05"],
-            ["2016-12-31T23:55:00", "2017-01-01T00:05:00"],
-            ["2016-12-31T23:59:55", "2017-01-01T00:00:05"],
-            ["2017-01-01T00:00:00", "2017-01-01T12:00:00"],
-        ]
-        for trange in tranges:
-            logging.info(f"Testing old and new methods for trange{trange}")
-            brst_old = mms_load_brst_segments(trange=trange,no_query=True,use_new=False)
-            brst_new = mms_load_brst_segments(trange=trange,use_new=True)
-            if brst_old is None:
-                self.assertTrue(brst_new is None)
-            else:
-                assert_allclose(brst_old[0],brst_new[0],atol=0.0001)
-                assert_allclose(brst_old[1],brst_new[1],atol=0.0001)
-
-
-    def test_update_brst_intervals(self):
-        del_data("*")
-        intervals = mms_update_brst_intervals(no_query=True)
-        self.assertTrue('start_times' in intervals)
-        self.assertTrue('end_times' in intervals)
-        self.assertTrue(intervals['start_times'][0] == 1430876725.0)
-        self.assertTrue(intervals['end_times'][0] == 1430879715.0)
 
     def test_spd_mms_load_bss(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], no_query=True)
+        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'])
         self.assertTrue(data_exists('mms_bss_burst'))
-        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'], no_query=True)
+        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms1_bss_sroi'))
 
