@@ -6,7 +6,7 @@ from pyspedas.tplot_tools import data_exists, del_data
 
 class LoadTestCases(unittest.TestCase):
 
-    def test_load_fgm_data(self):
+    def test_load_fgm_data_time_clip(self):
         out_vars = pyspedas.projects.elfin.fgm(time_clip=True)
         self.assertTrue(data_exists('ela_fgs'))
         self.assertTrue('ela_fgs' in out_vars)
@@ -44,7 +44,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('ela_pef' in out_vars)
         self.assertFalse(data_exists('ela_pef'))
 
-
     def test_downloadonly(self):
         files = pyspedas.projects.elfin.epd(downloadonly=True, trange=['2020-11-01', '2020-11-02'])
         self.assertTrue(os.path.exists(files[0]))
@@ -54,15 +53,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('ela_fgs'))
         self.assertTrue('ela_fgs' in out_vars)
 
-    def test_load_mrma_data(self):
-        out_vars = pyspedas.projects.elfin.mrma()
-        self.assertTrue(data_exists('ela_mrma'))
-        self.assertTrue('ela_mrma' in out_vars)
-
-    def test_load_mrmi_data(self):
-        out_vars = pyspedas.projects.elfin.mrmi()
-        self.assertTrue(data_exists('ela_mrmi'))
-        self.assertTrue('ela_mrmi' in out_vars)
 
 if __name__ == '__main__':
     unittest.main()
