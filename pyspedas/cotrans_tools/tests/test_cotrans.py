@@ -257,6 +257,41 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(abs(gsm[1] - res[1]) <= 1e-6)
         self.assertTrue(abs(gsm[2] - res[2]) <= 1e-6)
 
+    def test_cotrans_tracearray(self):
+        """Test an input variable with shape ntimes x ntraces x 3 """
+        del_data()
+        d = [
+            [245.0, -102.0, 251.0],
+            [775.0, 10.0, -10],
+            [121.0, 545.0, -1.0],
+            [304.65, -205.3, 856.1],
+            [464.34, -561.55, -356.22],
+        ]
+        n_tracepoints = 4
+        d_trace = np.zeros((5, n_tracepoints,3))
+        for i in range(5):
+            d_trace[i,:,:] = d[i]
+        t = [1577112800, 1577308800, 1577598800, 1577608800, 1577998800]
+        name_out = "tname_out"
+        cotrans(
+            name_out=name_out, time_in=t, data_in=d_trace, coord_in="gei", coord_out="gsm"
+        )
+        in_len = len(t)
+        dout = get_data(name_out)
+        dout_times = dout[0]
+        dout_data = dout[1]
+        out_len = len(dout_times)
+        gsm = dout_data[1,:,:]
+        # Expected value for this time
+        res = [45.98475132, 762.29816225, 132.7098884]
+        # 4 points per trace, repeated
+        res_traces = np.zeros((4,3))
+        for i in range(4):
+            res_traces[i,:] = res
+
+        self.assertTrue(out_len == in_len)
+        assert_allclose(res_traces, gsm)
+
     def test_all_cotrans(self):
         """Test all cotrans pairs.
 

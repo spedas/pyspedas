@@ -31,6 +31,7 @@ def cotrans(
     data_in=None,
     coord_in=None,
     coord_out=None,
+    quiet= False
 ):
     """
     Transform data from coord_in to coord_out.
@@ -53,6 +54,8 @@ def cotrans(
     coord_out: str
         Name of output coordinate system.
         Valid options: "gse", "gsm", "sm", "gei", "geo", "mag", "j2000"
+    quiet: bool
+        If True, do not output progress messages
 
     Returns
     -------
@@ -113,13 +116,51 @@ def cotrans(
         logging.error("cotrans error: Data is empty.")
         return 0
 
-    # Perform coordinate transformation.
-    if not isinstance(data_in, np.ndarray) and not isinstance(data_in, list):
+    # Ensure inputs are numpy arrays
+    if not isinstance(data_in, np.ndarray):
         data_in = np.array(data_in)
-    if not isinstance(time_in, np.ndarray) and not isinstance(time_in, list):
+    if not isinstance(time_in, np.ndarray):
         time_in = np.array(time_in)
 
-    data_out = subcotrans(time_in, data_in, coord_in, coord_out)
+    # Perform coordinate transform
+
+    dims=data_in.shape
+    # Typical case: ntimes x 3
+    if len(dims) == 2 and dims[0] == len(time_in) and dims[1] == 3:
+        # Data has the expected shape, call subcotrans
+        data_out = subcotrans(time_in, data_in, coord_in, coord_out, quiet=quiet)
+        pass
+    elif len(dims) == 2:
+        # Something is mismatched
+        logging.error(f"cotrans error: time_in has {len(time_in)} elements, data_in has shape {dims}")
+        return 0
+    elif len(dims) == 3 and dims[0] == len(time_in) and dims[2] == 3:
+        # This looks like a collection of field line traces.  Call cotrans recursively, trace by trace
+        if not quiet:
+            logging.info(f"cotrans: input time has {len(time_in)} elements and input data has shape {dims}, treating as collection of field line traces and procesing recursively.")
+            logging.info(f"Input coordinates: {coord_in} Output coordinates:{coord_out}")
+        trace_times = np.zeros(dims[1])
+        trace_points_in = np.zeros((dims[1],3))
+        trace_points_in[:,:] = np.nan
+        data_out = np.zeros((dims[0],dims[1],3))
+        data_out[:,:,:] = np.nan
+
+        for i in range(dims[0]):
+            trace_times[:] = time_in[i]
+            trace_points_in[:,:] = data_in[i,:,:]
+            trace_out =  cotrans(time_in=trace_times, data_in=trace_points_in, coord_in=coord_in, coord_out=coord_out, quiet=True)
+            data_out[i,:,:] = trace_out
+
+        if not quiet:
+            logging.info("cotrans: finished transforming trace arrays")
+    elif len(dims) == 3:
+        # Something is mismatched
+        logging.error(f"cotrans error: mismatched time/data arrays. time_in has {len(time_in)} elements,. data_in has shape {dims}")
+        return 0
+    else:
+        # Something is mismatched
+        logging.error(f"cotrans error: Data array has wrong number of dimensions, shape {dims}")
+        return 0
 
     # If no input or output tplot variable names are provided, return the transformed data.
     if name_in is None and name_out is None:
@@ -143,6 +184,7 @@ def cotrans(
 
     # Code to update the legend and axis labels has been moved into cotrans_set_coord().
 
-    logging.info("Output variable: " + name_out)
+    if not quiet:
+        logging.info("Output variable: " + name_out)
 
     return 1

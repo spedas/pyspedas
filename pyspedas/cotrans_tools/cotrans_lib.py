@@ -377,7 +377,7 @@ def tgeigse_vect(time_in, data_in):
     return xgse, ygse, zgse
 
 
-def subgei2gse(time_in, data_in):
+def subgei2gse(time_in, data_in, quiet=False):
     """
     Transform data from GEI to GSE.
 
@@ -395,7 +395,8 @@ def subgei2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgeigse_vect(time_in, data_in)
-    logging.info("Running transformation: subgei2gse")
+    if not quiet:
+        logging.info("Running transformation: subgei2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -444,7 +445,7 @@ def tgsegei_vect(time_in, data_in):
     return xgei, ygei, zgei
 
 
-def subgse2gei(time_in, data_in):
+def subgse2gei(time_in, data_in, quiet=False):
     """
     Transform data from GSE to GEI.
 
@@ -454,6 +455,8 @@ def subgse2gei(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GSE.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -462,7 +465,8 @@ def subgse2gei(time_in, data_in):
 
     """
     xgei, ygei, zgei = tgsegei_vect(time_in, data_in)
-    logging.info("Running transformation: subgse2gei")
+    if not quiet:
+        logging.info("Running transformation: subgse2gei")
     return np.column_stack([xgei, ygei, zgei])
 
 
@@ -524,7 +528,7 @@ def tgsegsm_vect(time_in, data_in):
     return xgsm, ygsm, zgsm
 
 
-def subgse2gsm(time_in, data_in):
+def subgse2gsm(time_in, data_in, quiet=False):
     """
     Transform data from GSE to GSM.
 
@@ -534,6 +538,8 @@ def subgse2gsm(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GSE.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -542,7 +548,8 @@ def subgse2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tgsegsm_vect(time_in, data_in)
-    logging.info("Running transformation: subgse2gsm")
+    if not quiet:
+        logging.info("Running transformation: subgse2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
@@ -605,7 +612,7 @@ def tgsmgse_vect(time_in, data_in):
     return xgse, ygse, zgse
 
 
-def subgsm2gse(time_in, data_in):
+def subgsm2gse(time_in, data_in, quiet=False):
     """
     Transform data from GSM to GSE.
 
@@ -615,6 +622,8 @@ def subgsm2gse(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GSE.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -623,7 +632,8 @@ def subgsm2gse(time_in, data_in):
 
     """
     xgse, ygse, zgse = tgsmgse_vect(time_in, data_in)
-    logging.info("Running transformation: subgsm2gse")
+    if not quiet:
+        logging.info("Running transformation: subgsm2gse")
     return np.column_stack([xgse, ygse, zgse])
 
 
@@ -677,7 +687,7 @@ def tgsmsm_vect(time_in, data_in):
     return xsm, ysm, zsm
 
 
-def subgsm2sm(time_in, data_in):
+def subgsm2sm(time_in, data_in, quiet=False):
     """
     Transform data from GSM to SM.
 
@@ -687,6 +697,8 @@ def subgsm2sm(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GSM.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -695,7 +707,8 @@ def subgsm2sm(time_in, data_in):
 
     """
     xsm, ysm, zsm = tgsmsm_vect(time_in, data_in)
-    logging.info("Running transformation: subgsm2sm")
+    if not quiet:
+        logging.info("Running transformation: subgsm2sm")
     return np.column_stack([xsm, ysm, zsm])
 
 
@@ -749,7 +762,7 @@ def tsmgsm_vect(time_in, data_in):
     return xgsm, ygsm, zgsm
 
 
-def subsm2gsm(time_in, data_in):
+def subsm2gsm(time_in, data_in, quiet=False):
     """
     Transform data from SM to GSM.
 
@@ -759,6 +772,8 @@ def subsm2gsm(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in SM.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -767,11 +782,12 @@ def subsm2gsm(time_in, data_in):
 
     """
     xgsm, ygsm, zgsm = tsmgsm_vect(time_in, data_in)
-    logging.info("Running transformation: subsm2gsm")
+    if not quiet:
+        logging.info("Running transformation: subsm2gsm")
     return np.column_stack([xgsm, ygsm, zgsm])
 
 
-def subgei2geo(time_in, data_in):
+def subgei2geo(time_in, data_in, quiet=False):
     """
     Transform data from GEI to GEO.
 
@@ -781,6 +797,8 @@ def subgei2geo(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GEI.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -799,11 +817,12 @@ def subgei2geo(time_in, data_in):
     ygeo = -sgst * xgei + cgst * ygei
     zgeo = zgei
 
-    logging.info("Running transformation: subgei2geo")
+    if not quiet:
+        logging.info("Running transformation: subgei2geo")
     return np.column_stack([xgeo, ygeo, zgeo])
 
 
-def subgeo2gei(time_in, data_in):
+def subgeo2gei(time_in, data_in,quiet=False):
     """
     Transform data from GEO to GEI.
 
@@ -813,6 +832,8 @@ def subgeo2gei(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GEO.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -831,11 +852,12 @@ def subgeo2gei(time_in, data_in):
     ygei = sgst * xgeo + cgst * ygeo
     zgei = zgeo
 
-    logging.info("Running transformation: subgeo2gei")
+    if not quiet:
+        logging.info("Running transformation: subgeo2gei")
     return np.column_stack([xgei, ygei, zgei])
 
 
-def subgeo2mag(time_in, data_in):
+def subgeo2mag(time_in, data_in, quiet=False):
     """
     Transform data from GEO to MAG.
 
@@ -845,6 +867,8 @@ def subgeo2mag(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GEO.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -862,10 +886,10 @@ def subgeo2mag(time_in, data_in):
     n = len(time_in)
     sm = np.zeros((n, 3), float)
     sm[:, 2] = 1.0
-    gsm = subsm2gsm(time_in, sm)
-    gse = subgsm2gse(time_in, gsm)
-    gei = subgse2gei(time_in, gse)
-    geo = subgei2geo(time_in, gei)
+    gsm = subsm2gsm(time_in, sm, quiet=quiet)
+    gse = subgsm2gse(time_in, gsm, quiet=quiet)
+    gei = subgse2gei(time_in, gse, quiet=quiet)
+    geo = subgei2geo(time_in, gei, quiet=quiet)
     mag = geo  # the output
 
     # Step 2. Transform cartesian to spherical.
@@ -892,11 +916,12 @@ def subgeo2mag(time_in, data_in):
         mlat[1, 1] = 1.0
         mag[i] = mlat @ out
 
-    logging.info("Running transformation: subgeo2mag")
+    if not quiet:
+        logging.info("Running transformation: subgeo2mag")
     return mag
 
 
-def submag2geo(time_in, data_in):
+def submag2geo(time_in, data_in, quiet=False):
     """
     Transform data from MAG to GEO.
 
@@ -906,6 +931,8 @@ def submag2geo(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in MAG.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -923,10 +950,10 @@ def submag2geo(time_in, data_in):
     n = len(time_in)
     sm = np.zeros((n, 3), float)
     sm[:, 2] = 1.0
-    gsm = subsm2gsm(time_in, sm)
-    gse = subgsm2gse(time_in, gsm)
-    gei = subgse2gei(time_in, gse)
-    geo = subgei2geo(time_in, gei)
+    gsm = subsm2gsm(time_in, sm, quiet=quiet)
+    gse = subgsm2gse(time_in, gsm, quiet=quiet)
+    gei = subgse2gei(time_in, gse, quiet=quiet)
+    geo = subgei2geo(time_in, gei, quiet=quiet)
 
     # Step 2. Transform cartesian to spherical.
     x2y2 = geo[:, 0] ** 2 + geo[:, 1] ** 2
@@ -952,7 +979,8 @@ def submag2geo(time_in, data_in):
         glong[2, 2] = 1.0
         geo[i] = glong @ out
 
-    logging.info("Running transformation: submag2geo")
+    if not quiet:
+        logging.info("Running transformation: submag2geo")
     return geo
 
 
@@ -1157,7 +1185,7 @@ def ctv_mx_vec_rot(m, v):
     return out
 
 
-def subgei2j2000(time_in, data_in):
+def subgei2j2000(time_in, data_in,quiet=False):
     """
     Transform data from GEI to J2000.
 
@@ -1167,6 +1195,8 @@ def subgei2j2000(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in GEI.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -1179,11 +1209,12 @@ def subgei2j2000(time_in, data_in):
     cmatrix = j2000_matrix_vec(time_in)
     d_out = ctv_mx_vec_rot(cmatrix, d)
 
-    logging.info("Running transformation: subgei2j2000")
+    if not quiet:
+        logging.info("Running transformation: subgei2j2000")
     return np.transpose(d_out)
 
 
-def subj20002gei(time_in, data_in):
+def subj20002gei(time_in, data_in, quiet=False):
     """
     Transform data from J2000 to GEI.
 
@@ -1193,6 +1224,8 @@ def subj20002gei(time_in, data_in):
         Time array.
     data_in: list of float
         Coordinates in J2000.
+    quiet: bool
+        If True, suppress progress messages
 
     Returns
     -------
@@ -1207,7 +1240,8 @@ def subj20002gei(time_in, data_in):
     icmatrix = np.transpose(cmatrix, (1, 0, 2))
     d_out = ctv_mx_vec_rot(icmatrix, d)
 
-    logging.info("Running transformation: subj20002gei")
+    if not quiet:
+        logging.info("Running transformation: subj20002gei")
     return np.transpose(d_out)
 
 
@@ -1307,7 +1341,7 @@ def shorten_path_t1_t2(cpath):
     return out
 
 
-def subcotrans(time_in, data_in, coord_in, coord_out):
+def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False):
     """
     Transform data from coord_in to coord_out.
 
@@ -1323,6 +1357,8 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
         One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
     coord_out: string
         One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
+    quiet: bool
+        If true, suppress progress messages
 
     Returns
     -------
@@ -1352,14 +1388,15 @@ def subcotrans(time_in, data_in, coord_in, coord_out):
     p = find_path_t1_t2(coord_in, coord_out)
     p = shorten_path_t1_t2(p)
     p = shorten_path_t1_t2(p)
-    logging.info(p)
+    if not quiet:
+        logging.info(p)
 
     # Daisy chain the list of transformations.
     for i in range(len(p) - 1):
         c1 = p[i]
         c2 = p[i + 1]
         subname = "sub" + c1 + "2" + c2
-        data_out = globals()[subname](time_in, data_out)
+        data_out = globals()[subname](time_in, data_out, quiet=quiet)
 
     # Make the output the same type as the input.
     if isinstance(data_in, list):
