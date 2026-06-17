@@ -1,5 +1,5 @@
 import numpy as np
-from pyspedas import get_coords, set_coords, get_units, set_units, get_data, store_data, time_string
+from pyspedas import cotrans, get_coords, set_coords, get_units, set_units, get_data, store_data, time_string
 import logging
 
 R_E_KM = 6371.2
@@ -14,8 +14,11 @@ from .ts04 import get_ts04_parameters
 def ttrace2endpoint(tvar:str = None,
                     model_str:str = None,
                     endpoint:str = None,
+                    *,
                     foot_name:str = None,
+                    foot_out_coord:str = None,
                     trace_name:str = None,
+                    trace_out_coord:str = None,
                     bvec_name:str = None,
                     diag_nevals_name:str = None,
                     diag_reached_name:str = None,
@@ -59,8 +62,12 @@ def ttrace2endpoint(tvar:str = None,
         A string specifying the endpoint to trace to: 'ionosphere-north', 'ionosphere-south', or 'equator'.
     foot_name:str
         A string specifying the tplot variable to receive the foot point locations.
+    foot_out_coord:str
+        (Optional) The desired coordinate system for the output foot points. If unspecified, output will be in GSM coordainates.
     trace_name: str
         A string specifying the tplot variable to receive the trace points.
+    trace_out_coord: str
+        (Optionsl) The desired coordinate system for the output trace points.  If unspecified, output will be in GSM coordinates.
     bvec_name: str
         A string specifying the tplot variable to receive the modeled field vectors at each trace point
     diag_nevals_name: str
@@ -132,8 +139,8 @@ def ttrace2endpoint(tvar:str = None,
     >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True)
     >>> tplotxy3('ifoot89_n',legend_names=['North ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_n_foot.png')
     >>>
-    >>> # Trace to south ionosphere with T89 model
-    >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
+    >>> # Trace to south ionosphere with T89 model. returning foot points in GEO coordinates and trace points in the default GSM coordinates
+    >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', foot_out_coord='GEO', trace_name='tha_trace_iono_s_t89',km=True)
     >>> tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
 
     >>> # Trace to equator with T89 model
@@ -156,8 +163,9 @@ def ttrace2endpoint(tvar:str = None,
 
     coords=get_coords(tvar)
     if coords.lower() != 'gsm':
-        logging.error(f"ttrace2endpoint: input variable {tvar} has coords {coords}, must transform to GSM first")
-        return
+        logging.info(f"ttrace2endpoint: input variable {tvar} has coords {coords}, transforming to GSM to perform tracing")
+        cotrans(tvar,'trace_input_gsm',coord_out='GSM')
+        tvar = 'trace_input_gsm'
 
     if km is None:
         units=get_units(tvar)
@@ -316,6 +324,11 @@ def ttrace2endpoint(tvar:str = None,
     logging.info(f"Max/min trace points: {max_trace_points} {min_trace_points} at indices {max_trace_points_idx} {min_trace_points_idx}")
 
     if trace_flag:
+        # Check output coords
+        trace_cotrans_flag = False
+        if trace_out_coord is not None and trace_out_coord.lower() != 'gsm':
+            trace_cotrans_flag = True
+            logging.info(f"Trace points will be transformed to {trace_out_coord} coordinates")
         # Initialize final trace point array to all-nan
         all_trace_points = np.zeros((npts, max_trace_points, 3))
         all_trace_points[:,:,:] = np.nan
@@ -323,7 +336,10 @@ def ttrace2endpoint(tvar:str = None,
             n_trace_points = thistrace.shape[0]
             all_trace_points[i,0:n_trace_points,:] = thistrace
         store_data(trace_name, data={'x': data.times, 'y': all_trace_points})
-        set_coords(trace_name, 'GSM')
+        set_coords(trace_name, "GSM")
+        if trace_cotrans_flag:
+            cotrans(name_in=trace_name,name_out=trace_name,coord_out=trace_out_coord)
+
         if km:
             output_units = 'km'
         else:
@@ -356,6 +372,8 @@ def ttrace2endpoint(tvar:str = None,
     # Create output tplot variables
     store_data(foot_name, data={'x':data.times, 'y':all_foot_points})
     set_coords(foot_name, 'GSM')
+    if foot_out_coord is not None and foot_out_coord.lower() != 'gsm':
+        cotrans(foot_name, foot_name, coord_out=foot_out_coord)
 
     if km:
         output_units = 'km'
