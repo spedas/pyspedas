@@ -139,10 +139,14 @@ def ttrace2endpoint(tvar:str = None,
     >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True)
     >>> tplotxy3('ifoot89_n',legend_names=['North ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_n_foot.png')
     >>>
+    >>> # Trace to south ionosphere with T89 model. returning foot points and trace points in the default GSM coordinates
+    >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
+    >>> tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
+    >>>
     >>> # Trace to south ionosphere with T89 model. returning foot points in GEO coordinates and trace points in the default GSM coordinates
     >>> ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', foot_out_coord='GEO', trace_name='tha_trace_iono_s_t89',km=True)
-    >>> tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
-
+    >>> tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot_geo.png')
+    >>>
     >>> # Trace to equator with T89 model
     >>> ttrace2endpoint('tha_pos_gsm','t89','equator',foot_name='eq_foot89', trace_name='tha_trace_equ_t89',km=True)
     >>> tplotxy3('eq_foot89',legend_names=['Equator foot points'], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_equ_foot.png')

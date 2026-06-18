@@ -210,6 +210,11 @@ ttrace2endpoint, where an 'endpoint' parameter ('ionoshere-north', 'ionosphere-s
 which of the three endpoints to trace to.  endpoint='ionosphere-north' or 'ionosphere-south' correspond to the IDL SPEDAS routine
 ttrace2iono, and endpoint='equator' corresponds to IDL SPEDAS 'ttrace2equator' routine.
 
+The foot points and trace points returned by ttrace2endpoint will be in the GSM coordinate system by default.
+The foot_out_coord and trace_out_coord parameters can be used to specify different coordinate systems.  For example,
+specifying foot_out_coord='GEO' will transform the foot points to GEO coordinates, which are easily converted
+to longitudes and latitudes suitable for plotting on maps.
+
 .. autofunction:: pyspedas.ttrace2endpoint
 
 Field line tracing examples
@@ -228,6 +233,10 @@ Field line tracing examples
    ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
    tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
 
+   # Trace to south ionosphere with T89 model, returning the foot points in GEO coordinates
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', foot_out_coord='GEO', trace_name='tha_trace_iono_s_t89',km=True)
+   tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot_geo.png')
+
    # Trace to equator with T89 model
    ttrace2endpoint('tha_pos_gsm','t89','equator',foot_name='eq_foot89', trace_name='tha_trace_equ_t89',km=True)
    tplotxy3('eq_foot89',legend_names=['Equator foot points'], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_equ_foot.png')
@@ -238,6 +247,10 @@ Field line tracing examples
    :class: imgborder
 
 .. image:: _static/tha_iono_s_foot.png
+   :align: center
+   :class: imgborder
+
+.. image:: _static/tha_iono_s_foot_geo.png
    :align: center
    :class: imgborder
 
