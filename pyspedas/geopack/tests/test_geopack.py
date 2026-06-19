@@ -143,39 +143,23 @@ class LoadTestCases(unittest.TestCase):
         params = get_params("ts04")
         self.assertTrue(params)
         tinterpol("mms1_mec_r_gsm", "proton_density")
-        got_exception=False
-        try:
+        with self.assertRaises(ValueError):
             tts04("var_doesnt_exist")
-        except ValueError:
-            got_exception = True
-        self.assertTrue(got_exception)
 
         tts04("mms1_mec_r_gsm-itrp", parmod=None)
 
-        got_exception=False
-        try:
+        with self.assertRaises(ValueError):
             tt01("var_doesnt_exist")
-        except ValueError:
-            got_exception = True
-        self.assertTrue(got_exception)
 
         tt01("mms1_mec_r_gsm-itrp", parmod=None)
 
-        got_exception = False
-        try:
+        with self.assertRaises(ValueError):
             tt96("var_doesnt_exist")
-        except ValueError:
-            got_exception = True
-        self.assertTrue(got_exception)
 
         tt96("mms1_mec_r_gsm-itrp", parmod=None)
 
-        got_exception = False
-        try:
+        with self.assertRaises(ValueError):
             tt89("var_doesnt_exist")
-        except ValueError:
-            got_exception = True
-        self.assertTrue(got_exception)
 
         invalidmodel = get_params("89")
         self.assertIsNone(invalidmodel)
