@@ -13,6 +13,7 @@ from pyspedas import (
     tdeflag,
     del_data,
     set_coords,
+    set_units,
 )
 from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf
 from pyspedas.geopack.get_tsy_params import get_tsy_params
@@ -36,6 +37,7 @@ def gen_circle():
     pos[:, 2] = z
     store_data("circle_magpoles_5re", data={"x": t, "y": pos})
     set_coords("circle_magpoles_5re", "GSM")
+    set_units("circle_magpoles_5re", 'km')
 
 
 def get_params(model, g_variables=None):
@@ -141,13 +143,40 @@ class LoadTestCases(unittest.TestCase):
         params = get_params("ts04")
         self.assertTrue(params)
         tinterpol("mms1_mec_r_gsm", "proton_density")
-        tts04("var_doesnt_exist")
+        got_exception=False
+        try:
+            tts04("var_doesnt_exist")
+        except ValueError:
+            got_exception = True
+        self.assertTrue(got_exception)
+
         tts04("mms1_mec_r_gsm-itrp", parmod=None)
-        tt01("var_doesnt_exist")
+
+        got_exception=False
+        try:
+            tt01("var_doesnt_exist")
+        except ValueError:
+            got_exception = True
+        self.assertTrue(got_exception)
+
         tt01("mms1_mec_r_gsm-itrp", parmod=None)
-        tt96("var_doesnt_exist")
+
+        got_exception = False
+        try:
+            tt96("var_doesnt_exist")
+        except ValueError:
+            got_exception = True
+        self.assertTrue(got_exception)
+
         tt96("mms1_mec_r_gsm-itrp", parmod=None)
-        tt89("var_doesnt_exist")
+
+        got_exception = False
+        try:
+            tt89("var_doesnt_exist")
+        except ValueError:
+            got_exception = True
+        self.assertTrue(got_exception)
+
         invalidmodel = get_params("89")
         self.assertIsNone(invalidmodel)
         invalidg = get_params("t01", g_variables=1)
