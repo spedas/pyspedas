@@ -1,7 +1,10 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from pyspedas.tplot_tools import get_data, store_data, get_timespan, set_coords, set_units
 from .clean_model_parameters import clean_model_parameters, clean_parmod_data
+from .prepare_pos_variable import prepare_pos_variable
+from pyspedas.cotrans_tools.cotrans import cotrans
+from .prepare_pos_variable import prepare_pos_variable
 
 def get_t96_parameters(pos_var, pdyn, dst, byimf, bzimf, parmod, autoload):
     """
@@ -89,7 +92,7 @@ def get_t96_parameters(pos_var, pdyn, dst, byimf, bzimf, parmod, autoload):
     return output_parmod
 
 
-def tt96(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, parmod=None, autoload=False, suffix=''):
+def tt96(pos_var, units_in:str = None, coord_in:str =None, pdyn=None, dst=None, byimf=None, bzimf=None, parmod=None, autoload=False, coord_out:str = 'GSM', suffix=''):
     """
     Evaluate the T96 field model at the times and positions specified by an input tplot variable.
 
@@ -97,13 +100,15 @@ def tt96(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, parmod=None, 
 
     https://github.com/tsssss/geopack
 
-    Input
-    ------
-        pos_gsm_tvar: str
-            tplot variable containing the position data (km) in GSM coordinates
 
     Parameters
     -----------
+        pos_var: str
+            tplot variable containing the position data (km) in GSM coordinates
+        coord_in: str
+            (Optional) Coordinate system of input variable, overrides any metadata in pos_var. Must be convertible to GSM.
+        units_in: str
+            (Optional) Units of input variable, overrides any metadata in pos_var. Valid options: ['km', 'Re']
         parmod: str
             A tplot variable containing a 10-element model parameter array (vs. time).  The timestamps
             should match the timestamps in the input position variable. Only the first 4 elements are used::
@@ -112,6 +117,9 @@ def tt96(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, parmod=None, 
                 (2) dst (nanotesla)
                 (3) byimf (nanotesla)
                 (4) bzimf (nanotesla)
+
+        coord_out: str
+            (Optional) Coordinate system of output variable. Must be convertible from GSM. Default: 'GSM'
 
         suffix: str
             Suffix to append to the tplot output variable
@@ -122,25 +130,32 @@ def tt96(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, parmod=None, 
             Name of the tplot variable containing the model data
     """
     from .generic_geopack_adapters import make_model
-    pos_data = get_data(pos_var_gsm)
+    input_gsm_re = prepare_pos_variable(pos_var,coord_in=coord_in, units_in=units_in)
+    pos_data = get_data(input_gsm_re)
 
     if pos_data is None:
-        logging.error('Variable not found: ' + pos_var_gsm)
+        logging.error('Variable not found: ' + pos_var)
         return
 
-    bgsm = np.zeros((len(pos_data.times), 3))
+    pos_re = pos_data.y
 
-    # convert to Re
-    pos_re = pos_data.y/6371.2
+    bgsm = np.zeros((len(pos_data.times),3))
 
     input_parmod = parmod
-    parmod = get_t96_parameters(pos_var=pos_var_gsm, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, parmod=input_parmod, autoload=autoload)
+    parmod = get_t96_parameters(pos_var=pos_var, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, parmod=input_parmod, autoload=autoload)
 
     for idx, time in enumerate(pos_data.times):
         model = make_model("t96", time, parmod[idx,:])
         bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
 
-    saved = store_data(pos_var_gsm + '_bt96' + suffix, data={'x': pos_data.times, 'y': bgsm})
+    if coord_out.lower() != 'gsm':
+        bgsm_out_coord = cotrans(time_in=pos_data.times, data_in=bgsm, coord_in='GSM', coord_out=coord_out)
+        bgsm = bgsm_out_coord
+
+    out_name = pos_var + '_bt96' + suffix
+    saved = store_data(out_name, data={'x': pos_data.times, 'y': bgsm})
 
     if saved:
-        return pos_var_gsm + '_bt96' + suffix
+        set_coords(out_name,coord_out)
+        set_units(out_name,'nT')
+        return out_name
