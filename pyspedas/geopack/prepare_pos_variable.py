@@ -1,3 +1,4 @@
+import logging
 from pyspedas.tplot_tools import get_units, get_coords, tkm2re, data_exists
 from pyspedas.cotrans_tools.cotrans import cotrans
 
@@ -27,14 +28,17 @@ def pos_in_gsm(input_var: str,
         if coord_in.lower() not in ["gse", "sm", "gsm", "gei", "geo", "mag", "j2000"]:
             raise ValueError(f"pos_in_gsm: unknown coordinate system {coord_in} in {input_var} metadata, cannot transform to GSM")
     elif coord_in.lower() in ["gse", "sm", "gsm", "gei", "geo", "mag", "j2000"]:
-        pass
+        # Are we overriding existing metadata?
+        coord_var = get_coords(input_var)
+        if coord_var is not None and coord_var != '':
+            logging.warning(f"pos_in_gsm: Overriding existing coordinate metadata {coord_var} for variable {input_var}")
     else:
         raise ValueError(f"pos_in_gsm: unknown coord_in value {coord_in}, cannot transform to GSM")
 
     if coord_in.lower() == 'gsm':
         return input_var
     else:
-        newname='geopack_input_gsm'
+        newname='input_var_gsm'
         cotrans(name_in=input_var, coord_in=coord_in, name_out=newname,coord_out='GSM')
         return newname
 
@@ -62,7 +66,10 @@ def pos_in_re(input_var:str,
         if units_in.lower() not in ['km', 're']:
             raise ValueError(f"pos_in_re: unknown unit {units_in} in {input_var} metadata, cannot transform to Re")
     elif units_in.lower() in ["km", "re"]:
-        pass
+        units_var = get_units(input_var)
+        if units_var is not None and units_var != '':
+            logging.warning(f"pos_in_re: Overriding existing units metadata {units_var} for variable {input_var}")
+
     else:
         raise ValueError(f"pos_in_re: unrecognized coord_in value {units_in}, cannot transform to Re")
     if units_in.lower() == 're':
