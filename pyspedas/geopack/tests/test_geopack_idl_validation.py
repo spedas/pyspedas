@@ -19,6 +19,10 @@ from pyspedas import (
     store_data,
     get_data,
     tkm2re,
+    cotrans,
+    get_coords,
+    get_units,
+    set_units,
 )
 from pyspedas.geopack import tt89, tt96, tt01, tts04, tigrf, kp2iopt
 from pyspedas.geopack.get_tsy_params import get_tsy_params
@@ -126,6 +130,8 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
             method="nearest",
             newname="parmod_interp",
         )
+        # For some reason the units aren't being set correctly on the IDL side
+        set_units(f"circle_magpoles_5re_{year}_km", "km")
         tt01(f"circle_magpoles_5re_{year}_km", parmod="parmod_interp")
         subtract(
             f"tst5re_{year}_bt01",
@@ -236,13 +242,71 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
 
     def test_igrf(self):
         tigrf("tha_state_pos_gsm")
+        out_units = get_units('bt89_igrf')
+        out_coords = get_coords('bt89_igrf')
         py_b = get_data("tha_state_pos_gsm_btigrf")
         idl_b = get_data("bt89_igrf")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
+        self.assertEqual(out_units.lower(),'nt')
+        self.assertEqual(out_coords.lower(), 'gsm')
+
+
+    def test_igrf_gse_km(self):
+        cotrans('tha_state_pos_gsm',coord_out='GSE',name_out='tha_state_pos_gse')
+        tigrf("tha_state_pos_gse")
+        cotrans('tha_state_pos_gse_btigrf',coord_out='GSM', name_out='tha_state_pos_gsm_btigrf')
+        py_b = get_data("tha_state_pos_gse_btigrf")
+        idl_b = get_data("bt89_igrf")
+        out_units = get_units("tha_state_pos_gse_btigrf")
+        out_coords = get_coords("tha_state_pos_gse_btigrf")
+        self.assertEqual(out_units.lower(),'nt')
+        self.assertEqual(out_coords.lower(), 'gsm')
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
+
+    def test_igrf_gei_re(self):
+        cotrans('tha_state_pos_gsm',coord_out='GEI',name_out='tha_state_pos_gei')
+        tkm2re('tha_state_pos_gei',newname='tha_state_pos_gei_re')
+        tigrf("tha_state_pos_gei_re")
+        cotrans('tha_state_pos_gei_re_btigrf',coord_out='GSM',name_out='tha_state_pos_gsm_re_btigrf')
+        py_b = get_data("tha_state_pos_gsm_re_btigrf")
+        idl_b = get_data("bt89_igrf")
+        out_units = get_units("tha_state_pos_gsm_re_btigrf")
+        out_coords = get_coords("tha_state_pos_gsm_re_btigrf")
+        self.assertEqual(out_units.lower(),'nt')
+        self.assertEqual(out_coords.lower(), 'gsm')
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
+
+    def test_igrf_gei_re_out_geo(self):
+        cotrans('tha_state_pos_gsm',coord_out='GEI',name_out='tha_state_pos_gei')
+        tkm2re('tha_state_pos_gei',newname='tha_state_pos_gei_re')
+        tigrf("tha_state_pos_gei_re", coord_out='GEO')
+        coords=get_coords('tha_state_pos_gei_re_btigrf')
+        self.assertEqual(coords.lower(), 'geo')
+        units=get_units('tha_state_pos_gei_re_btigrf')
+        self.assertEqual(units.lower(), 'nt')
+        cotrans('tha_state_pos_gei_re_btigrf',coord_out='GSM',name_out='tha_state_pos_gsm_re_btigrf')
+        py_b = get_data("tha_state_pos_gsm_re_btigrf")
+        idl_b = get_data("bt89_igrf")
+        out_units = get_units("tha_state_pos_gsm_re_btigrf")
+        out_coords = get_coords("tha_state_pos_gsm_re_btigrf")
+        self.assertEqual(out_units.lower(),'nt')
+        self.assertEqual(out_coords.lower(), 'gsm')
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=1.0)
 
     def test_tt89(self):
         tt89("tha_state_pos_gsm")
         py_b = get_data("tha_state_pos_gsm_bt89")
+        idl_b = get_data("bt89")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt89_geo(self):
+        tt89("tha_state_pos_gsm", coord_out='GEO')
+        coords = get_coords("tha_state_pos_gsm_bt89")
+        units = get_units("tha_state_pos_gsm_bt89")
+        self.assertEqual(coords.lower(), 'geo')
+        self.assertEqual(units.lower(), 'nt')
+        cotrans('tha_state_pos_gsm_bt89',name_out='tha_state_pos_gsm_bt89_gsm',coord_out='GSM')
+        py_b = get_data("tha_state_pos_gsm_bt89_gsm")
         idl_b = get_data("bt89")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
@@ -420,6 +484,44 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         )
         tt01("tha_state_pos_gsm", parmod="parmod_interp")
         py_b = get_data("tha_state_pos_gsm_bt01")
+        idl_b = get_data("bt01")
+        subtract("bt01", "tha_state_pos_gsm_bt01", "bt01_diff")
+        tkm2re("tha_state_pos_gsm")
+        tvectot("tha_state_pos_gsm_re", join_component=True)
+
+        var_names = [
+            "bt01",
+            "tha_state_pos_gsm_bt01",
+            "bt01_diff",
+            "tha_state_pos_gsm_re_tot",
+        ]
+        local_png = os.path.join(save_dir, "t01_diffs.png")
+        tplot(var_names, display=global_display, save_png=local_png)
+
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_tt01_parmod_var_out_geo(self):
+        tv_pos = get_data("tha_state_pos_gsm")
+        t1 = tv_pos.times[0]
+        t2 = tv_pos.times[-1]
+        params = np.zeros([2, 10])
+        params[:, 0] = self.pdyn
+        params[:, 1] = self.dsti
+        params[:, 2] = self.yimf
+        params[:, 3] = self.zimf
+        params[:, 4] = self.g1
+        params[:, 5] = self.g2
+        store_data("parmod", data={"x": [t1, t2], "y": params})
+        tinterpol(
+            "parmod", "tha_state_pos_gsm", method="nearest", newname="parmod_interp"
+        )
+        tt01("tha_state_pos_gsm", parmod="parmod_interp", coord_out='GEO')
+        coords = get_coords("tha_state_pos_gsm_bt01")
+        units = get_units("tha_state_pos_gsm_bt01")
+        self.assertEqual(coords.lower(), 'geo')
+        self.assertEqual(units.lower(), 'nt')
+        cotrans("tha_state_pos_gsm_bt01","tha_state_pos_gsm_bt01_gsm",coord_out='GSM')
+        py_b = get_data("tha_state_pos_gsm_bt01_gsm")
         idl_b = get_data("bt01")
         subtract("bt01", "tha_state_pos_gsm_bt01", "bt01_diff")
         tkm2re("tha_state_pos_gsm")
@@ -641,6 +743,19 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         idl_b = get_data("bt96_actual")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
+    def test_t96_actual_geo(self):
+        tt96("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
+            bzimf='OMNI_HRO_1min_BZ_GSM', coord_out='GEO', suffix='_actual')
+        coords = get_coords("tha_state_pos_gsm_bt96_actual")
+        units = get_units("tha_state_pos_gsm_bt96_actual")
+        self.assertEqual(coords.lower(), 'geo')
+        self.assertEqual(units.lower(), 'nt')
+        cotrans("tha_state_pos_gsm_bt96_actual","tha_state_pos_gsm_bt96_actual_gsm",coord_out='GSM')
+
+        py_b = get_data("tha_state_pos_gsm_bt96_actual_gsm")
+        idl_b = get_data("bt96_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
     def test_t96_autoload(self):
         tt96("tha_state_pos_gsm", autoload=True, suffix='_autoload')
         py_b = get_data("tha_state_pos_gsm_bt96_autoload")
@@ -666,6 +781,19 @@ class LoadGeopackIdlValidationTestCases(unittest.TestCase):
         tts04("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
             bzimf='OMNI_HRO_1min_BZ_GSM', w1='w1',w2='w2',w3='w3',w4='w4',w5='w5',w6='w6',suffix='_actual')
         py_b = get_data("tha_state_pos_gsm_bts04_actual")
+        idl_b = get_data("bts04_actual")
+        assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
+
+    def test_ts04_actual_out_geo(self):
+        # Note that w1-w6 take their default non-time-varying values here
+        tts04("tha_state_pos_gsm", pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',
+            bzimf='OMNI_HRO_1min_BZ_GSM', w1='w1',w2='w2',w3='w3',w4='w4',w5='w5',w6='w6',coord_out='GEO', suffix='_actual')
+        coords = get_coords("tha_state_pos_gsm_bts04_actual")
+        units = get_units("tha_state_pos_gsm_bts04_actual")
+        self.assertEqual(coords.lower(), 'geo')
+        self.assertEqual(units.lower(), 'nt')
+        cotrans("tha_state_pos_gsm_bts04_actual","tha_state_pos_gsm_bts04_actual_gsm",coord_out='GSM')
+        py_b = get_data("tha_state_pos_gsm_bts04_actual_gsm")
         idl_b = get_data("bts04_actual")
         assert_allclose(py_b.y, idl_b.y, rtol=0.001, atol=0.5)
 
