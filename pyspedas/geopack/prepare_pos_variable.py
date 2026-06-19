@@ -1,4 +1,4 @@
-from pyspedas.tplot_tools import get_units, get_coords, tkm2re
+from pyspedas.tplot_tools import get_units, get_coords, tkm2re, data_exists
 from pyspedas.cotrans_tools.cotrans import cotrans
 
 def pos_in_gsm(input_var: str,
@@ -19,6 +19,7 @@ def pos_in_gsm(input_var: str,
         The name of a tplot variable guaranteed to be in GSM coordinates.  It may return
         the original variable if it was already in GSM, or a new variable that has been transformed.
     """
+
     if coord_in is None:
         coord_in = get_coords(input_var)
         if coord_in is None or coord_in == '':
@@ -56,10 +57,10 @@ def pos_in_re(input_var:str,
     """
     if units_in is None:
         units_in = get_units(input_var)
-        if units_in.lower() not in ['km', 're']:
-            raise ValueError(f"pos_in_re: unknown unit {units_in} in {input_var} metadata, cannot transform to Re")
         if units_in is None or units_in == '':
             raise ValueError(f"pos_in_re: no units metadata available, unable to transform to Re")
+        if units_in.lower() not in ['km', 're']:
+            raise ValueError(f"pos_in_re: unknown unit {units_in} in {input_var} metadata, cannot transform to Re")
     elif units_in.lower() in ["km", "re"]:
         pass
     else:
@@ -92,6 +93,8 @@ def prepare_pos_variable(input_var:str,
     variable if no conversions are needed.
     """
 
+    if not data_exists(input_var):
+        raise ValueError(f"prepare_pos_variable: input variable {input_var} does not exist")
     input_re = pos_in_re(input_var, units_in=units_in)
     input_gsm_re = pos_in_gsm(input_re, coord_in = coord_in)
     return input_gsm_re
