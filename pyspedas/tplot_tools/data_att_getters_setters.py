@@ -182,6 +182,12 @@ def set_coords(name, coords):
 
         # should also update the legend, if it includes the coordinate system
         # for this to work, the coordinate system should be in all upper case
+
+        # If we're setting coordinates to None, after updating the metadata, change it
+        # to the string "None" to update the legends
+
+        if coords is None:
+            coords="None"
         if (coord_in is not None) and (metadata.get('plot_options') is not None):
             if metadata['plot_options'].get('yaxis_opt') is not None:
                 if metadata['plot_options']['yaxis_opt'].get('legend_names') is not None:
