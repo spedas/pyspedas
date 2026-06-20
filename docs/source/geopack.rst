@@ -3,8 +3,10 @@ Magnetic Field Models
 This module provides a set of routines that can be used to calculate various magnetic field models,
 using Sheng Tian's implementation of the `geopack` library (https://github.com/tsssss/geopack).
 
-The routines documented here each accept an input tplot variable, specifying the times and GSM positions
-at which the field models are to be evaluated.
+The routines documented here each accept an input tplot variable, specifying the times and positions
+at which the field models are to be evaluated.  If units and coordinate system metadata are present,
+it will be used to convert internally to GSM coordinates and units of Re (earth radii).  Missing or
+incorrect metadata can be provided or overridden via the coord_in and units_in keyword arguments.
 
 Each field model has its own set of parameters. The parameters may be passed as tplot variables names,
 in which case they are interpolated to the times specified in the input position variable.  If a scalar value
@@ -16,7 +18,8 @@ Most of these routines also accept a boolean 'autoload' parameter.  If True, any
 will be ignored, and the parameters will be derived from data loaded from various data sources: Kyoto WDC for Kp/iopt values,
 OMNIweb for solar wind parameters, or directly from K. Tysganenko's web site for certain models and parameters.
 
-The modeled B vectors are returned as tplot variables in GSM coordinates, with units of nT.
+The modeled B vectors are returned as tplot variables in units of nT.  By default, they will be returned in
+the GSM coordinate system, but this can be changed via the coord_out keyword parameter.
 
 Managing model parameters
 =========================
@@ -213,7 +216,12 @@ ttrace2iono, and endpoint='equator' corresponds to IDL SPEDAS 'ttrace2equator' r
 The foot points and trace points returned by ttrace2endpoint will be in the GSM coordinate system by default.
 The foot_out_coord and trace_out_coord parameters can be used to specify different coordinate systems.  For example,
 specifying foot_out_coord='GEO' will transform the foot points to GEO coordinates, which are easily converted
-to longitudes and latitudes suitable for plotting on maps.
+to longitudes and latitudes suitable for plotting on maps.  The default units will be Re (earth radii), but this
+can be changed via the foot_out_units and trace_out_units keyword parameters.
+
+Previous versions of ttrace2endpoint used a boolean keyword argument 'km', to flag whether inputs and outputs
+should be in units of Re or km.   The 'km' keyword is now deprecated, and users should use the units_in, foot_out_units,
+and trace_out_units keyword parameters.
 
 .. autofunction:: pyspedas.ttrace2endpoint
 
@@ -226,19 +234,19 @@ Field line tracing examples
    from pyspedas import ttrace2endpoint, tplotxy3
    state(trange=['2007-03-23', '2007-03-23'], probe='a')
    # Trace to north ionosphere with T89 model
-   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89',km=True)
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-north',foot_name='ifoot89_n', trace_name='tha_trace_iono_n_t89', units_in='km', foot_out_units='km', trace_out_units='km')
    tplotxy3('ifoot89_n',legend_names=['North ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_n_foot.png')
 
    # Trace to south ionosphere with T89 model
-   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89',km=True)
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', trace_name='tha_trace_iono_s_t89', units_in='km', foot_out_units='km', trace_out_units='km')
    tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot.png')
 
    # Trace to south ionosphere with T89 model, returning the foot points in GEO coordinates
-   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', foot_out_coord='GEO', trace_name='tha_trace_iono_s_t89',km=True)
+   ttrace2endpoint('tha_pos_gsm','t89','ionosphere-south',foot_name='ifoot89_s', foot_out_coord='GEO', trace_name='tha_trace_iono_s_t89', units_in='km', foot_out_units='km', trace_out_units='km')
    tplotxy3('ifoot89_s',legend_names=['South ionosphere foot points',], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_iono_s_foot_geo.png')
 
    # Trace to equator with T89 model
-   ttrace2endpoint('tha_pos_gsm','t89','equator',foot_name='eq_foot89', trace_name='tha_trace_equ_t89',km=True)
+   ttrace2endpoint('tha_pos_gsm','t89','equator',foot_name='eq_foot89', trace_name='tha_trace_equ_t89', units_in='km', foot_out_units='km', trace_out_units='km')
    tplotxy3('eq_foot89',legend_names=['Equator foot points'], colors='red', reverse_x=True, show_centerbody=True,save_png='tha_equ_foot.png')
    tplotxy3('tha_trace_equ_t89',legend_names=['Traces to equator'], colors='blue', reverse_x=True, show_centerbody=True, save_png='tha_equ_traces.png')
 
