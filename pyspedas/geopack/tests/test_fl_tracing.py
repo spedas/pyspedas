@@ -59,6 +59,9 @@ class LoadTestCases(unittest.TestCase):
         # filename = '/tmp/ttrace_validate_reduced.tplot'
         del_data("*")
         tplot_restore(filename)
+        # circle_magpoles_5re_km does appear to be in km, but the metadata units are Re
+        # tkm2re will not override this!  So we fix it here.
+        set_units('circle_magpoles_5re_km','km')
 
 
     def test_trace_iono_s_idl_all(self):
@@ -67,7 +70,18 @@ class LoadTestCases(unittest.TestCase):
         d2=get_data('tha_iono_t89_trace_s')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_s')
+        # Here we'll use the deprecated km boolean flag to ensure that it works as advertised
         ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-south', trace_name='py_trace_s', trace_out_coord='gsm', foot_name='py_foot_s', foot_out_coord='gsm', iopt=3, km=True)
+        t_coord = get_coords('py_trace_s')
+        t_units = get_units('py_trace_s')
+        self.assertEqual(t_coord.lower(), 'gsm')
+        self.assertEqual(t_units,'km')
+
+        f_coord = get_coords('py_trace_s')
+        f_units = get_units('py_trace_s')
+        self.assertEqual(f_coord.lower(), 'gsm')
+        self.assertEqual(f_units,'km')
+
         py_trace_data = get_data('py_trace_s')
         py_foot_data = get_data('py_foot_s')
         idl_trace_data = d2.y
@@ -158,7 +172,7 @@ class LoadTestCases(unittest.TestCase):
         d2=get_data('tha_iono_t89_trace_s')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_s')
-        ttrace2endpoint('tha_state_pos_gei', "t89", 'ionosphere-south', foot_name='py_foot_s_geo', trace_name='py_trace_s_geo', iopt=3, km=True, foot_out_coord='GEO', trace_out_coord='GEO')
+        ttrace2endpoint('tha_state_pos_gei', "t89", 'ionosphere-south', foot_name='py_foot_s_geo', trace_name='py_trace_s_geo', iopt=3, foot_out_units='km', trace_out_units='km', foot_out_coord='GEO', trace_out_coord='GEO')
         # Assert that output variables were returned in GEO coordinates
         foot_coord = get_coords('py_foot_s_geo')
         trace_coord = get_coords('py_trace_s_geo')
@@ -254,7 +268,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos_reduced')
         idl_time_array = d1.times
         d3=get_data('ifoot_t89_s_actual')
-        ttrace2endpoint('tha_state_pos_reduced', "t89", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', kp='Kp', km=True)
+        ttrace2endpoint('tha_state_pos_reduced', "t89", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', kp='Kp', foot_out_units='km', trace_out_units='km')
         py_foot_data = get_data('py_foot_s')
         idl_foot_data = d3.y
 
@@ -318,7 +332,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos_reduced')
         idl_time_array = d1.times
         d3=get_data('ifoot_t96_s_actual')
-        ttrace2endpoint('tha_state_pos_reduced', "t96", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM', km=True)
+        ttrace2endpoint('tha_state_pos_reduced', "t96", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM', foot_out_units='km', trace_out_units='km')
         py_foot_data = get_data('py_foot_s')
         idl_foot_data = d3.y
 
@@ -382,7 +396,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos_reduced')
         idl_time_array = d1.times
         d3=get_data('ifoot_t96_s_actual')
-        ttrace2endpoint('tha_state_pos_reduced', "t96", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', autoload=True, km=True)
+        ttrace2endpoint('tha_state_pos_reduced', "t96", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', autoload=True, foot_out_units='km', trace_out_units='km')
         py_foot_data = get_data('py_foot_s')
         idl_foot_data = d3.y
 
@@ -444,7 +458,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos_reduced')
         idl_time_array = d1.times
         d3=get_data('ifoot_t01_s_actual')
-        ttrace2endpoint('tha_state_pos_reduced', "t01", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM', g1='g1', g2='g2', km=True)
+        ttrace2endpoint('tha_state_pos_reduced', "t01", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM', g1='g1', g2='g2', foot_out_units='km', trace_out_units='km')
         py_foot_data = get_data('py_foot_s')
         idl_foot_data = d3.y
 
@@ -512,7 +526,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos_reduced')
         idl_time_array = d1.times
         d3=get_data('ifoot_t04s_s_actual')
-        ttrace2endpoint('tha_state_pos_reduced', "ts04", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM',w1='w1', w2='w2',w3='w3',w4='w4',w5='w5',w6='w6', km=True)
+        ttrace2endpoint('tha_state_pos_reduced', "ts04", 'ionosphere-south', foot_name='py_foot_s', trace_name='py_trace_s', pdyn='OMNI_HRO_1min_Pressure',dst='kyoto_dst',byimf='OMNI_HRO_1min_BY_GSM',bzimf='OMNI_HRO_1min_BZ_GSM',w1='w1', w2='w2',w3='w3',w4='w4',w5='w5',w6='w6', foot_out_units='km', trace_out_units='km')
         py_foot_data = get_data('py_foot_s')
         idl_foot_data = d3.y
 
@@ -577,7 +591,7 @@ class LoadTestCases(unittest.TestCase):
         d2=get_data('tha_iono_t89_trace_n')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_n')
-        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', foot_name='py_foot_n', trace_name='py_trace_n', iopt=3, km=True)
+        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', foot_name='py_foot_n', trace_name='py_trace_n', iopt=3, foot_out_units='km', trace_out_units='km')
         py_trace_data = get_data('py_trace_n')
         py_foot_data = get_data('py_foot_n')
         idl_trace_data = d2.y
@@ -666,7 +680,7 @@ class LoadTestCases(unittest.TestCase):
         d2=get_data('tha_iono_t89_trace_n')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('ifoot_t89_n')
-        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', foot_name='py_foot_n', trace_name='py_trace_n', iopt=3, km=True,
+        ttrace2endpoint('tha_state_pos', "t89", 'ionosphere-north', foot_name='py_foot_n', trace_name='py_trace_n', iopt=3, foot_out_units='km', trace_out_units='km',
                         r_iono_re=6800.0/R_E_KM)
         pyspedas.tvectot('py_foot_n',newname='py_foot_r',join_component=False)
         r_data = get_data('py_foot_r')
@@ -678,7 +692,7 @@ class LoadTestCases(unittest.TestCase):
         d1=get_data('tha_state_pos')
         #tplotxy3(['tha_iono_t89_trace'])
         d3=get_data('eq_foot_t89')
-        ttrace2endpoint('tha_state_pos',"t89", "equator", foot_name='py_eq_foot', trace_name='py_eq_trace', iopt=3, km=True)
+        ttrace2endpoint('tha_state_pos',"t89", "equator", foot_name='py_eq_foot', trace_name='py_eq_trace', iopt=3, foot_out_units='km', trace_out_units='km')
         py_trace_data = get_data('py_eq_trace')
         py_foot_data = get_data('py_eq_foot')
         idl_foot_data = d3.y
@@ -797,7 +811,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_t89_poles(self):
         from pyspedas.geopack import ttrace2endpoint
-        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', trace_name='py_iono_trace', iopt=3, km=True)
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", units_in='km', foot_name='py_iono_t89_foot', trace_name='py_iono_trace', iopt=3, foot_out_units='km', trace_out_units='km')
         d3 = get_data('ifoot_t89_5re_magpoles')
         py_foot_data = get_data('py_iono_t89_foot')
         idl_foot_data = d3.y
@@ -852,11 +866,11 @@ class LoadTestCases(unittest.TestCase):
 
     def test_trace_diags(self):
         from pyspedas.geopack import ttrace2endpoint
-        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', trace_name='py_iono_trace', iopt=3, km=True,
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', trace_name='py_iono_trace', iopt=3, foot_out_units='km', trace_out_units='km',
                         bvec_name='trace_bvec', diag_nevals_name='trace_nevals', diag_reached_name='trace_reached', diag_s_max_name='trace_s_max', diag_npts_name='trace_npts')
 
         # Don't request trace points the second time, use a different max_s parameter
-        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', iopt=3, km=True,
+        ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', iopt=3, foot_out_units='km', trace_out_units='km',
                         bvec_name='trace_bvec2', diag_nevals_name='trace_nevals2', diag_reached_name='trace_reached2', diag_s_max_name='trace_s_max2', diag_npts_name='trace_npts2',
                         max_s=100.0)
         # We'll have to implement a new plot type to show the trace_bvecs:  plot the vectors on top of the
