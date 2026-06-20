@@ -33,11 +33,6 @@ def tigrf(pos_var, units_in:str = None, coord_in:str =None, coord_out:str = 'GSM
     """
     input_gsm_re = prepare_pos_variable(pos_var,coord_in=coord_in, units_in=units_in)
     pos_data = get_data(input_gsm_re)
-
-    if pos_data is None:
-        logging.error('Variable not found: ' + pos_var)
-        return
-
     pos_re = pos_data.y
     bgsm = np.zeros((len(pos_data.times), 3))
 
