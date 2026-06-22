@@ -7,59 +7,189 @@ from pyspedas import cotrans, get_data, xyz_to_polar,ttrace2endpoint, tplotxy3
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
+import datetime as dt
 
-params_tmap_default={
-    "params_traces": {"model_str":"t89","endpoint":"ionosphere-north"},
-    "params_basemap":{"projection":"ortho","lat_0":0,"lon_0":0},
-    "params_map_boundary":{"fill_color":"aqua"},
-    "params_fill_conts":{"color":"coral","lake_color":"aqua"},
-    "params_draw_coastlines":{},
-    "params_plot":{"color":"m"}
-}
+class Tplot_Map_Param_Set():
+    def __set_name__(self, owner, name):
+        self.name = name
+    def __get__(self, obj, type=None) -> object:
+        return obj.__dict__.get(self.name) or 0
+    def __set__(self, obj, value:dict) -> None:
+        new_val = obj.__dict__.get(self.name).copy()
+        for key,val in value.items():
+            new_val[key] = val
+        obj.__dict__[self.name] = new_val
 
-def tplot_map(tvar:str, tmap:Basemap | None, in_coord_str:str='gsm',params_tmap_in:dict={}) -> Basemap:
+class Tplot_Map(Basemap):
     """
-    take a tplot variable, convert to GEO coordinates, 
-    convert to polar, 
-    correct for geodetic coordinates, 
-    and then create a basemap object to display the trace
-    """
-    tvar_geo = tvar + "_geo"
-    cotrans(name_in=tvar,name_out=tvar_geo,coord_in=in_coord_str,coord_out="geo")
-    # convert Cartesian GEO/ECEF data to geodetic polar:
-    data_geo = get_data(tvar_geo)
-    data_geod_polar = conv2geodeticpolar(data_geo.y)
+    A Tplot_Map object which inherits from Basemap,
+    but with attributes containing plotting function 
+    parameters, initialized to defaults.
 
-    params_tmap = construct_args_dict(params_tmap_default,params_tmap_in)
-    # If tmap isn't passed as an argument, construct a default tmap:
+    Each plotting function parameter (stored in the 
+    Tplot_Map_Param_Set object) is a dictionary which 
+    is expanded by the corresponding function as kwargs.
+
+    The Tplot_Map.build_map() function makes the function 
+    calls in-order to ensure that the base map is drawn 
+    correctly (but does re-plot any traces/markers 
+    added manually). 
+
+    Usage:
+    >> tmap = Tplot_Map()
+    >> tmap
+    <__main__.Tplot_Map object at 0x000002A3E931AF20>
+    >> tmap.params
+    <__main__.Tplot_Map_Param_Set object at 0x000002A3E9318400>
+    >> tmap.params.fillcontinents
+    {'color': 'palegreen', 'lake_color': 'lightskyblue'}
+    >> tmap.params.fillcontinents['color'] = 'red'
+    >> tmap.params.fillcontinents
+    {'color': 'red', 'lake_color': 'lightskyblue'}
+    >> tmap.params.fillcontinents = {'color':'green'}
+    >> tmap.params.fillcontinents
+    {'color':'green'}
+
+    """
+    def __init__(self):
+        self._params = Tplot_Map_Param_Set()
+        self._params.basemap         = {"projection":"ortho","lat_0":0,"lon_0":0}
+        self._params.drawmapboundary = {"fill_color":"white"} #{"fill_color":"lightskyblue"}
+        self._params.fillcontinents  = {"color":"white","lake_color":"white"} #{"color":"palegreen","lake_color":"lightskyblue"}
+        self._params.drawcoastlines  = {"linewidth":0.25}
+        self._params.nightshade      = {"date":dt.datetime.now(),"alpha":0.5}
+        self._params.add_linepath    = {}#{"color":"m"}
+        self._params.add_marker      = {"color":"m"}
+        self._params.add_cap         = {"color":"m"}
+        
+        # TODO: make meridians into magnetic coordinates
+        self._params.drawmeridians   = {"meridians":np.arange(0,360,10)}
+        self._params.drawparallels   = {"circles":np.arange(-90,90,10)}
+        
+        #self._plot_list = []
+        self.build_map()
+
+    def build_map(self):
+        # TODO: auroral oval plot?
+        #plt.cla()
+        super().__init__(**self._params.basemap)
+        return
+    
+    def show(self): 
+        self.build_map()
+        plt.show()
+        return
+
+    @property
+    def params(self):
+        """The params property."""
+        return self._params
+    @params.setter
+    def params(self, value):
+        self._params = value
+    @params.deleter
+    def params(self):
+        del self._params
+
+    # TODO: all methods: verify that kwargs get passed to function parameters correctly
+    def add_meridians(self,**draw_meridians_kwargs):
+        self._params.drawmeridians.update(draw_meridians_kwargs)
+        self.build_map()
+        return
+
+    def add_nightshade(self,**nightshade_kwargs):
+        self._params.nightshade.update(nightshade_kwargs)
+        self.nightshade(**self._params.nightshade)
+        return
+
+    # TODO: all methods need default color sequence 
+    # QUESTION: does plot() need to be added to include color sequence? 
+    def add_linepath(self, x, y,**add_linepath_kwargs):
+        self._params.add_linepath.update(add_linepath_kwargs)
+        self.plot(x,y,**self._params.add_linepath)
+        return
+    
+    def add_marker(self, x, y, **add_marker_kwargs):
+        self._params.add_marker.update(add_marker_kwargs)
+        self.plot(x,y,**self._params.add_marker)
+        return
+
+    def add_cap(self, x, y,**add_cap_kwargs):
+        self._params.add_cap.update(add_cap_kwargs)
+        self.plot(x,y,**self._params.add_cap)
+        return
+
+def tplot_map(tmap:Tplot_Map | None = None, display:bool = False, **basemap_kwargs) -> Tplot_Map:
     if tmap is None:
-        tmap = init_tmap(params_tmap)
-
-    x,y = tmap(data_geod_polar[:,2],data_geod_polar[:,1])
-    tmap.plot(x,y,**params_tmap["params_plot"])
+        tmap = Tplot_Map()
+    tmap._params.basemap.update(basemap_kwargs)
+    tmap.build_map()
+    if display:
+        tmap.show()
     return tmap
 
-def init_tmap(params_tmap:dict={}) -> Basemap:
-    tmap_args = construct_args_dict(params_tmap_default,params_tmap)
-    tmap = Basemap(**tmap_args["params_basemap"])
-    tmap.drawmapboundary(**tmap_args["params_map_boundary"])
-    tmap.fillcontinents(**tmap_args["params_fill_conts"])
-    tmap.drawcoastlines(**tmap_args["params_draw_coastlines"])
+# TODO accept list of strings or np.ndarray and iterate over list
+def add_tracks(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **tracks_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    #tmap = tplot_map(tmap=tmap)
+    if isinstance(coords,str):
+        tvar_data = get_data(coords)
+        coords = tvar_data.y
+    # expects input coordinates in form of radius, longitude, latitude
+    x,y = tmap(coords[:,2],coords[:,1])
+    tmap.add_linepath(x,y,**tracks_plot_kwargs)
+    if display:
+        tmap.show()
+    return tmap
+
+def add_markers(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **markers_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    #tmap = tplot_map(tmap=tmap)
+    if isinstance(coords,str):
+        tvar_data = get_data(coords)
+        coords = tvar_data.y
+    # expects input coordinates in form of radius, longitude, latitude
+    x,y = tmap(coords[:,2],coords[:,1])
+    # TODO: update tmap track plot parameters using tracks_plot_kwargs
+    # TODO: need way to pass tmap plot parameters to plot function
+    # TODO: do we need to use scatter or plot (with line options turned off?)
+    tmap.plot(x,y,markers_plot_kwargs)
+    if display:
+        tmap.show()
+    return tmap
+
+def add_station_fovs(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **station_fov_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    #tmap = tplot_map(tmap=tmap)
+    if isinstance(coords,str):
+        tvar_data = get_data(coords)
+        coords = tvar_data.y
+    # expects input coordinates in form of radius, longitude, latitude
+    x,y = tmap(coords[:,2],coords[:,1])
+    # TODO: update tmap track plot parameters using tracks_plot_kwargs
+    # TODO: need way to pass tmap plot parameters to plot function
+    # TODO: do we need to use scatter or plot (with line options turned off?)
+    tmap.add_cap(x,y,station_fov_plot_kwargs)
+    if display:
+        tmap.show()
     return tmap
 
 def geodetic_correction(lat_deg,f=(1/298.26)):
-    """
-    Convert geocentric latitude to geodetic latitude using squashing factor f
-    """
-    lat_rad = np.deg2rad(lat_deg)
-    lad_corrected_rad = np.arctan( (1-f)**2 * np.tan(lat_rad) )
-    lad_corrected_deg = np.rad2deg(lad_corrected_rad)
-    return lad_corrected_deg
+        """
+        Convert geocentric latitude to geodetic latitude using squashing factor f
+        """
+        lat_rad = np.deg2rad(lat_deg)
+        lad_corrected_rad = np.arctan( (1-f)**2 * np.tan(lat_rad) )
+        lad_corrected_deg = np.rad2deg(lad_corrected_rad)
+        return lad_corrected_deg
 
-def conv2geodeticpolar(data):
+def cartesian2geodeticpolar(data: str | np.ndarray) -> np.ndarray:
     """
-    Get positional data from tplot variable, 
-    then convert data coordinates to geodetic polar coordinates
+    Get positional data from tplot variable, then convert data coordinates to 
+    geodetic polar coordinates
     """
     from pyspedas.tplot_tools import store_data
     make_tvars=False
@@ -77,74 +207,108 @@ def conv2geodeticpolar(data):
     # signed longitude
     out[:,2] = data_polar[:,2]
     if make_tvars:
-       store_data(name_in+'_radius', data={'x':d.times, 'y':out[:,0]})
-       store_data(name_in + '_geod_lat', data={'x': d.times, 'y': out[:, 1]})
-       store_data(name_in + '_signed_lon', data={'x': d.times, 'y': out[:, 2]})
-       return
+        store_data(name_in + '_radius', data={'x':d.times, 'y':out[:,0]})
+        store_data(name_in + '_geod_lat', data={'x': d.times, 'y': out[:, 1]})
+        store_data(name_in + '_signed_lon', data={'x': d.times, 'y': out[:, 2]})
+        return
     else:
-        return out 
+        return out
 
-def create_traces(
-        tvar_to_trace:list | str,
-        params_traces_in:dict=params_tmap_default["params_traces"]) -> list: 
-    
-    params_traces=construct_args_dict(params_tmap_default["params_traces"],params_traces_in)
+def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
+    """
+    Take a tplot variable of arbitrary coordinate system and convert to geodetic 
+    polar
+    """
+    # TODO: should this return array or simply create new tplot variable? 
+    tvar_geo = tvar + "_geo"
+    cotrans(name_in=tvar,name_out=tvar_geo,coord_in=in_coord_str,coord_out="geo")
+    # convert Cartesian GEO/ECEF data to geodetic polar:
+    geo_data = get_data(tvar_geo)
+    data_geod_polar = cartesian2geodeticpolar(data=geo_data.y)
+    return data_geod_polar
 
-    if type(tvar_to_trace) is str:
+def tvar_to_foottracks(tvar_to_trace:list[str] | str, in_coord_str:str='gsm', **ttrace2endpoint_kwargs) -> list: 
+    """
+    Take one or more tplot variable names, trace to an endpoint, and compute 
+    geodetic polar foottracks from tplot variable positional data
+    """
+    if isinstance(tvar_to_trace,str):
         tvar_to_trace = [tvar_to_trace]
-
     foot_name_list = []
     for tvar in tvar_to_trace:
         footname_str = tvar
         tracename_str = tvar + "_trace"
-        match params_traces["endpoint"]:
+        # TODO: finish adding name building options from ttrace2endpoint.py
+        match ttrace2endpoint_kwargs["endpoint"]:
             case "ionosphere-north": 
                 footname_str_pre="i"
-                footname_str_suf="n"
-                tracename_str_part="iono_n_"
-        match params_traces["model_str"]:
+                footname_str_suf="_n"
+                tracename_str_part="_iono_n_"
+            case "ionosphere-south":
+                footname_str_pre="i"
+                footname_str_suf="_s"
+                tracename_str_part="_iono_s_"
+            case "equator":
+                footname_str_pre="eq_"
+                footname_str_suf=""
+                tracename_str_part="_equ"
+        match ttrace2endpoint_kwargs["model_str"]:
             case "t89":
                 footname_str += "89"
         footname_str += footname_str_pre + "foot" + footname_str_suf
-        tracename_str += tracename_str_part + params_traces["model_str"]
+        tracename_str += tracename_str_part + ttrace2endpoint_kwargs["model_str"]
         ttrace2endpoint(
             tvar,
             foot_name=footname_str, 
             trace_name=tracename_str,
-            km=True,**params_traces)
-        foot_name_list.append(footname_str)
+            km=True,
+            **ttrace2endpoint_kwargs)
+        # compute geodetic polar foottracks from tplot variable positional data
+        data_geod_polar = tvar_to_geodeticpolar(tvar=footname_str, in_coord_str=in_coord_str)
+        foot_name_list.append(data_geod_polar)
     return foot_name_list
 
-def construct_args_dict(accepted_args:dict,kwargs_dict:dict):
-    """
-    Method to construct argument dictionary using 
-    """
-    args_dict = kwargs_dict.copy()
-    for expected_arg in accepted_args:
-        if expected_arg not in kwargs_dict:
-            args_dict[expected_arg] = accepted_args.get(expected_arg)
-    return args_dict
-
-def tplot_map_from_list(
-        tvar_to_trace:list | str,
-        figure_fp:str="",
-        in_coord_str:str='gsm',
-        params_tmap_in:dict={}):
-    params_tmap=construct_args_dict(params_tmap_default,params_tmap_in)
-    # take list of tvars (like generated from state), create footpoint traces has new tvariables
-    foot_name_list = create_traces(tvar_to_trace,params_traces_in=params_tmap["params_traces"])
-    # take list of trace tvars and add traces to tplot map:
-    tmap = init_tmap(params_tmap=params_tmap)
-    for trace_tvar in foot_name_list:
-        tmap = tplot_map(trace_tvar,tmap=tmap,in_coord_str=in_coord_str,params_tmap_in=params_tmap)
-    plt.show()
-    if figure_fp != "":
-        plt.savefig(figure_fp)
-    return
+def tplot_trace_tvars_to_tmap(
+        tmap:Tplot_Map | None,
+        tvar:list[str] | str,
+        display:bool = False,
+        fig_fp:str="") -> Tplot_Map:
+    tmap = tplot_map(tmap=tmap)
+    
+    for tvar_name in tvar:
+        # Compute traces:
+        computed_trace = tvar_to_foottracks(tvar_to_trace = tvar_name, model_str = "t89", endpoint = "ionosphere-north")
+        tmap = add_tracks(tmap=tmap, coords=computed_trace[0], label = tvar_name)
+    if display:
+        tmap.show()
+    if fig_fp != "":
+        plt.savefig(fig_fp)
+    return tmap
 
 if __name__ == "__main__":
     from pyspedas.projects.themis import state
-    state(trange=['2007-03-23', '2007-03-23'], probe='a')
-    tplot_map_from_list(['tha_pos_gsm'])
-    #'ionosphere-south',foot_name='ifoot89_s'
-    #'equator',foot_name='eq_foot89'
+    date_str = '2007-03-23'
+    state(trange=[date_str,date_str], probe='a')
+    state(trange=[date_str,date_str], probe='d')
+    #tmap = Tplot_Map()
+    tmap = tplot_map(lat_0=50,lon_0=-120)
+    
+    tmap = tplot_trace_tvars_to_tmap(tmap=tmap,tvar=['tha_pos_gsm','thd_pos_gsm'])
+    tmap.drawmapboundary()
+    tmap.fillcontinents()
+    tmap.drawcoastlines(linewidth=0.25)
+    #self.drawmeridians(**self._params.drawmeridians)
+    #self.drawparallels(**self._params.drawparallels)
+    #self.nightshade(**self._params.nightshade)
+    tmap.add_nightshade(date=dt.datetime.strptime(date_str+" 00:00:00",'%Y-%m-%d %H:%M:%S'))
+    
+
+
+    # Add ground station markers
+    #tplot_map_add_markers(map_obj, marker_latitude_list, marker_longitude_list, marker_symbol, marker_color)
+
+    # Add field of view circles for each ground station
+    # Hopefully there are convenience features to plot the circles projected appropriately without generating our own long-lat traces for each FOV
+    #tplot_map_add_station_fov(map_obj, marker_latitude_list, marker_longitud_list, fov_radius, linestyle)
+    
+    tmap.show()
