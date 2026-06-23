@@ -4,7 +4,6 @@ trace magnetic field lines to the north ionosphere, south ionosphere, or equator
 then map those points to a basemap
 """
 from pyspedas import cotrans, get_data, xyz_to_polar,ttrace2endpoint, tplotxy3
-from pyspedas.projects.themis.ground import gmag
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
@@ -146,16 +145,19 @@ def tplot_map(tmap:Tplot_Map | None = None, display:bool = False, **basemap_kwar
         tmap.show()
     return tmap
 
-# TODO accept list of strings or np.ndarray and iterate over list
 def add_tracks(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **tracks_plot_kwargs) -> Tplot_Map:
     if tmap is None:
         tmap = Tplot_Map()
-    if isinstance(coords,str):
-        tvar_data = get_data(coords)
-        coords = tvar_data.y
-    # expects input coordinates in form of radius, longitude, latitude
-    x,y = tmap(coords[:,2],coords[:,1])
-    tmap.add_linepath(x,y,**tracks_plot_kwargs)
+    if not isinstance(coords,list):
+        if isinstance(coords,str):
+            tvar_data = get_data(coords)
+            coords = tvar_data.y
+        coords = [coords]
+
+    for coord_set in coords:
+        # expects input coordinates in form of radius, longitude, latitude
+        x,y = tmap(coord_set[:,2],coord_set[:,1])
+        tmap.add_linepath(x,y,**tracks_plot_kwargs)
     if display:
         tmap.show()
     return tmap
@@ -282,8 +284,9 @@ def tvar_to_foottracks(tvar_to_trace:list[str] | str, in_coord_str:str='gsm', **
     for tvar in tvar_to_trace:
         footname_str = tvar
         tracename_str = tvar + "_trace"
-        # TODO: finish adding name building options from ttrace2endpoint.py
-        match ttrace2endpoint_kwargs["endpoint"]:
+        if ttrace2endpoint_kwargs.get("endpoint") is None:
+            ttrace2endpoint_kwargs["endpoint"] = "ionosphere-north"
+        match ttrace2endpoint_kwargs.get("endpoint"):
             case "ionosphere-north": 
                 footname_str_pre="i"
                 footname_str_suf="_n"
@@ -296,19 +299,22 @@ def tvar_to_foottracks(tvar_to_trace:list[str] | str, in_coord_str:str='gsm', **
                 footname_str_pre="eq_"
                 footname_str_suf=""
                 tracename_str_part="_equ"
-        match ttrace2endpoint_kwargs["model_str"]:
-            case "t89":
-                footname_str += "89"
+        if ttrace2endpoint_kwargs.get("model_str") is None:
+            ttrace2endpoint_kwargs["model_str"] = "t89"
+        footname_str += ttrace2endpoint_kwargs["model_str"]
         footname_str += footname_str_pre + "foot" + footname_str_suf
         tracename_str += tracename_str_part + ttrace2endpoint_kwargs["model_str"]
         ttrace2endpoint(
-            tvar,
+            tvar=tvar,
             foot_name=footname_str, 
+            foot_out_coord="GEO",
             trace_name=tracename_str,
             km=True,
             **ttrace2endpoint_kwargs)
         # compute geodetic polar foottracks from tplot variable positional data
-        data_geod_polar = tvar_to_geodeticpolar(tvar=footname_str, in_coord_str=in_coord_str)
+        geo_data = get_data(footname_str)
+        data_geod_polar = cartesian2geodeticpolar(data=geo_data.y)
+        #data_geod_polar = tvar_to_geodeticpolar(tvar=footname_str, in_coord_str=in_coord_str)
         foot_name_list.append(data_geod_polar)
     return foot_name_list
 
@@ -331,12 +337,16 @@ def tplot_trace_tvars_to_tmap(
 
 if __name__ == "__main__":
     from pyspedas.projects.themis import state
+    from pyspedas.projects.themis.ground import gmag
+
     date_str = '2026-02-03'
     state(trange=[date_str,date_str], probe='a')
     state(trange=[date_str,date_str], probe='d')
     
     # Initialize map:
     tmap = tplot_map(lat_0=50,lon_0=-100)
+    #tmap._params.drawmapboundary = {"fill_color":"lightskyblue"}
+    #tmap._params.fillcontinents = {"color":"palegreen","lake_color":"lightskyblue"}
     
     # Add ground tracks:
     tmap = tplot_trace_tvars_to_tmap(tmap=tmap,tvar=['tha_pos_gsm','thd_pos_gsm'])
@@ -354,7 +364,7 @@ if __name__ == "__main__":
     tmap.add_map_boundary()
     tmap.add_fillcontinents()
     tmap.add_coastlines(linewidth=0.25)
-    tmap.add_nightshade(date=dt.datetime.strptime(date_str+" 00:00:00",'%Y-%m-%d %H:%M:%S'))
+    tmap.add_nightshade(date=dt.datetime.strptime(date_str+" 15:00:00",'%Y-%m-%d %H:%M:%S'))
     
     tmap.show()
     print("done")
