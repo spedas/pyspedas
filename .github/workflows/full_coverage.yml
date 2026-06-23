@@ -345,6 +345,8 @@ jobs:
               coverage run -a -m pyspedas.projects.polar.tests.test_polar
               echo Starting geopack tests at `date`
               coverage run -a -m pyspedas.geopack.tests.test_geopack
+              echo Starting geopack input sanitization tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_prepare_pos_variable
               echo Starting geopack-IDL validation tests at `date`
               coverage run -a -m pyspedas.geopack.tests.test_geopack_idl_validation
               echo Starting geopack clean_model_parameters tests at `date`
@@ -491,7 +493,7 @@ jobs:
   combine_coverage:
     runs-on: ubuntu-latest
     needs: tests
-    if: ${{ always() && ((github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev') }}
+    if: ${{ ((github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev') }}
 
     steps:
       - uses: actions/checkout@v5

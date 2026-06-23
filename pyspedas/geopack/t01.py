@@ -1,7 +1,10 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from pyspedas.tplot_tools import get_data, store_data, get_timespan, set_coords, set_units
 from .clean_model_parameters import clean_model_parameters, clean_parmod_data
+from pyspedas.cotrans_tools.cotrans import cotrans
+from .prepare_pos_variable import prepare_pos_variable
+
 
 def get_t01_parameters(pos_var, pdyn=None, dst=None, byimf=None, bzimf=None, g1=None, g2=None, parmod=None, autoload=False):
     """
@@ -95,7 +98,7 @@ def get_t01_parameters(pos_var, pdyn=None, dst=None, byimf=None, bzimf=None, g1=
     return output_parmod
 
 
-def tt01(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, g1=None, g2=None, parmod=None, suffix='', autoload=False):
+def tt01(pos_var, units_in:str = None, coord_in:str = None, pdyn=None, dst=None, byimf=None, bzimf=None, g1=None, g2=None, parmod=None, coord_out:str = 'GSM', suffix='', autoload=False):
     """
     Evaluate the T01 field model at the times and positions specified by an input tplot variable.
 
@@ -103,13 +106,14 @@ def tt01(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, g1=None, g2=N
 
     https://github.com/tsssss/geopack
 
-    Input
-    ------
-        pos_gsm_tvar: str
-            tplot variable containing the position data (km) in GSM coordinates
-
     Parameters
     -----------
+        pos_var: str
+            tplot variable containing the position data.
+        coord_in: str
+            (Optional) Coordinate system of input variable, overrides any metadata in pos_var. Must be convertible to GSM.
+        units_in: str
+            (Optional) Units of input variable, overrides any metadata in pos_var. Valid options: ['km', 'Re']
         parmod: string
             A tplot variable containing a 10-element model parameter array (vs. time).  The timestamps should match the input position variable.
             Only the first 6 elements are used::
@@ -130,25 +134,29 @@ def tt01(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, g1=None, g2=N
             Name of the tplot variable containing the model data
     """
     from .generic_geopack_adapters import make_model
-    pos_data = get_data(pos_var_gsm)
-
-    if pos_data is None:
-        logging.error('Variable not found: ' + pos_var_gsm)
-        return
+    from .generic_geopack_adapters import make_model
+    input_gsm_re = prepare_pos_variable(pos_var, coord_in=coord_in, units_in=units_in)
+    pos_data = get_data(input_gsm_re)
+    pos_re = pos_data.y
 
     bgsm = np.zeros((len(pos_data.times), 3))
 
-    # convert to Re
-    pos_re = pos_data.y/6371.2
-
     input_parmod = parmod
-    parmod = get_t01_parameters(pos_var=pos_var_gsm, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2, parmod=input_parmod, autoload=autoload)
+    parmod = get_t01_parameters(pos_var=pos_var, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, g1=g1, g2=g2, parmod=input_parmod, autoload=autoload)
 
     for idx, time in enumerate(pos_data.times):
         model = make_model("t01", time, parmod[idx, :])  # does geopack.recalc(time) internally
         bgsm[idx, :] = model.B_gsm(pos_re[idx, :])  # returns IGRF + T01 in GSM
 
-    saved = store_data(pos_var_gsm + '_bt01' + suffix, data={'x': pos_data.times, 'y': bgsm})
+    if coord_out.lower() != 'gsm':
+        bgsm_out_coord = cotrans(time_in=pos_data.times, data_in=bgsm, coord_in='GSM', coord_out=coord_out)
+        bgsm = bgsm_out_coord
+
+    out_name = pos_var + '_bt01' + suffix
+
+    saved = store_data(out_name, data={'x': pos_data.times, 'y': bgsm})
 
     if saved:
-        return pos_var_gsm + '_bt01' + suffix
+        set_coords(out_name,coord_out)
+        set_units(out_name,'nT')
+        return out_name

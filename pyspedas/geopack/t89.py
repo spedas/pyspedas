@@ -1,7 +1,9 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from pyspedas.tplot_tools import get_data, store_data, get_timespan, set_coords, set_units
 from .clean_model_parameters import clean_model_parameters, clean_parmod_data
+from pyspedas.cotrans_tools.cotrans import cotrans
+from .prepare_pos_variable import prepare_pos_variable
 from .kp2iopt import kp2iopt
 
 def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
@@ -70,14 +72,18 @@ def get_t89_parameters(pos_var, kp, iopt, parmod, autoload, igrf_only):
 
     return output_parmod
 
-def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=False, suffix='', igrf_only=False):
+def tt89(pos_var, units_in:str = None, coord_in:str =None, kp=None, iopt=None, parmod=None, autoload=False, coord_out:str = 'GSM', suffix:str='', igrf_only=False):
     """
     Evaluate the T89 field model at the times/positions specified by an input tplot variable.
 
     Parameters
     -----------
-    pos_gsm_tvar: str
-        tplot variable containing the position data (km) in GSM coordinates.
+    pos_var: str
+        tplot variable containing the position data.
+    coord_in: str
+        (Optional) Coordinate system of input variable, overrides any metadata in pos_var. Must be convertible to GSM.
+    units_in: str
+        (Optional) Units of input variable, overrides any metadata in pos_var. Valid options: ['km', 'Re']
     iopt: str | int (Optional)
         If present, specifies the ground disturbance level. If iopt is a string, it is interpreted as a
         tplot variable name and interpolated to the times in pos_gsm_tvar.  iopt is related to the Kp index::
@@ -97,6 +103,8 @@ def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=False, suffix=''
     autoload: boolean (Optional)
         If True, ignore any other parameters provided, load Kp index data from the Kyoto WDC,
         and convert to iopt values.
+    coord_out: str
+        (Optional) Coordinate system of output variable. Must be convertible from GSM. Default: 'GSM'
     suffix: str (Optional)
         Suffix to append to the tplot output variable
     igrf_only: bool
@@ -110,18 +118,14 @@ def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=False, suffix=''
         Name of the tplot variable containing the model data
     """
     from .generic_geopack_adapters import make_model
-    pos_data = get_data(pos_var_gsm)
-
-    if pos_data is None:
-        logging.error('Variable not found: ' + pos_var_gsm)
-        return
+    input_gsm_re = prepare_pos_variable(pos_var,coord_in=coord_in, units_in=units_in)
+    pos_data = get_data(input_gsm_re)
+    pos_re = pos_data.y
 
     bgsm = np.zeros((len(pos_data.times),3))
-    # convert to Re
-    pos_re = pos_data.y/6371.2
 
     input_parmod = parmod
-    parmod = get_t89_parameters(pos_var=pos_var_gsm, kp=kp, iopt=iopt, parmod=input_parmod, igrf_only=igrf_only, autoload=autoload)
+    parmod = get_t89_parameters(pos_var=pos_var, kp=kp, iopt=iopt, parmod=input_parmod, igrf_only=igrf_only, autoload=autoload)
     for idx, time in enumerate(pos_data.times):
         if igrf_only:
             model=make_model("igrf",time,parmod[idx,:])  # doesn't actually use parmod at all
@@ -130,7 +134,14 @@ def tt89(pos_var_gsm, kp=None, iopt=None, parmod=None, autoload=False, suffix=''
 
         bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
 
-    saved = store_data(pos_var_gsm + '_bt89' + suffix, data={'x': pos_data.times, 'y': bgsm})
+    if coord_out.lower() != 'gsm':
+        bgsm_out_coord = cotrans(time_in=pos_data.times, data_in=bgsm, coord_in='GSM', coord_out=coord_out)
+        bgsm = bgsm_out_coord
+
+    out_name = pos_var + '_bt89' + suffix
+    saved = store_data(out_name, data={'x': pos_data.times, 'y': bgsm})
 
     if saved:
-        return pos_var_gsm + '_bt89' + suffix
+        set_coords(out_name,coord_out)
+        set_units(out_name,'nT')
+        return out_name

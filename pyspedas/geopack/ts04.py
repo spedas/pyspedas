@@ -1,7 +1,10 @@
 import logging
 import numpy as np
-from pyspedas.tplot_tools import get_data, store_data, get_timespan
+from pyspedas.tplot_tools import get_data, store_data, get_timespan, set_coords, set_units
 from .clean_model_parameters import clean_model_parameters, clean_parmod_data
+from pyspedas.cotrans_tools.cotrans import cotrans
+from .prepare_pos_variable import prepare_pos_variable
+
 
 def get_ts04_parameters(pos_var, pdyn, dst, byimf, bzimf, w1, w2, w3, w4, w5, w6, parmod, autoload):
     """
@@ -126,7 +129,7 @@ def get_ts04_parameters(pos_var, pdyn, dst, byimf, bzimf, w1, w2, w3, w4, w5, w6
 
     return output_parmod
 
-def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=None, w3=None, w4=None, w5=None, w6=None, autoload=False, parmod=None, suffix=''):
+def tts04(pos_var, units_in:str = None, coord_in:str =None, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=None, w3=None, w4=None, w5=None, w6=None, autoload=False, parmod=None, coord_out:str = 'GSM', suffix=''):
     """
     Evaluate the TS04 field model at the times and locations specified by an input tplot variable.
 
@@ -137,11 +140,17 @@ def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=
 
     Input
     ------
-        pos_gsm_tvar: str
+        pos_var: str
             tplot variable containing the position data (km) in GSM coordinates
 
     Parameters
     -----------
+        pos_var: str
+            tplot variable containing the position data.
+        coord_in: str
+            (Optional) Coordinate system of input variable, overrides any metadata in pos_var. Must be convertible to GSM.
+        units_in: str
+            (Optional) Units of input variable, overrides any metadata in pos_var. Valid options: ['km', 'Re']
         parmod: str
             A tplot variable containing the model parameters as a 10-element array (vs. time).  The timestamps should match the times in the input position
             variable. The motdl::
@@ -152,6 +161,8 @@ def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=
                 (4) bzimf (nanotesla)
                 (5-10) indices w1 - w6, calculated as time integrals from the beginning of a storm
 
+        coord_out: str
+            (Optional) Coordinate system of output variable. Must be convertible from GSM. Default: 'GSM'
         suffix: str
             Suffix to append to the tplot output variable
 
@@ -162,19 +173,19 @@ def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=
 
     """
     from .generic_geopack_adapters import make_model
-    pos_data = get_data(pos_var_gsm)
+    input_gsm_re = prepare_pos_variable(pos_var,coord_in=coord_in, units_in=units_in)
+    pos_data = get_data(input_gsm_re)
 
     if pos_data is None:
-        logging.error('Variable not found: ' + pos_var_gsm)
+        logging.error('Variable not found: ' + pos_var)
         return
 
-    bgsm = np.zeros((len(pos_data.times), 3))
+    pos_re = pos_data.y
 
-    # convert to Re
-    pos_re = pos_data.y/6371.2
+    bgsm = np.zeros((len(pos_data.times),3))
 
     input_parmod = parmod
-    parmod = get_ts04_parameters(pos_var=pos_var_gsm, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, w1=w1, w2=w2, w3=w3, w4=w4, w5=w5, w6=w6, parmod=input_parmod, autoload=autoload)
+    parmod = get_ts04_parameters(pos_var=pos_var, pdyn=pdyn, dst=dst, byimf=byimf, bzimf=bzimf, w1=w1, w2=w2, w3=w3, w4=w4, w5=w5, w6=w6, parmod=input_parmod, autoload=autoload)
 
     for idx, time in enumerate(pos_data.times):
         if not np.isfinite(parmod[idx, :]).all():
@@ -183,7 +194,14 @@ def tts04(pos_var_gsm, pdyn=None, dst=None, byimf=None, bzimf=None, w1=None, w2=
         model = make_model("t04", time, parmod[idx, :])
         bgsm[idx,:] = model.B_gsm(pos_re[idx,:])
 
-    saved = store_data(pos_var_gsm + '_bts04' + suffix, data={'x': pos_data.times, 'y': bgsm})
+    if coord_out.lower() != 'gsm':
+        bgsm_out_coord = cotrans(time_in=pos_data.times, data_in=bgsm, coord_in='GSM', coord_out=coord_out)
+        bgsm = bgsm_out_coord
+
+    out_name = pos_var + '_bts04' + suffix
+    saved = store_data(out_name, data={'x': pos_data.times, 'y': bgsm})
 
     if saved:
-        return pos_var_gsm + '_bts04' + suffix
+        set_coords(out_name,coord_out)
+        set_units(out_name,'nT')
+        return out_name
