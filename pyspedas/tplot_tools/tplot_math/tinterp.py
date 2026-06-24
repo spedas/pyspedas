@@ -38,8 +38,8 @@ def tinterp(tvar1,tvar2,replace=False):
         pyspedas.tplot_tools.data_quants[tvar2] = new_tvar2
         return
     else:
-        pyspedas.tplot_tools.data_quants[tvar1 + '_tinterp'] = copy.deepcopy(new_tvar2)
-        pyspedas.tplot_tools.data_quants[tvar1 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
-        pyspedas.tplot_tools.data_quants[tvar1 + '_tinterp'].name = tvar1 + '_tinterp'
+        pyspedas.tplot_tools.data_quants[tvar2 + '_tinterp'] = copy.deepcopy(new_tvar2)
+        pyspedas.tplot_tools.data_quants[tvar2 + '_tinterp'].attrs = copy.deepcopy(new_tvar2.attrs)
+        pyspedas.tplot_tools.data_quants[tvar2 + '_tinterp'].name = tvar2 + '_tinterp'
 
-    return tvar1 + '_tinterp'
+    return tvar2 + '_tinterp'
