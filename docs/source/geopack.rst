@@ -24,6 +24,14 @@ the GSM coordinate system, but this can be changed via the coord_out keyword par
 Managing model parameters
 =========================
 
+As mentioned above, most of the field modeling and tracing routines support a boolean 'autoload' parameter,
+which will load the relevant solar wind and magnetospheric parameters from OMNIweb, the Kyoto WDC, or other
+sources.
+
+However, sometimes it is necessary or desirable to obtain or synthesize these parameters from other data.
+The routines describe here allow arbitrary constants, tplot variables, or data arrays to be passed to the
+modeling and tracing routines, with appropriate interpolation and sanitization performed automatically.
+
 Parameters to each model can be supplied as tplot variables (to be interpolated to the input times),
 scalars (to be applied to all times), as arrays (length equal to number of input times), or
 as 10-element or n-by-10 element 'parmod' arrays (all model parameters passed in a single array).
@@ -40,6 +48,41 @@ NaN-stripping, replication, or interpolation to return a properly sized array ma
 .. autofunction:: pyspedas.get_t01_parameters
 
 .. autofunction:: pyspedas.get_ts04_parameters
+
+IDL SPEDAS compatibility: get_tsy_params
+------------------------------------------
+
+Note: This routine is provided as a convenience for users wishing to port IDL SPEDAS field line tracing code to PySPEDAS.
+In most cases, passing 'autoload=True' to the modeling or field line tracing routines, or using one of the model-specific
+routines described above will be the easiest and cleanest way to prepare the model parameters.
+
+To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine.
+
+.. autofunction:: pyspedas.get_tsy_params
+
+get_tsy_params Example
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. code-block:: python
+
+   # load Dst and solar wind data
+   import pyspedas
+   pyspedas.projects.kyoto.dst(trange=['2015-10-16', '2015-10-17'])
+   pyspedas.projects.omni.data(trange=['2015-10-16', '2015-10-17'])
+
+   # join the components of B into a single variable
+   # BX isn't used
+   from pyspedas import join_vec
+   join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
+
+   from pyspedas.get_tsy_params import get_tsy_params
+   params = get_tsy_params('kyoto_dst',
+                        'BX_GSE-BY_GSM-BZ_GSM_joined',
+                        'proton_density',
+                        'flow_speed',
+                        't96', # or 't01', 'ts04'
+                        pressure_tvar='Pressure',
+                        speed=True)
 
 IGRF (IGRF)
 ------------
@@ -172,7 +215,12 @@ TS04 Example
 
 Solar Wind Parameters
 -----------------------------
-To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine. 
+Note: This routine is provided as a convenience for users wishing to port IDL SPEDAS field line tracing code to PySPEDAS.
+In most cases, passing 'autoload=True' to the modeling or field line tracing routines, or using one of the model-specific
+routines described above in the "Managing model parameters" section, will be the easiest and cleanest way to
+prepare the model parameters.
+
+To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine.
 
 .. autofunction:: pyspedas.get_tsy_params
 
@@ -203,8 +251,9 @@ get_tsy_params Example
 Field line tracing
 -------------------
 
-PySPEDAS can perform field line tracing for any of the available models.  Options include tracing
-to the north ionosphere, the south ionosphere, or the field line "apex" or "equator" (the point where
+PySPEDAS can perform field line tracing for any of the available models. As with the field models, the input to
+the field line tracing routines is a tplot variable containing the times and starting positions of each trace.
+The options for trace endpoints include tracing to the north ionosphere, the south ionosphere, or the field line "apex" or "equator" (the point where
 the radial component switches sign toward or away from Earth).
 
 The field line traces are implemented as solutions to a differential equation initial value problem,
@@ -220,8 +269,8 @@ to longitudes and latitudes suitable for plotting on maps.  The default units wi
 can be changed via the foot_out_units and trace_out_units keyword parameters.
 
 Previous versions of ttrace2endpoint used a boolean keyword argument 'km', to flag whether inputs and outputs
-should be in units of Re or km.   The 'km' keyword is now deprecated, and users should use the units_in, foot_out_units,
-and trace_out_units keyword parameters.
+should be in units of Re or km.   The 'km' keyword is now deprecated; the equivalent functionality can be achieved,
+with greater flexibility, by using the units_in, foot_out_units, and trace_out_units keyword parameters.
 
 .. autofunction:: pyspedas.ttrace2endpoint
 
