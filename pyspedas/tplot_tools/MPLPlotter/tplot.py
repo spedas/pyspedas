@@ -458,7 +458,7 @@ def tplot(variables,
                     if plot_extras.get('right_axis'):
                         pseudo_right_axis = True
 
-                if pseudo_right_axis or spec:
+                if pseudo_right_axis: # if pseudo_right_axis:?
                     plot_extras = None
                 else:
                     yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
@@ -532,6 +532,12 @@ def tplot(variables,
                     pseudo_show_colorbar=True
                 else:
                     pseudo_show_colorbar=False
+
+                var_attrs = pyspedas.tplot_tools.data_quants[var].attrs
+                var_is_spec = bool(var_attrs['plot_options']['extras'].get('spec'))
+                this_plot_extras = plot_extras if var_is_spec else None
+                this_zaxis_options = zaxis_options if var_is_spec else None
+                
                 tplot(var,
                       trange=trange,
                       return_plot_objects=return_plot_objects,
@@ -539,8 +545,8 @@ def tplot(variables,
                       fig=fig, axis=this_axis, display=False,
                       running_trace_count=traces_processed,
                       pseudo_idx=pseudo_idx,
-                      pseudo_xaxis_options=xaxis_options, pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=zaxis_options,
-                      pseudo_line_options=line_opts, pseudo_extra_options=plot_extras,
+                      pseudo_xaxis_options=xaxis_options, pseudo_yaxis_options=yaxis_options, pseudo_zaxis_options=this_zaxis_options,
+                      pseudo_line_options=line_opts, pseudo_extra_options=this_plot_extras,
                       pseudo_right_axis=pseudo_right_axis,
                       show_colorbar=pseudo_show_colorbar)
                 traces_processed += trace_count_thisvar
