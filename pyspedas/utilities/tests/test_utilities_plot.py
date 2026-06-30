@@ -877,8 +877,8 @@ class PlotTestCases(unittest.TestCase):
         options("mms1_edp_scpot_fast_l2", "alpha", 0.5)
         # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
         options("spec", "right_axis", "True")
-        options("mms1_des_energyspectr_omni_fast", "ztitle", "This is a ztitle")
-        options("mms1_des_energyspectr_omni_fast", "zsubtitle", "This is a z subtitle")
+        options("mms1_des_energyspectr_omni_fast", "ztitle", "This is a green ztitle")
+        options("mms1_des_energyspectr_omni_fast", "zsubtitle", "This is a green z subtitle")
         options("mms1_des_energyspectr_omni_fast", "ztitle_color", "green")
         options("mms1_des_energyspectr_omni_fast", "second_axis_size", 0.14)
         tplot_options("xmargin", [0.1, 0.2])
@@ -892,6 +892,39 @@ class PlotTestCases(unittest.TestCase):
             xsize=12,
             display=global_display,
             save_png=os.path.join(save_dir, "MMS_pseudo_spec_plus_line.png"),
+        )
+        tplot_options("title", "")
+        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
+
+    def test_pseudo_spectra_plus_line_pseudovar_options(self):
+        del_data("*")
+
+        mms.fpi(datatype="des-moms", trange=["2015-10-16", "2015-10-17"])
+        mms.edp(trange=["2015-10-16", "2015-10-17"], datatype="scpot")
+        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
+        store_data("spec", data=["mms1_des_energyspectr_omni_fast", "mms1_edp_scpot_fast_l2"])
+        # Set some options so that the spectrum, trace, and y axes are legible
+        options("mms1_edp_scpot_fast_l2", "yrange", [10, 100])
+        options("mms1_edp_scpot_fast_l2", "alpha", 0.5)
+        # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
+        options("spec", "right_axis", "True")
+        options("spec", "ztitle", "This is a ztitle")
+        options("spec", "zsubtitle", "This is a z subtitle")
+        options("spec", "ztitle_color", "green")
+        # Pseudovar option should override base variable option
+        options("mms1_des_energyspectr_omni_fast", "ztitle_color", "red")
+        options("spec", "second_axis_size", 0.14)
+        tplot_options("xmargin", [0.1, 0.2])
+        timespan("2015-10-16", 1, "days")
+        tplot_options(
+            "title",
+            "Pseudovar with energy spectrum plus line plot of s/c potential, combined var has right_axis set\nTop: spec with red ztitle Middle: combined Bottom: line\nShould have ztitle, zsubtitle in green on center panel only",
+        )
+        tplot(
+            "mms1_des_energyspectr_omni_fast spec mms1_edp_scpot_fast_l2",
+            xsize=12,
+            display=global_display,
+            save_png=os.path.join(save_dir, "MMS_pseudo_spec_plus_line_pseudovar_options.png"),
         )
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
