@@ -460,6 +460,10 @@ def tplot(variables,
 
                 if pseudo_right_axis: # if pseudo_right_axis:?
                     plot_extras = None
+                    yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
+                    zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
+                    line_opts = var_quants.attrs['plot_options']['line_opt']
+
                 else:
                     yaxis_options = var_quants.attrs['plot_options']['yaxis_opt']
                     zaxis_options = var_quants.attrs['plot_options']['zaxis_opt']
@@ -535,7 +539,13 @@ def tplot(variables,
 
                 var_attrs = pyspedas.tplot_tools.data_quants[var].attrs
                 var_is_spec = bool(var_attrs['plot_options']['extras'].get('spec'))
-                this_plot_extras = plot_extras if var_is_spec else None
+                this_plot_extras = plot_extras
+                if not var_is_spec:
+                    # Do not propagate spec flag or spec_dims_to_plot for non-spec base variables
+                    # But we do want to propagate some other options, like line colors
+                    if this_plot_extras is not None:
+                        this_plot_extras["spec"] = False
+                        this_plot_extras["spec_dim_to_plot"] = None
                 this_zaxis_options = zaxis_options if var_is_spec else None
                 
                 tplot(var,
@@ -831,7 +841,10 @@ def tplot(variables,
         if pyspedas.tplot_tools.data_quants.get(variable) is None:
             continue
         plot_extras = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['extras']
-        zaxis_options = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['zaxis_opt']
+        # If we're plotting a pseudovariable with a spec component, the pseudovariable might have its
+        # own zaxis_options that should override the base variable.  Without this, the pseudovar axis color won't
+        # get propagated to the ztitle and zsubtitle.
+        zaxis_options = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['zaxis_opt'] | zaxis_options
         if plot_extras.get('spec') is not None:
             spec = plot_extras['spec']
         else:
