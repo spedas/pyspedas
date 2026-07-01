@@ -398,6 +398,13 @@ def tplot(variables,
         var_data_org = get_data(variable, dt=True)
         var_metadata = get_data(variable, metadata=True)
 
+        # reset all plot options to None for this iteration
+        xaxis_options = dict()
+        yaxis_options = dict()
+        zaxis_options = dict()
+        line_opts = dict()
+        plot_extras = dict()
+
         #Check for a 3d variable, call reduce_spec_dataset
         if hasattr(var_data_org, 'v1') and hasattr(var_data_org, 'v2'):
             temp_dq = reduce_spec_dataset(name=variable)
