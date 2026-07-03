@@ -178,6 +178,8 @@ from .utilities.bshock_2 import bshock_2
 from .utilities.tcopy import tcopy
 from .utilities.is_gzip import is_gzip
 from .utilities.xdegap import xdegap
+from .utilities.unix2tai import unix2tai
+from .utilities.tai2unix import tai2unix
 from .version import version
 
 

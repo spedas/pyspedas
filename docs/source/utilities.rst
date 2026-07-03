@@ -89,6 +89,10 @@ Example
 
 .. autofunction:: pyspedas.time_ephemeris
 
+.. autofunction:: pyspedas.tai2unix(tinput)
+
+.. autofunction:: pyspedas.unix2tai(tinput)
+
 Creating and Managing Tplot Variables
 -------------------------------------
 
