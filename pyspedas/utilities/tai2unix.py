@@ -1,7 +1,7 @@
 from cdflib import cdfepoch
 import numpy as np
-import numpy.typing as npt
 from numpy.typing import ArrayLike
+from pyspedas import time_string
 
 def tai2unix(tinput:float | ArrayLike)->float|ArrayLike:
     """
@@ -36,9 +36,32 @@ def tai2unix(tinput:float | ArrayLike)->float|ArrayLike:
 
     """
     # Offset of TAI epoch from TT2000 epoch, in nanoseconds
+    scalar_flag = np.isscalar(tinput)
+    if scalar_flag:
+        tinput=np.array(tinput)
+    elif isinstance(tinput,list):
+        tinput=np.array(tinput)
+
     tai_epoch_const_ns = -1325419167816000000
     # Convert TAI input to nanoseconds and apply TT2000 offset
     tt2000 = np.int64(tinput*1000000000 + tai_epoch_const_ns)
     # Convert the TT@000 value in nanoseconds to Unix time in seconds
-    unix = cdfepoch.unixtime(tt2000)
-    return unix
+    # Some values may fail due to a cdflib bug.  We need to iterate through one by one, and
+    # catch any failures.
+    if scalar_flag:
+        tt2000=[tt2000]
+    unix = np.zeros(len(tt2000),dtype=np.float64)
+    for i in range(len(tt2000)):
+        try:
+            unix[i] = cdfepoch.unixtime(tt2000[i])
+        except ValueError:
+            # These failures are usually due to cdflib trying to make a datetime with min=60 or sec=60.
+            # If we subtract 1d9 nanoseconds from the input, then add one second back to the converted value,
+            # the conversion should be correct.
+            unix[i] = cdfepoch.unixtime(tt2000[i]-1000000000)
+            unix[i] += 1.0
+            print(f"cdflib had trouble converting TT2000 value {tt2000[i]}  to unix, final result {time_string(unix[i])}")
+    if scalar_flag:
+        return unix[0]
+    else:
+        return unix
