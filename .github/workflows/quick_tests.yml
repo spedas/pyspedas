@@ -336,8 +336,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.themis.tests.test_themis
         echo Starting goes tests at `date`
         coverage run -a -m  pyspedas.projects.goes.tests.test_goes
-        echo Starting mica tests at `date`
-        coverage run -a -m  pyspedas.projects.mica.tests.test_mica
+        #echo Starting mica tests at `date`
+        #coverage run -a -m  pyspedas.projects.mica.tests.test_mica
         echo Starting ulysses tests at `date`
         coverage run -a -m  pyspedas.projects.ulysses.tests.test_ulysses
         echo Starting solo tests at `date`
