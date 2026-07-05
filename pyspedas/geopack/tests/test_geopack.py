@@ -91,6 +91,7 @@ class LoadTestCases(unittest.TestCase):
         tt96("mms1_clean", parmod=params)
         self.assertTrue(data_exists("mms1_clean_bt96"))
 
+    #@unittest.skip("Download site for g parameters is offline")
     def test_tt01(self):
         mec_vars = pyspedas.projects.mms.mec(trange=trange)
         self.assertTrue(mec_vars)
@@ -124,6 +125,7 @@ class LoadTestCases(unittest.TestCase):
         tt01("mms1_clean", parmod=params)
         self.assertTrue(data_exists("mms1_clean_bt01"))
 
+    @unittest.skip("Download site for w parameters is offline")
     def test_tts04(self):
         mec_vars = pyspedas.projects.mms.mec(trange=trange)
         self.assertTrue(mec_vars)
@@ -132,10 +134,12 @@ class LoadTestCases(unittest.TestCase):
         tts04("mms1_mec_r_gsm-itrp", parmod=params)
         self.assertTrue(data_exists("mms1_mec_r_gsm-itrp_bts04"))
 
+    @unittest.skip("Download site for w parameters is offline")
     def test_get_w(self):
         w_vals = get_w(trange=["2015-10-16", "2015-10-17"])
         self.assertTrue(w_vals)
 
+    @unittest.skip("Download site for w parameters is offline")
     def test_errors(self):
         # exercise some of the error code
         mec_vars = pyspedas.projects.mms.mec(trange=trange)
@@ -196,6 +200,7 @@ class LoadTestCases(unittest.TestCase):
         tt01("circle_magpoles_5re", parmod=params)
         # pyspedas.tplot(['circle_magpoles_5re','circle_magpoles_5re_bt01'])
 
+    @unittest.skip("Download site for w parameters is offline")
     def test_t04_roi(self):
         gen_circle()
         params = get_params("ts04")
