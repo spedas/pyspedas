@@ -155,5 +155,29 @@ class SegmentTestCases(unittest.TestCase):
         rt_unix = np.array(mms_tai2unix(tai_times))
         assert_allclose(unix_times, rt_unix, atol=0.0001)
 
+    def test_mms_tai_unix_wrappers_match_generic_converters(self):
+        from pyspedas import tai2unix, unix2tai
+
+        dates = [
+            '2016-12-31 23:59:58',
+            '2016-12-31 23:59:59',
+            '2017-01-01 00:00:00',
+            '2017-01-01 00:00:01',
+        ]
+
+        unix_times = np.array(time_double(dates))
+        tai_times = unix2tai(unix_times)
+
+        assert_allclose(mms_unix2tai(unix_times), tai_times)
+        assert_allclose(mms_tai2unix(tai_times), tai2unix(tai_times))
+
+        scalar_tai = mms_unix2tai(unix_times[0])
+        self.assertTrue(np.isscalar(scalar_tai))
+
+        scalar_unix = mms_tai2unix(tai_times[0])
+        self.assertIsInstance(scalar_unix, np.ndarray)
+        self.assertEqual(scalar_unix.shape, (1,))
+        assert_allclose(scalar_unix[0], unix_times[0])
+
 if __name__ == '__main__':
     unittest.main()
