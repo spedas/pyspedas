@@ -230,6 +230,26 @@ class AnalysisTestCases(BaseTestCase):
         dt = tres("v1")
         self.assertEqual(dt, 1.0)
 
+    def test_divide_vector_by_scalar_tvar(self):
+        del_data("*")
+        times = [0.0, 1.0, 2.0]
+        vector = np.array([[2.0, 4.0, 6.0], [8.0, 12.0, 16.0], [15.0, 20.0, 25.0]])
+        scalar = np.array([2.0, 4.0, 5.0])
+        store_data("vector", data={"x": times, "y": vector})
+        store_data("scalar", data={"x": times, "y": scalar})
+
+        divide("vector", "scalar", newname="ratio")
+
+        ratio_t, ratio_d = get_data("ratio")
+        assert_array_equal(ratio_t, np.array(times))
+        assert_array_equal(ratio_d, vector / scalar[:, np.newaxis])
+
+        result = divide("vector", "scalar")
+        self.assertEqual(result, "vector")
+        updated_t, updated_d = get_data("vector")
+        assert_array_equal(updated_t, np.array(times))
+        assert_array_equal(updated_d, vector / scalar[:, np.newaxis])
+
     def test_tplot_spectools(self):
         del_data("*")
         # tpwrspc, pwrspc
