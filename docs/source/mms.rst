@@ -9,6 +9,24 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 
 Each of the MMS load routines has a short name, which is just the instrument name without the mms_load prefix.
 
+MMS SDC credentials
+-------------------
+Most public MMS science data can be loaded without credentials.  When an MMS
+loader needs authenticated LASP SDC access, PySPEDAS looks for saved
+credentials in ``~/mms_auth_info.pkl`` (created by PySPEDAS) and
+``~/mms_auth_info.sav`` (created by IDL SPEDAS).  If no saved credentials are
+found, the loader prompts for an SDC username; press Enter at the username
+prompt to continue with public access.
+
+When you enter a non-empty username and the LASP SDC password check succeeds,
+PySPEDAS saves the username and password in ``~/mms_auth_info.pkl`` for later
+loads.  This file contains saved credentials, so protect it like other password
+stores and delete it when you no longer want credentials cached.  If
+authentication starts failing after an account or password change, or if a
+stale credentials file causes confusing errors, delete ``~/mms_auth_info.pkl``
+(and ``~/mms_auth_info.sav`` if present) and rerun the loader with
+``always_prompt=True`` to enter fresh credentials.
+
 Fluxgate Magnetometer (FGM)
 -----------------------------
 Short name: pyspedas.projects.mms.fgm
