@@ -138,6 +138,12 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras'] = {}
         return True
 
+    # store_data consumes coordinate keys internally with pop(); copy the
+    # caller's dictionary so the original input can be reused. Arrays and
+    # other values are intentionally not copied here to avoid unnecessary
+    # bulk-data duplication.
+    data = data.copy()
+
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable
     if 'x' not in data.keys():
         values = np.array(data.pop('y'))

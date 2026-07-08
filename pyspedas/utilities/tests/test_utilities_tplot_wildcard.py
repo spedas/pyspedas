@@ -118,6 +118,16 @@ class UtilTestCases(unittest.TestCase):
             result = tplot_wildcard_expand(patt1, quiet=True)
             self.assertTrue(len(log.output) == 2)
 
+    def test_store_data_reuses_input_dict(self):
+        del_data("*")
+        data = {"x": [1, 2, 3], "y": [4, 5, 6]}
+
+        self.assertTrue(store_data("foo", data=data))
+        self.assertTrue(store_data("bar", data=data))
+        self.assertEqual(data, {"x": [1, 2, 3], "y": [4, 5, 6]})
+        self.assertTrue(data_exists("foo"))
+        self.assertTrue(data_exists("bar"))
+
     def test_tplot_wildcard_expand(self):
         # Test wildcard expansion against current tplot variables
         del_data("*")
