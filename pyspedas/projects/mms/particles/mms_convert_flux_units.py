@@ -48,26 +48,33 @@ def mms_convert_flux_units(data_in, units=None):
     if units_out == 'psd':
         units_out = 'df_km'
 
-    # get mass of species
+    # Get the mass-to-charge factor used by the MMS HPCA flux <->
+    # distribution-function conversion.  For singly charged species this is
+    # the same as the ion mass number, but HPCA flux products are organized
+    # by energy-per-charge; multiply charged species must therefore use A/q
+    # (e.g., He++ -> 4/2 = 2, O++ -> 16/2 = 8).
     if species_lc == 'i':
-        A = 1.0  # H+
+        a_over_q = 1.0  # H+
     elif species_lc == 'proton':
-        A = 1.0  # H+
+        a_over_q = 1.0  # H+
     elif species_lc == 'hplus':
-        A = 1.0  # H+
+        a_over_q = 1.0  # H+
     elif species_lc == 'heplus':
-        A = 4.0  # He+
+        a_over_q = 4.0  # He+
     elif species_lc == 'heplusplus':
-        A = 4.0  # He++
+        a_over_q = 2.0  # He++
     elif species_lc == 'oplus':
-        A = 16.0  # O+
+        a_over_q = 16.0  # O+
     elif species_lc == 'oplusplus':
-        A = 16.0  # O++
+        a_over_q = 8.0  # O++
     elif species_lc == 'e':
-        A = 1.0/1836.0  # e-
+        a_over_q = 1.0/1836.0  # e-
+    else:
+        logging.error('Error, unknown particle species: %s', data_in['species'])
+        return None
 
     # scaling factor between df and flux units
-    flux_to_df = A**2.0 * 0.5447 * 1e6
+    flux_to_df = a_over_q**2.0 * 0.5447 * 1e6
 
     # convert between km^6 and cm^6 for df_km
     cm_to_km = 1e30
