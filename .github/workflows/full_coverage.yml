@@ -355,6 +355,8 @@ jobs:
               coverage run -a -m pyspedas.geopack.tests.test_clean_model_parameters
               echo Starting geopack-IDL field line tracing validation tests at `date`
               coverage run -a -m pyspedas.geopack.tests.test_fl_tracing
+              echo Starting geopack w-param download tests at `date`
+              coverage run -a -m pyspedas.geopack.tests.test_geopack_getw
               echo Starting geotail tests at `date`
               coverage run -a -m pyspedas.projects.geotail.tests.test_geotail
               echo Starting analysis tests at `date`
