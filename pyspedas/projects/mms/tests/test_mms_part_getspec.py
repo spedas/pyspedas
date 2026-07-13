@@ -1,7 +1,11 @@
 import unittest
 import numpy as np
 from pyspedas.projects.mms.particles.mms_part_getspec import mms_part_getspec
-from pyspedas.tplot_tools import data_exists, get_data, tplot_names, tplot, get_coords, get_units
+from pyspedas.projects.mms.particles.mms_convert_flux_units import mms_convert_flux_units
+from pyspedas.projects.mms.hpca_tools.hpca import mms_load_hpca
+from pyspedas.projects.mms.hpca_tools.mms_hpca_calc_anodes import mms_hpca_calc_anodes
+from pyspedas.projects.mms.hpca_tools.mms_hpca_spin_sum import mms_hpca_spin_sum
+from pyspedas.tplot_tools import data_exists, get_data, tplot_names, tplot, get_coords, get_units, del_data
 
 global_display=True
 
@@ -169,6 +173,74 @@ class PGSTests(unittest.TestCase):
                          instrument='hpca',
                          output='energy')
         self.assertTrue(data_exists('mms1_hpca_heplusplus_phase_space_density_energy'))
+
+    def test_hpca_multiply_charged_flux_unit_conversion(self):
+        # HPCA flux products are organized by energy-per-charge.  The unit
+        # conversion must therefore use A/q for multiply charged species
+        # (He++ and O++), while singly charged species keep their mass number.
+        energy = np.array([[1000.0]])
+        data = np.array([[1.0]])
+
+        def convert(species):
+            return mms_convert_flux_units({
+                'species': species,
+                'units_name': 'df_cm',
+                'energy': energy,
+                'data': data,
+            }, units='eflux')['data']
+
+        hplus = convert('hplus')
+        heplus = convert('heplus')
+        heplusplus = convert('heplusplus')
+        oplus = convert('oplus')
+        oplusplus = convert('oplusplus')
+
+        np.testing.assert_allclose(heplusplus, heplus * 4.0)
+        np.testing.assert_allclose(oplusplus, oplus * 4.0)
+        np.testing.assert_allclose(hplus, data * energy**2 / (0.5447e6) * 1e30)
+
+    def test_hpca_heplusplus_energy_flux_matches_spin_average(self):
+        # Regression for PySPEDAS issue #1313: He++ spectra generated from
+        # HPCA phase-space-density data were about 4x smaller than the HPCA
+        # spin-averaged L2 flux product when the conversion used A=4 instead
+        # of A/q=2.
+        del_data('*')
+        trange = ['2015-11-19/08:34:41', '2015-11-19/08:35:53']
+        mms_part_getspec(trange=trange,
+                         instrument='hpca',
+                         species='heplusplus',
+                         data_rate='brst',
+                         output='energy',
+                         units='flux',
+                         center_measurement=True,
+                         suffix='_charge_regression')
+        mms_load_hpca(trange=trange,
+                      data_rate='brst',
+                      datatype='ion',
+                      center_measurement=True)
+        mms_hpca_calc_anodes(fov=[0, 360])
+        mms_hpca_spin_sum(avg=True)
+
+        generated = get_data('mms1_hpca_heplusplus_phase_space_density_energy_charge_regression')
+        spin_avg = get_data('mms1_hpca_heplusplus_flux_elev_0-360_spin')
+        self.assertIsNotNone(generated)
+        self.assertIsNotNone(spin_avg)
+
+        ratios = []
+        spin_times = np.asarray(spin_avg.times)
+        for gen_index, gen_time in enumerate(generated.times):
+            spin_index = int(np.argmin(np.abs(spin_times - gen_time)))
+            gen_y = np.asarray(generated.y[gen_index], dtype=float)
+            spin_y = np.asarray(spin_avg.y[spin_index], dtype=float)
+            valid = np.isfinite(gen_y) & np.isfinite(spin_y) & (spin_y != 0.0)
+            ratios.extend((gen_y[valid] / spin_y[valid]).tolist())
+
+        ratios = np.asarray(ratios, dtype=float)
+        ratios = ratios[np.isfinite(ratios)]
+        self.assertGreater(ratios.size, 50)
+        median_ratio = np.nanmedian(ratios)
+        self.assertGreater(median_ratio, 0.75)
+        self.assertLess(median_ratio, 1.25)
 
     def test_pitch_angle_limits(self):
         # Regression test for application of pitch angle limits to energy spectra
