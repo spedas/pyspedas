@@ -211,6 +211,8 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               python -m pyspedas.projects.mms.tests.test_mms_setup
+              echo "Starting mms_login_lasptests at $(date)"
+              coverage run -m pyspedas.projects.mms.tests.test_mms_login_lasp
               echo "Starting mms data rate seg tests at $(date)"
               coverage run -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
               echo Starting mms cotrans tests at `date`
