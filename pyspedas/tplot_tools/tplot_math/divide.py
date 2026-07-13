@@ -39,6 +39,8 @@ def divide(tvar1,tvar2,newname=None):
     # separate and divide data
     data1 = pyspedas.tplot_tools.data_quants[tvar1].values
     data2 = pyspedas.tplot_tools.data_quants[tv2].values
+    if data1.ndim > data2.ndim and data2.ndim == 1 and data1.shape[0] == data2.shape[0]:
+        data2 = data2.reshape((data2.shape[0],) + (1,) * (data1.ndim - 1))
     data = data1 / data2
     # store divided data
     if newname is None:
