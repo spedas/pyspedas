@@ -45,9 +45,9 @@ def get_t96_parameters(pos_var, pdyn, dst, byimf, bzimf, parmod, autoload):
         support_trange = [pos_trange[0] - 3600.0, pos_trange[1] + 3600.0]
         kyoto_dst(trange=support_trange)
         load_omni(trange=support_trange)
-        pdyn = 'OMNI_HRO_1min_Pressure'
-        byimf = 'OMNI_HRO_1min_BY_GSM'
-        bzimf = 'OMNI_HRO_1min_BZ_GSM'
+        pdyn = 'Pressure'
+        byimf = 'BY_GSM'
+        bzimf = 'BZ_GSM'
         dst='kyoto_dst'
 
 
