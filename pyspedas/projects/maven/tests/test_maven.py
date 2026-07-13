@@ -18,14 +18,17 @@ sleep_time = 1
 def get_kp_dict():
     data = maven.kp()
     local_data_dir = CONFIG["local_data_dir"]
+    # These paths frequently need to be updated to match the server responses.
+    # Maybe we could wild them somehow, without getting confused if multiple versions are present
+    # in the data directory from previous downloads?
     fn = [
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v24_r02.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160101_v26_r01.tab",
         ),
         os.path.join(
             local_data_dir,
-            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v24_r02.tab",
+            "maven/data/sci/kp/insitu/2016/01/mvn_kp_insitu_20160102_v26_r01.tab",
         ),
     ]
     return maven_kp_to_tplot(filename=fn, notplot=True)
