@@ -42,7 +42,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             Default: 'l2'
 
         datatype : str or list of str
-            Valid datatypes for HPCA are 'moments' and 'ion'
+            Valid datatypes for HPCA are 'moments', 'ion', and 'tof-counts'
             Default: 'moments'
 
         get_support_data: bool
@@ -130,6 +130,10 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     >>> # load the ion data (support data, fluxes, phase space densities, all ion data samples are n x m arrays
     >>> ion_vars = pyspedas.projects.mms.mms_load_hpca(trange=['2016-10-16', '2016-10-17'], datatype='ion')
     """
+
+    datatype = datatype.lower()
+    level = level.lower()
+
     if level.lower() != 'l2':
         if varformat is None:
             if level.lower() != 'l1a':
@@ -160,8 +164,8 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
             get_support_data = True
 
         if isinstance(datatype, str):
-            if datatype not in ['ion', 'moments']:
-                logging.warning("Unknown datatype: " + datatype + "for L2 HPCA data; expected 'ion' or 'moments', loading 'ion'")
+            if datatype not in ['ion', 'moments', 'tof-counts']:
+                logging.warning("Unknown datatype: " + datatype + "for L2 HPCA data; expected 'ion', 'moments', or 'tof-counts', loading 'ion'")
                 datatype = 'ion'
 
     tvars = mms_load_data(trange=trange, notplot=notplot, probe=probe, data_rate=data_rate, level=level, instrument='hpca',
@@ -183,7 +187,7 @@ def mms_load_hpca(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     # Replace supplementary fields in 3D distribution variables with actual
     # values from supplementary tplot variables (theta).
     for dtype in datatype:
-        if dtype == 'moments':
+        if dtype in ['moments','tof-counts']:
             continue
 
         for prb in probe:

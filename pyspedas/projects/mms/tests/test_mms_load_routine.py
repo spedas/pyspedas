@@ -200,6 +200,12 @@ class HPCALoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms2_hpca_hplus_flux_brst_elev_0-360_spin'))
         tplot(['mms2_hpca_hplus_flux_brst_elev_0-360_spin'], display=False)
 
+    def test_load_tof_counts(self):
+        del_data('*')
+        data = mms_load_hpca(probe=2, trange=['2026-05-01', '2026-05-02'], datatype='tof-counts', data_rate='srvy', suffix='_srvy')
+        self.assertTrue(data_exists('mms2_hpca_tof_counts_srvy'))
+        tplot(['mms2_hpca_tof_counts_srvy'], display=True)
+
     def test_load_ion_omni(self):
         del_data('*')
         data = mms_load_hpca(trange=['2016-10-16', '2016-10-16/6:00'], datatype='ion')
