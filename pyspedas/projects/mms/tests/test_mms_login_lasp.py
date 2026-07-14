@@ -15,6 +15,7 @@ class MMSLoginLaspTestCases(unittest.TestCase):
     @patch("pyspedas.projects.mms.mms_login_lasp.readsav", side_effect=FileNotFoundError)
     @patch("requests.Session.get")
     def test_invalid_saved_credentials_fall_back_to_public_access(self, mock_get, _mock_readsav):
+        print("Testing invalid saved credentials")
         mock_response = Mock()
         mock_response.status_code = 401
         mock_get.return_value = mock_response
@@ -36,6 +37,7 @@ class MMSLoginLaspTestCases(unittest.TestCase):
     @patch("pyspedas.projects.mms.mms_login_lasp.readsav", side_effect=FileNotFoundError)
     @patch("requests.Session.get")
     def test_none_saved_user_is_treated_as_public_access(self, mock_get, _mock_readsav):
+        print("Testing no saved user as public access")
         with tempfile.TemporaryDirectory() as home:
             self._write_saved_auth(home, {"user": None, "passwd": "stale-pass"})
 
@@ -49,6 +51,7 @@ class MMSLoginLaspTestCases(unittest.TestCase):
     @patch("pyspedas.projects.mms.mms_login_lasp.readsav", side_effect=FileNotFoundError)
     @patch("requests.Session.get", side_effect=TimeoutError("network timeout"))
     def test_credential_check_exception_falls_back_to_public_access(self, _mock_get, _mock_readsav):
+        print("Testing credential check exception")
         with tempfile.TemporaryDirectory() as home:
             self._write_saved_auth(home, {"user": "saved-user", "passwd": "saved-pass"})
 
