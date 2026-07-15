@@ -42,9 +42,9 @@ def tai2unix(tinput:float | ArrayLike)->float|ArrayLike:
     elif isinstance(tinput,list):
         tinput=np.array(tinput)
 
-    tai_epoch_const_ns = -1325419167816000000
+    tai_epoch_const_ns = np.int64(-1325419167816000000)
     # Convert TAI input to nanoseconds and apply TT2000 offset
-    tt2000 = np.int64(tinput*1000000000 + tai_epoch_const_ns)
+    tt2000 = np.int64(tinput*1000000000) + tai_epoch_const_ns
     # Convert the TT@000 value in nanoseconds to Unix time in seconds
     # Some values may fail due to a cdflib bug.  We need to iterate through one by one, and
     # catch any failures.

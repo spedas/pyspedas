@@ -10,6 +10,7 @@ from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_inte
 from pyspedas.tplot_tools import data_exists, del_data, time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
+from pyspedas import unix2tai, tai2unix
 
 
 class SegmentTestCases(unittest.TestCase):
@@ -179,6 +180,18 @@ class SegmentTestCases(unittest.TestCase):
         self.assertIsInstance(scalar_unix, np.ndarray)
         self.assertEqual(scalar_unix.shape, (1,))
         assert_allclose(scalar_unix[0], unix_times[0])
+
+    def test_tai_unix_input_types(self):
+        unix_dbl = time_double('2017-01-01')
+        tai_dbl = unix2tai(unix_dbl)
+        unix_uint64 = np.uint64(unix_dbl)
+        tai = unix2tai(unix_uint64)
+        self.assertEqual(tai_dbl, tai)
+        unix_rt1 = tai2unix(tai)
+        # This used to fail due to issues with signed vs unsigned values
+        unix_rt2 = tai2unix(np.uint64(tai))
+        self.assertEqual(unix_dbl, unix_rt1)
+        self.assertEqual(unix_dbl, unix_rt2)
 
     def test_mms_update_fast_intervals(self):
         trange=['2016-01-01','2016-02-01']
