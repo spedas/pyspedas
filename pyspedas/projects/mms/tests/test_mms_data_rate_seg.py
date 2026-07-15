@@ -130,8 +130,9 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_spd_mms_load_bss(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'])
+        spd_mms_load_bss(trange=['2015-10-01', '2015-10-05'])
         self.assertTrue(data_exists('mms_bss_burst'))
+        self.assertTrue(data_exists('mms_bss_fast'))
         spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms1_bss_sroi'))
