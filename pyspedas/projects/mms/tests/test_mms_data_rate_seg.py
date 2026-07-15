@@ -9,6 +9,7 @@ from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
 from pyspedas.tplot_tools import data_exists, del_data, time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
+from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
 
 
 class SegmentTestCases(unittest.TestCase):
@@ -178,6 +179,15 @@ class SegmentTestCases(unittest.TestCase):
         self.assertIsInstance(scalar_unix, np.ndarray)
         self.assertEqual(scalar_unix.shape, (1,))
         assert_allclose(scalar_unix[0], unix_times[0])
+
+    def test_mms_update_fast_intervals(self):
+        trange=['2016-01-01','2016-02-01']
+        starts, ends = mms_update_fast_intervals(trange=trange)
+        self.assertEqual(len(starts), len(ends))
+        # Test that intervals are properly time clipped
+        self.assertTrue(ends[0] >= time_double(trange[0]) )
+        self.assertTrue(starts[-1] <= time_double(trange[1]))
+
 
 if __name__ == '__main__':
     unittest.main()

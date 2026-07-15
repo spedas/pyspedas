@@ -2,6 +2,7 @@ import logging
 from pyspedas.tplot_tools import time_double
 from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
+from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
 
 
 def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'burst'], 
