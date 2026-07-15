@@ -4,6 +4,7 @@ from pyspedas import hapi, data_exists, del_data
 
 class HAPITests(unittest.TestCase):
 
+    @unittest.skip("Skipping for new due to inconsistent responses from supermag server")
     def test_string_time(self):
         del_data()
         server = "https://supermag.jhuapl.edu/hapi"

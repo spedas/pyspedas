@@ -84,6 +84,8 @@ jobs:
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
               echo "Starting spdf/cdaweb/hapi tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
+              echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
               echo Starting cluster tests at `date`
