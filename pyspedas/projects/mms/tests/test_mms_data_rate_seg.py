@@ -10,7 +10,7 @@ from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_inte
 from pyspedas.tplot_tools import data_exists, del_data, time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
-from pyspedas import unix2tai, tai2unix
+from pyspedas import unix2tai, tai2unix, tplot
 
 
 class SegmentTestCases(unittest.TestCase):
@@ -200,6 +200,8 @@ class SegmentTestCases(unittest.TestCase):
         # Test that intervals are properly time clipped
         self.assertTrue(ends[0] >= time_double(trange[0]) )
         self.assertTrue(starts[-1] <= time_double(trange[1]))
+        self.assertTrue(data_exists('mms_bss_fast'))
+        #tplot('mms_bss_fast')
 
 
 if __name__ == '__main__':

@@ -8,7 +8,7 @@ from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
-from pyspedas import tai2unix, unix2tai
+from pyspedas import tai2unix, unix2tai, store_data, options
 
 def get_mms_abs_selections(start_time=None, end_time=None, session=None):
     if start_time is None:
@@ -38,7 +38,7 @@ def get_mms_abs_selections(start_time=None, end_time=None, session=None):
     return file_list
 
 
-def mms_update_fast_intervals(trange, padding:float = 86400.0, always_prompt=False, headers=False):
+def mms_update_fast_intervals(trange, padding:float = 86400.0, always_prompt=False, headers=False, suffix:str = ''):
     """
     This function downloads and caches the current mms_burst_data_segment.csv
     file from the MMS SDC
@@ -126,5 +126,30 @@ def mms_update_fast_intervals(trange, padding:float = 86400.0, always_prompt=Fal
     if len(unix_starts) < 1:
         logging.warning("No fast survey intervals found in requested time range!")
 
+    start_out = []
+    end_out = []
+    bar_x = []
+    bar_y = []
 
-    return unix_starts, unix_ends
+    for start_time, end_time in zip(unix_starts, unix_ends):
+        if end_time >= tr[0] and start_time <= tr[1]:
+            bar_x.extend([start_time, start_time, end_time, end_time])
+            bar_y.extend([np.nan, 0., 0., np.nan])
+            start_out.append(start_time)
+            end_out.append(end_time)
+
+    vars_created = store_data('mms_bss_fast'+suffix, data={'x': bar_x, 'y': bar_y})
+
+    if not vars_created:
+        logging.error('Error creating SRoI segment intervals tplot variable')
+        return None
+
+    options('mms_bss_fast'+suffix, 'panel_size', 0.09)
+    options('mms_bss_fast'+suffix, 'thick', 2)
+    options('mms_bss_fast'+suffix, 'Color', 'green')
+    options('mms_bss_fast'+suffix, 'border', False)
+    options('mms_bss_fast'+suffix, 'yrange', [-0.001,0.001])
+    options('mms_bss_fast'+suffix, 'legend_names', ['Fast'])
+    options('mms_bss_fast'+suffix, 'ytitle', '')
+
+    return start_out, end_out
