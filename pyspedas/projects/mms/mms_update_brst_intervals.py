@@ -21,7 +21,14 @@ def mms_update_brst_intervals(trange, padding:float = 300.0):
         Start and end times to search
     padding: float
         Padding (in seconds) applied to trange boundaries to expand input time range
+
+
+    Returns
+    =======
+    list
+        List of burst interval time ranges (start, end) found
     """
+
     tr = time_double(trange)
     tr_tai = mms_unix2tai(tr)
 
