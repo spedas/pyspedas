@@ -180,6 +180,7 @@ from .utilities.is_gzip import is_gzip
 from .utilities.xdegap import xdegap
 from .utilities.unix2tai import unix2tai
 from .utilities.tai2unix import tai2unix
+from .utilities.month_intervals import month_intervals
 from .version import version
 
 
