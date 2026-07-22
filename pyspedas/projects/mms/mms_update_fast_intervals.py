@@ -3,6 +3,7 @@ import logging
 import numpy as np
 from scipy.io import readsav
 from pathlib import Path, PosixPath
+import time
 
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
@@ -73,7 +74,10 @@ def get_mms_abs_selections(start_time=None, end_time=None, session=None):
     file_list = response.split(',')
     return file_list
 
-def download_abs_selections(start_str, end_str, always_prompt=False, headers=False):
+def download_abs_selections(start_str,
+                            end_str,
+                            always_prompt=False,
+                            headers=False):
     # not sure if logging in is still important for these
     # so this code might be unnecessary now; for now it
     # remains to match the IDL functionality
@@ -109,6 +113,8 @@ def download_abs_selections(start_str, end_str, always_prompt=False, headers=Fal
                             session=session, no_wildcards=True)
         if abs_file is not None:
             abs_local_files.extend(abs_file)
+            # Throttle the requests a bit since these are very small files
+            time.sleep(1)
 
     return abs_local_files
 
@@ -119,7 +125,7 @@ def mms_update_fast_intervals(trange,
                               suffix:str = '',
                               no_download=True,
                               make_tplot_var = True,
-                              label=''):
+                              ):
     """
     This function downloads and caches the current mms_burst_data_segment.csv
     file from the MMS SDC
@@ -130,6 +136,16 @@ def mms_update_fast_intervals(trange,
         Start and end times to search
     padding: float
         Padding (in seconds) applied to trange boundaries to expand input time range
+    always_prompt: bool
+        Do not use cached MMS SDC credentials, but prompt the user to enter them.  Default: false
+    headers: bool
+        Passed through to mms_login_lasp
+    suffix: str
+        A string to add to the end of the tplot variable created. Default: ''
+    no_download: bool
+        If True, use cached files rather than downloading from the MMS SDC. Default: False
+    make_tplot_var: bool
+        If True, make a tplot variable from the loaded fast survey time intervals. Default: True
 
     Returns
     =======
@@ -227,6 +243,6 @@ def mms_update_fast_intervals(trange,
         logging.warning("mms_update_fast_intervals: No ABS fast survey intervals found in requested time range!")
 
     if make_tplot_var:
-        make_bss_tplot_var(unix_starts,unix_ends, label=label)
+        make_bss_tplot_var(unix_starts,unix_ends, suffix=suffix)
 
     return unix_starts, unix_ends
