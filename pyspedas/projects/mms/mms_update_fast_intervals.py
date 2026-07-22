@@ -179,6 +179,8 @@ def mms_update_fast_intervals(trange,
     ft = []
     # Now loop through the sav files, restore each one, and get the segment start/end times
     first_seg = True
+    last_start = -1.0
+    last_end = -1.0
     for abs_local_path in abs_local_paths:
         file_timestamp = abs_selection_file_timestamp(abs_local_path)
         if file_timestamp < tr_padded[0]:
