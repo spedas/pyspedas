@@ -54,7 +54,11 @@ class CDAWeb:
         instruments = self.cdas.get_instrument_types()
         inames = []
         for instrument in instruments:
-            instr_name = instrument["Name"].strip()
+            instr_name = instrument["Name"]
+            if instr_name is None:
+                continue
+            else:
+                instr_name = instr_name.strip()
             if len(instr_name) > 1 and instr_name != "(null)":
                 inames.append(instr_name)
         return inames
