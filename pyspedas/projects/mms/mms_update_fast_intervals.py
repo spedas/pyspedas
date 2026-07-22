@@ -119,7 +119,8 @@ def download_abs_selections(start_str,
     return abs_local_files
 
 def mms_update_fast_intervals(trange,
-                              padding:float = 15*86400.0,
+                              # Two days of padding should be more than enough for times before the cutover to SROI data
+                              padding:float = 2*86400.0,
                               always_prompt=False,
                               headers=False,
                               suffix:str = '',
