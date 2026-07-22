@@ -8,7 +8,9 @@ from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
 
 
-def mms_load_brst_segments(trange=None, suffix=''):
+def mms_load_brst_segments(trange=None,
+                           suffix='',
+                           no_download=False):
     """
     This function loads the burst segment intervals
     
@@ -22,6 +24,9 @@ def mms_load_brst_segments(trange=None, suffix=''):
         suffix: str
             String to append to the end of the tplot variable names
 
+        no_download: bool
+            If True, use cached files rather than downloading from MMS SDC. Default: False
+
     Returns
     ---------
         Tuple containing (start_times, end_times)
@@ -33,7 +38,7 @@ def mms_load_brst_segments(trange=None, suffix=''):
 
     tr = time_double(trange)
 
-    intervals = mms_update_brst_intervals(tr)
+    intervals = mms_update_brst_intervals(tr, no_download=no_download)
 
     if intervals:
         unix_start = np.array(intervals['start_times'])
@@ -67,18 +72,19 @@ def mms_load_brst_segments(trange=None, suffix=''):
             bar_x.extend([start_time, start_time, end_time, end_time])
             bar_y.extend([np.nan, 0., 0., np.nan])
 
-    vars_created = store_data('mms_bss_burst'+suffix, data={'x': bar_x, 'y': bar_y})
+    varname = 'mms_bss_burst'+suffix
+    vars_created = store_data(varname, data={'x': bar_x, 'y': bar_y})
 
     if not vars_created:
         logging.error('Error creating burst segment intervals tplot variable')
         return None
 
-    options('mms_bss_burst'+suffix, 'panel_size', 0.09)
-    options('mms_bss_burst'+suffix, 'thick', 2)
-    options('mms_bss_burst'+suffix, 'Color', 'green')
-    options('mms_bss_burst'+suffix, 'border', False)
-    options('mms_bss_burst'+suffix, 'yrange', [-0.001,0.001])
-    options('mms_bss_burst'+suffix, 'legend_names', ['Burst'])
-    options('mms_bss_burst'+suffix, 'ytitle', '')
+    options(varname, 'panel_size', 0.09)
+    options(varname, 'thick', 2)
+    options(varname, 'Color', 'green')
+    options(varname, 'border', False)
+    options(varname, 'yrange', [-0.001,0.001])
+    options(varname, 'legend_names', ['Burst'])
+    options(varname, 'ytitle', '')
 
     return unix_start, unix_end
