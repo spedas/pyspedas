@@ -124,7 +124,7 @@ def mms_update_fast_intervals(trange,
                               always_prompt=False,
                               headers=False,
                               suffix:str = '',
-                              no_download=True,
+                              no_download=False,
                               make_tplot_var = True,
                               ):
     """
