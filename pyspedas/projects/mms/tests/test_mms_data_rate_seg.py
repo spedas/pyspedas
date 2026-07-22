@@ -235,7 +235,7 @@ class SegmentTestCases(unittest.TestCase):
     def test_mms_sroi_vs_abs(self):
         del_data('*')
         trange=['2015-12-01','2016-01-01']
-        abs_start, abs_end = mms_update_fast_intervals(trange=trange,no_download=True,suffix='_abs')
+        abs_start, abs_end = mms_update_fast_intervals(trange=trange,suffix='_abs')
         sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi')
         abs_len =len(abs_start)
         print(f"{abs_len} ABS segments")
