@@ -8,7 +8,7 @@ from .make_bss_tplot_var import make_bss_tplot_var
 
 def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'burst'], 
                      include_labels=False, probe='1',suffix='',
-                     nodownload=False):
+                     no_download=False):
     """
     Creates tplot variables which allow you to display horizontal color bars 
     indicating burst data availability.
@@ -45,12 +45,12 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
             if time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) <= abs_sroi_cutover:
                 # use the old fast segments code for dates before 6Nov15
                 logging.info("Loading early mission fast survey segments from abs_selections datasets")
-                out = mms_update_fast_intervals(trange=trange,suffix=suffix,label=fast_label,nodownload=nodownload)
+                out = mms_update_fast_intervals(trange=trange,suffix=suffix,label=fast_label,no_download=no_download)
 
             elif time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) > abs_sroi_cutover:
                 # Requested range spans cutover date, get ABS before and SROI after, then combine
-                out1 = mms_update_fast_intervals(trange=[trange[0],abs_sroi_cutover], make_tplot_var=False, nodownload=nodownload)
-                out2 = mms_load_sroi_segments(trange=trange, probe=probe, make_tplot_var=False,nodownload=nodownload)
+                out1 = mms_update_fast_intervals(trange=[trange[0],abs_sroi_cutover], make_tplot_var=False, no_download=no_download)
+                out2 = mms_load_sroi_segments(trange=trange, probe=probe, make_tplot_var=False,no_download=no_download)
                 comb_starts = []
                 comb_ends = []
                 if out1 is not None:

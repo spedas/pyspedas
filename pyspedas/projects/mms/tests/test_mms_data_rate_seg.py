@@ -215,7 +215,7 @@ class SegmentTestCases(unittest.TestCase):
     def test_mms_sroi_vs_abs(self):
         del_data('*')
         trange=['2015-12-01','2016-01-01']
-        abs_start, abs_end = mms_update_fast_intervals(trange=trange,nodownload=True,suffix='_abs',label='Fast_ABS')
+        abs_start, abs_end = mms_update_fast_intervals(trange=trange,no_download=True,suffix='_abs',label='Fast_ABS')
         sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi', label='Fast_SROI')
         abs_len =len(abs_start)
         print(f"{abs_len} ABS segments")
@@ -232,10 +232,10 @@ class SegmentTestCases(unittest.TestCase):
     def test_mms_fast_no_download(self):
         del_data('*')
         trange=['2015-12-01','2015-12-10']
-        down_start, down_end = mms_update_fast_intervals(trange=trange,nodownload=False)
+        down_start, down_end = mms_update_fast_intervals(trange=trange,no_download=False)
         del_data('*')
         with self.assertLogs(level='INFO') as l:
-            nodown_start, nodown_end = mms_update_fast_intervals(trange=trange, nodownload=True)
+            nodown_start, nodown_end = mms_update_fast_intervals(trange=trange, no_download=True)
         for r in l.records:
             self.assertFalse('Download' in r.message)
         assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
@@ -245,11 +245,11 @@ class SegmentTestCases(unittest.TestCase):
     def test_mms_sroi_no_download(self):
         del_data('*')
         trange=['2015-12-01','2015-12-10']
-        down_start, down_end = mms_load_sroi_segments(trange=trange,nodownload=False, make_tplot_var=False)
+        down_start, down_end = mms_load_sroi_segments(trange=trange,no_download=False, make_tplot_var=False)
         self.assertFalse(data_exists('mms1_bss_sroi'))
         del_data('*')
         with self.assertLogs(level='INFO') as l:
-            nodown_start, nodown_end = mms_load_sroi_segments(trange=trange, nodownload=True)
+            nodown_start, nodown_end = mms_load_sroi_segments(trange=trange, no_download=True)
         for r in l.records:
             self.assertFalse('Download' in r.message)
         assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)

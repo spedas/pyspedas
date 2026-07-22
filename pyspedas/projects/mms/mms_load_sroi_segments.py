@@ -72,7 +72,7 @@ def mms_load_sroi_segments(trange=None,
                            padding = 2*86400,
                            suffix='', label='',
                            make_tplot_var=True,
-                           nodownload=False):
+                           no_download=False):
     """
     This function loads the Science Region of Interest (SRoI) segment intervals
     
@@ -104,7 +104,7 @@ def mms_load_sroi_segments(trange=None,
     tr = time_double(trange)
     tr_padded = [tr[0] - padding, tr[1]+padding]
 
-    if not nodownload:
+    if not no_download:
         download_mms_srois(
             start_time=time_string(tr_padded[0], fmt='%Y-%m-%d %H:%M:%S'),
             end_time=time_string(tr_padded[1], fmt='%Y-%m-%d %H:%M:%S'),

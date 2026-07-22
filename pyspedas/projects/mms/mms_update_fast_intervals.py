@@ -117,7 +117,7 @@ def mms_update_fast_intervals(trange,
                               always_prompt=False,
                               headers=False,
                               suffix:str = '',
-                              nodownload=True,
+                              no_download=True,
                               make_tplot_var = True,
                               label=''):
     """
@@ -146,7 +146,7 @@ def mms_update_fast_intervals(trange,
 
     duration = tr[1] - tr[0]
 
-    if not nodownload:
+    if not no_download:
         abs_local_files = download_abs_selections(start_str, end_str, always_prompt=always_prompt, headers=headers)
         abs_local_paths = [PosixPath(fn) for fn in abs_local_files]
     else:
