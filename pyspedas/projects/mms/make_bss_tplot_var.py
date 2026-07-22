@@ -2,7 +2,25 @@ from pyspedas import store_data, options
 import logging
 import numpy as np
 
-def make_bss_tplot_var(unix_starts,unix_ends, suffix:str = '', label=''):
+def make_bss_tplot_var(unix_starts,unix_ends, suffix:str = ''):
+    """
+    Make a tplot variable like mms_bss_fast from lists of fast survey start and end times
+
+    Parameters
+    ----------
+    unix_starts:
+        Start times of fast survey intervals
+    unix_ends:
+        End times of fast survey intervals
+    suffix:
+        Suffix to add to tplot variable name
+
+    Returns
+    -------
+    None
+        No return value, but it creates a tplot variable.
+    """
+
     bar_x = []
     bar_y = []
 
@@ -25,5 +43,3 @@ def make_bss_tplot_var(unix_starts,unix_ends, suffix:str = '', label=''):
     options(varname, 'yrange', [-0.001, 0.001])
     options(varname, 'legend_names', ['Fast'])
     options(varname, 'ytitle', '')
-    if label is not '':
-        options(varname, 'labels',[label])

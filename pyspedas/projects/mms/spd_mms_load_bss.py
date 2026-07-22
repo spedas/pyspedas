@@ -6,8 +6,9 @@ from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_inte
 from .make_bss_tplot_var import make_bss_tplot_var
 
 
-def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'burst'], 
-                     include_labels=False, probe='1',suffix='',
+def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'],
+                     datatype=['fast', 'burst'],
+                     probe='1',suffix='',
                      no_download=False):
     """
     Creates tplot variables which allow you to display horizontal color bars 
@@ -21,23 +22,16 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
         datatype: str or list of str
             Type of BSS data (current valid options: 'fast', 'burst')
 
-        include_labels: bool
-            Flag to have horizontal bars labeled
-
         probe: str or int
             S/C probe # for SRoI bars (used as fast survey segments after 6Nov15; default: 1)
+
+        no_download: bool
+            If True, use cached files rather than downloading from the MMS SDC
 
     """
 
     if not isinstance(datatype, list):
         datatype = [datatype]
-
-    if include_labels:
-        burst_label = 'Burst'
-        fast_label = 'Fast'
-    else:
-        burst_label = ''
-        fast_label = ''
 
     for dtype in datatype:
         if dtype == 'fast':
@@ -45,7 +39,7 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
             if time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) <= abs_sroi_cutover:
                 # use the old fast segments code for dates before 6Nov15
                 logging.info("Loading early mission fast survey segments from abs_selections datasets")
-                out = mms_update_fast_intervals(trange=trange,suffix=suffix,label=fast_label,no_download=no_download)
+                out = mms_update_fast_intervals(trange=trange,suffix=suffix,no_download=no_download)
 
             elif time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) > abs_sroi_cutover:
                 # Requested range spans cutover date, get ABS before and SROI after, then combine
@@ -61,13 +55,13 @@ def spd_mms_load_bss(trange=['2015-10-16', '2015-10-17'], datatype=['fast', 'bur
                     comb_ends.extend(out2[1])
                 # make the tplot variable
                 out = comb_starts, comb_ends
-                make_bss_tplot_var(out[0],out[1],suffix=suffix,label=fast_label)
+                make_bss_tplot_var(out[0],out[1],suffix=suffix)
 
             else:
                 # use SRoI code for dates on and after 6Nov15
-                out = mms_load_sroi_segments(trange=trange, probe=probe, suffix=suffix, label=fast_label)
+                out = mms_load_sroi_segments(trange=trange, probe=probe, suffix=suffix)
         elif dtype == 'burst':
-            out = mms_load_brst_segments(trange=trange)
+            out = mms_load_brst_segments(trange=trange, suffix=suffix, no_download=no_download)
         else:
             logging.error('Unsupported datatype: ' + dtype + '; valid options: "fast" and "burst"')
             continue

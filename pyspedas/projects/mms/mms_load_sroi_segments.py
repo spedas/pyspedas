@@ -70,7 +70,7 @@ def download_mms_srois(start_time=None, end_time=None, sc_id=None):
 def mms_load_sroi_segments(trange=None,
                            probe=1,
                            padding = 2*86400,
-                           suffix='', label='',
+                           suffix='',
                            make_tplot_var=True,
                            no_download=False):
     """
@@ -88,6 +88,15 @@ def mms_load_sroi_segments(trange=None,
 
         suffix: str
             Suffix to append to the end of the tplot variables
+
+        padding: float
+            Padding (in seconds) to apply to start and end of input time range
+
+        make_tplot_var: bool
+            If True, make a tplot variable from the time intervals loaded. Default: True
+
+        no_download: bool
+            If True, use cached files rather than downloading from MMS SDC. Default: False
             
     Returns
     ---------
