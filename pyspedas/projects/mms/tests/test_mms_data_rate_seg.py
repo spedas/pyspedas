@@ -57,7 +57,7 @@ class SegmentTestCases(unittest.TestCase):
             tai = unix2tai(unix[i])
             rt_unix[i] = tai2unix(tai)
             tai2unix_str = time_string(rt_unix[i])
-            print(unix[i],unix_str,tai,rt_unix[i],tai2unix_str)
+            # print(unix[i],unix_str,tai,rt_unix[i],tai2unix_str)
         assert_allclose(unix,rt_unix)
 
     def test_tai2unix_array(self):
@@ -123,10 +123,21 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
         self.assertTrue(data_exists('mms_bss_burst'))
+        # tplot('mms_bss_burst')
         with self.assertLogs(level='ERROR') as log:
             # error, no trange specified
             brst = mms_load_brst_segments()
             self.assertIn("Error; no trange specified.", log.output[0])
+        # tplot('mms_bss_burst')
+        # Test no_download
+        with self.assertLogs(level='INFO') as log:
+            brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], no_download=True)
+        for r in log.records:
+            self.assertTrue('Download' not in r.message)
+        self.assertTrue(len(brst[0]) == 53)
+        self.assertTrue(brst[0][0] == 1444975174.0)
+        self.assertTrue(brst[1][0] == 1444975244.0)
+        self.assertTrue(data_exists('mms_bss_burst'))
 
     def test_spd_mms_load_bss_abs_sroi_combined(self):
         del_data("*")
@@ -134,6 +145,15 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms_bss_fast'))
         # tplot('mms_bss_fast')
+        # Test no_download and suffix
+        del_data('*')
+        with self.assertLogs(level='INFO') as l:
+            spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'],no_download=True,suffix='_foo')
+
+        self.assertTrue(data_exists('mms_bss_burst_foo'))
+        self.assertTrue(data_exists('mms_bss_fast_foo'))
+        for r in l.records:
+            self.assertFalse('Download' in r.message)
 
     def test_spd_mms_load_bss(self):
         del_data("*")
@@ -147,7 +167,7 @@ class SegmentTestCases(unittest.TestCase):
     def test_spd_mms_load_bss_err(self):
         del_data("*")
         with self.assertLogs(level='ERROR') as log:
-            spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], datatype='brst', include_labels=True)
+            spd_mms_load_bss(trange=['2015-10-01', '2015-11-01'], datatype='brst')
             self.assertFalse(data_exists('mms_bss_fast'))
             self.assertIn("Unsupported datatype: brst; valid options: \"fast\" and \"burst\"", log.output[0])
 
@@ -215,8 +235,8 @@ class SegmentTestCases(unittest.TestCase):
     def test_mms_sroi_vs_abs(self):
         del_data('*')
         trange=['2015-12-01','2016-01-01']
-        abs_start, abs_end = mms_update_fast_intervals(trange=trange,no_download=True,suffix='_abs',label='Fast_ABS')
-        sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi', label='Fast_SROI')
+        abs_start, abs_end = mms_update_fast_intervals(trange=trange,no_download=True,suffix='_abs')
+        sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi')
         abs_len =len(abs_start)
         print(f"{abs_len} ABS segments")
         for i in range(0,abs_len):
@@ -227,7 +247,7 @@ class SegmentTestCases(unittest.TestCase):
             print(time_string(sroi_start[i]), time_string(sroi_end[i]))
         assert_allclose(abs_start,sroi_start,atol=60.0,rtol=0.0)
         assert_allclose(abs_end,sroi_end, atol=60.0,rtol=0.0)
-        # tplot('mms_bss_fast')
+        # tplot('*')
 
     def test_mms_fast_no_download(self):
         del_data('*')
@@ -255,7 +275,7 @@ class SegmentTestCases(unittest.TestCase):
         assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
         assert_allclose(down_end, nodown_end, rtol=0.0, atol=1.0)
         self.assertTrue(data_exists('mms1_bss_sroi'))
-        #tplot('mms1_bss_sroi')
+        # tplot('mms1_bss_sroi')
 
 
 if __name__ == '__main__':
