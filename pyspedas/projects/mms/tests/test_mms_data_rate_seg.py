@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
 from pyspedas.projects.mms.spd_mms_load_bss import spd_mms_load_bss
-from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments, get_mms_srois
+from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments, download_mms_srois
 from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
 from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
@@ -105,15 +105,15 @@ class SegmentTestCases(unittest.TestCase):
             self.assertIn("Error; no trange specified.", log.output[0])
 
             # error, start time not specified
-            none = get_mms_srois(end_time=1569849345.0)
+            none = download_mms_srois(end_time=1569849345.0)
             self.assertIn("Error, start time not specified", log.output[1])
 
             # error, end time not specified
-            none = get_mms_srois(start_time=1569849345.0)
+            none = download_mms_srois(start_time=1569849345.0)
             self.assertIn("Error, end time not specified", log.output[2])
 
             # error, probe not specified
-            none = get_mms_srois(start_time=1569849345.0, end_time=1569849345.0)
+            none = download_mms_srois(start_time=1569849345.0, end_time=1569849345.0)
             self.assertIn("Error, sc_id not specified", log.output[3])
 
     def test_brst(self):
@@ -127,6 +127,13 @@ class SegmentTestCases(unittest.TestCase):
             # error, no trange specified
             brst = mms_load_brst_segments()
             self.assertIn("Error; no trange specified.", log.output[0])
+
+    def test_spd_mms_load_bss_abs_sroi_combined(self):
+        del_data("*")
+        spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'])
+        self.assertTrue(data_exists('mms_bss_burst'))
+        self.assertTrue(data_exists('mms_bss_fast'))
+        # tplot('mms_bss_fast')
 
     def test_spd_mms_load_bss(self):
         del_data("*")
@@ -195,14 +202,60 @@ class SegmentTestCases(unittest.TestCase):
         self.assertEqual(unix_dbl, unix_rt2)
 
     def test_mms_update_fast_intervals(self):
-        trange=['2016-01-01','2016-02-01']
+        del_data('*')
+        trange=['2015-01-01-01','2026-07-01']
         starts, ends = mms_update_fast_intervals(trange=trange)
         self.assertEqual(len(starts), len(ends))
         # Test that intervals are properly time clipped
         self.assertTrue(ends[0] >= time_double(trange[0]) )
         self.assertTrue(starts[-1] <= time_double(trange[1]))
         self.assertTrue(data_exists('mms_bss_fast'))
-        #tplot('mms_bss_fast')
+        # tplot('mms_bss_fast')
+
+    def test_mms_sroi_vs_abs(self):
+        del_data('*')
+        trange=['2015-12-01','2016-01-01']
+        abs_start, abs_end = mms_update_fast_intervals(trange=trange,nodownload=True,suffix='_abs',label='Fast_ABS')
+        sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi', label='Fast_SROI')
+        abs_len =len(abs_start)
+        print(f"{abs_len} ABS segments")
+        for i in range(0,abs_len):
+            print(time_string(abs_start[i]), time_string(abs_end[i]))
+        sroi_len =len(sroi_start)
+        print(f"{sroi_len} SROI segments")
+        for i in range(0,sroi_len):
+            print(time_string(sroi_start[i]), time_string(sroi_end[i]))
+        assert_allclose(abs_start,sroi_start,atol=60.0,rtol=0.0)
+        assert_allclose(abs_end,sroi_end, atol=60.0,rtol=0.0)
+        # tplot('mms_bss_fast')
+
+    def test_mms_fast_no_download(self):
+        del_data('*')
+        trange=['2015-12-01','2015-12-10']
+        down_start, down_end = mms_update_fast_intervals(trange=trange,nodownload=False)
+        del_data('*')
+        with self.assertLogs(level='INFO') as l:
+            nodown_start, nodown_end = mms_update_fast_intervals(trange=trange, nodownload=True)
+        for r in l.records:
+            self.assertFalse('Download' in r.message)
+        assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
+        assert_allclose(down_end, nodown_end, rtol=0.0, atol=1.0)
+        self.assertTrue(data_exists('mms_bss_fast'))
+
+    def test_mms_sroi_no_download(self):
+        del_data('*')
+        trange=['2015-12-01','2015-12-10']
+        down_start, down_end = mms_load_sroi_segments(trange=trange,nodownload=False, make_tplot_var=False)
+        self.assertFalse(data_exists('mms1_bss_sroi'))
+        del_data('*')
+        with self.assertLogs(level='INFO') as l:
+            nodown_start, nodown_end = mms_load_sroi_segments(trange=trange, nodownload=True)
+        for r in l.records:
+            self.assertFalse('Download' in r.message)
+        assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
+        assert_allclose(down_end, nodown_end, rtol=0.0, atol=1.0)
+        self.assertTrue(data_exists('mms1_bss_sroi'))
+        #tplot('mms1_bss_sroi')
 
 
 if __name__ == '__main__':
