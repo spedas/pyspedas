@@ -109,7 +109,7 @@ def download_abs_selections(start_str,
         remote_file = f"?file={os.path.basename(abs)}"
 
         abs_file = download(remote_path=remote_path, remote_file=remote_file,
-                            local_file=os.path.join(CONFIG['local_data_dir'],'mms', 'abs_selections',os.path.basename(abs)),
+                            local_file=os.path.join(CONFIG['local_data_dir'],'mms', 'abs',os.path.basename(abs)),
                             session=session, no_wildcards=True)
         if abs_file is not None:
             abs_local_files.extend(abs_file)
@@ -167,7 +167,7 @@ def mms_update_fast_intervals(trange,
         abs_local_files = download_abs_selections(start_str, end_str, always_prompt=always_prompt, headers=headers)
         abs_local_paths = [PosixPath(fn) for fn in abs_local_files]
     else:
-        abs_dir = Path(os.path.join(CONFIG['local_data_dir'],'mms', 'abs_selections'))
+        abs_dir = Path(os.path.join(CONFIG['local_data_dir'],'mms', 'abs'))
         abs_local_paths = sorted(abs_dir.glob('abs_selections_*.sav'))
         pass
 
