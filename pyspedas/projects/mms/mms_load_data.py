@@ -47,6 +47,14 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if isinstance(trange[1], float):
         trange[1] = time_string(trange[1])
 
+    if time_double(trange[0]) >= time_double(trange[1]):
+        logging.error(
+            "Invalid trange: start time %s must be before end time %s.",
+            trange[0],
+            trange[1],
+        )
+        return [] if available or CONFIG['download_only'] else None
+
     download_only = CONFIG['download_only']
 
     no_download = False
