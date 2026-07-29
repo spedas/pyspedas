@@ -87,7 +87,22 @@ def autoload_support(varname=None,
     # Set probe name (if needed)
     if spinaxis or spinmodel:
         if probe is None:
-            probe = varname[2]
+            if 'tha_' in varname:
+                probe='a'
+            elif 'thb_' in varname:
+                probe='b'
+            elif 'thc_' in varname:
+                probe='c'
+            elif 'thd_' in varname:
+                probe='d'
+            elif 'the_' in varname:
+                probe='e'
+            elif 'thf_' in varname:
+                probe='f'
+            else:
+                logging.error(f'Unable to determine probe letter from variable name {varname}')
+                return
+
 
     # Set time range (if needed)
     if trange is None:
