@@ -116,6 +116,13 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.fit(varnames=['thc_fgs_gse'])
         self.assertTrue(data_exists('thc_fgs_gse'))
 
+    def test_load_fit_eclipse(self):
+        """Load FIT."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.fit(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_fgs_gse'))
+
     def test_load_esa_data(self):
         """Load ESA."""
         pyspedas.projects.themis.esa(varnames=['thc_peif_density'])
