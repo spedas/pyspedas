@@ -177,7 +177,8 @@ class Spinmodel:
 
     def interp_t(self,
                  t: np.ndarray,
-                 use_spinphase_correction: bool = True) -> SpinmodelInterpTResult:
+                 use_spinphase_correction: bool = True,
+                 quiet: bool = False) -> SpinmodelInterpTResult:
         """ Interpolate the spin model to a set of input times, and return an object holding the results.
 
         This is the workhorse routine for accessing the spin model. Clients will specify a set of input times (e.g.
@@ -197,6 +198,7 @@ class Spinmodel:
             t (ndarray(dtype=float): Input times
             use_spinphase_correction (Boolean): Flag (defaults to True) specifying whether V03 state CDF corrections
                 should be applied to the interpolation output.
+            quiet (boolean): If True, suppress routine progress messages
 
         Returns:
             SpinmodelInterpTResult object containing the interpolated outputs (spinphase, spincount, spin period,
@@ -316,7 +318,8 @@ class Spinmodel:
             spincount[idx3] = spincount[idx3] + my_seg_c1[idx3]
 
         if use_spinphase_correction:
-            logging.info("applying spinphase correction")
+            if not quiet:
+                logging.info("applying spinphase correction")
             interp_correction = np.interp(t, self.spin_corr_times, self.spin_corr_vals)
             spinphase -= interp_correction
             cond = spinphase > 360.0
@@ -553,6 +556,30 @@ class Spinmodel:
                 end_times[-1]=self.seg_t2[i]
 
         return start_times, end_times
+
+    def eclipse_correction_status(self):
+        start_times, end_times = self.get_eclipse_times()
+        ntimes = len(start_times)
+        flags = []
+        flag_strings = []
+        if ntimes > 0:
+            for i in range(ntimes):
+                mid_time = start_times[i] + (end_times[i]-start_times[i])/2.0
+                result = self.interp_t(np.array([mid_time]), use_spinphase_correction=True, quiet=True)
+                flag = result.segflags
+                flags.append(flag)
+                if flag==0:
+                    flag_strings.append("in sunlight")
+                elif flag==1:
+                    flag_strings.append("in shadow, no corrections available")
+                elif flag==3:
+                    flag_strings.append("in shadow, partially corrected (field waveforms corrected; particle data and EFI or FGM spin fits will have uncorrected spin phase offsets)")
+                elif flag==7:
+                    flag_strings.append("in shadow, fully corrected")
+                else:
+                    flag_strings.append(f"unrecognized segflags value {flag}")
+        return start_times, end_times, flags, flag_strings
+
 
 
     def __init__(self,
