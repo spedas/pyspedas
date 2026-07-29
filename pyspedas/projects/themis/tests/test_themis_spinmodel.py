@@ -1,8 +1,9 @@
 """ Tests of spinmodel construction and interpolation """
 import unittest
 from numpy.testing import assert_array_almost_equal_nulp, assert_array_max_ulp, assert_allclose
-from pyspedas.tplot_tools import get_data, store_data, time_string, del_data, cdf_to_tplot
+from pyspedas.tplot_tools import get_data, store_data, time_string, del_data, cdf_to_tplot, tplot_copy, tnames
 from pyspedas.projects.themis import state, get_spinmodel
+import logging
 
 
 
@@ -49,11 +50,13 @@ class SpinmodelDataValidation(unittest.TestCase):
         # Load validation variables from the test file
         del_data('*')
         filename = datafile[0]
+        #filename='/tmp/spinmodel_python_test_data.cdf'
         cdf_to_tplot(filename)
         # tplot_restore(filename)
         t_dummy, trange = get_data('parm_trange')
         t_dummy, probe_idx = get_data('parm_probe')
         t_dummy, correction_level = get_data('parm_correction_level')
+
         #print(trange)
         #print(time_string(trange))
         #print(probe_idx)
@@ -61,6 +64,19 @@ class SpinmodelDataValidation(unittest.TestCase):
         probes = ['a', 'b', 'c', 'd', 'e']
         int_corr_level = int(correction_level[0])
         probe = probes[int_idx]
+        tplot_copy('thb_fgs_dsl',new_name='idl_thb_fgs_dsl')
+        tplot_copy('thb_fgl_dsl',new_name='idl_thb_fgl_dsl')
+        tplot_copy('thb_fgs_dsl_corrected',new_name='idl_thb_fgs_dsl_corrected')
+        tplot_copy('thb_fgl_dsl_corrected',new_name='idl_thb_fgl_dsl_corrected')
+        tplot_copy('thb_peem_ptens',new_name='idl_thb_peem_ptens')
+        tplot_copy('thb_peem_mftens',new_name='idl_thb_peem_mftens')
+        tplot_copy('thb_peim_ptens',new_name='idl_thb_peim_ptens')
+        tplot_copy('thb_peim_mftens',new_name='idl_thb_peim_mftens')
+        tplot_copy('thb_peem_ptens_corrected',new_name='idl_thb_peem_ptens_corrected')
+        tplot_copy('thb_peem_mftens_corrected',new_name='idl_thb_peem_mftens_corrected')
+        tplot_copy('thb_peim_ptens_corrected',new_name='idl_thb_peim_ptens_corrected')
+        tplot_copy('thb_peim_mftens_corrected',new_name='idl_thb_peim_mftens_corrected')
+
         #print(probe)
         #print(int_corr_level)
         thm_data = state(trange=trange, probe=probe, get_support_data=True)
@@ -173,6 +189,67 @@ class SpinmodelDataValidation(unittest.TestCase):
         start_times,end_times=self.model.get_eclipse_times()
         for i in range(len(start_times)):
             print(time_string(start_times[i]),time_string(end_times[i]))
+
+    def test_eclipse_correction_fgs(self):
+        from pyspedas.projects.themis import fgm
+        from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+        from pyspedas import tnames
+        from pyspedas import tplot
+        trange=['2026-01-01','2026-01-03']
+        #fgm(probe='b',trange=trange)
+        tplot_copy('idl_thb_fgs_dsl', new_name='py_thb_fgs_dsl')
+        tplot_copy('idl_thb_fgl_dsl', new_name='py_thb_fgl_dsl')
+        tnames('*fg*')
+        eclipse_spinmodel_corrections_vector('py_thb_fgs_dsl',probe='b',spin_based=True)
+        eclipse_spinmodel_corrections_vector('py_thb_fgl_dsl',probe='b',spin_based=False)
+        py_fgl_corr = get_data('py_thb_fgl_dsl')
+        py_fgs_corr = get_data('py_thb_fgs_dsl')
+        idl_fgl_corr = get_data('idl_thb_fgl_dsl_corrected')
+        idl_fgs_corr = get_data('idl_thb_fgs_dsl_corrected')
+        fgl_diff = py_fgl_corr.y - idl_fgl_corr.y
+        fgs_diff = py_fgs_corr.y - idl_fgs_corr.y
+        store_data('fgs_diff',data={'x':py_fgs_corr.times,'y':fgs_diff})
+        store_data('fgl_diff',data={'x':py_fgl_corr.times,'y':fgl_diff})
+        # tplot('idl_thb_fgs_dsl idl_thb_fgs_dsl_corrected py_thb_fgs_dsl fgs_diff '+
+        #       'idl_thb_fgl_dsl idl_thb_fgl_dsl_corrected py_thb_fgl_dsl fgl_diff')
+        assert_allclose(py_fgl_corr.y, idl_fgl_corr.y, atol=1.0e-04, rtol=1.0e-05)
+        assert_allclose(py_fgs_corr.y, idl_fgs_corr.y, atol=1.0e-04, rtol=1.0e-05)
+
+    def test_eclipse_correction_mom_tensors(self):
+        from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_tensor import eclipse_spinmodel_corrections_tensor
+        from pyspedas import tnames
+        from pyspedas import tplot
+        from pyspedas import subtract
+        to_correct = ['peim_ptens','peim_mftens', 'peem_ptens','peem_mftens']
+        pre_correct = []
+        post_correct = []
+        vars_to_plot = []
+        for v in to_correct:
+            oldvar = 'idl_thb_'+v
+            newvar = 'py_thb_'+v+'_corrected'
+            cmp_var = oldvar + '_corrected'
+            diff_var = 'diff_' + v
+            pre_correct.append(oldvar)
+            post_correct.append(newvar)
+            vars_to_plot.append(oldvar)
+            vars_to_plot.append(newvar)
+            tplot_copy(oldvar,newvar)
+            eclipse_spinmodel_corrections_tensor(newvar, probe="b", spin_based=True)
+            idl=get_data(cmp_var)
+            py=get_data(newvar)
+            diff = idl.y - py.y
+            store_data(diff_var,data={'x':idl.times, 'y':diff})
+            vars_to_plot.append(diff_var)
+            logging.info(f"Comparing IDL and Python results for {v} ")
+            assert_allclose(py.y, idl.y, atol=.001, rtol=1.0e-2)
+        # tplot(vars_to_plot)
+        sm = get_spinmodel(probe='b',correction_level=2,quiet=False)
+        ecl_start,ecl_end,flags, flag_strings = sm.eclipse_correction_status()
+        ntimes = len(ecl_start)
+        if ntimes > 0:
+            for i in range(ntimes):
+                logging.info(f"Eclipse {i+1} of {ntimes}: start {time_string(ecl_start[i])} end {time_string(ecl_end[i])}  status: {flag_strings[i]}")
+
 
 if __name__ == '__main__':
     unittest.main()
