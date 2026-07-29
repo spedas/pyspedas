@@ -3,7 +3,8 @@ import pyspedas
 import pyspedas.projects.themis
 from pyspedas.tplot_tools import data_exists, get_timespan, time_double
 from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
-import pyspedas
+from pyspedas.projects.themis.state_tools.state import state
+from pyspedas.projects.themis.state_tools.slp import slp as load_slp
 
 
 def load_needed(trange_loaded,
@@ -167,6 +168,6 @@ def autoload_support(varname=None,
 
     # Perform the needed updates
     if do_slp:
-        pyspedas.projects.themis.slp(trange=trange_needed)
+        load_slp(trange=trange_needed)
     if do_state:
-        pyspedas.projects.themis.state(probe=probe, trange=trange_needed, get_support_data=True)
+        state(probe=probe, trange=trange_needed, get_support_data=True)

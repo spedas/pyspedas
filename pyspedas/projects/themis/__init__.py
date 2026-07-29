@@ -23,5 +23,7 @@ from .state_tools.ssc_pre import ssc_pre
 from .state_tools.autoload_support import autoload_support
 from .state_tools import get_spinmodel
 from .cotrans import sse2sel,gse2sse,dsl2gse,ssl2dsl
+from .state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+from .state_tools.spinmodel.eclipse_spinmodel_corrections_tensor import eclipse_spinmodel_corrections_tensor
 
 from .analysis import scpot2dens, scpot2dens_nishimura

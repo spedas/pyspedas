@@ -12,7 +12,7 @@ from copy import deepcopy
 import pyspedas
 from pyspedas.cotrans_tools.cotrans_lib import subgei2gse
 from pyspedas.tplot_tools import data_exists, del_data, store_data, get_data, set_coords, get_coords
-from pyspedas.projects.themis import autoload_support
+from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
 
 
 def dsl2gse(name_in: str, name_out: str, isgsetodsl: bool = False, ignore_input_coord: bool = False,
