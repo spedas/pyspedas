@@ -104,6 +104,13 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.fgm(varnames=['thc_fgs_btotal'])
         self.assertTrue(data_exists('thc_fgs_btotal'))
 
+    def test_load_fgm_data_eclipse(self):
+        """Load FGM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.fgm(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_fgs_dsl'))
+
     def test_load_fit_data(self):
         """Load FIT."""
         pyspedas.projects.themis.fit(varnames=['thc_fgs_gse'])
