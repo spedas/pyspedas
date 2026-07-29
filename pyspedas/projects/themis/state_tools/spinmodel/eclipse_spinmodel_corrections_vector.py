@@ -52,11 +52,11 @@ def eclipse_spinmodel_corrections_vector(tvars:str,
             if coords_in == 'dsl':
                 dsl_var = v
             elif coords_in == 'gse':
-                dsl2gse(v, 'temp_dsl', isgsetodsl=True)
+                dsl2gse(v, 'temp_dsl', probe=probe, isgsetodsl=True)
                 dsl_var = 'temp_dsl'
             else:
                 cotrans(v,'temp_gse',coord_in=coords_in,coord_out='gse')
-                dsl2gse('temp_gse','temp_dsl',isgsetodsl=True)
+                dsl2gse('temp_gse','temp_dsl',probe=probe, isgsetodsl=True)
                 dsl_var='temp_dsl'
 
         d=get_data(dsl_var)
@@ -85,8 +85,8 @@ def eclipse_spinmodel_corrections_vector(tvars:str,
         if coords_in == 'dsl':
             pass;
         elif coords_in == 'gse':
-            dsl2gse(dsl_var,v,isgsetodsl=False)
+            dsl2gse(dsl_var,v,probe=probe,isgsetodsl=False)
         else:
-            dsl2gse(dsl_var,'temp_gse', isgsetodsl=False)
+            dsl2gse(dsl_var,'temp_gse',probe=probe, isgsetodsl=False)
             cotrans('temp_gse',v,coord_out=coords_in)
 
