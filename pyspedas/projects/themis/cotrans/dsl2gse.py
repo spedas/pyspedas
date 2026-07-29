@@ -53,7 +53,21 @@ def dsl2gse(name_in: str, name_out: str, isgsetodsl: bool = False, ignore_input_
         return 0
 
     if probe is None:
-        probe = name_in[2]
+        if "tha_" in name_in:
+            probe = "a"
+        elif "thb_" in name_in:
+            probe = "b"
+        elif "thc_" in name_in:
+            probe = "c"
+        elif "thd_" in name_in:
+            probe = "d"
+        elif "the_" in name_in:
+            probe = "e"
+        elif "thf_" in name_in:
+            probe = "f"
+        else:
+            logging.error(f"Unable to determine probe letter from variable name {name_in}")
+            return 0
 
     if not ignore_input_coord:
         in_coord = get_coords(name_in)
