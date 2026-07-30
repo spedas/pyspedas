@@ -57,7 +57,21 @@ def ssl2dsl(name_in: str, name_out: str, isdsltossl: bool = False, ignore_input_
         return 0
 
     if probe is None:
-        probe=name_in[2]
+        if "tha_" in name_in:
+            probe = "a"
+        elif "thb_" in name_in:
+            probe = "b"
+        elif "thc_" in name_in:
+            probe = "c"
+        elif "thd_" in name_in:
+            probe = "d"
+        elif "the_" in name_in:
+            probe = "e"
+        elif "thf_" in name_in:
+            probe = "f"
+        else:
+            logging.error(f"Unable to determine probe letter from variable name {name_in}")
+            return 0
 
     autoload_support(varname=name_in, probe=probe, spinmodel=True)
     spinmodel_obj=get_spinmodel(probe=probe, correction_level=eclipse_correction_level)

@@ -1,6 +1,12 @@
 from pyspedas.projects.themis.load import load
 from pyspedas.utilities.is_gzip import is_gzip
 import gzip
+from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
+from pyspedas import wildcard_expand, time_string
+import logging
+
 
 def fit(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -12,7 +18,8 @@ def fit(trange=['2007-03-23', '2007-03-24'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        apply_eclipse_corrections=False):
     """
     This function loads THEMIS FIT data
 
@@ -68,6 +75,9 @@ def fit(trange=['2007-03-23', '2007-03-24'],
             in the trange keyword
             Default: False
 
+        apply_eclipse_corrections: bool
+            If available, apply eclipse spinmodel corrections to L2 variables
+
     Returns
     -------
     List of str
@@ -82,11 +92,38 @@ def fit(trange=['2007-03-23', '2007-03-24'],
         >>> tplot(['thd_fgs_gse', 'thd_efs_dot0_gse'])
 
     """
-    return load(instrument='fit', trange=trange, level=level,
+    loaded_vars = load(instrument='fit', trange=trange, level=level,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
                 probe=probe, time_clip=time_clip, no_update=no_update)
+
+    if not isinstance(level, list):
+        level = [level]
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    for l in level:
+        for p in probe:
+            if l == 'l2' and apply_eclipse_corrections:
+                autoload_support(probe=p, trange=trange, spinmodel=True)
+                sm_spinfit=get_spinmodel(probe=p,correction_level=2,quiet=True)
+                start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+                n = len(start_times)
+                if n > 0:
+                    logging.info(f"Eclipse correction status for probe {probe}:")
+                    for i in range(n):
+                        logging.info(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
+                    probe_vars = wildcard_expand(loaded_vars,'th'+p+'_*')
+                    for v in probe_vars:
+                        if ('btotal' in v) or ('sigma' in v) or ('_fit_' in v) or ('hed' in v):
+                            pass
+                        elif 'fgs' in v or 'efs' in v:
+                            logging.info(f"Applying spin fit eclipse corrections to {v}")
+                            eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
+
+    return loaded_vars
 
 
 def cal_fit(probe='a', no_cal=False):

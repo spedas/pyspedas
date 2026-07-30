@@ -1,6 +1,11 @@
 
 from pyspedas.projects.themis.load import load
-from pyspedas.tplot_tools import options
+from pyspedas.tplot_tools import options, time_string, wildcard_expand
+from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
+from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+
+import logging
 
 def fgm(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -13,7 +18,8 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        apply_eclipse_corrections:bool = False):
     """
     This function loads Fluxgate magnetometer (FGM) data
 
@@ -69,6 +75,10 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
             in the trange keyword
             Default: False
 
+        apply_eclipse_correction: bool
+            If True, apply eclipse spinmodel corrections to applicable L2 quantities
+            Default: False
+
     Returns
     -------
     List of str
@@ -117,6 +127,28 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
                     if 'th'+prb+'_'+fgm_type+'_btotal'+suffix in loaded_vars:
                         options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper())
                         options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'legend_names', 'Bmag')
+
+    if 'l2' in level and apply_eclipse_corrections:
+        # List correction status for each eclipse
+        for p in probe:
+            autoload_support(probe=p, trange=trange, spinmodel=True)
+            sm_spinfit=get_spinmodel(probe=p,correction_level=2,quiet=True)
+            start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+            n = len(start_times)
+            if n > 0:
+                logging.info(f"Eclipse correction status for probe {probe}:")
+                for i in range(n):
+                    logging.info(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
+                probe_vars = wildcard_expand(loaded_vars,'th'+p+'_*')
+                for v in probe_vars:
+                    if ('btotal' in v) or ('ssl' in v):
+                        pass
+                    elif 'fgs' in v:
+                        logging.info(f"Applying spin fit eclipse corrections to {v}")
+                        eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
+                    else:
+                        logging.info(f"Applying waveform eclipse corrections to {v}")
+                        eclipse_spinmodel_corrections_vector(v, p, spin_based=False)
 
     return loaded_vars
 

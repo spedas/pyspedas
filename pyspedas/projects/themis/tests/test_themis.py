@@ -99,20 +99,49 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.sst(varnames=['thc_psif_en_eflux'])
         self.assertTrue(data_exists('thc_psif_en_eflux'))
 
+    def test_load_sst_eclipse(self):
+        """Load SST."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+
+        pyspedas.projects.themis.sst(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_psif_mftens'))
+
     def test_load_fgm_data(self):
         """Load FGM."""
         pyspedas.projects.themis.fgm(varnames=['thc_fgs_btotal'])
         self.assertTrue(data_exists('thc_fgs_btotal'))
+
+    def test_load_fgm_data_eclipse(self):
+        """Load FGM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.fgm(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_fgs_dsl'))
 
     def test_load_fit_data(self):
         """Load FIT."""
         pyspedas.projects.themis.fit(varnames=['thc_fgs_gse'])
         self.assertTrue(data_exists('thc_fgs_gse'))
 
+    def test_load_fit_eclipse(self):
+        """Load FIT."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.fit(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_fgs_gse'))
+
     def test_load_esa_data(self):
         """Load ESA."""
         pyspedas.projects.themis.esa(varnames=['thc_peif_density'])
         self.assertTrue(data_exists('thc_peif_density'))
+
+    def test_load_esa_eclipse(self):
+        """Load ESA."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.esa(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_peif_mftens'))
 
     def test_load_fft_data(self):
         """Load FFT."""
@@ -134,16 +163,37 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.mom(varnames=['thc_peim_density'])
         self.assertTrue(data_exists('thc_peim_density'))
 
+    def test_load_mom_eclipse(self):
+        """Load MOM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.mom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_peim_mftens'))
+
     def test_load_gmom_data(self):
         """Load GMOM."""
         pyspedas.projects.themis.gmom(trange=['2020-01-01', '2020-01-01'],
                              varnames=['thc_ptiff_density'])
         self.assertTrue(data_exists('thc_ptiff_density'))
 
+    def test_load_gmom_eclipse(self):
+        """Load GMOM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.gmom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_ptiff_velocity_gse'))
+
     def test_load_scm_data(self):
         """Load SCM."""
         pyspedas.projects.themis.scm(varnames=['thc_scf_btotal'])
         self.assertTrue(data_exists('thc_scf_btotal'))
+
+    def test_load_scm_eclipse(self):
+        """Load SCM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.scm(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_scf_gse'))
 
     def test_load_scm_l1_data(self):
         """Load L1 SCM."""
@@ -169,6 +219,13 @@ class LoadTestCases(unittest.TestCase):
         vars = pyspedas.projects.themis.efi(time_clip=True, varnames=['thc_eff_e12_efs'])
         self.assertTrue(data_exists('thc_eff_e12_efs'))
         self.assertFalse('thc_efw_gse' in vars)
+
+    def test_load_efi_eclipse(self):
+        """Load EFI."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        vars = pyspedas.projects.themis.efi(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_eff_e12_efs'))
 
     def test_load_l2_efw_data(self):
         """Load EFI L2 wave burst data"""

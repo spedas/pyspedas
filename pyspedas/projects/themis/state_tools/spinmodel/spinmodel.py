@@ -169,15 +169,27 @@ class Spinmodel:
         bad_idx = np.flatnonzero(mismatch)
         c = bad_idx.size
         if c != 0:
-            logging.warning('Indices don''t match up: time gaps or overlaps detected. Mismatched indices:')
+            # What are the time discrepancies between the segment start/end times involved?
+            dt1 = self.seg_t2[idx1[bad_idx] - 1]
+            dt2 = self.seg_times[idx1[bad_idx]]
+            dt_mismatch = dt2 - dt1
+            tolerance = 1.0e-05
+            logging.warning('spinmodel.findseg_t: Indices don''t match up: time gaps or overlaps detected. Mismatched indices:')
             logging.warning(bad_idx)
-            raise ValueError
+            logging.warning(f"Delta-t of mismatched segment start/end times: {dt_mismatch}")
+            max_abs_mismatch = np.max(np.abs(dt_mismatch))
+            if max_abs_mismatch > tolerance:
+                raise ValueError(f"Segment start/end time mismatch exceeds tolerance of {tolerance}. Please report this error to the PySPEDAS developers.")
+            else:
+                logging.warning(f"Maximum absolute mismatch {max_abs_mismatch} is within acceptable tolerance {tolerance}, continuing...")
+                return idx1_clip
         else:
             return idx1_clip
 
     def interp_t(self,
                  t: np.ndarray,
-                 use_spinphase_correction: bool = True) -> SpinmodelInterpTResult:
+                 use_spinphase_correction: bool = True,
+                 quiet: bool = False) -> SpinmodelInterpTResult:
         """ Interpolate the spin model to a set of input times, and return an object holding the results.
 
         This is the workhorse routine for accessing the spin model. Clients will specify a set of input times (e.g.
@@ -197,6 +209,7 @@ class Spinmodel:
             t (ndarray(dtype=float): Input times
             use_spinphase_correction (Boolean): Flag (defaults to True) specifying whether V03 state CDF corrections
                 should be applied to the interpolation output.
+            quiet (boolean): If True, suppress routine progress messages
 
         Returns:
             SpinmodelInterpTResult object containing the interpolated outputs (spinphase, spincount, spin period,
@@ -316,7 +329,8 @@ class Spinmodel:
             spincount[idx3] = spincount[idx3] + my_seg_c1[idx3]
 
         if use_spinphase_correction:
-            logging.info("applying spinphase correction")
+            if not quiet:
+                logging.info("applying spinphase correction")
             interp_correction = np.interp(t, self.spin_corr_times, self.spin_corr_vals)
             spinphase -= interp_correction
             cond = spinphase > 360.0
@@ -553,6 +567,61 @@ class Spinmodel:
                 end_times[-1]=self.seg_t2[i]
 
         return start_times, end_times
+
+    def eclipse_correction_status(self):
+        """
+            Return the start time, end time, status flags, and human readable status strings
+            describing each eclipse found in the spinmodel object.
+
+        Returns
+        -------
+        tuple
+
+        Examples
+        ---------
+
+        >>> from pyspedas.projects.themis import state, get_spinmodel
+        >>> from pyspedas import time_string
+        >>>
+        >>> trange=['2026-01-01','2026-01-03']
+        >>> probe='b'
+        >>> state(probe=probe,trange=trange,get_support_data=True)
+        >>> sm_spinfit=get_spinmodel(probe=probe,correction_level=2,quiet=True)
+        >>> start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+        >>> n = len(start_times)
+        >>> if n > 0:
+        >>>     print(f"Eclipse correction status for probe {probe}:")
+        >>>     for i in range(n):
+        >>>         print(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
+        >>>
+        Eclipse correction status for probe b:
+        Eclipse 1 of 2: start: 2026-01-01 16:35:56.538661  end: 2026-01-01 17:18:33.575686 status: in shadow, partially corrected (field waveforms corrected; particle data and EFI or FGM spin fits will have uncorrected spin phase offsets)
+        Eclipse 2 of 2: start: 2026-01-02 17:17:50.628083  end: 2026-01-02 18:00:23.389013 status: in shadow, fully corrected
+
+
+        """
+        start_times, end_times = self.get_eclipse_times()
+        ntimes = len(start_times)
+        flags = []
+        flag_strings = []
+        if ntimes > 0:
+            for i in range(ntimes):
+                mid_time = start_times[i] + (end_times[i]-start_times[i])/2.0
+                result = self.interp_t(np.array([mid_time]), use_spinphase_correction=True, quiet=True)
+                flag = result.segflags
+                flags.append(flag)
+                if flag==0:
+                    flag_strings.append("in sunlight")
+                elif flag==1:
+                    flag_strings.append("in shadow, no corrections available")
+                elif flag==3:
+                    flag_strings.append("in shadow, partially corrected (field waveforms corrected; particle data and EFI or FGM spin fits will have uncorrected spin phase offsets)")
+                elif flag==7:
+                    flag_strings.append("in shadow, fully corrected")
+                else:
+                    flag_strings.append(f"unrecognized segflags value {flag}")
+        return start_times, end_times, flags, flag_strings
+
 
 
     def __init__(self,
