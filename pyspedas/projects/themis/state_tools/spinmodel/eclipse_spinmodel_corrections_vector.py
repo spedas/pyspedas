@@ -2,7 +2,7 @@ import logging
 import numpy as np
 from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
 from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
-from pyspedas import tplot_wildcard_expand, get_data, store_data, replace_data, get_coords
+from pyspedas import tplot_wildcard_expand, get_data, store_data, replace_data, get_coords, set_coords
 from pyspedas import cotrans
 from pyspedas.projects.themis.cotrans.dsl2gse import dsl2gse
 
@@ -49,25 +49,42 @@ def eclipse_spinmodel_corrections_vector(tvars:str,
         elif d.y.shape[0] != len(t):
             raise ValueError(f"Mismatched time ({t.shape}) and data {d.y.shape} arrays for variable {v}")
 
+        # We might have to infer the coordinates from the variable name, and update the metadata before proceeding
         coords=get_coords(v)
         if coords is None:
-            logging.warning(f"Input variable {v} has no coordinate system metadata, assuming DSL")
-            coords_in='dsl'
-            dsl_var = v
-        else:
-            coords_in=coords.lower()
-            # Some of the L2 MOM variables have extra junk afterthe coordinate system ("DSL (Despun Spacecraft")
-            # If that's the case, we need to fix coords_in for this routine to work.
-            if 'dsl' in coords_in:
-                dsl_var = v
-                coords_in='dsl'
-            elif coords_in == 'gse':
-                dsl2gse(v, 'temp_dsl', probe=probe, isgsetodsl=True)
-                dsl_var = 'temp_dsl'
+            if '_dsl' in v:
+                logging.warning(f"Input variable {v} has no coordinate system metadata, inferring DSL from variable name")
+                set_coords(v,'dsl')
+            elif '_gse' in v:
+                logging.warning(f"Input variable {v} has no coordinate system metadata, inferring GSE from variable name")
+                set_coords(v,'gse')
+            elif '_gsm' in v:
+                logging.warning(f"Input variable {v} has no coordinate system metadata, inferring GSM from variable name")
+                set_coords(v,'gsm')
+            elif '_gei' in v:
+                logging.warning(f"Input variable {v} has no coordinate system metadata, inferring GEI from variable name")
+                set_coords(v,'gei')
+            elif '_sm' in v:
+                logging.warning(f"Input variable {v} has no coordinate system metadata, inferring SM from variable name")
+                set_coords(v,'sm')
             else:
-                cotrans(v,'temp_gse',coord_in=coords_in,coord_out='gse')
-                dsl2gse('temp_gse','temp_dsl',probe=probe, isgsetodsl=True)
-                dsl_var='temp_dsl'
+                logging.warning(f"Input variable {v} has no coordinate system metadata, unable to infer coordinates from variable name, assuming DSL")
+                set_coords(v,'dsl')
+
+        coords=get_coords(v)
+        coords_in=coords.lower()
+        # Some of the L2 MOM variables have extra junk after the coordinate system ("DSL (Despun Spacecraft")
+        # If that's the case, we need to fix coords_in for this routine to work.
+        if 'dsl' in coords_in:
+            dsl_var = v
+            coords_in='dsl'
+        elif coords_in == 'gse':
+            dsl2gse(v, 'temp_dsl', probe=probe, isgsetodsl=True)
+            dsl_var = 'temp_dsl'
+        else:
+            cotrans(v,'temp_gse',coord_in=coords_in,coord_out='gse')
+            dsl2gse('temp_gse','temp_dsl',probe=probe, isgsetodsl=True)
+            dsl_var='temp_dsl'
 
         d=get_data(dsl_var)
         t=d.times
