@@ -44,6 +44,10 @@ def eclipse_spinmodel_corrections_tensor(tvars:str,
 
         d=get_data(v)
         t=d.times
+        if d.y.shape[1] != 6:
+            raise ValueError(f"Data array for variable {v} with shape {d.y.shape} is not a 6-element tensor")
+        elif d.y.shape[0] != len(t):
+            raise ValueError(f"Mismatched time ({t.shape}) and data {d.y.shape} arrays for variable {v}")
         autoload_support(v,probe=probe,spinmodel=True)
         if spin_based:
             sm = get_spinmodel(probe=probe, correction_level=2, quiet=True)
