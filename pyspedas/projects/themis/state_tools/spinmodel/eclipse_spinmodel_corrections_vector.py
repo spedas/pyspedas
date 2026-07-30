@@ -49,8 +49,11 @@ def eclipse_spinmodel_corrections_vector(tvars:str,
             dsl_var = v
         else:
             coords_in=coords.lower()
-            if coords_in == 'dsl':
+            # Some of the L2 MOM variables have extra junk afterthe coordinate system ("DSL (Despun Spacecraft")
+            # If that's the case, we need to fix coords_in for this routine to work.
+            if 'dsl' in coords_in:
                 dsl_var = v
+                coords_in='dsl'
             elif coords_in == 'gse':
                 dsl2gse(v, 'temp_dsl', probe=probe, isgsetodsl=True)
                 dsl_var = 'temp_dsl'
