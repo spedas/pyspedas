@@ -169,9 +169,20 @@ class Spinmodel:
         bad_idx = np.flatnonzero(mismatch)
         c = bad_idx.size
         if c != 0:
-            logging.warning('Indices don''t match up: time gaps or overlaps detected. Mismatched indices:')
+            # What are the time discrepancies between the segment start/end times involved?
+            dt1 = self.seg_t2[idx1[bad_idx] - 1]
+            dt2 = self.seg_times[idx1[bad_idx]]
+            dt_mismatch = dt2 - dt1
+            tolerance = 1.0e-05
+            logging.warning('spinmodel.findseg_t: Indices don''t match up: time gaps or overlaps detected. Mismatched indices:')
             logging.warning(bad_idx)
-            raise ValueError
+            logging.warning(f"Delta-t of mismatched segment start/end times: {dt_mismatch}")
+            max_abs_mismatch = np.max(np.abs(dt_mismatch))
+            if max_abs_mismatch > tolerance:
+                raise ValueError(f"Segment start/end time mismatch exceeds tolerance of {tolerance}. Please report this error to the PySPEDAS developers.")
+            else:
+                logging.warning(f"Maximum absolute mismatch {max_abs_mismatch} is within acceptable tolerance {tolerance}, continuing...")
+                return idx1_clip
         else:
             return idx1_clip
 
