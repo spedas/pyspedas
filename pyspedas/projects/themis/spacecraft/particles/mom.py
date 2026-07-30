@@ -2,6 +2,7 @@
 from pyspedas.projects.themis.load import load
 from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
 from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_tensor import eclipse_spinmodel_corrections_tensor
 from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
 from pyspedas import wildcard_expand, time_string
 import logging
@@ -122,12 +123,16 @@ def mom(trange=['2008-03-23', '2008-03-24'],
                     probe_vars = wildcard_expand(loaded_vars,'th'+p+'_*')
                     for v in probe_vars:
                         if ('mag' in v):
-                            pass
+                            logging.info(f"Skipping eclipse corrections for {v}")
                         elif ('mftens' in v) or ('ptens' in v):
                             logging.info(f"Applying particle tensor eclipse corrections to {v}")
-                            eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
+                            eclipse_spinmodel_corrections_tensor(v, p, spin_based=True)
                         elif ('velocity' in v) or ('eflux' in v) or ('flux' in v):
                             logging.info(f"Applying particle vector eclipse corrections to {v}")
                             eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
+                        else:
+                            logging.info(f"Skipping eclipse corrections for {v}")
+
+
 
     return loaded_vars
