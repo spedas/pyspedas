@@ -122,12 +122,17 @@ def mom(trange=['2008-03-23', '2008-03-24'],
                         logging.info(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
                     probe_vars = wildcard_expand(loaded_vars,'th'+p+'_*')
                     for v in probe_vars:
-                        if ('mag' in v):
+                        if ('mag' in v) or ('symm_ang' in v):
+                            # Field aligned quantities are not in DSL coordinates
+                            # Scalars do not get transformed
                             logging.info(f"Skipping eclipse corrections for {v}")
                         elif ('mftens' in v) or ('ptens' in v):
                             logging.info(f"Applying particle tensor eclipse corrections to {v}")
                             eclipse_spinmodel_corrections_tensor(v, p, spin_based=True)
-                        elif ('velocity' in v) or ('eflux' in v) or ('flux' in v):
+                        elif ('velocity' in v) or ('eflux' in v) or ('flux' in v) or ('symm' in v):
+                            # There is a t3 moment that's a three-element array, but it's not a DSL
+                            # vector, but a set of eigenvalues that relate to the eigenvectors of the
+                            # t3x3 temperature tensor, not DSL X,Y, and Z components
                             logging.info(f"Applying particle vector eclipse corrections to {v}")
                             eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
                         else:
