@@ -44,7 +44,7 @@ def eclipse_spinmodel_corrections_vector(tvars:str,
         # The correction must be done in DSL coordinates
         d=get_data(v)
         t=d.times
-        if d.y.shape[1] != 3:
+        if (len(d.y.shape) <= 1) or d.y.shape[1] != 3:
             raise ValueError(f"Data array for variable {v} with shape {d.y.shape} is not a 3-element vector")
         elif d.y.shape[0] != len(t):
             raise ValueError(f"Mismatched time ({t.shape}) and data {d.y.shape} arrays for variable {v}")
