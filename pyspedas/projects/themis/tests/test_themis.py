@@ -148,6 +148,13 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.mom(varnames=['thc_peim_density'])
         self.assertTrue(data_exists('thc_peim_density'))
 
+    def test_load_mom_eclipse(self):
+        """Load MOM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.mom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_peim_mftens'))
+
     def test_load_gmom_data(self):
         """Load GMOM."""
         pyspedas.projects.themis.gmom(trange=['2020-01-01', '2020-01-01'],
