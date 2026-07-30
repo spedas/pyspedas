@@ -159,6 +159,13 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.scm(varnames=['thc_scf_btotal'])
         self.assertTrue(data_exists('thc_scf_btotal'))
 
+    def test_load_scm_eclipse(self):
+        """Load SCM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.scm(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_scf_gse'))
+
     def test_load_scm_l1_data(self):
         """Load L1 SCM."""
         pyspedas.projects.themis.scm(level='l1', varnames=['thc_scf'])
