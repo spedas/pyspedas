@@ -569,6 +569,37 @@ class Spinmodel:
         return start_times, end_times
 
     def eclipse_correction_status(self):
+        """
+            Return the start time, end time, status flags, and human readable status strings
+            describing each eclipse found in the spinmodel object.
+
+        Returns
+        -------
+        tuple
+
+        Examples
+        ---------
+
+        >>> from pyspedas.projects.themis import state, get_spinmodel
+        >>> from pyspedas import time_string
+        >>>
+        >>> trange=['2026-01-01','2026-01-03']
+        >>> probe='b'
+        >>> state(probe=probe,trange=trange,get_support_data=True)
+        >>> sm_spinfit=get_spinmodel(probe=probe,correction_level=2,quiet=True)
+        >>> start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+        >>> n = len(start_times)
+        >>> if n > 0:
+        >>>     print(f"Eclipse correction status for probe {probe}:")
+        >>>     for i in range(n):
+        >>>         print(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
+        >>>
+        Eclipse correction status for probe b:
+        Eclipse 1 of 2: start: 2026-01-01 16:35:56.538661  end: 2026-01-01 17:18:33.575686 status: in shadow, partially corrected (field waveforms corrected; particle data and EFI or FGM spin fits will have uncorrected spin phase offsets)
+        Eclipse 2 of 2: start: 2026-01-02 17:17:50.628083  end: 2026-01-02 18:00:23.389013 status: in shadow, fully corrected
+
+
+        """
         start_times, end_times = self.get_eclipse_times()
         ntimes = len(start_times)
         flags = []
