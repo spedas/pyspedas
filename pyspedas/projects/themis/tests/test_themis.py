@@ -161,6 +161,13 @@ class LoadTestCases(unittest.TestCase):
                              varnames=['thc_ptiff_density'])
         self.assertTrue(data_exists('thc_ptiff_density'))
 
+    def test_load_gmom_eclipse(self):
+        """Load GMOM."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.gmom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_ptiff_velocity_gse'))
+
     def test_load_scm_data(self):
         """Load SCM."""
         pyspedas.projects.themis.scm(varnames=['thc_scf_btotal'])
