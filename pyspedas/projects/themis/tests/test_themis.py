@@ -191,6 +191,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_eff_e12_efs'))
         self.assertFalse('thc_efw_gse' in vars)
 
+    def test_load_efi_eclipse(self):
+        """Load EFI."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        vars = pyspedas.projects.themis.efi(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_eff_e12_efs'))
+
     def test_load_l2_efw_data(self):
         """Load EFI L2 wave burst data"""
         vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efw')

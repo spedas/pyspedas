@@ -2,6 +2,11 @@
 import logging
 from pyspedas import wildcard_expand
 from pyspedas.projects.themis.load import load
+from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
+from pyspedas import wildcard_expand, time_string
+import logging
 
 
 def efi(trange=['2007-03-23', '2007-03-24'],
@@ -15,7 +20,8 @@ def efi(trange=['2007-03-23', '2007-03-24'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        apply_eclipse_corrections=False):
     """
     This function loads Electric Field Instrument (EFI) data
 
@@ -92,6 +98,10 @@ def efi(trange=['2007-03-23', '2007-03-24'],
             Time clip the variables to exactly the range specified
             in the trange keyword
             Default: False
+            
+        apply_eclipse_corrections: bool
+            If True, apply eclipse spin model corrections to output variables as appropriate.
+            Default: False
 
     Returns
     -------
@@ -136,9 +146,38 @@ def efi(trange=['2007-03-23', '2007-03-24'],
         logging.error("No valid datatypes selected")
         return []
 
-    return load(instrument='efi', trange=trange, level=level,
+    loaded_vars =  load(instrument='efi', trange=trange, level=level,
                 datatype=selected_datatype,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
                 probe=probe, time_clip=time_clip, no_update=no_update)
+    
+    if level=='l2' and apply_eclipse_corrections:
+        p = probe
+        autoload_support(probe=p, trange=trange, spinmodel=True)
+        sm_spinfit = get_spinmodel(probe=p, correction_level=2, quiet=True)
+        start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+        n = len(start_times)
+        if n > 0:
+            logging.info(f"Eclipse correction status for probe {probe}:")
+            for i in range(n):
+                logging.info(
+                    f"Eclipse {i + 1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}"
+                )
+            probe_vars = wildcard_expand(loaded_vars, "th" + p + "_*")
+            for v in probe_vars:
+                if ("btotal" in v) or ("_q_" in v) :
+                    pass
+                elif "efs" in v:
+                    # These are spin fits, but they're not the *onboard* spin fits that rely on
+                    # the onboard spin sectoring clock. They won't suffer from the sudden-onset fixed
+                    # spin plan offset that happens when the onboard spin sectoring clock is disrupted.
+                    # So they should probably be corrected using the waveform model,
+                    # rather than the spin fit model.
+                    logging.info(f"Applying waveform eclipse corrections to {v}")
+                    eclipse_spinmodel_corrections_vector(v, p, spin_based=False)
+                else:
+                    logging.info(f"Applying waveform eclipse corrections to {v}")
+                    eclipse_spinmodel_corrections_vector(v, p, spin_based=False)
+
