@@ -1,5 +1,11 @@
 from pyspedas.projects.themis.load import load
 import pyspedas
+from pyspedas.projects.themis.state_tools.autoload_support import autoload_support
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_vector import eclipse_spinmodel_corrections_vector
+from pyspedas.projects.themis.state_tools.spinmodel.eclipse_spinmodel_corrections_tensor import eclipse_spinmodel_corrections_tensor
+from pyspedas.projects.themis.state_tools.spinmodel.spinmodel import get_spinmodel
+from pyspedas import wildcard_expand, time_string
+import logging
 
 def esa(trange=['2007-03-23', '2007-03-24'],
         probe='c',
@@ -11,7 +17,8 @@ def esa(trange=['2007-03-23', '2007-03-24'],
         downloadonly=False,
         notplot=False,
         no_update=False,
-        time_clip=False):
+        time_clip=False,
+        apply_eclipse_corrections=False):
     """
     This function loads Electrostatic Analyzer (ESA) data
 
@@ -67,6 +74,9 @@ def esa(trange=['2007-03-23', '2007-03-24'],
             in the trange keyword
             Default: False
 
+        apply_eclipse_corrections: bool
+            If True, apply eclipse spin model corrections to L2 output variables as appropriate.
+
     Returns
     -------
     List of str
@@ -81,10 +91,40 @@ def esa(trange=['2007-03-23', '2007-03-24'],
         >>> tplot(['thd_peif_density', 'thd_peif_vthermal'])
 
     """
-    outvars = load(instrument='esa', trange=trange, level=level,
+    loaded_vars = load(instrument='esa', trange=trange, level=level,
                    suffix=suffix, get_support_data=get_support_data,
                    varformat=varformat, varnames=varnames,
                    downloadonly=downloadonly, notplot=notplot,
                    probe=probe, time_clip=time_clip, no_update=no_update)
 
-    return outvars
+    if not isinstance(level, list):
+        level = [level]
+
+    if not isinstance(probe, list):
+        probe = [probe]
+
+    for l in level:
+        for p in probe:
+            if l == 'l2' and apply_eclipse_corrections:
+                autoload_support(probe=p, trange=trange, spinmodel=True)
+                sm_spinfit=get_spinmodel(probe=p,correction_level=2,quiet=True)
+                start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()
+                n = len(start_times)
+                if n > 0:
+                    logging.info(f"Eclipse correction status for probe {probe}:")
+                    for i in range(n):
+                        logging.info(f"Eclipse {i+1} of {n}: start: {time_string(start_times[i])}  end: {time_string(end_times[i])} status: {flag_strings[i]}")
+                    probe_vars = wildcard_expand(loaded_vars,'th'+p+'_*')
+                    for v in probe_vars:
+                        if ('mag' in v) or ('_en_' in v):
+                            logging.info(f"Skipping eclipse corrections for {v}")
+                        elif ("mftens" in v) or ("ptens" in v):
+                            logging.info(f"Applying particle tensor eclipse corrections to {v}")
+                            eclipse_spinmodel_corrections_tensor(v, p, spin_based=True)
+                        elif ("velocity" in v) or ("eflux" in v) or ("flux" in v):
+                            logging.info(f"Applying particle vector eclipse corrections to {v}")
+                            eclipse_spinmodel_corrections_vector(v, p, spin_based=True)
+                        else:
+                            logging.info(f"Skipping eclipse corrections for {v}")
+
+    return loaded_vars

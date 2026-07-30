@@ -128,6 +128,13 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.projects.themis.esa(varnames=['thc_peif_density'])
         self.assertTrue(data_exists('thc_peif_density'))
 
+    def test_load_esa_eclipse(self):
+        """Load ESA."""
+        trange=['2026-01-01','2026-01-03']
+        probe='b'
+        pyspedas.projects.themis.esa(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        self.assertTrue(data_exists('thb_peif_mftens'))
+
     def test_load_fft_data(self):
         """Load FFT."""
         pyspedas.projects.themis.fft(varnames=['thc_ffp_16_edc34'])
