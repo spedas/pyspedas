@@ -153,7 +153,7 @@ def efi(trange=['2007-03-23', '2007-03-24'],
                 downloadonly=downloadonly, notplot=notplot,
                 probe=probe, time_clip=time_clip, no_update=no_update)
     
-    if level=='l2' and apply_eclipse_corrections:
+    if not downloadonly and level=='l2' and apply_eclipse_corrections:
         p = probe
         autoload_support(probe=p, trange=trange, spinmodel=True)
         sm_spinfit = get_spinmodel(probe=p, correction_level=2, quiet=True)
@@ -181,3 +181,4 @@ def efi(trange=['2007-03-23', '2007-03-24'],
                     logging.info(f"Applying waveform eclipse corrections to {v}")
                     eclipse_spinmodel_corrections_vector(v, p, spin_based=False)
 
+    return loaded_vars
