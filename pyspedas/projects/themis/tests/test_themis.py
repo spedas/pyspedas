@@ -77,8 +77,9 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_state_data(self):
         """Load state."""
-        pyspedas.projects.themis.state(varnames=['thc_pos'])
+        vars = pyspedas.projects.themis.state(varnames=['thc_pos'])
         self.assertTrue(data_exists('thc_pos'))
+        self.assertTrue('thc_pos' in vars)
 
     def test_load_state_support_data(self):
         """Load state."""
@@ -96,109 +97,126 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_sst_data(self):
         """Load SST."""
-        pyspedas.projects.themis.sst(varnames=['thc_psif_en_eflux'])
+        sst_vars = pyspedas.projects.themis.sst(varnames=['thc_psif_en_eflux'])
         self.assertTrue(data_exists('thc_psif_en_eflux'))
+        self.assertTrue('thc_psif_en_eflux' in sst_vars)
 
     def test_load_sst_eclipse(self):
         """Load SST."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-
-        pyspedas.projects.themis.sst(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        sst_vars = pyspedas.projects.themis.sst(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_psif_mftens'))
+        self.assertTrue('thb_psif_mftens' in sst_vars)
 
     def test_load_fgm_data(self):
         """Load FGM."""
-        pyspedas.projects.themis.fgm(varnames=['thc_fgs_btotal'])
+        fgm_vars = pyspedas.projects.themis.fgm(varnames=['thc_fgs_btotal'])
         self.assertTrue(data_exists('thc_fgs_btotal'))
+        self.assertTrue('thc_fgs_btotal' in fgm_vars)
 
     def test_load_fgm_data_eclipse(self):
         """Load FGM."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.fgm(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        fgm_vars = pyspedas.projects.themis.fgm(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_fgs_dsl'))
+        self.assertTrue('thb_fgs_dsl' in fgm_vars)
 
     def test_load_fit_data(self):
         """Load FIT."""
-        pyspedas.projects.themis.fit(varnames=['thc_fgs_gse'])
+        fit_vars = pyspedas.projects.themis.fit(varnames=['thc_fgs_gse'])
         self.assertTrue(data_exists('thc_fgs_gse'))
+        self.assertTrue('thc_fgs_gse' in fit_vars)
 
     def test_load_fit_eclipse(self):
         """Load FIT."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.fit(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        fit_vars = pyspedas.projects.themis.fit(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_fgs_gse'))
+        self.assertTrue('thb_fgs_gse' in fit_vars)
 
     def test_load_esa_data(self):
         """Load ESA."""
-        pyspedas.projects.themis.esa(varnames=['thc_peif_density'])
+        esa_vars = pyspedas.projects.themis.esa(varnames=['thc_peif_density'])
         self.assertTrue(data_exists('thc_peif_density'))
+        self.assertTrue('thc_peif_density' in esa_vars)
 
     def test_load_esa_eclipse(self):
         """Load ESA."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.esa(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
+        esa_vars = pyspedas.projects.themis.esa(probe=probe, trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_peif_mftens'))
+        self.assertTrue('thb_peif_mftens' in esa_vars)
 
     def test_load_fft_data(self):
         """Load FFT."""
-        pyspedas.projects.themis.fft(varnames=['thc_ffp_16_edc34'])
+        fft_vars = pyspedas.projects.themis.fft(varnames=['thc_ffp_16_edc34'])
         self.assertTrue(data_exists('thc_ffp_16_edc34'))
+        self.assertTrue('thc_ffp_16_edc34' in fft_vars)
 
     def test_load_fft_l1_data(self):
         """Load L1 FFT."""
-        pyspedas.projects.themis.fft(level='l1', varnames=['thc_ffp_16'])
+        fft_vars = pyspedas.projects.themis.fft(level='l1', varnames=['thc_ffp_16'])
         self.assertTrue(data_exists('thc_ffp_16'))
+        self.assertTrue('thc_ffp_16' in fft_vars)
 
     def test_load_fbk_data(self):
         """Load FBK."""
-        pyspedas.projects.themis.fbk(varnames=['thc_fb_hff'])
+        fbk_vars = pyspedas.projects.themis.fbk(varnames=['thc_fb_hff'])
         self.assertTrue(data_exists('thc_fb_hff'))
+        self.assertTrue('thc_fb_hff' in fbk_vars)
 
     def test_load_mom_data(self):
         """Load MOM."""
-        pyspedas.projects.themis.mom(varnames=['thc_peim_density'])
+        mom_vars = pyspedas.projects.themis.mom(varnames=['thc_peim_density'])
         self.assertTrue(data_exists('thc_peim_density'))
+        self.assertTrue('thc_peim_density' in mom_vars)
 
     def test_load_mom_eclipse(self):
         """Load MOM."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.mom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        mom_vars = pyspedas.projects.themis.mom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_peim_mftens'))
+        self.assertTrue('thb_peim_mftens' in mom_vars)
 
     def test_load_gmom_data(self):
         """Load GMOM."""
-        pyspedas.projects.themis.gmom(trange=['2020-01-01', '2020-01-01'],
+        gmom_vars = pyspedas.projects.themis.gmom(trange=['2020-01-01', '2020-01-01'],
                              varnames=['thc_ptiff_density'])
         self.assertTrue(data_exists('thc_ptiff_density'))
+        self.assertTrue('thc_ptiff_density' in gmom_vars)
 
     def test_load_gmom_eclipse(self):
         """Load GMOM."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.gmom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
+        gmom_vars = pyspedas.projects.themis.gmom(probe='b', trange=trange, level='l2', apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_ptiff_velocity_gse'))
+        self.assertTrue('thb_ptiff_velocity_gse' in gmom_vars)
 
     def test_load_scm_data(self):
         """Load SCM."""
-        pyspedas.projects.themis.scm(varnames=['thc_scf_btotal'])
+        scm_vars = pyspedas.projects.themis.scm(varnames=['thc_scf_btotal'])
         self.assertTrue(data_exists('thc_scf_btotal'))
+        self.assertTrue('thc_scf_btotal' in scm_vars)
 
     def test_load_scm_eclipse(self):
         """Load SCM."""
         trange=['2026-01-01','2026-01-03']
         probe='b'
-        pyspedas.projects.themis.scm(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
+        scm_vars = pyspedas.projects.themis.scm(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_scf_gse'))
+        self.assertTrue('thb_scf_gse' in scm_vars)
 
     def test_load_scm_l1_data(self):
         """Load L1 SCM."""
-        pyspedas.projects.themis.scm(level='l1', varnames=['thc_scf'])
+        scm_vars = pyspedas.projects.themis.scm(level='l1', varnames=['thc_scf'])
         self.assertTrue(data_exists('thc_scf'))
+        self.assertTrue('thc_scf' in scm_vars)
 
     def test_load_efi_l1_data(self):
         """Load L1 EFI."""
@@ -206,6 +224,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_eff'))
         self.assertTrue(data_exists('thc_efp'))
         self.assertFalse('thc_efw' in vars)
+        self.assertTrue('thc_eff' in vars)
 
     def test_load_efi_l1_datatype(self):
         """Load L1 EFI."""
@@ -213,6 +232,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_eff'))
         self.assertTrue(data_exists('thc_efp'))
         self.assertFalse('thc_efw' in vars)
+        self.assertTrue('thc_eff' in vars)
 
     def test_load_efi_data(self):
         """Load EFI."""
@@ -226,16 +246,19 @@ class LoadTestCases(unittest.TestCase):
         probe='b'
         vars = pyspedas.projects.themis.efi(probe=probe,trange=trange,level='l2',apply_eclipse_corrections=True)
         self.assertTrue(data_exists('thb_eff_e12_efs'))
+        self.assertTrue('thb_eff_e12_efs' in vars)
 
     def test_load_l2_efw_data(self):
         """Load EFI L2 wave burst data"""
         vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efw')
         self.assertTrue(data_exists('tha_efw_gse'))
+        self.assertTrue('tha_efw_gse' in vars)
 
     def test_load_l2_efp_data(self):
         """Load EFI L2 particle burst data"""
         vars = pyspedas.projects.themis.efi(trange=['2017-01-01','2017-01-02'], probe='a',time_clip=True, datatype='efp')
         self.assertTrue(data_exists('tha_efp_gse'))
+        self.assertTrue('tha_efp_gse' in vars)
 
     def test_load_slp_data(self):
         pyspedas.projects.themis.slp()
