@@ -103,9 +103,9 @@ def esa(trange=['2007-03-23', '2007-03-24'],
     if not isinstance(probe, list):
         probe = [probe]
 
-    for l in level:
+    for lvl in level:
         for p in probe:
-            if l == 'l2' and apply_eclipse_corrections:
+            if not downloadonly and lvl=='l2' and apply_eclipse_corrections:
                 autoload_support(probe=p, trange=trange, spinmodel=True)
                 sm_spinfit=get_spinmodel(probe=p,correction_level=2,quiet=True)
                 start_times, end_times, flags, flag_strings = sm_spinfit.eclipse_correction_status()

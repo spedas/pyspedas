@@ -128,7 +128,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
                         options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'ytitle', 'TH'+prb.upper()+' '+fgm_type.upper())
                         options('th'+prb+'_'+fgm_type+'_btotal'+suffix, 'legend_names', 'Bmag')
 
-    if 'l2' in level and apply_eclipse_corrections:
+    if not downloadonly and 'l2' in level and apply_eclipse_corrections:
         # List correction status for each eclipse
         for p in probe:
             autoload_support(probe=p, trange=trange, spinmodel=True)
