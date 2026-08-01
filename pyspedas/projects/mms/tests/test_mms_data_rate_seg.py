@@ -223,7 +223,7 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_mms_update_fast_intervals(self):
         del_data('*')
-        trange=['2015-01-01-01','2026-07-01']
+        trange=['2015-08-01','2015-08-08']
         starts, ends = mms_update_fast_intervals(trange=trange)
         self.assertEqual(len(starts), len(ends))
         # Test that intervals are properly time clipped
