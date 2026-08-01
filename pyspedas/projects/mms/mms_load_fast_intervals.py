@@ -55,5 +55,6 @@ def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],
 
     if out is None:
         logging.error('Problem loading fast survey segment times')
+        return None
 
     return out

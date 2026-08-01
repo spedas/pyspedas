@@ -50,7 +50,7 @@ def mms_load_brst_segments(trange=None,
 
     if len(unix_start) == 0:
         logging.error('No burst intervals found in the time range.')
-        return
+        return None
 
     # +10 second offset added; there appears to be an extra 10
     # seconds of data, consistently, not included in the range here
