@@ -2,11 +2,10 @@ import logging
 from pyspedas.tplot_tools import time_double
 from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments
 from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
-from .make_databar_fast_tvar import make_bss_tplot_var
 
 
 def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],
-                     probe='1',suffix='',
+                     probe='1',
                      no_download=False):
     """
     Load MMS fast survey time intervals
@@ -34,11 +33,11 @@ def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],
     if time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) <= abs_sroi_cutover:
         # use the old fast segments code for dates before 6Nov15
         logging.info("Loading early mission fast survey segments from abs_selections datasets")
-        out = mms_update_fast_intervals(trange=trange,suffix=suffix,no_download=no_download)
+        out = mms_update_fast_intervals(trange=trange,no_download=no_download)
     elif time_double(trange[0]) <= abs_sroi_cutover and time_double(trange[1]) > abs_sroi_cutover:
         # Requested range spans cutover date, get ABS before and SROI after, then combine
-        out1 = mms_update_fast_intervals(trange=[trange[0],abs_sroi_cutover], make_tplot_var=False, no_download=no_download)
-        out2 = mms_load_sroi_segments(trange=trange, probe=probe, make_tplot_var=False,no_download=no_download)
+        out1 = mms_update_fast_intervals(trange=[trange[0],abs_sroi_cutover], no_download=no_download)
+        out2 = mms_load_sroi_segments(trange=trange, probe=probe,no_download=no_download)
         comb_starts = []
         comb_ends = []
         if out1 is not None:
@@ -52,7 +51,7 @@ def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],
 
     else:
         # use SRoI code for dates on and after 6Nov15
-        out = mms_load_sroi_segments(trange=trange, probe=probe, suffix=suffix)
+        out = mms_load_sroi_segments(trange=trange, probe=probe)
 
     if out is None:
         logging.error('Problem loading fast survey segment times')
