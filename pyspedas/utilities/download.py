@@ -155,7 +155,8 @@ def download_file(
     basic_auth=False,
     nbr_tries=0,
     text_only=None,
-    force_download=False
+    force_download=False,
+    return_text=False,
 ):
     """
     Download a file and return its local path; this function is primarily meant to be called by the download function.
@@ -186,6 +187,9 @@ def download_file(
     force_download : bool, optional
         Flag to indicate if the file should be downloaded even if a local version exists.
         This causes the local version of the file to be overwritten.
+    return_text : bool, optional
+        If True, return the response body as a string without creating a local file.
+        Defaults to False.
 
     Returns
     -------
@@ -350,6 +354,10 @@ def download_file(
         logging.error("Unauthorized: " + url)
         fsrc.close()
         return None
+    elif fsrc.status_code == 200 and return_text:
+        response_text = fsrc.text
+        fsrc.close()
+        return response_text
     elif fsrc.status_code == 200 or (fsrc.status_code == 304 and force_download):
         # this is the main download case
         needs_to_download_file = True
@@ -495,6 +503,7 @@ def download(
     no_wildcards=False,
     text_only=None,
     force_download=False,
+    return_text=False,
 ):
     """
     Download one or more remote files and return their local paths.
@@ -535,6 +544,10 @@ def download(
     force_download : bool, optional
         Flag to indicate if the file should be downloaded even if a local version exists.
         This causes the local version of the file to be overwritten.
+    return_text : bool, optional
+        If True, return the response body as a string without creating a local file.
+        This option supports a single direct URL and does not perform wildcard
+        expansion. Defaults to False.
 
     Cloud Awareness
     ---------------
@@ -545,8 +558,9 @@ def download(
 
     Returns
     -------
-    list of str
-        String list specifying the full local path to all requested files.
+    list of str or str
+        String list specifying the full local path to all requested files. If
+        ``return_text`` is True, return the response body as a string instead.
 
     Examples
     --------
@@ -608,6 +622,10 @@ def download(
     if not isinstance(remote_file, list):
         remote_file = [remote_file]
 
+    if return_text and len(remote_file) != 1:
+        logging.error("return_text=True supports only one remote file")
+        return None
+
     urls = [remote_path + rfile for rfile in remote_file]
 
     for url in urls:
@@ -632,7 +650,7 @@ def download(
 
         if not no_download:
             # expand the wildcards in the url
-            if ("?" in url or "*" in url or regex) and (
+            if not return_text and ("?" in url or "*" in url or regex) and (
                 not no_download and not no_wildcards
             ):
                 if index_table.get(url_base) is not None and not is_fsspec_uri(url):
@@ -790,8 +808,12 @@ def download(
                 session=session,
                 basic_auth=basic_auth,
                 text_only=text_only,
-                force_download=force_download
+                force_download=force_download,
+                return_text=return_text,
             )
+
+            if return_text:
+                return resp_data
 
         if resp_data is not None:
             if not isinstance(resp_data, list):
