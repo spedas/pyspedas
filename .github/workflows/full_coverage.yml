@@ -265,9 +265,9 @@ jobs:
               echo "Disk usage after cleanup:"
               df -h
 
-          - shard: erg_maven_etc
+          - shard: erg_etc
             shard_script: |
-              # This set of tests exercises mostly MAVEN and ERG routines
+              # This set of tests exercises mostly ERG routines
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
@@ -304,10 +304,6 @@ jobs:
               coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
               echo Starting akebono tests at `date`
               coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
-              #echo Starting maven S3 tests at `date`
-              #coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
-              echo Starting maven tests at `date`
-              coverage run -a -m pyspedas.projects.maven.tests.test_maven
               echo Starting VIRES client tests at `date`
               coverage run -a -m pyspedas.vires.tests.test_vires
               echo Starting secs tests at `date`
@@ -316,7 +312,7 @@ jobs:
               coverage run -a -m pyspedas.particles.tests.test_particles
               echo "========================================================="
               # Show the free disk space on this filesystem      
-              echo "Disk usage after ERG,MAVEN,etc test group:"
+              echo "Disk usage after ERG,etc test group:"
               df -h
               du -sh "$MMS_DATA_DIR" 2>/dev/null || true
               echo "Cleaning downloads"
@@ -324,6 +320,26 @@ jobs:
               rm -rf "$SPEDAS_DATA_DIR"/*
               
               # Show the free disk space on this filesystem      
+              echo "Disk usage after cleanup:"
+              df -h
+
+          - shard: maven
+            shard_script: |
+              # This set of tests exercises MAVEN routines
+              echo Starting maven S3 tests at `date`
+              coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
+              echo Starting maven tests at `date`
+              coverage run -a -m pyspedas.projects.maven.tests.test_maven
+              echo "========================================================="
+              # Show the free disk space on this filesystem
+              echo "Disk usage after MAVEN test group:"
+              df -h
+              du -sh "$DATA_ROOT"/* 2>/dev/null || true
+              echo "Cleaning MAVEN downloads"
+              rm -rf "$DATA_ROOT"/*
+              rm -rf "$SPEDAS_DATA_DIR"/*
+
+              # Show the free disk space on this filesystem
               echo "Disk usage after cleanup:"
               df -h
 
