@@ -1,5 +1,6 @@
 import os
 import unittest
+from unittest.mock import patch
 from pyspedas.tplot_tools import data_exists, tplot_names, del_data
 from pyspedas.projects import maven
 from pyspedas.projects.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
@@ -44,6 +45,50 @@ class OrbitTestCases(unittest.TestCase):
             CONFIG["local_data_dir"], "orbitfiles", "merged_maven_orbits.orb"
         )
         self.assertTrue(os.path.exists(orbfilepath))
+
+
+class DownloadFileTestCases(unittest.TestCase):
+    @patch("pyspedas.projects.maven.download_files_utilities.download")
+    def test_get_file_from_public_site(self, mock_download):
+        filename = "mvn_mag_l2_20200101_v01_r01.cdf"
+
+        get_file_from_site(filename, public=True, data_dir="maven_data")
+
+        mock_download.assert_called_once_with(
+            remote_file=(
+                "https://lasp.colorado.edu/maven/sdc/public/files/api/v1/"
+                "search/science/fn_metadata/download?file=" + filename
+            ),
+            local_path="maven_data",
+            local_file=filename,
+            no_wildcards=True,
+            force_download=True,
+        )
+
+    @patch("pyspedas.projects.maven.download_files_utilities.download")
+    def test_get_file_from_private_site(self, mock_download):
+        filename = "mvn_mag_l2_20200101_v01_r01.cdf"
+        credentials = {
+            "maven_username": "test-user",
+            "maven_password": "test-password",
+        }
+
+        with patch.dict(CONFIG, credentials):
+            get_file_from_site(filename, public=False, data_dir="maven_data")
+
+        mock_download.assert_called_once_with(
+            remote_file=(
+                "https://lasp.colorado.edu/maven/sdc/service/files/api/v1/"
+                "search/science/fn_metadata/download?file=" + filename
+            ),
+            local_path="maven_data",
+            local_file=filename,
+            no_wildcards=True,
+            force_download=True,
+            username="test-user",
+            password="test-password",
+            basic_auth=True,
+        )
 
 
 class LoadTestCases(unittest.TestCase):

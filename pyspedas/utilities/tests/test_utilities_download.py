@@ -1,5 +1,7 @@
 import os
+import threading
 import unittest
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import pyspedas
 from pyspedas.utilities.download import download
@@ -11,6 +13,61 @@ themis_remote = CONFIG['remote_data_dir']
 
 
 class DownloadTestCases(unittest.TestCase):
+    def test_return_text_retries_429(self):
+        class RetryHandler(BaseHTTPRequestHandler):
+            request_count = 0
+
+            def do_GET(self):
+                RetryHandler.request_count += 1
+                if RetryHandler.request_count == 1:
+                    self.send_response(429)
+                    self.send_header("Retry-After", "0")
+                    self.end_headers()
+                    return
+
+                body = b"mvn_mag_l2_20200101_v01_r01.cdf"
+                self.send_response(200)
+                self.send_header("Content-Type", "text/plain; charset=utf-8")
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, format, *args):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), RetryHandler)
+        server_thread = threading.Thread(target=server.serve_forever)
+        server_thread.start()
+        try:
+            with self.assertLogs(level="WARNING") as log:
+                result = download(
+                    remote_file=(
+                        f"http://127.0.0.1:{server.server_port}/file_names"
+                        "?instrument=mag&level=l2"
+                    ),
+                    return_text=True,
+                )
+        finally:
+            server.shutdown()
+            server.server_close()
+            server_thread.join()
+
+        self.assertEqual(result, "mvn_mag_l2_20200101_v01_r01.cdf")
+        self.assertEqual(RetryHandler.request_count, 2)
+        self.assertIn("HTTP 429", log.output[0])
+        self.assertIn("retries remaining: 2", log.output[0])
+        self.assertIn("Retry-After: 0", log.output[0])
+
+    def test_return_text_rejects_multiple_urls(self):
+        with self.assertLogs(level="ERROR") as log:
+            result = download(
+                remote_file=["https://example.com/one", "https://example.com/two"],
+                return_text=True,
+            )
+
+        self.assertIsNone(result)
+        self.assertIn("supports only one remote file", log.output[0])
+
     def test_remote_path(self):
         # only specifying remote_path saves the files to the current working directory
         files = download(remote_path='https://spdf.gsfc.nasa.gov/pub/data/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf')
