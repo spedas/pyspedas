@@ -1,17 +1,18 @@
 import unittest
-import logging
 import numpy as np
 from numpy.testing import assert_allclose, assert_array_equal
-from pyspedas.projects.mms.spd_mms_load_bss import spd_mms_load_bss
-from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments, download_mms_srois
-from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
-from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
-from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
+from pyspedas.projects.mms.databar_tools.spd_mms_load_bss import spd_mms_load_bss
+from pyspedas.projects.mms.databar_tools.mms_load_sroi_segments import mms_load_sroi_segments, download_mms_srois
+from pyspedas.projects.mms.databar_tools.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.tplot_tools import data_exists, del_data, time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
-from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
+from pyspedas.projects.mms.databar_tools.mms_update_fast_intervals import mms_update_fast_intervals
+from pyspedas.projects.mms import mms_load_burst_intervals
+from pyspedas.projects.mms import mms_load_fast_intervals
+from pyspedas.projects.mms import make_data_rate_bars
 from pyspedas import unix2tai, tai2unix, tplot
 
+global_display=False
 
 class SegmentTestCases(unittest.TestCase):
 
@@ -95,7 +96,6 @@ class SegmentTestCases(unittest.TestCase):
     def test_sroi(self):
         del_data("*")
         sroi = mms_load_sroi_segments(trange=['2019-10-01', '2019-11-01'])
-        self.assertTrue(data_exists('mms1_bss_sroi'))
         self.assertTrue(len(sroi[0]) == 28)
         self.assertTrue(sroi[0][0] == 1569849345.0)
         self.assertTrue(sroi[1][0] == 1569923029.0)
@@ -122,13 +122,10 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(len(brst[0]) == 53)
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
-        self.assertTrue(data_exists('mms_bss_burst'))
-        # tplot('mms_bss_burst')
         with self.assertLogs(level='ERROR') as log:
             # error, no trange specified
             brst = mms_load_brst_segments()
             self.assertIn("Error; no trange specified.", log.output[0])
-        # tplot('mms_bss_burst')
         # Test no_download
         with self.assertLogs(level='INFO') as log:
             brst = mms_load_brst_segments(trange=['2015-10-16', '2015-10-17'], no_download=True)
@@ -137,19 +134,43 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(len(brst[0]) == 53)
         self.assertTrue(brst[0][0] == 1444975174.0)
         self.assertTrue(brst[1][0] == 1444975244.0)
-        self.assertTrue(data_exists('mms_bss_burst'))
+
+    def test_load_fast_intervals(self):
+        # abs only
+        out = mms_load_fast_intervals(trange=['2015-10-01', '2015-10-05'])
+        self.assertTrue(out[0][0] < time_double('2015-10-02'))
+        self.assertTrue(out[1][-1] > time_double('2015-10-04'))
+
+        # straddle ABS and SROI 
+        out = mms_load_fast_intervals(trange=['2015-11-01', '2015-11-10'])
+        self.assertTrue(out[0][0] < time_double("2015-11-02"))
+        self.assertTrue(out[1][-1] > time_double("2015-11-09"))
+        
+        # SROI only
+        out = mms_load_fast_intervals(trange=['2019-10-01', '2019-11-01'])
+        self.assertTrue(out[0][0] < time_double("2019-10-02"))
+        self.assertTrue(out[1][-1] > time_double("2019-10-31"))
+
+    def test_load_burst_intervals(self):
+        out = mms_load_burst_intervals(trange=["2015-11-01", "2015-11-10"])
+        self.assertTrue(out[0][0] < time_double("2015-11-02"))
+        self.assertTrue(out[1][-1] > time_double("2015-11-09"))
+
 
     def test_spd_mms_load_bss_abs_sroi_combined(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'])
+        vars = spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'])
+        self.assertTrue('mms_bss_burst' in vars)
+        self.assertTrue('mms_bss_fast' in vars)
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms_bss_fast'))
-        # tplot('mms_bss_fast')
         # Test no_download and suffix
         del_data('*')
         with self.assertLogs(level='INFO') as l:
-            spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'],no_download=True,suffix='_foo')
+            vars = spd_mms_load_bss(trange=['2015-11-01', '2015-11-10'],no_download=True,suffix='_foo')
 
+        self.assertTrue('mms_bss_burst_foo' in vars)
+        self.assertTrue('mms_bss_fast_foo' in vars)
         self.assertTrue(data_exists('mms_bss_burst_foo'))
         self.assertTrue(data_exists('mms_bss_fast_foo'))
         for r in l.records:
@@ -157,12 +178,30 @@ class SegmentTestCases(unittest.TestCase):
 
     def test_spd_mms_load_bss(self):
         del_data("*")
-        spd_mms_load_bss(trange=['2015-10-01', '2015-10-05'])
+        # ABS intervals only
+        vars = spd_mms_load_bss(trange=['2015-10-01', '2015-10-05'])
+        self.assertTrue('mms_bss_burst' in vars)
+        self.assertTrue('mms_bss_fast' in vars)
         self.assertTrue(data_exists('mms_bss_burst'))
         self.assertTrue(data_exists('mms_bss_fast'))
-        spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
+        tplot('mms_bss*', save_png='mms_bss_databars_abs.png', display=global_display)
+        # SROI intervals only
+        del_data('*')
+        vars = spd_mms_load_bss(trange=['2019-10-01', '2019-11-01'])
+        self.assertTrue('mms_bss_burst' in vars)
+        self.assertTrue('mms_bss_fast' in vars)
         self.assertTrue(data_exists('mms_bss_burst'))
-        self.assertTrue(data_exists('mms1_bss_sroi'))
+        self.assertTrue(data_exists('mms_bss_fast'))
+        tplot('mms_bss*', save_png='mms_bss_databars_sroi.png', display=global_display)
+        # Test wrapper with no_download set
+        del_data('*')
+        vars = make_data_rate_bars(trange=['2019-10-01', '2019-11-01'])
+        self.assertTrue('mms_bss_burst' in vars)
+        self.assertTrue('mms_bss_fast' in vars)
+        self.assertTrue(data_exists('mms_bss_burst'))
+        self.assertTrue(data_exists('mms_bss_fast'))
+        tplot('mms_bss*', save_png='make_data_rate_bars_sroi.png', display=global_display)
+
 
     def test_spd_mms_load_bss_err(self):
         del_data("*")
@@ -229,14 +268,12 @@ class SegmentTestCases(unittest.TestCase):
         # Test that intervals are properly time clipped
         self.assertTrue(ends[0] >= time_double(trange[0]) )
         self.assertTrue(starts[-1] <= time_double(trange[1]))
-        self.assertTrue(data_exists('mms_bss_fast'))
-        # tplot('mms_bss_fast')
 
     def test_mms_sroi_vs_abs(self):
         del_data('*')
         trange=['2015-12-01','2016-01-01']
-        abs_start, abs_end = mms_update_fast_intervals(trange=trange,suffix='_abs')
-        sroi_start,sroi_end = mms_load_sroi_segments(trange=trange, suffix='_sroi')
+        abs_start, abs_end = mms_update_fast_intervals(trange=trange)
+        sroi_start,sroi_end = mms_load_sroi_segments(trange=trange)
         abs_len =len(abs_start)
         print(f"{abs_len} ABS segments")
         for i in range(0,abs_len):
@@ -247,7 +284,6 @@ class SegmentTestCases(unittest.TestCase):
             print(time_string(sroi_start[i]), time_string(sroi_end[i]))
         assert_allclose(abs_start,sroi_start,atol=60.0,rtol=0.0)
         assert_allclose(abs_end,sroi_end, atol=60.0,rtol=0.0)
-        # tplot('*')
 
     def test_mms_fast_no_download(self):
         del_data('*')
@@ -260,13 +296,11 @@ class SegmentTestCases(unittest.TestCase):
             self.assertFalse('Download' in r.message)
         assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
         assert_allclose(down_end, nodown_end, rtol=0.0, atol=1.0)
-        self.assertTrue(data_exists('mms_bss_fast'))
 
     def test_mms_sroi_no_download(self):
         del_data('*')
         trange=['2015-12-01','2015-12-10']
-        down_start, down_end = mms_load_sroi_segments(trange=trange,no_download=False, make_tplot_var=False)
-        self.assertFalse(data_exists('mms1_bss_sroi'))
+        down_start, down_end = mms_load_sroi_segments(trange=trange,no_download=False)
         del_data('*')
         with self.assertLogs(level='INFO') as l:
             nodown_start, nodown_end = mms_load_sroi_segments(trange=trange, no_download=True)
@@ -274,8 +308,6 @@ class SegmentTestCases(unittest.TestCase):
             self.assertFalse('Download' in r.message)
         assert_allclose(down_start,nodown_start, rtol=0.0, atol=1.0)
         assert_allclose(down_end, nodown_end, rtol=0.0, atol=1.0)
-        self.assertTrue(data_exists('mms1_bss_sroi'))
-        # tplot('mms1_bss_sroi')
 
 
 if __name__ == '__main__':
