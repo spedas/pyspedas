@@ -27,6 +27,22 @@ stale credentials file causes confusing errors, delete ``~/mms_auth_info.pkl``
 (and ``~/mms_auth_info.sav`` if present) and rerun the loader with
 ``always_prompt=True`` to enter fresh credentials.
 
+
+MMS Fast Survey and Burst Time Intervals
+-----------------------------------------
+
+The MMS SDC provides interfaces to support queries about time intervals when fast survey or burst data are
+available.  PySPEDAS provides wrappers for these queries, allowing users to find and plot fast survey and burst
+time intervals.  The PySPEDAS wrappers also support caching SDC query responses, to make them available without
+an internet connection to the SDC, or simply to save download time.
+
+.. autofunction:: pyspedas.projects.mms.mms_load_fast_intervals
+
+.. autofunction:: pyspedas.projects.mms.mms_load_burst_intervals
+
+.. autofunction:: pyspedas.projects.mms.make_data_rate_bars
+
+
 Fluxgate Magnetometer (FGM)
 -----------------------------
 Short name: pyspedas.projects.mms.fgm
