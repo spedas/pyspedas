@@ -42,6 +42,9 @@ an internet connection to the SDC, or simply to save download time.
 
 .. autofunction:: pyspedas.projects.mms.make_data_rate_bars
 
+.. image:: _static/data_rate_bars.png
+   :align: center
+   :class: imgborder
 
 Fluxgate Magnetometer (FGM)
 -----------------------------

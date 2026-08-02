@@ -34,5 +34,14 @@ def make_data_rate_bars(trange=['2015-10-16', '2015-10-17'],
     list[str]
         List of tplot variables created
 
+    Examples
+    --------
+    
+    >>> from pyspedas.projects.mms import make_data_rate_bars
+    >>> from pyspedas import tplot
+    >>> trange = ['2016-01-01', '2016-01-04']
+    >>> vars = make_data_rate_bars(trange=trange)
+    >>> tplot(vars)
+    
     """
     return spd_mms_load_bss(trange=trange, probe=probe, datatype=datatype, suffix=suffix, no_download=no_download)

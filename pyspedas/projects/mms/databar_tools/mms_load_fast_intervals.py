@@ -26,6 +26,21 @@ def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],
     tuple
         A tuple containing arrays of start times and end times for each fast survey interval in the included time range.
 
+    Examples
+    --------
+    
+    >>> from pyspedas.projects.mms import mms_load_fast_intervals
+    >>> from pyspedas import time_string
+    >>> trange = ['2016-01-01', '2016-01-04']
+    >>> starts, ends = mms_load_fast_intervals(trange=trange)
+    >>> n = len(starts)
+    >>> for idx in range(n):
+    >>>     print(f"Fast survey interval {idx+1} of {n}, start: {time_string(starts[idx])} end: {time_string(ends[idx])}")
+    Fast survey interval 1 of 4, start: 2015-12-31 21:26:09.000000 end: 2016-01-01 10:34:59.000000
+    Fast survey interval 2 of 4, start: 2016-01-01 21:19:11.000000 end: 2016-01-02 10:28:03.000000
+    Fast survey interval 3 of 4, start: 2016-01-02 21:12:13.000000 end: 2016-01-03 10:21:11.000000
+    Fast survey interval 4 of 4, start: 2016-01-03 21:05:16.000000 end: 2016-01-04 10:14:22.000000
+
     """
 
 
