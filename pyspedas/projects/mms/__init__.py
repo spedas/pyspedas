@@ -22,16 +22,19 @@ from .aspoc_tools.aspoc import mms_load_aspoc
 from .fsm_tools.fsm import mms_load_fsm
 from .fgm_tools.mms_curl import mms_curl
 from .fgm_tools.mms_lingradest import mms_lingradest
-from .spd_mms_load_bss import spd_mms_load_bss
+from pyspedas.projects.mms.databar_tools.spd_mms_load_bss import spd_mms_load_bss
 from .cotrans.mms_cotrans_lmn import mms_cotrans_lmn
 from .cotrans.mms_cotrans_qrotate import mms_cotrans_qrotate
 from .cotrans.mms_cotrans_qtransformer import mms_cotrans_qtransformer
 from .cotrans.mms_qcotrans import mms_qcotrans
 from .particles import mms_part_getspec, mms_part_slice2d
 from .mms_orbit_plot import mms_orbit_plot
-from .mms_load_brst_segments import mms_load_brst_segments
+from pyspedas.projects.mms.databar_tools.mms_load_brst_segments import mms_load_brst_segments
 from pyspedas.projects.mms.deprecated.mms_load_fast_segments import mms_load_fast_segments
-from .mms_load_sroi_segments import mms_load_sroi_segments
+from pyspedas.projects.mms.databar_tools.mms_load_sroi_segments import mms_load_sroi_segments
+from pyspedas.projects.mms.databar_tools.mms_load_fast_intervals import mms_load_fast_intervals
+from pyspedas.projects.mms.databar_tools.mms_load_burst_intervals import mms_load_burst_intervals
+from pyspedas.projects.mms.databar_tools.make_data_rate_bars import make_data_rate_bars
 from .mms_events import mms_brst_events
 
 '''
@@ -122,3 +125,11 @@ def curlometer(*args, **kwargs):
 @wraps(mms_lingradest)
 def lingradest(*args, **kwargs):
     return mms_lingradest(*args, **kwargs)
+
+@wraps(mms_load_fast_intervals)
+def fast_intervals(*args, **kwargs):
+    return mms_load_fast_intervals(*args, **kwargs)
+
+@wraps(mms_load_burst_intervals)
+def burst_intervals(*args, **kwargs):
+    return mms_load_burst_intervals(*args, **kwargs)

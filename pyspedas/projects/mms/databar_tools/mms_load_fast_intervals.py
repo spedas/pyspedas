@@ -1,7 +1,7 @@
 import logging
 from pyspedas.tplot_tools import time_double
-from pyspedas.projects.mms.mms_load_sroi_segments import mms_load_sroi_segments
-from pyspedas.projects.mms.mms_update_fast_intervals import mms_update_fast_intervals
+from pyspedas.projects.mms.databar_tools.mms_load_sroi_segments import mms_load_sroi_segments
+from pyspedas.projects.mms.databar_tools.mms_update_fast_intervals import mms_update_fast_intervals
 
 
 def mms_load_fast_intervals(trange=['2015-10-16', '2015-10-17'],

@@ -1,4 +1,4 @@
-from pyspedas.projects.mms.mms_load_brst_segments import mms_load_brst_segments
+from pyspedas.projects.mms.databar_tools.mms_load_brst_segments import mms_load_brst_segments
 
 def mms_load_burst_intervals(trange=['2015-10-16', '2015-10-17'],
                      probe='1',

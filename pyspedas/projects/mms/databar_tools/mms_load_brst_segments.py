@@ -1,7 +1,7 @@
 import logging
 import numpy as np
 from pyspedas.tplot_tools import time_double
-from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
+from pyspedas.projects.mms.databar_tools.mms_update_brst_intervals import mms_update_brst_intervals
 
 
 def mms_load_brst_segments(trange=None,

@@ -1,6 +1,6 @@
 import logging
-from pyspedas.projects.mms.mms_load_fast_intervals import mms_load_fast_intervals
-from pyspedas.projects.mms.mms_load_burst_intervals import mms_load_burst_intervals
+from pyspedas.projects.mms.databar_tools.mms_load_fast_intervals import mms_load_fast_intervals
+from pyspedas.projects.mms.databar_tools.mms_load_burst_intervals import mms_load_burst_intervals
 from .make_databar_tvar import make_databar_tvar
 
 
