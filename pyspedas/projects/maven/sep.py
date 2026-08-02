@@ -18,6 +18,7 @@ def sep(
     downloadonly=False,
     varnames=[],
     spdf=False,
+    load_kp=True,
 ):
     """
     Loads MAVEN Solar Energetic Particle (SEP) data.
@@ -49,6 +50,9 @@ def sep(
         List of variable names to load. Defaults to [].
     spdf : bool, optional
         Whether to use the SPDF library for loading the data. Defaults to False.
+    load_kp : bool, optional
+        If True, load the Key Parameter data associated with the requested
+        time range. Defaults to True.
 
     Returns
     -------
@@ -79,5 +83,5 @@ def sep(
         auto_yes=auto_yes,
         download_only=downloadonly,
         varnames=varnames,
+        load_kp=load_kp,
     )
-

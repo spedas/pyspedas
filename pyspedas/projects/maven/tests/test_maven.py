@@ -1,9 +1,11 @@
 import os
+import importlib
 import unittest
 from unittest.mock import patch
 from pyspedas.tplot_tools import data_exists, tplot_names, del_data
 from pyspedas.projects import maven
 from pyspedas.projects.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
+from pyspedas.projects.maven.maven_load import maven_filenames
 from pyspedas.projects.maven.maven_kp_to_tplot import maven_kp_to_tplot
 from pyspedas.projects.maven.utilities import get_latest_iuvs_files_from_date_range
 import time
@@ -48,6 +50,59 @@ class OrbitTestCases(unittest.TestCase):
 
 
 class DownloadFileTestCases(unittest.TestCase):
+    def test_instrument_loaders_forward_load_kp(self):
+        loader_names = [
+            "euv",
+            "iuv",
+            "lpw",
+            "mag",
+            "ngi",
+            "rse",
+            "sep",
+            "sta",
+            "swea",
+            "swia",
+        ]
+
+        for loader_name in loader_names:
+            with self.subTest(loader=loader_name):
+                module = importlib.import_module(
+                    f"pyspedas.projects.maven.{loader_name}"
+                )
+                with patch.object(module, "maven_load") as mock_load:
+                    getattr(module, loader_name)(load_kp=False)
+
+                self.assertFalse(mock_load.call_args.kwargs["load_kp"])
+
+    @patch("pyspedas.projects.maven.maven_load.get_filenames")
+    def test_maven_filenames_loads_kp_by_default(self, mock_get_filenames):
+        mock_get_filenames.side_effect = [
+            "mvn_mag_l2_2016001ss1s_20160101_v01_r01.cdf",
+            "mvn_kp_insitu_20160101_v01_r01.tab",
+        ]
+
+        files = maven_filenames(instruments=["mag"], local_dir="maven_data")
+
+        self.assertEqual(set(files), {"mag", "kp"})
+        self.assertEqual(mock_get_filenames.call_count, 2)
+        self.assertIn("instrument=kp", mock_get_filenames.call_args_list[1].args[0])
+
+    @patch("pyspedas.projects.maven.maven_load.get_filenames")
+    def test_maven_filenames_can_skip_kp(self, mock_get_filenames):
+        mock_get_filenames.return_value = (
+            "mvn_mag_l2_2016001ss1s_20160101_v01_r01.cdf"
+        )
+
+        files = maven_filenames(
+            instruments=["mag"],
+            local_dir="maven_data",
+            load_kp=False,
+        )
+
+        self.assertEqual(set(files), {"mag"})
+        mock_get_filenames.assert_called_once()
+        self.assertNotIn("instrument=kp", mock_get_filenames.call_args.args[0])
+
     @patch("pyspedas.projects.maven.download_files_utilities.download")
     def test_get_file_from_public_site(self, mock_download):
         filename = "mvn_mag_l2_20200101_v01_r01.cdf"
@@ -360,9 +415,17 @@ class LoadTestCases(unittest.TestCase):
         del_data("*")
         data = maven.mag(datatype="ss1s")
         self.assertTrue(len(tplot_names("OB_B*"))>0)
+        self.assertTrue(data_exists("mvn_kp::spacecraft::altitude"))
         dt = datetime.strptime("2016-01-01/12:00:00", "%Y-%m-%d/%H:%M:%S")
         files = get_l2_files_from_date(dt, "mag")
         self.assertTrue(len(files) > 0)
+        time.sleep(sleep_time)
+
+    def test_load_mag_data_without_kp(self):
+        del_data("*")
+        maven.mag(datatype="ss1s", load_kp=False)
+        self.assertTrue(len(tplot_names("OB_B*")) > 0)
+        self.assertFalse(data_exists("mvn_kp::spacecraft::altitude"))
         time.sleep(sleep_time)
 
     def test_load_mag_data_private(self):
