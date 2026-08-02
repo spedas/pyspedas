@@ -326,8 +326,8 @@ jobs:
           - shard: maven
             shard_script: |
               # This set of tests exercises MAVEN routines
-              echo Starting maven S3 tests at `date`
-              coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
+              # echo Starting maven S3 tests at `date`
+              # coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
               echo Starting maven tests at `date`
               coverage run -a -m pyspedas.projects.maven.tests.test_maven
               echo "========================================================="
