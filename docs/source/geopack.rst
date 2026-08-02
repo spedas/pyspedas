@@ -213,41 +213,6 @@ TS04 Example
    :class: imgborder
 
 
-Solar Wind Parameters
------------------------------
-Note: This routine is provided as a convenience for users wishing to port IDL SPEDAS field line tracing code to PySPEDAS.
-In most cases, passing 'autoload=True' to the modeling or field line tracing routines, or using one of the model-specific
-routines described above in the "Managing model parameters" section, will be the easiest and cleanest way to
-prepare the model parameters.
-
-To generate the "parmod" variable using Dst and solar wind data, use the `get_tsy_params` routine.
-
-.. autofunction:: pyspedas.get_tsy_params
-
-get_tsy_params Example
-^^^^^^^^^^^^^^^^^^^^^^^
-
-.. code-block:: python
-   
-   # load Dst and solar wind data
-   import pyspedas
-   pyspedas.projects.kyoto.dst(trange=['2015-10-16', '2015-10-17'])
-   pyspedas.projects.omni.data(trange=['2015-10-16', '2015-10-17'])
-
-   # join the components of B into a single variable
-   # BX isn't used
-   from pyspedas import join_vec
-   join_vec(['BX_GSE', 'BY_GSM', 'BZ_GSM'])
-
-   from pyspedas.get_tsy_params import get_tsy_params
-   params = get_tsy_params('kyoto_dst', 
-                        'BX_GSE-BY_GSM-BZ_GSM_joined', 
-                        'proton_density', 
-                        'flow_speed', 
-                        't96', # or 't01', 'ts04'
-                        pressure_tvar='Pressure',
-                        speed=True)
-
 Field line tracing
 -------------------
 
