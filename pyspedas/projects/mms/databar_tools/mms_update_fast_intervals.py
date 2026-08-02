@@ -11,7 +11,6 @@ from pyspedas.utilities.download import download
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas import tai2unix, unix2tai, store_data, options
-from .make_bss_tplot_var import make_bss_tplot_var
 
 def abs_selection_file_timestamp(pathobj: PosixPath):
     basename=pathobj.name
@@ -123,9 +122,7 @@ def mms_update_fast_intervals(trange,
                               padding:float = 2*86400.0,
                               always_prompt=False,
                               headers=False,
-                              suffix:str = '',
                               no_download=False,
-                              make_tplot_var = True,
                               ):
     """
     This function downloads and caches the current mms_burst_data_segment.csv
@@ -141,12 +138,8 @@ def mms_update_fast_intervals(trange,
         Do not use cached MMS SDC credentials, but prompt the user to enter them.  Default: false
     headers: bool
         Passed through to mms_login_lasp
-    suffix: str
-        A string to add to the end of the tplot variable created. Default: ''
     no_download: bool
         If True, use cached files rather than downloading from the MMS SDC. Default: False
-    make_tplot_var: bool
-        If True, make a tplot variable from the loaded fast survey time intervals. Default: True
 
     Returns
     =======
@@ -244,8 +237,5 @@ def mms_update_fast_intervals(trange,
 
     if len(unix_starts) < 1:
         logging.warning("mms_update_fast_intervals: No ABS fast survey intervals found in requested time range!")
-
-    if make_tplot_var:
-        make_bss_tplot_var(unix_starts,unix_ends, suffix=suffix)
 
     return unix_starts, unix_ends

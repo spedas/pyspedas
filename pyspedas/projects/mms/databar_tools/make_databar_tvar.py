@@ -2,23 +2,27 @@ from pyspedas import store_data, options
 import logging
 import numpy as np
 
-def make_bss_tplot_var(unix_starts,unix_ends, suffix:str = ''):
+def make_databar_tvar(basename='',suffix='',label='Fast',unix_starts=None, unix_ends=None):
     """
-    Make a tplot variable like mms_bss_fast from lists of fast survey start and end times
+    Make a tplot variable like mms_bss_burst from lists of burst start and end times
 
     Parameters
     ----------
-    unix_starts:
-        Start times of fast survey intervals
-    unix_ends:
-        End times of fast survey intervals
-    suffix:
+    basename: str
+        Base name for tplot variable
+    suffix: str
         Suffix to add to tplot variable name
+    label: str
+        String to use for legend_names plot option
+    unix_starts:
+        Start times of burst intervals
+    unix_ends:
+        End times of burst intervals
 
     Returns
     -------
-    None
-        No return value, but it creates a tplot variable.
+    string
+        Name of tplot variable created.
     """
 
     bar_x = []
@@ -28,18 +32,19 @@ def make_bss_tplot_var(unix_starts,unix_ends, suffix:str = ''):
         bar_x.extend([start_time, start_time, end_time, end_time])
         bar_y.extend([np.nan, 0., 0., np.nan])
 
-    varname = 'mms_bss_fast' + suffix
+    varname = basename + suffix
     vars_created = store_data(varname, data={'x': bar_x, 'y': bar_y})
 
     if not vars_created:
-        logging.error('Error creating BSS egment intervals tplot variable')
+        logging.error(f'Error creating databar tplot variable {varname}')
         return
 
-    varname = 'mms_bss_fast' + suffix
     options(varname, 'panel_size', 0.09)
     options(varname, 'thick', 2)
     options(varname, 'Color', 'green')
     options(varname, 'border', False)
     options(varname, 'yrange', [-0.001, 0.001])
-    options(varname, 'legend_names', ['Fast'])
+    options(varname, 'legend_names', [label])
     options(varname, 'ytitle', '')
+
+    return varname

@@ -1,8 +1,6 @@
 import csv
 import logging
-import requests
 import numpy as np
-from pyspedas.tplot_tools import store_data, options
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas import month_intervals
 from pyspedas.projects.mms.mms_config import CONFIG
@@ -70,8 +68,6 @@ def download_mms_srois(start_time=None, end_time=None, sc_id=None):
 def mms_load_sroi_segments(trange=None,
                            probe=1,
                            padding = 2*86400,
-                           suffix='',
-                           make_tplot_var=True,
                            no_download=False):
     """
     This function loads the Science Region of Interest (SRoI) segment intervals
@@ -86,14 +82,8 @@ def mms_load_sroi_segments(trange=None,
         probe: str or int
             Spacecraft probe # (default: 1)
 
-        suffix: str
-            Suffix to append to the end of the tplot variables
-
         padding: float
             Padding (in seconds) to apply to start and end of input time range
-
-        make_tplot_var: bool
-            If True, make a tplot variable from the time intervals loaded. Default: True
 
         no_download: bool
             If True, use cached files rather than downloading from MMS SDC. Default: False
@@ -142,31 +132,5 @@ def mms_load_sroi_segments(trange=None,
 
     unix_start = unix_start[times_in_range]
     unix_end = unix_end[times_in_range]
-
-    if make_tplot_var:
-        start_out = []
-        end_out = []
-        bar_x = []
-        bar_y = []
-
-        for start_time, end_time in zip(unix_start, unix_end):
-            bar_x.extend([start_time, start_time, end_time, end_time])
-            bar_y.extend([np.nan, 0., 0., np.nan])
-            start_out.append(start_time)
-            end_out.append(end_time)
-
-        vars_created = store_data('mms' + probe + '_bss_sroi'+suffix, data={'x': bar_x, 'y': bar_y})
-
-        if not vars_created:
-            logging.error('Error creating SRoI segment intervals tplot variable')
-            return None
-
-        options('mms' + probe + '_bss_sroi'+suffix, 'panel_size', 0.09)
-        options('mms' + probe + '_bss_sroi'+suffix, 'thick', 2)
-        options('mms' + probe + '_bss_sroi'+suffix, 'Color', 'green')
-        options('mms' + probe + '_bss_sroi'+suffix, 'border', False)
-        options('mms' + probe + '_bss_sroi'+suffix, 'yrange', [-0.001,0.001])
-        options('mms' + probe + '_bss_sroi'+suffix, 'legend_names', ['Fast'])
-        options('mms' + probe + '_bss_sroi'+suffix, 'ytitle', '')
 
     return unix_start, unix_end

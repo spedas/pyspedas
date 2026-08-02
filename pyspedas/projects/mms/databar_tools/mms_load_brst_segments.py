@@ -1,15 +1,10 @@
-import os
 import logging
 import numpy as np
-from pyspedas.tplot_tools import store_data, options
 from pyspedas.tplot_tools import time_double
-from pyspedas.utilities.download import download
-from pyspedas.projects.mms.mms_config import CONFIG
-from pyspedas.projects.mms.mms_update_brst_intervals import mms_update_brst_intervals
+from pyspedas.projects.mms.databar_tools.mms_update_brst_intervals import mms_update_brst_intervals
 
 
 def mms_load_brst_segments(trange=None,
-                           suffix='',
                            no_download=False):
     """
     This function loads the burst segment intervals
@@ -20,9 +15,6 @@ def mms_load_brst_segments(trange=None,
             time range of interest [start time, end time] with the format
             'YYYY-MM-DD','YYYY-MM-DD'] or to specify more or less than a day 
             ['YYYY-MM-DD/hh:mm:ss','YYYY-MM-DD/hh:mm:ss']
-
-        suffix: str
-            String to append to the end of the tplot variable names
 
         no_download: bool
             If True, use cached files rather than downloading from MMS SDC. Default: False
@@ -58,33 +50,10 @@ def mms_load_brst_segments(trange=None,
 
     if len(unix_start) == 0:
         logging.error('No burst intervals found in the time range.')
-        return
+        return None
 
     # +10 second offset added; there appears to be an extra 10
     # seconds of data, consistently, not included in the range here
     unix_end = np.array([end_time+10.0 for end_time in unix_end])
-
-    bar_x = []
-    bar_y = []
-
-    for start_time, end_time in zip(unix_start, unix_end):
-        if end_time >= tr[0] and start_time <= tr[1]:
-            bar_x.extend([start_time, start_time, end_time, end_time])
-            bar_y.extend([np.nan, 0., 0., np.nan])
-
-    varname = 'mms_bss_burst'+suffix
-    vars_created = store_data(varname, data={'x': bar_x, 'y': bar_y})
-
-    if not vars_created:
-        logging.error('Error creating burst segment intervals tplot variable')
-        return None
-
-    options(varname, 'panel_size', 0.09)
-    options(varname, 'thick', 2)
-    options(varname, 'Color', 'green')
-    options(varname, 'border', False)
-    options(varname, 'yrange', [-0.001,0.001])
-    options(varname, 'legend_names', ['Burst'])
-    options(varname, 'ytitle', '')
 
     return unix_start, unix_end
