@@ -20,6 +20,42 @@ from cdflib import CDF
 from time import sleep
 from .rate_connection_quality import rate_connection_quality
 
+
+class LoggingRetry(Retry):
+    """Log HTTP status retries while preserving urllib3 retry behavior."""
+
+    def increment(
+        self,
+        method=None,
+        url=None,
+        response=None,
+        error=None,
+        _pool=None,
+        _stacktrace=None,
+    ):
+        new_retry = super().increment(
+            method=method,
+            url=url,
+            response=response,
+            error=error,
+            _pool=_pool,
+            _stacktrace=_stacktrace,
+        )
+
+        if response is not None and response.status in self.status_forcelist:
+            retry_after = response.headers.get("Retry-After")
+            logging.warning(
+                "HTTP %d from %s; retrying request "
+                "(retries remaining: %s, Retry-After: %s)",
+                response.status,
+                url,
+                new_retry.total,
+                retry_after if retry_after is not None else "not provided",
+            )
+
+        return new_retry
+
+
 def is_fsspec_uri(uri):
     """
     See if uri is something fsspec can handle.
@@ -294,7 +330,7 @@ def download_file(
         session = requests.Session()
         # Configure retry strategy
         # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = Retry(
+        retries = LoggingRetry(
             total=3,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
@@ -593,7 +629,7 @@ def download(
         session = requests.Session()
         # Configure retry strategy
         # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = Retry(
+        retries = LoggingRetry(
             total=3,  # Total number of retries
             backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
             status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on

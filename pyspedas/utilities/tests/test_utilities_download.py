@@ -39,13 +39,14 @@ class DownloadTestCases(unittest.TestCase):
         server_thread = threading.Thread(target=server.serve_forever)
         server_thread.start()
         try:
-            result = download(
-                remote_file=(
-                    f"http://127.0.0.1:{server.server_port}/file_names"
-                    "?instrument=mag&level=l2"
-                ),
-                return_text=True,
-            )
+            with self.assertLogs(level="WARNING") as log:
+                result = download(
+                    remote_file=(
+                        f"http://127.0.0.1:{server.server_port}/file_names"
+                        "?instrument=mag&level=l2"
+                    ),
+                    return_text=True,
+                )
         finally:
             server.shutdown()
             server.server_close()
@@ -53,6 +54,9 @@ class DownloadTestCases(unittest.TestCase):
 
         self.assertEqual(result, "mvn_mag_l2_20200101_v01_r01.cdf")
         self.assertEqual(RetryHandler.request_count, 2)
+        self.assertIn("HTTP 429", log.output[0])
+        self.assertIn("retries remaining: 2", log.output[0])
+        self.assertIn("Retry-After: 0", log.output[0])
 
     def test_return_text_rejects_multiple_urls(self):
         with self.assertLogs(level="ERROR") as log:
