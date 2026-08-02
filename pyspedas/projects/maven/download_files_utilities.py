@@ -61,9 +61,6 @@ def get_file_from_site(filename, public, data_dir):
     Returns:
         None
     """
-    import os
-    import urllib
-
     public_url = (
         "https://lasp.colorado.edu/maven/sdc/public/files/api/v1/search/science/fn_metadata/download"
         + "?file="
@@ -75,35 +72,25 @@ def get_file_from_site(filename, public, data_dir):
         + filename
     )
 
+    url = public_url if public else private_url
+    logging.debug("get_file_from_site making request to URL: %s", url)
+
+    download_options = {
+        "remote_file": url,
+        "local_path": data_dir,
+        "local_file": filename,
+        "no_wildcards": True,
+        "force_download": True,
+    }
     if not public:
-        uname = CONFIG["maven_username"]
-        pword = CONFIG["maven_password"]
-        username = uname
-        password = pword
-        p = urllib.request.HTTPPasswordMgrWithDefaultRealm()
-        p.add_password(None, private_url, username, password)
-        handler = urllib.request.HTTPBasicAuthHandler(p)
-        opener = urllib.request.build_opener(handler)
-        urllib.request.install_opener(opener)
-        logging.debug("get_file_from_site making request to private url: %s", private_url)
-        page = urllib.request.urlopen(private_url)
-        logging.debug("get_file_from_site finished request to private url: %s", private_url)
-    else:
-        logging.debug("get_file_from_site making request to public url: %s", public_url)
-        page = urllib.request.urlopen(public_url)
-        logging.debug("get_file_from_site finished request to public url: %s", public_url)
+        download_options.update(
+            username=CONFIG["maven_username"],
+            password=CONFIG["maven_password"],
+            basic_auth=True,
+        )
 
-    # Cloud Awareness: write page contents to URI
-    if is_fsspec_uri(data_dir):
-        protocol, path = data_dir.split("://")
-        fs = fsspec.filesystem(protocol)
-
-        fo = fs.open("/".join([data_dir, filename]), "wb")
-    else:
-        fo = open(os.path.join(data_dir, filename), "wb")
-
-    with fo as code:
-        code.write(page.read())
+    download(**download_options)
+    logging.debug("get_file_from_site finished request to URL: %s", url)
 
     return
 
