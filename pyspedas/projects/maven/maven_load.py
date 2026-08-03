@@ -35,6 +35,7 @@ def maven_filenames(
     only_update_prefs=False,
     local_dir=None,
     public=True,
+    load_kp=True,
 ):
     """
     This function queries the MAVEN SDC API, and will return a list of files that match the given parameters.
@@ -64,6 +65,9 @@ def maven_filenames(
         Local directory to use. Defaults to None.
     public: bool, optional
         If False, try loading data from the non-public service
+    load_kp : bool, optional
+        If True, include Key Parameter files when loading other instruments.
+        Defaults to True.
 
 
     Returns
@@ -160,7 +164,7 @@ def maven_filenames(
             maven_files[instrument].extend([s, data_dir, public])
 
     # Grab KP data too, there is a lot of good ancillary info in here
-    if instruments != "kp":
+    if "kp" not in instruments and load_kp:
         instrument = "kp"
         # Build the query to the website
         query_args = []
@@ -253,6 +257,7 @@ def load_data(
     get_metadata=False,
     auto_yes=False,
     public=True,
+    load_kp=True,
 ):
     """
     This function downloads MAVEN data loads it into tplot variables, if applicable.
@@ -328,7 +333,10 @@ def load_data(
     auto_yes : bool, optional
         If True, automatically answers 'yes' to prompts. Defaults to False.
     public: bool, optional
-    If false, try using the non-public interface
+        If false, try using the non-public interface.
+    load_kp : bool, optional
+        If True, include Key Parameter files when loading other instruments.
+        Defaults to True.
 
 
     Returns
@@ -361,6 +369,7 @@ def load_data(
         only_update_prefs,
         local_dir,
         public=public,
+        load_kp=load_kp,
     )
 
     # If we are not asking for KP data, this flag ensures only ancillary data is loaded in from the KP files

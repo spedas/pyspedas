@@ -16,6 +16,7 @@ def ngi(
     auto_yes=True,
     downloadonly=False,
     varnames=[],
+    load_kp=True,
 ):
     """
     Load NGI data from the MAVEN mission.
@@ -45,6 +46,9 @@ def ngi(
         Whether to only download the data without loading it. Defaults to False.
     varnames : list, optional
         List of variable names to load. Defaults to [].
+    load_kp : bool, optional
+        If True, load the Key Parameter data associated with the requested
+        time range. Defaults to True.
 
     Returns
     -------
@@ -64,4 +68,5 @@ def ngi(
         auto_yes=auto_yes,
         download_only=downloadonly,
         varnames=varnames,
+        load_kp=load_kp,
     )

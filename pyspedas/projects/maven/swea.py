@@ -18,6 +18,7 @@ def swea(
     downloadonly=False,
     varnames=[],
     spdf=False,
+    load_kp=True,
 ):
     """
     Load MAVEN Solar Wind Electron Analyzer (SWEA) data.
@@ -49,6 +50,9 @@ def swea(
         List of variable names to load. Defaults to [].
     spdf : bool, optional
         Whether to use the SPDF library for data loading. Defaults to False.
+    load_kp : bool, optional
+        If True, load the Key Parameter data associated with the requested
+        time range. Defaults to True.
 
     Returns
     -------
@@ -79,4 +83,5 @@ def swea(
         auto_yes=auto_yes,
         download_only=downloadonly,
         varnames=varnames,
+        load_kp=load_kp,
     )

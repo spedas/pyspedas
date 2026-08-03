@@ -18,7 +18,8 @@ def mag(
     downloadonly=False,
     varnames=[],
     spdf=False,
-    public=True
+    public=True,
+    load_kp=True,
 ):
     """
     Function to retrieve Magnetometer (MAG) data from the MAVEN mission.
@@ -52,6 +53,9 @@ def mag(
         Flag indicating whether to use the SPDF library for loading data. Default is False.
     public: bool, optional
         If False, try downloading from the non-public service
+    load_kp : bool, optional
+        If True, load the Key Parameter data associated with the requested
+        time range. Defaults to True.
 
     Returns
     -------
@@ -86,5 +90,6 @@ def mag(
         auto_yes=auto_yes,
         download_only=downloadonly,
         varnames=varnames,
-        public=public
+        public=public,
+        load_kp=load_kp,
     )
