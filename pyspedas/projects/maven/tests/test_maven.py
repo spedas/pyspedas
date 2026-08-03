@@ -1,7 +1,7 @@
 import os
 import importlib
 import unittest
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 from pyspedas.tplot_tools import data_exists, tplot_names, del_data
 from pyspedas.projects import maven
 from pyspedas.projects.maven.download_files_utilities import get_orbit_files, merge_orbit_files, get_file_from_site
@@ -16,6 +16,7 @@ from datetime import datetime
 # We need sleep time to avoid "HTTP Error 429: Too Many Requests"
 # As of January 2025, this may no longer be necessary for MAVEN
 sleep_time = 1
+maven_load_module = importlib.import_module("pyspedas.projects.maven.maven_load")
 
 
 def get_kp_dict():
@@ -69,12 +70,13 @@ class DownloadFileTestCases(unittest.TestCase):
                 module = importlib.import_module(
                     f"pyspedas.projects.maven.{loader_name}"
                 )
-                with patch.object(module, "maven_load") as mock_load:
+                mock_load = MagicMock()
+                with patch.dict(module.__dict__, {"maven_load": mock_load}):
                     getattr(module, loader_name)(load_kp=False)
 
                 self.assertFalse(mock_load.call_args.kwargs["load_kp"])
 
-    @patch("pyspedas.projects.maven.maven_load.get_filenames")
+    @patch.object(maven_load_module, "get_filenames")
     def test_maven_filenames_loads_kp_by_default(self, mock_get_filenames):
         mock_get_filenames.side_effect = [
             "mvn_mag_l2_2016001ss1s_20160101_v01_r01.cdf",
@@ -87,7 +89,7 @@ class DownloadFileTestCases(unittest.TestCase):
         self.assertEqual(mock_get_filenames.call_count, 2)
         self.assertIn("instrument=kp", mock_get_filenames.call_args_list[1].args[0])
 
-    @patch("pyspedas.projects.maven.maven_load.get_filenames")
+    @patch.object(maven_load_module, "get_filenames")
     def test_maven_filenames_can_skip_kp(self, mock_get_filenames):
         mock_get_filenames.return_value = (
             "mvn_mag_l2_2016001ss1s_20160101_v01_r01.cdf"
