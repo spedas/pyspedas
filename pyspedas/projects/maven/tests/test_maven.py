@@ -105,6 +105,44 @@ class DownloadFileTestCases(unittest.TestCase):
         mock_get_filenames.assert_called_once()
         self.assertNotIn("instrument=kp", mock_get_filenames.call_args.args[0])
 
+    @patch.object(maven_load_module, "get_filenames")
+    def test_maven_iuvs_filenames_include_insitu_kp(self, mock_get_filenames):
+        mock_get_filenames.side_effect = [
+            "mvn_kp_iuvs_periapse_20150307_v01_r01.tab",
+            "mvn_kp_insitu_20150307_v01_r01.tab",
+        ]
+
+        files = maven_filenames(
+            level="kp",
+            insitu=True,
+            iuvs=True,
+            local_dir="maven_data",
+        )
+
+        self.assertEqual(mock_get_filenames.call_count, 2)
+        iuvs_query = mock_get_filenames.call_args_list[0].args[0]
+        insitu_query = mock_get_filenames.call_args_list[1].args[0]
+        self.assertIn("level=iuvs", iuvs_query)
+        self.assertIn("level=insitu", insitu_query)
+        self.assertEqual(len(files["kp"]), 6)
+
+    @patch.object(maven_load_module, "get_filenames")
+    def test_maven_iuvs_filenames_can_exclude_insitu_kp(self, mock_get_filenames):
+        mock_get_filenames.return_value = (
+            "mvn_kp_iuvs_periapse_20150307_v01_r01.tab"
+        )
+
+        files = maven_filenames(
+            level="kp",
+            insitu=False,
+            iuvs=True,
+            local_dir="maven_data",
+        )
+
+        mock_get_filenames.assert_called_once()
+        self.assertIn("level=iuvs", mock_get_filenames.call_args.args[0])
+        self.assertEqual(len(files["kp"]), 3)
+
     @patch("pyspedas.projects.maven.download_files_utilities.download")
     def test_get_file_from_public_site(self, mock_download):
         filename = "mvn_mag_l2_20200101_v01_r01.cdf"

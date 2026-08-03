@@ -163,8 +163,12 @@ def maven_filenames(
         else:
             maven_files[instrument].extend([s, data_dir, public])
 
-    # Grab KP data too, there is a lot of good ancillary info in here
-    if "kp" not in instruments and load_kp:
+    # Grab KP insitu data for ancillary information when loading other
+    # instruments. KP IUVS requests also need the accompanying insitu data
+    # when insitu=True, but a direct KP insitu request already has it.
+    is_kp_request = instruments == ["kp"]
+    needs_insitu_kp = not is_kp_request or (insitu and level != "insitu")
+    if load_kp and needs_insitu_kp:
         instrument = "kp"
         # Build the query to the website
         query_args = []
