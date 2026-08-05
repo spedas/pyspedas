@@ -44,6 +44,7 @@ class LoggingRetry(Retry):
 
         if response is not None and response.status in self.status_forcelist:
             retry_after = response.headers.get("Retry-After")
+            print("Headers: %s", response.headers)
             logging.warning(
                 "HTTP %d from %s; retrying request "
                 "(retries remaining: %s, Retry-After: %s)",
