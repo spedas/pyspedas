@@ -2,9 +2,10 @@ import os
 import threading
 import unittest
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import requests
 
 import pyspedas
-from pyspedas.utilities.download import download
+from pyspedas.utilities.download import configure_retry_session, download, LoggingRetry
 from pyspedas.utilities.download_ftp import download_ftp
 
 from pyspedas.projects.themis.config import CONFIG
@@ -13,6 +14,63 @@ themis_remote = CONFIG['remote_data_dir']
 
 
 class DownloadTestCases(unittest.TestCase):
+    def test_configure_retry_session_preserves_state(self):
+        session = requests.Session()
+        session.auth = ("test-user", "test-password")
+
+        configured_session = configure_retry_session(session)
+
+        self.assertIs(configured_session, session)
+        self.assertEqual(configured_session.auth, ("test-user", "test-password"))
+        retries = configured_session.adapters["https://"].max_retries
+        self.assertIsInstance(retries, LoggingRetry)
+        self.assertEqual(retries.total, 3)
+        self.assertEqual(
+            retries.status_forcelist,
+            [429, 500, 502, 503, 504],
+        )
+
+    def test_configured_session_retries_429(self):
+        class RetryHandler(BaseHTTPRequestHandler):
+            request_count = 0
+
+            def do_GET(self):
+                RetryHandler.request_count += 1
+                if RetryHandler.request_count == 1:
+                    self.send_response(429)
+                    self.send_header("Retry-After", "0")
+                    self.end_headers()
+                    return
+
+                body = b"success"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, format, *args):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), RetryHandler)
+        server_thread = threading.Thread(target=server.serve_forever)
+        server_thread.start()
+        session = configure_retry_session()
+        try:
+            with self.assertLogs(level="WARNING") as log:
+                response = session.get(
+                    f"http://127.0.0.1:{server.server_port}/mms-query"
+                )
+        finally:
+            session.close()
+            server.shutdown()
+            server.server_close()
+            server_thread.join()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, "success")
+        self.assertEqual(RetryHandler.request_count, 2)
+        self.assertIn("HTTP 429", log.output[0])
+
     def test_return_text_retries_429(self):
         class RetryHandler(BaseHTTPRequestHandler):
             request_count = 0

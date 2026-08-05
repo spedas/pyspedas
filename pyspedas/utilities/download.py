@@ -56,6 +56,26 @@ class LoggingRetry(Retry):
         return new_retry
 
 
+def configure_retry_session(session=None):
+    """Create or configure a requests session with PySPEDAS HTTP retries.
+
+    Existing session state, including authentication, cookies, and headers, is
+    preserved when a session is supplied.
+    """
+    if session is None:
+        session = requests.Session()
+
+    retries = LoggingRetry(
+        total=3,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    return session
+
+
 def is_fsspec_uri(uri):
     """
     See if uri is something fsspec can handle.
@@ -327,17 +347,7 @@ def download_file(
             headers["If-Modified-Since"] = mod_tm
 
     if session is None:
-        session = requests.Session()
-        # Configure retry strategy
-        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = LoggingRetry(
-            total=3,  # Total number of retries
-            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
-            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
-            allowed_methods=["GET"] # HTTP methods to retry on
-        )
-        session.mount('http://', HTTPAdapter(max_retries=retries))
-        session.mount('https://', HTTPAdapter(max_retries=retries))
+        session = configure_retry_session()
 
 
 
@@ -626,17 +636,7 @@ def download(
         return
 
     if session is None:
-        session = requests.Session()
-        # Configure retry strategy
-        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = LoggingRetry(
-            total=3,  # Total number of retries
-            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
-            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
-            allowed_methods=["GET"] # HTTP methods to retry on
-        )
-        session.mount('http://', HTTPAdapter(max_retries=retries))
-        session.mount('https://', HTTPAdapter(max_retries=retries))
+        session = configure_retry_session()
 
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)
