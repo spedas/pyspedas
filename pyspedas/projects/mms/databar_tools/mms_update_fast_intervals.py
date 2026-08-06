@@ -62,13 +62,16 @@ def get_mms_abs_selections(start_time=None, end_time=None, session=None):
 
     query = f'?start_date={start_time}&end_date={end_time}'
 
-    qreq = sdc_session.get('https://lasp.colorado.edu/' + path + query)
+    response = download(
+        remote_file='https://lasp.colorado.edu/' + path + query,
+        session=sdc_session,
+        no_wildcards=True,
+        return_text=True,
+    )
 
-    if qreq.status_code != 200:
-        logging.error(f'Error {qreq.status_code} downloading abs_selections')
+    if response is None:
+        logging.error('Error downloading abs_selections')
         return
-
-    response=qreq.text
 
     file_list = response.split(',')
     return file_list

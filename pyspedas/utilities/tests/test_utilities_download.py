@@ -1,11 +1,18 @@
 import os
+import tempfile
 import threading
 import unittest
+from unittest.mock import Mock, patch
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
 
 import pyspedas
-from pyspedas.utilities.download import configure_retry_session, download, LoggingRetry
+from pyspedas.utilities.download import (
+    configure_retry_session,
+    download,
+    download_file,
+    LoggingRetry,
+)
 from pyspedas.utilities.download_ftp import download_ftp
 
 from pyspedas.projects.themis.config import CONFIG
@@ -14,6 +21,61 @@ themis_remote = CONFIG['remote_data_dir']
 
 
 class DownloadTestCases(unittest.TestCase):
+    def test_download_file_streams_chunks(self):
+        response = Mock(status_code=200)
+        response.iter_content.return_value = [b"first", b"", b"second"]
+        session = Mock()
+        session.get.return_value = response
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filename = os.path.join(temp_dir, "streamed.txt")
+            result = download_file(
+                url="https://example.com/streamed.txt",
+                filename=filename,
+                session=session,
+                text_only=False,
+            )
+
+            self.assertEqual(result, filename)
+            with open(filename, "rb") as downloaded_file:
+                self.assertEqual(downloaded_file.read(), b"firstsecond")
+
+        response.iter_content.assert_called_once_with(
+            chunk_size=1024 * 1024, decode_unicode=False
+        )
+        response.close.assert_called_once()
+
+    def test_download_file_cleans_up_temp_file_on_copy_error(self):
+        response = Mock(status_code=200)
+        response.iter_content.return_value = [b"content"]
+        session = Mock()
+        session.get.return_value = response
+        real_named_temporary_file = tempfile.NamedTemporaryFile
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            def temporary_file_in_test_dir(*args, **kwargs):
+                kwargs["dir"] = temp_dir
+                return real_named_temporary_file(*args, **kwargs)
+
+            with patch(
+                "pyspedas.utilities.download.NamedTemporaryFile",
+                side_effect=temporary_file_in_test_dir,
+            ), patch(
+                "pyspedas.utilities.download.copy",
+                side_effect=RuntimeError("copy failed"),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "copy failed"):
+                    download_file(
+                        url="https://example.com/streamed.txt",
+                        filename=os.path.join(temp_dir, "destination.txt"),
+                        session=session,
+                        text_only=False,
+                    )
+
+            self.assertEqual(os.listdir(temp_dir), [])
+
+        response.close.assert_called_once()
+
     def test_configure_retry_session_preserves_state(self):
         session = requests.Session()
         session.auth = ("test-user", "test-password")
