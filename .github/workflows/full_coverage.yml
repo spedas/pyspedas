@@ -165,8 +165,6 @@ jobs:
               coverage run -a -m pyspedas.projects.omni.tests.test_omni
               echo Starting themis tests at `date`
               coverage run -a -m pyspedas.projects.themis.tests.test_themis
-              echo Starting mica tests at `date`
-              coverage run -a -m pyspedas.projects.mica.tests.test_mica
               echo Starting ulysses tests at `date`
               coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
               echo Starting solo tests at `date`
@@ -203,6 +201,13 @@ jobs:
               # Show the free disk space on this filesystem      
               echo "Disk usage after cleanup:"
               df -h
+
+          - shard: mica
+            shard_script: |
+              # MICA's data server can experience independent outages, so keep
+              # this test isolated from the other SPDF/THEMIS tests.
+              echo Starting mica tests at `date`
+              coverage run -a -m pyspedas.projects.mica.tests.test_mica
 
           - shard: mms
             shard_script: |
