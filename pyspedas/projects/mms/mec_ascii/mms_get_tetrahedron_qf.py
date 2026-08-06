@@ -1,15 +1,13 @@
 import os
+import json
 import logging
-import warnings
-from shutil import copyfileobj, copy
-from tempfile import NamedTemporaryFile
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.projects.mms.mms_config import CONFIG
 from pyspedas.projects.mms.mec_ascii.mms_get_local_ancillary_files import mms_get_local_ancillary_files
 from pyspedas.projects.mms.mec_ascii.mms_load_qf_tplot import mms_load_qf_tplot
 
-from pyspedas.utilities.download import is_fsspec_uri
+from pyspedas.utilities.download import download, is_fsspec_uri
 import fsspec
 
 def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=False,
@@ -57,16 +55,15 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
         else:
             url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/file_info/ancillary?sc_id=mms&product=defq'+dates_for_query
 
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", category=ResourceWarning)
-            http_request = sdc_session.get(url, verify=True)
-            if http_request.status_code != 200:
-                logging.warning("Request to MMS SDC returned HTTP status code %d",http_request.status_code)
-                logging.warning("Text: %s", http_request.text)
-                logging.warning("URL: %s", url)
-                return
-            else:
-                http_json = http_request.json()
+        response_text = download(
+            remote_file=url,
+            session=sdc_session,
+            no_wildcards=True,
+            return_text=True,
+        )
+        if response_text is None:
+            return
+        http_json = json.loads(response_text)
 
         files_in_interval = http_json['files']
 
@@ -89,7 +86,6 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
 
                 if str(f_size) == str(file['file_size']):
                     out_files.append(out_file)
-                    http_request.close()
                     continue
 
             if user is None:
@@ -99,33 +95,16 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
 
             logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
-            with warnings.catch_warnings():
-                warnings.simplefilter("ignore", category=ResourceWarning)
-                fsrc = sdc_session.get(download_url, stream=True, verify=True)
-
-            ftmp = NamedTemporaryFile(delete=False)
-
-            with open(ftmp.name, 'wb') as f:
-                copyfileobj(fsrc.raw, f)
-
-            if is_fsspec_uri(out_dir):
-                protocol, _ = out_dir.split("://")
-                fs = fsspec.filesystem(protocol)
-
-                fs.makedirs(out_dir, exist_ok=True)
-
-                # if the download was successful, put at URI specified
-                fs.put(ftmp.name, out_file)
-            else:
-                if not os.path.exists(out_dir):
-                    os.makedirs(out_dir)
-
-                # if the download was successful, copy to data directory
-                copy(ftmp.name, out_file)
-
-            out_files.append(out_file)
-            fsrc.close()
-            ftmp.close()
+            downloaded_files = download(
+                remote_file=download_url,
+                local_path=out_dir,
+                local_file=file['file_name'],
+                session=sdc_session,
+                no_wildcards=True,
+                force_download=True,
+            )
+            if downloaded_files:
+                out_files.append(out_file)
 
     if not no_download:
         sdc_session.close()
@@ -138,4 +117,3 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
         out_files = mms_get_local_ancillary_files(trange=[start_time_str, end_time_str])
 
     return mms_load_qf_tplot(sorted(out_files), suffix=suffix, trange=trange)
-

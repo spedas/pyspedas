@@ -70,7 +70,6 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     needs: build_wheel
-    if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev'
 
     strategy:
       fail-fast: false
@@ -166,8 +165,6 @@ jobs:
               coverage run -a -m pyspedas.projects.omni.tests.test_omni
               echo Starting themis tests at `date`
               coverage run -a -m pyspedas.projects.themis.tests.test_themis
-              echo Starting mica tests at `date`
-              coverage run -a -m pyspedas.projects.mica.tests.test_mica
               echo Starting ulysses tests at `date`
               coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
               echo Starting solo tests at `date`
@@ -204,6 +201,13 @@ jobs:
               # Show the free disk space on this filesystem      
               echo "Disk usage after cleanup:"
               df -h
+
+          - shard: mica
+            shard_script: |
+              # MICA's data server can experience independent outages, so keep
+              # this test isolated from the other SPDF/THEMIS tests.
+              echo Starting mica tests at `date`
+              coverage run -a -m pyspedas.projects.mica.tests.test_mica
 
           - shard: mms
             shard_script: |
@@ -517,7 +521,6 @@ jobs:
   combine_coverage:
     runs-on: ubuntu-latest
     needs: tests
-    if: ${{ ((github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' || github.ref == 'refs/heads/pyspedas_2_0_dev') }}
 
     steps:
       - uses: actions/checkout@v5

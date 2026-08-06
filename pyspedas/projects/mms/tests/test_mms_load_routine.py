@@ -46,13 +46,13 @@ class StateLoadTestCases(unittest.TestCase):
         mock_response.status_code = 503
         mock_response.text = "Service Unavailable"
 
-        # Set the mock object to be returned by sdc_session.get()
+        # Set the mock response used by the download session.
         mock_get.return_value = mock_response
 
         # Run the function and verify that the logging warnings were called
         with self.assertLogs(level='WARNING') as log:
             mms_load_state(datatypes=['pos', 'vel'])
-            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Request returned HTTP status code 503", log.output[0])
             self.assertIn("Text: Service Unavailable", log.output[1])
             self.assertIn("URL:", log.output[2])
 
@@ -84,13 +84,13 @@ class StateLoadTestCases(unittest.TestCase):
         mock_response.status_code = 503
         mock_response.text = "Service Unavailable"
 
-        # Set the mock object to be returned by sdc_session.get()
+        # Set the mock response used by the download session.
         mock_get.return_value = mock_response
 
         # Run the function and verify that the logging warnings were called
         with self.assertLogs(level='WARNING') as log:
             data = mms_load_tetrahedron_qf()
-            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Request returned HTTP status code 503", log.output[0])
             self.assertIn("Text: Service Unavailable", log.output[1])
             self.assertIn("URL:", log.output[2])
 
@@ -374,13 +374,13 @@ class FGMLoadTestCases(unittest.TestCase):
         mock_response.status_code = 503
         mock_response.text = "Service Unavailable"
 
-        # Set the mock object to be returned by sdc_session.get()
+        # Set the mock response used by the download session.
         mock_get.return_value = mock_response
 
         # Run the function and verify that the logging warnings were called
         with self.assertLogs(level='WARNING') as log:
             data = mms_load_fgm()
-            self.assertIn("Request to MMS SDC returned HTTP status code 503", log.output[0])
+            self.assertIn("Request returned HTTP status code 503", log.output[0])
             self.assertIn("Text: Service Unavailable", log.output[1])
             self.assertIn("URL:", log.output[2])
 

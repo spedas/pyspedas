@@ -1,10 +1,18 @@
 import os
+import tempfile
 import threading
 import unittest
+from unittest.mock import Mock, patch
 from http.server import BaseHTTPRequestHandler, HTTPServer
+import requests
 
 import pyspedas
-from pyspedas.utilities.download import download
+from pyspedas.utilities.download import (
+    configure_retry_session,
+    download,
+    download_file,
+    LoggingRetry,
+)
 from pyspedas.utilities.download_ftp import download_ftp
 
 from pyspedas.projects.themis.config import CONFIG
@@ -13,6 +21,118 @@ themis_remote = CONFIG['remote_data_dir']
 
 
 class DownloadTestCases(unittest.TestCase):
+    def test_download_file_streams_chunks(self):
+        response = Mock(status_code=200)
+        response.iter_content.return_value = [b"first", b"", b"second"]
+        session = Mock()
+        session.get.return_value = response
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filename = os.path.join(temp_dir, "streamed.txt")
+            result = download_file(
+                url="https://example.com/streamed.txt",
+                filename=filename,
+                session=session,
+                text_only=False,
+            )
+
+            self.assertEqual(result, filename)
+            with open(filename, "rb") as downloaded_file:
+                self.assertEqual(downloaded_file.read(), b"firstsecond")
+
+        response.iter_content.assert_called_once_with(
+            chunk_size=1024 * 1024, decode_unicode=False
+        )
+        response.close.assert_called_once()
+
+    def test_download_file_cleans_up_temp_file_on_copy_error(self):
+        response = Mock(status_code=200)
+        response.iter_content.return_value = [b"content"]
+        session = Mock()
+        session.get.return_value = response
+        real_named_temporary_file = tempfile.NamedTemporaryFile
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            def temporary_file_in_test_dir(*args, **kwargs):
+                kwargs["dir"] = temp_dir
+                return real_named_temporary_file(*args, **kwargs)
+
+            with patch(
+                "pyspedas.utilities.download.NamedTemporaryFile",
+                side_effect=temporary_file_in_test_dir,
+            ), patch(
+                "pyspedas.utilities.download.copy",
+                side_effect=RuntimeError("copy failed"),
+            ):
+                with self.assertRaisesRegex(RuntimeError, "copy failed"):
+                    download_file(
+                        url="https://example.com/streamed.txt",
+                        filename=os.path.join(temp_dir, "destination.txt"),
+                        session=session,
+                        text_only=False,
+                    )
+
+            self.assertEqual(os.listdir(temp_dir), [])
+
+        response.close.assert_called_once()
+
+    def test_configure_retry_session_preserves_state(self):
+        session = requests.Session()
+        session.auth = ("test-user", "test-password")
+
+        configured_session = configure_retry_session(session)
+
+        self.assertIs(configured_session, session)
+        self.assertEqual(configured_session.auth, ("test-user", "test-password"))
+        retries = configured_session.adapters["https://"].max_retries
+        self.assertIsInstance(retries, LoggingRetry)
+        self.assertEqual(retries.total, 3)
+        self.assertEqual(
+            retries.status_forcelist,
+            [429, 500, 502, 503, 504],
+        )
+
+    def test_configured_session_retries_429(self):
+        class RetryHandler(BaseHTTPRequestHandler):
+            request_count = 0
+
+            def do_GET(self):
+                RetryHandler.request_count += 1
+                if RetryHandler.request_count == 1:
+                    self.send_response(429)
+                    self.send_header("Retry-After", "0")
+                    self.end_headers()
+                    return
+
+                body = b"success"
+                self.send_response(200)
+                self.send_header("Content-Length", str(len(body)))
+                self.end_headers()
+                self.wfile.write(body)
+
+            def log_message(self, format, *args):
+                pass
+
+        server = HTTPServer(("127.0.0.1", 0), RetryHandler)
+        server_thread = threading.Thread(target=server.serve_forever)
+        server_thread.start()
+        session = configure_retry_session()
+        try:
+            with self.assertLogs(level="WARNING") as log:
+                response = session.get(
+                    f"http://127.0.0.1:{server.server_port}/mms-query"
+                )
+        finally:
+            session.close()
+            server.shutdown()
+            server.server_close()
+            server_thread.join()
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.text, "success")
+        self.assertEqual(RetryHandler.request_count, 2)
+        self.assertIn("HTTP 429", log.output[0])
+
     def test_return_text_retries_429(self):
         class RetryHandler(BaseHTTPRequestHandler):
             request_count = 0

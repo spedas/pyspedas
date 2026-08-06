@@ -56,6 +56,26 @@ class LoggingRetry(Retry):
         return new_retry
 
 
+def configure_retry_session(session=None):
+    """Create or configure a requests session with PySPEDAS HTTP retries.
+
+    Existing session state, including authentication, cookies, and headers, is
+    preserved when a session is supplied.
+    """
+    if session is None:
+        session = requests.Session()
+
+    retries = LoggingRetry(
+        total=3,
+        backoff_factor=2,
+        status_forcelist=[429, 500, 502, 503, 504],
+        allowed_methods=["GET"],
+    )
+    session.mount("http://", HTTPAdapter(max_retries=retries))
+    session.mount("https://", HTTPAdapter(max_retries=retries))
+    return session
+
+
 def is_fsspec_uri(uri):
     """
     See if uri is something fsspec can handle.
@@ -327,17 +347,7 @@ def download_file(
             headers["If-Modified-Since"] = mod_tm
 
     if session is None:
-        session = requests.Session()
-        # Configure retry strategy
-        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = LoggingRetry(
-            total=3,  # Total number of retries
-            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
-            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
-            allowed_methods=["GET"] # HTTP methods to retry on
-        )
-        session.mount('http://', HTTPAdapter(max_retries=retries))
-        session.mount('https://', HTTPAdapter(max_retries=retries))
+        session = configure_retry_session()
 
 
 
@@ -400,17 +410,16 @@ def download_file(
         logging.info("Downloading " + url + " to " + filename)
     else:
         # all other problems
-        logging.error(fsrc.reason)
+        logging.warning("Request returned HTTP status code %d", fsrc.status_code)
+        logging.warning("Text: %s", fsrc.text)
+        logging.warning("URL: %s", url)
         fsrc.close()
         return None
 
     content_saved_ok = True
     if needs_to_download_file:
-        fsuffix = filename.split('.') # could be fsspec uri
-        fsuffix = '' if fsuffix[0] == filename else fsuffix[-1]
+        fsuffix = os.path.splitext(filename)[1]  # filename may be an fsspec URI
             
-        ftmp = NamedTemporaryFile(delete=False, suffix=fsuffix)
-
         # If no text_only value was passed, try to determine whether the file is text (and should be utf-8 encoded),
         # or binary (saved as-is) by looking at the file extension.
 
@@ -420,59 +429,64 @@ def download_file(
             else:
                 text_only = False
 
-        with open(ftmp.name, "wb") as f:
+        temp_name = None
+        try:
             try:
-                transfer_bytes = len(fsrc.content)
-                # There is also the fsrc.raw file object, which returns the raw bytes as read from the socket.
-                # It may be gzip-compressed.  This is probably the wrong choice in nearly every scenario, so that
-                # option has been removed.
-                if text_only:
-                    ret = f.write(fsrc.text.encode("utf-8"))
-                else:
-                    ret = f.write(fsrc.content)
+                with NamedTemporaryFile(delete=False, suffix=fsuffix) as ftmp:
+                    temp_name = ftmp.name
+                    for chunk in fsrc.iter_content(
+                        chunk_size=1024 * 1024, decode_unicode=text_only
+                    ):
+                        if not chunk:
+                            continue
+                        if isinstance(chunk, str):
+                            chunk = chunk.encode("utf-8")
+                        transfer_bytes += ftmp.write(chunk)
             except requests.exceptions.ChunkedEncodingError:
                 logging.warning("A ChunkedEncodingError was encountered while saving the request data.  The file may be corrupted.")
                 content_saved_ok = False
 
-        completion_time = datetime.datetime.now()
-        elapsed_dt = completion_time - request_time
-        elapsed_secs = elapsed_dt.total_seconds()
-        transfer_mbytes = transfer_bytes / 1024 / 1024
-        transfer_rate = transfer_mbytes/elapsed_secs
-        # We may want to have more categories here, and explicitly log very slow transfers
-        transfer_quality = rate_connection_quality(elapsed_secs, transfer_mbytes, transfer_rate)
+            completion_time = datetime.datetime.now()
+            elapsed_dt = completion_time - request_time
+            elapsed_secs = elapsed_dt.total_seconds()
+            transfer_mbytes = transfer_bytes / 1024 / 1024
+            transfer_rate = transfer_mbytes/elapsed_secs
+            # We may want to have more categories here, and explicitly log very slow transfers
+            transfer_quality = rate_connection_quality(elapsed_secs, transfer_mbytes, transfer_rate)
 
-        if is_fsspec_uri(filename):
-            protocol, path = filename.split("://")
-            fs = fsspec.filesystem(protocol, anon=False)
-            
-            # copy method is within filesystems under fsspec
-            if check_downloaded_file(ftmp.name):
-                fs.put(ftmp.name, filename)
-                logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
-            else:
-                logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
-                logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
-        else:
-            # make sure the directory exists
-            if (
-                not os.path.exists(os.path.dirname(filename))
-                and os.path.dirname(filename) != ""
-            ):
-                os.makedirs(os.path.dirname(filename))
-    
-            # if the download was successful, copy to data directory
-            if check_downloaded_file(ftmp.name):
-                copy(ftmp.name, filename)
-                logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
-            else:
-                logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
-                logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
+            if is_fsspec_uri(filename):
+                protocol, path = filename.split("://")
+                fs = fsspec.filesystem(protocol, anon=False)
 
-        # cleanup
-        fsrc.close()
-        ftmp.close()
-        os.unlink(ftmp.name)  # delete the temporary file
+                # copy method is within filesystems under fsspec
+                if check_downloaded_file(temp_name):
+                    fs.put(temp_name, filename)
+                    logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
+                else:
+                    logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
+                    logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
+            else:
+                # make sure the directory exists
+                if (
+                    not os.path.exists(os.path.dirname(filename))
+                    and os.path.dirname(filename) != ""
+                ):
+                    os.makedirs(os.path.dirname(filename))
+
+                # if the download was successful, copy to data directory
+                if check_downloaded_file(temp_name):
+                    copy(temp_name, filename)
+                    logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
+                else:
+                    logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
+                    logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
+        finally:
+            fsrc.close()
+            if temp_name is not None:
+                try:
+                    os.unlink(temp_name)
+                except FileNotFoundError:
+                    pass
             
 
     # At this point, we check if the file can be opened.
@@ -626,17 +640,7 @@ def download(
         return
 
     if session is None:
-        session = requests.Session()
-        # Configure retry strategy
-        # We'll just use a fixed configuration, unless it turns out to need fine-tuning
-        retries = LoggingRetry(
-            total=3,  # Total number of retries
-            backoff_factor=2,  # Exponential backoff factor (sleep for 0s, 4s, 8s between retries)
-            status_forcelist=[429, 500, 502, 503, 504],  # HTTP status codes to force a retry on
-            allowed_methods=["GET"] # HTTP methods to retry on
-        )
-        session.mount('http://', HTTPAdapter(max_retries=retries))
-        session.mount('https://', HTTPAdapter(max_retries=retries))
+        session = configure_retry_session()
 
     if username is not None:
         session.auth = requests.auth.HTTPDigestAuth(username, password)

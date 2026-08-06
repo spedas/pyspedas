@@ -1,10 +1,10 @@
 from getpass import getpass
 from scipy.io import readsav
-import requests
 import os
 import pickle
 import logging
 import warnings
+from pyspedas.utilities.download import configure_retry_session
 
 
 def mms_login_lasp(always_prompt=False, headers=None):
@@ -74,7 +74,7 @@ def mms_login_lasp(always_prompt=False, headers=None):
             user = ""
             passwd = ""
 
-    session = requests.Session()
+    session = configure_retry_session()
 
     if user != "":
         session.auth = (user, passwd)

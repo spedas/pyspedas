@@ -171,7 +171,6 @@ jobs:
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
         PY
     - name: Test with unittest
-      if: (github.event_name == 'pull_request' && github.base_ref == 'master') || github.ref == 'refs/heads/master' || github.ref == 'refs/heads/refactor_projects' ||  github.ref == 'refs/heads/pyspedas_2_0_dev'
       env:
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/

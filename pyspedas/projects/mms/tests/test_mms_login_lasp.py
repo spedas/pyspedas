@@ -5,6 +5,7 @@ import unittest
 from unittest.mock import Mock, patch
 
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
+from pyspedas.utilities.download import LoggingRetry
 
 
 class MMSLoginLaspTestCases(unittest.TestCase):
@@ -46,6 +47,10 @@ class MMSLoginLaspTestCases(unittest.TestCase):
 
         self.assertIsNone(user)
         self.assertIsNone(session.auth)
+        self.assertIsInstance(
+            session.adapters["https://"].max_retries,
+            LoggingRetry,
+        )
         mock_get.assert_not_called()
 
     @patch("pyspedas.projects.mms.mms_login_lasp.readsav", side_effect=FileNotFoundError)

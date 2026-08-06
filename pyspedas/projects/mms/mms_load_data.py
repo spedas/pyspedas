@@ -1,7 +1,7 @@
 import os
+import json
 import requests
 import logging
-import warnings
 from importlib.metadata import version, PackageNotFoundError
 import numpy as np
 from pyspedas.tplot_tools import cdf_to_tplot
@@ -9,8 +9,6 @@ from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
-from shutil import copyfileobj, copy
-from tempfile import NamedTemporaryFile
 from .mms_config import CONFIG
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
@@ -18,7 +16,7 @@ from .mms_login_lasp import mms_login_lasp
 from .mms_file_filter import mms_file_filter
 from .mms_load_data_spdf import mms_load_data_spdf
 
-from pyspedas.utilities.download import is_fsspec_uri
+from pyspedas.utilities.download import download, is_fsspec_uri
 import fsspec
 
 def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
@@ -116,16 +114,16 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     if not no_download:
                         # query list of available files
                         try:
-                            with warnings.catch_warnings():
-                                warnings.simplefilter("ignore", category=ResourceWarning)
-                                http_request = sdc_session.get(url, verify=True, headers=headers)
-                                if http_request.status_code != 200:
-                                    logging.warning("Request to MMS SDC returned HTTP status code %d", http_request.status_code)
-                                    logging.warning("Text: %s", http_request.text)
-                                    logging.warning("URL: %s", url)
-                                    continue
-                                else:
-                                    http_json = http_request.json()
+                            response_text = download(
+                                remote_file=url,
+                                headers=headers,
+                                session=sdc_session,
+                                no_wildcards=True,
+                                return_text=True,
+                            )
+                            if response_text is None:
+                                continue
+                            http_json = json.loads(response_text)
 
                             if CONFIG['debug_mode']: logging.info('Filtering the results down to your trange')
 
@@ -177,35 +175,19 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
 
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
-                                with warnings.catch_warnings():
-                                    warnings.simplefilter("ignore", category=ResourceWarning)
-                                    fsrc = sdc_session.get(download_url, stream=True, verify=True, headers=headers)
-                                ftmp = NamedTemporaryFile(delete=False)
-
-                                with open(ftmp.name, 'wb') as f:
-                                    copyfileobj(fsrc.raw, f)
-
-                                if is_fsspec_uri(CONFIG["local_data_dir"]):
-                                    protocol, path = out_dir.split("://")
-                                    fs = fsspec.filesystem(protocol)
-
-                                    fs.makedirs(out_dir, exist_ok=True)
-
-                                    # if the download was successful, put at URI specified
-                                    fs.put(ftmp.name, out_file)
-                                else:
-                                    if not os.path.exists(out_dir):
-                                        os.makedirs(out_dir)
-
-                                    # if the download was successful, copy to data directory
-                                    copy(ftmp.name, out_file)
-
-                                out_files.append(out_file)
-                                out_file_groupings[grouping_key].extend([out_file])
-                                file_found = True
-                                fsrc.close()
-                                ftmp.close()
-                                os.unlink(ftmp.name)  # delete the temporary file
+                                downloaded_files = download(
+                                    remote_file=download_url,
+                                    local_path=out_dir,
+                                    local_file=file['file_name'],
+                                    headers=headers,
+                                    session=sdc_session,
+                                    no_wildcards=True,
+                                    force_download=True,
+                                )
+                                if downloaded_files:
+                                    out_files.append(out_file)
+                                    out_file_groupings[grouping_key].append(out_file)
+                                    file_found = True
                         except requests.exceptions.ConnectionError as e:
                             # No/bad internet connection; try loading the files locally
                             print(e)
