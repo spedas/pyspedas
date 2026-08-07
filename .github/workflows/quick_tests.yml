@@ -13,12 +13,12 @@ jobs:
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: [3.14]
+        python-version: ["3.14"]
 
     steps:
     - uses: actions/checkout@v5
     - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v6
+      uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
     - name: Install dependencies (Linux)
