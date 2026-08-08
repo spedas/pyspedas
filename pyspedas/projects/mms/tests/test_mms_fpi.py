@@ -1,6 +1,7 @@
 import numpy as np
 import pyspedas
 from pyspedas import mms_load_fpi
+from pyspedas.projects.mms.mms_get_local_files import mms_get_local_files
 import unittest
 from numpy.testing import assert_allclose
 
@@ -43,6 +44,44 @@ class FPITestCases(unittest.TestCase):
     def test_load_spdf_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], spdf=True)
         self.assertTrue(data_exists('mms1_dis_energyspectr_omni_fast'))
+
+    def test_invalid_reversed_trange(self):
+        invalid_trange = ['2019-05-20/00:00', '2018-09-21/00:01']
+
+        with self.assertLogs(level='ERROR') as log_context:
+            data = mms_load_fpi(trange=invalid_trange, no_update=True)
+
+        self.assertIsNone(data)
+        self.assertTrue(
+            any('Invalid trange' in message for message in log_context.output)
+        )
+
+        with self.assertLogs(level='ERROR'):
+            notplot_data = mms_load_fpi(
+                trange=invalid_trange,
+                no_update=True,
+                notplot=True,
+            )
+        self.assertIsNone(notplot_data)
+
+        with self.assertLogs(level='ERROR'):
+            available_data = mms_load_fpi(
+                trange=invalid_trange,
+                no_update=True,
+                available=True,
+            )
+        self.assertEqual(available_data, [])
+
+        with self.assertLogs(level='ERROR'):
+            local_files = mms_get_local_files(
+                '1',
+                'fpi',
+                'fast',
+                'l2',
+                'des-moms',
+                invalid_trange,
+            )
+        self.assertEqual(local_files, [])
 
     def test_load_small_brst_interval(self):
         data = mms_load_fpi(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', datatype=['dis-moms', 'dis-dist'], time_clip=True)
