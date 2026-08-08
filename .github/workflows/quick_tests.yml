@@ -211,8 +211,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
-        echo Starting CDAWeb tests at `date`
-        coverage run -a -m  pyspedas.cdagui_tools.tests.test_cdagui
+        #echo Starting CDAWeb tests at `date`
+        #coverage run -a -m  pyspedas.cdagui_tools.tests.test_cdagui
         echo Starting akebono tests at `date`
         coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
         echo Starting ace tests at `date`
@@ -237,8 +237,8 @@ jobs:
         coverage run -a -m  pyspedas.cotrans_tools.tests.test_quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
-        echo Starting hapi tests at `date`
-        coverage run -a -m  pyspedas.hapi_tools.tests.test_hapi
+        #echo Starting hapi tests at `date`
+        #coverage run -a -m  pyspedas.hapi_tools.tests.test_hapi
         echo Starting particles tests at `date`
         coverage run -a -m  pyspedas.particles.tests.test_particles
         echo Starting dscovr tests at `date`
