@@ -81,18 +81,12 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
-              echo "Starting spdf/cdaweb/hapi tests at $(date)"
-              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
-              echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
-              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
               echo Starting cluster tests at `date`
               coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
               echo Starting cluster S3 tests at `date`
               coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
-              echo Starting CDAWeb tests at `date`
-              coverage run -a -m pyspedas.cdagui_tools.tests.test_cdagui
               echo Starting soho tests at `date`
               coverage run -a -m pyspedas.projects.soho.tests.test_soho
               echo Starting de2 tests at `date`
@@ -208,6 +202,20 @@ jobs:
               # this test isolated from the other SPDF/THEMIS tests.
               echo Starting mica tests at `date`
               coverage run -a -m pyspedas.projects.mica.tests.test_mica
+
+          - shard: hapi
+            shard_script: |
+              # CDAWeb's HAPI server is failure prone, so we'll put it in its own shard
+              echo "Starting spdf/cdaweb/hapi tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
+              echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
+
+          - shard: cdaweb
+            shard_script: |
+              # CDAWeb is failure prone, so we'll put it in its own shard
+              echo Starting CDAWeb tests at `date`
+              coverage run -a -m pyspedas.cdagui_tools.tests.test_cdagui
 
           - shard: mms
             shard_script: |
