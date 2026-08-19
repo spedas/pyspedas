@@ -8,6 +8,12 @@ class LoadTestCases(unittest.TestCase):
         mfi_vars = pyspedas.projects.ace.mfi(trange=['2018-11-5', '2018-11-6'], time_clip=True)
         self.assertTrue(data_exists('Magnitude'))
 
+    def test_load_mfi_units_exception(self):
+        # The BRTN variable has a non-numeric DEPEND_1 attribute, but also defines units for it.
+        # Make sure the exception doesn't propagate outside of pyspedas.get()
+        mfi_vars = pyspedas.projects.ace.mfi()
+        t = pyspedas.get('BRTN')
+
     def test_load_mfi_prefix_none(self):
         mfi_vars = pyspedas.projects.ace.mfi(trange=['2018-11-5', '2018-11-6'], prefix=None)
         self.assertTrue(data_exists('Magnitude'))

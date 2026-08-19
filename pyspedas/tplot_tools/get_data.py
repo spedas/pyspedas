@@ -140,7 +140,7 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
                 v2_values = v2_values * u.Unit(v2_units)
             if v3_values is not None and v3_units is not None:
                 v3_values = v3_values * u.Unit(v3_units)
-        except ValueError:
+        except (ValueError,TypeError):
             # occurs when there's a problem converting the units string
             # to astropy units
             pass
