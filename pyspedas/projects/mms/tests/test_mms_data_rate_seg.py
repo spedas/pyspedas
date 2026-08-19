@@ -151,10 +151,15 @@ class SegmentTestCases(unittest.TestCase):
         self.assertTrue(out[0][0] < time_double("2019-10-02"))
         self.assertTrue(out[1][-1] > time_double("2019-10-31"))
 
-    def test_load_burst_intervals(self):
+    def test_load_burst_intervals_early(self):
         out = mms_load_burst_intervals(trange=["2015-11-01", "2015-11-10"])
         self.assertTrue(out[0][0] < time_double("2015-11-02"))
         self.assertTrue(out[1][-1] > time_double("2015-11-09"))
+
+    def test_load_burst_intervals_late(self):
+        out = mms_load_burst_intervals(trange=['2026-01-19/12:00:00','2026-01-20/12:00:00'])
+        self.assertTrue(out[0][0] < time_double("2026-01-19/17:52"))
+        self.assertTrue(out[1][-1] > time_double("2026-01-20/09:04"))
 
 
     def test_spd_mms_load_bss_abs_sroi_combined(self):
