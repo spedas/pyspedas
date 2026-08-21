@@ -93,6 +93,15 @@ def lineplot(var_data,
     if legend_ncols is None:
         legend_ncols = 1
 
+    foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+    background = pyspedas.tplot_tools.tplot_opt_glob.get('background')
+    if legend_color is None:
+        legend_color = foreground
+    if legend_edgecolor is None:
+        legend_edgecolor = foreground
+    if legend_facecolor is None and background is not None:
+        legend_facecolor = background
+
     if legend_linewidth is None:
         legend_linewidth = 4
 

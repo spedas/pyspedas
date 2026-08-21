@@ -53,13 +53,15 @@ def var_label_panel(
 
     # Var label panel
     var_label_axis = axs[last_data_idx + 1]
+    foreground = pyspedas.tplot_tools.tplot_opt_glob.get("foreground")
     var_label_axis.spines["top"].set_visible(False)
     var_label_axis.spines["right"].set_visible(False)
     var_label_axis.spines["bottom"].set_visible(False)
     var_label_axis.spines["left"].set_visible(False)
     var_label_axis.tick_params(axis="x", which="both", length=0, labelbottom=False)
     var_label_axis.tick_params(
-        axis="y", which="both", length=0, pad=font_size * 3, labelsize=font_size
+        axis="y", which="both", length=0, pad=font_size * 3,
+        labelsize=font_size, colors=foreground
     )
     var_label_axis.set_ylim(0, len(var_label_list) + 2)
 
@@ -73,7 +75,8 @@ def var_label_panel(
             y_label = ""
             _, xmax = var_label_axis.get_xlim()
             var_label_axis.text(
-                xmax, y, time_prefix, fontsize=font_size, ha="right", va="center"
+                xmax, y, time_prefix, fontsize=font_size, ha="right", va="center",
+                color=foreground
             )
         else:
             xmin, xmax = var_label_axis.get_xlim()
@@ -109,8 +112,8 @@ def var_label_panel(
                         fontsize=font_size,
                         ha="center",
                         va="center",
+                        color=foreground,
                     )
             ys.append(y)
             y_labels.append(y_label)
     var_label_axis.set_yticks(ys, y_labels, ha="right")
-

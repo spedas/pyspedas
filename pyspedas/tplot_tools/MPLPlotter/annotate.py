@@ -4,7 +4,7 @@ import logging
 
 def annotate(tvar=None, text=None, position=None,
              xycoords='axes fraction',
-             color='black',
+             color=None,
              fontfamily=None,
              fontsize='x-large',
              alpha=1,
@@ -32,7 +32,8 @@ def annotate(tvar=None, text=None, position=None,
         The coordinate system to use for the position. 'axes fraction' interprets the positions relative to the panel size. 'data' uses
         data coordinates (times for the x axis, data values for the y axis).  Times should be passed as np.datetime64 objects.
     color: str
-        Color of the text (default: 'black')
+        Color of the text. Defaults to the global foreground color, or black
+        if no foreground color is set.
     fontfamily: str
         Font to be used for the text
     fontsize: str or numeric

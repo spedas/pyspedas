@@ -48,6 +48,9 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'background':
         new_tplot_opt_glob['background'] = value
 
+    elif option == 'foreground':
+        new_tplot_opt_glob['foreground'] = value
+
     elif option == 'grid':
         new_tplot_opt_glob['grid'] = value
 
@@ -95,6 +98,7 @@ def tplot_options(option, value):
         annotations         dict         A dictionary of text, positions, xycoords, and other options to be placed on the plot
         varlabel_style      str          Set to 'extra_axes' for each variable on its own axis, or 'extra_panel' for a more compact display in a single panel
         background          color        Background color for the figure and all panels. Accepts any matplotlib color.
+        foreground          color        Default color for titles, labels, ticks, spines, legends, annotations, and colorbars.
         grid                bool         Turns grid lines on or off for all panels. Per-variable settings take precedence.
         grid_properties     dict         Keyword arguments passed to matplotlib ``Axes.grid`` for all panels.
         ==================  ==========   =====
@@ -108,6 +112,10 @@ def tplot_options(option, value):
         >>> # Set the plot title
         >>> import pyspedas
         >>> pyspedas.tplot_options('title', 'SWEA Data for Orbit 1563')
+
+        >>> # Set colors suitable for a dark plot
+        >>> pyspedas.tplot_options('background', '#001b33')
+        >>> pyspedas.tplot_options('foreground', 'white')
     
     """
 

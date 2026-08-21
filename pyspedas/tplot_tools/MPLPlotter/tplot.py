@@ -377,10 +377,13 @@ def tplot(variables,
             plt.style.use(style)
 
         background = pyspedas.tplot_tools.tplot_opt_glob.get('background')
+        foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
         if background is not None:
             fig.set_facecolor(background)
             for panel_axis in np.atleast_1d(axes):
                 panel_axis.set_facecolor(background)
+        if foreground is not None and fig._suptitle is not None:
+            fig._suptitle.set_color(foreground)
     else:
         # fig and axis have been passed as parameters, most likely a recursive tplot call to render
         # a pseudovariable
@@ -648,15 +651,22 @@ def tplot(variables,
             line_opts = merged_line_opts
 
         if line_opts is not None:
+            panel_title_color = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
             if 'name' in line_opts:
-                this_axis.set_title(line_opts['name'])
+                this_axis.set_title(line_opts['name'], color=panel_title_color)
             elif 'title' in line_opts:
-                this_axis.set_title(line_opts['title'])
+                this_axis.set_title(line_opts['title'], color=panel_title_color)
 
         plot_extras = var_quants.attrs['plot_options']['extras']
         if pseudo_extra_options is not None and len(pseudo_extra_options) > 0:
             merged_plot_extras = plot_extras | pseudo_extra_options
             plot_extras = merged_plot_extras
+
+        foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+        if foreground is not None:
+            this_axis.tick_params(axis='both', colors=foreground)
+            for spine in this_axis.spines.values():
+                spine.set_color(foreground)
 
         xtitle = None
         if xaxis_options.get('axis_label') is not None:
@@ -667,7 +677,9 @@ def tplot(variables,
         if xaxis_options.get('axis_subtitle') is not None:
             xsubtitle = xaxis_options['axis_subtitle']
 
-        if style is None:
+        if foreground is not None:
+            xtitle_color = foreground
+        elif style is None:
             xtitle_color = 'black'
         else:
             xtitle_color = None
@@ -722,7 +734,9 @@ def tplot(variables,
         if yminor_tick_interval is not None and ylog != 'log':
             this_axis.yaxis.set_minor_locator(plt.MultipleLocator(yminor_tick_interval))
 
-        if style is None:
+        if foreground is not None:
+            ytitle_color = foreground
+        elif style is None:
             ytitle_color = 'black'
         else:
             ytitle_color = None
@@ -860,7 +874,7 @@ def tplot(variables,
                                    fontstretch=annotation['fontstretch'],
                                    fontweight=annotation['fontweight'],
                                    rotation=annotation['rotation'],
-                                   color=annotation['color'])
+                                   color=annotation.get('color') or foreground or 'black')
 
     # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:
@@ -895,7 +909,17 @@ def tplot(variables,
 
             colorbar = fig.colorbar(colorbars[variable]['im'], ax=this_axis)
 
-            if style is None:
+            background = pyspedas.tplot_tools.tplot_opt_glob.get('background')
+            foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+            if background is not None:
+                colorbar.ax.set_facecolor(background)
+            if foreground is not None:
+                colorbar.ax.tick_params(colors=foreground)
+                colorbar.outline.set_edgecolor(foreground)
+
+            if foreground is not None:
+                ztitle_color = foreground
+            elif style is None:
                 ztitle_color = 'black'
             else:
                 ztitle_color = None
@@ -970,6 +994,11 @@ def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_
             # set up the new x-axis
             axis_delta = axis_delta - num_panels * 0.1
             new_xaxis = this_axis.secondary_xaxis(axis_delta)
+            foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+            if foreground is not None:
+                new_xaxis.tick_params(axis='both', colors=foreground)
+                for spine in new_xaxis.spines.values():
+                    spine.set_color(foreground)
             if axis_font_size is not None:
                 new_xaxis.tick_params(axis='x', labelsize=axis_font_size)
                 new_xaxis.tick_params(axis='y', labelsize=axis_font_size)
@@ -982,7 +1011,7 @@ def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_
             new_xaxis.set_xticks(xaxis_ticks_dt)
             new_xaxis.set_xticklabels(xaxis_labels)
             ytitle = pyspedas.tplot_tools.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
-            new_xaxis.set_xlabel(ytitle, fontsize=char_size)
+            new_xaxis.set_xlabel(ytitle, fontsize=char_size, color=foreground)
 
         # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
 
