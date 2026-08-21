@@ -319,7 +319,7 @@ def tplot(variables,
 
 
     varlabel_style = pyspedas.tplot_tools.tplot_opt_glob.get('varlabel_style')
-    if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
+    if var_label is None or varlabel_style is None or varlabel_style.lower() == 'extra_axes':
         num_panels = len(variables)
         panel_sizes = [1]*num_panels
     else: # varlabel_style 'extra_panel'

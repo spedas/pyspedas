@@ -213,6 +213,14 @@ class GridBackgroundPlotOptionsTestCases(unittest.TestCase):
         )
         self.assertTrue(all(text.get_color() is not None for text in axes[1].texts))
 
+    def test_extra_panel_style_without_variable_labels(self):
+        tplot_options("varlabel_style", "extra_panel")
+
+        _, axis = tplot("panel1", display=False, return_plot_objects=True)
+
+        self.assertNotIsInstance(axis, np.ndarray)
+        self.assertEqual(axis.var_name, "panel1")
+
     def test_panel_grid_properties_override_global_properties(self):
         tplot_options("grid", True)
         tplot_options("grid_properties", {"color": "red", "linewidth": 1.0})
