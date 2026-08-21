@@ -26,6 +26,9 @@ tplot_opt_glob = dict(
     crosshair=True,
     data_gap=0,
     black_background=False,
+    background=None,
+    grid=False,
+    grid_properties={},
     axis_font_size=12,
     axis_tick_num=[
         (0, 1000000000),

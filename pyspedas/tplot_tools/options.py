@@ -1,3 +1,4 @@
+import copy
 import logging
 import pyspedas
 import numpy as np
@@ -51,6 +52,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         annotations             dict         A dictionary or list of dictionaries of matplotlib text annotation parameters (see annotate() routine)
         visible                 bool         If False, do not display lines for this variable.
         nodata                  bool         If True, do not display lines for this variable.
+        grid                    bool         Turns grid lines on or off for this panel.
+        grid_properties         dict         Keyword arguments passed to matplotlib ``Axes.grid`` for this panel.
         ======================  ===========  ===========================================================================================================================
 
         ======================  ===========  ===========================================================================================================================
@@ -603,6 +606,17 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option == 'border':
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['border'] = value
 
+            elif option == 'grid':
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['grid'] = value
+
+            elif option == 'grid_properties':
+                if not isinstance(value, dict):
+                    logging.warning('grid_properties must be a dictionary')
+                elif 'visible' in value:
+                    logging.warning("Set grid visibility with the grid option, not grid_properties['visible']")
+                else:
+                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['grid_properties'] = copy.deepcopy(value)
+
             elif option == 'y_interp':
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp'] = value
 
@@ -700,5 +714,4 @@ def _convert_to_matplotlib_linestyle(linestyle):
         else:
             converted_linestyles.append(ls)
     return converted_linestyles
-
 

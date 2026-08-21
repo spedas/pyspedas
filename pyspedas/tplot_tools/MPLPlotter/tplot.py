@@ -375,6 +375,12 @@ def tplot(variables,
         style = pyspedas.tplot_tools.tplot_opt_glob.get('style')
         if style is not None:
             plt.style.use(style)
+
+        background = pyspedas.tplot_tools.tplot_opt_glob.get('background')
+        if background is not None:
+            fig.set_facecolor(background)
+            for panel_axis in np.atleast_1d(axes):
+                panel_axis.set_facecolor(background)
     else:
         # fig and axis have been passed as parameters, most likely a recursive tplot call to render
         # a pseudovariable
@@ -773,6 +779,26 @@ def tplot(variables,
         if plot_extras.get('ytick_labelcolor') is not None:
             this_axis.tick_params(axis='y', labelcolor=plot_extras.get('ytick_labelcolor'))
 
+        # Grid visibility and styling can be set globally with tplot_options,
+        # then overridden for an individual panel with options.
+        grid = pyspedas.tplot_tools.tplot_opt_glob.get('grid', False)
+        if plot_extras.get('grid') is not None:
+            grid = plot_extras['grid']
+
+        grid_properties = pyspedas.tplot_tools.tplot_opt_glob.get('grid_properties', {})
+        if grid_properties is None:
+            grid_properties = {}
+        else:
+            grid_properties = copy.deepcopy(grid_properties)
+        if plot_extras.get('grid_properties') is not None:
+            grid_properties.update(plot_extras['grid_properties'])
+        if grid:
+            this_axis.grid(visible=True, **grid_properties)
+        else:
+            # Matplotlib enables a grid when line properties are supplied with
+            # visible=False, so omit the properties when disabling it.
+            this_axis.grid(visible=False)
+
         # determine if this is a line plot or a spectrogram
         spec = False
         if plot_extras.get('spec') is not None:
@@ -1081,4 +1107,3 @@ def replace_common_exp(title):
     if exp:
         title_out += '}$'
     return title_out
-

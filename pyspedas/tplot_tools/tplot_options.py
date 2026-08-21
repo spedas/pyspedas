@@ -1,3 +1,4 @@
+import copy
 import logging
 import pyspedas
 
@@ -44,6 +45,20 @@ def set_tplot_options(option, value, old_tplot_opt_glob):
     elif option == 'varlabel_style':
         new_tplot_opt_glob['varlabel_style'] = value
 
+    elif option == 'background':
+        new_tplot_opt_glob['background'] = value
+
+    elif option == 'grid':
+        new_tplot_opt_glob['grid'] = value
+
+    elif option == 'grid_properties':
+        if not isinstance(value, dict):
+            logging.warning("grid_properties must be a dictionary")
+        elif 'visible' in value:
+            logging.warning("Set grid visibility with the grid option, not grid_properties['visible']")
+        else:
+            new_tplot_opt_glob['grid_properties'] = copy.deepcopy(value)
+
     else:
         logging.warning("Unknown option supplied: " + str(option))
 
@@ -79,6 +94,9 @@ def tplot_options(option, value):
         ymargin             [flt, flt]   The height of the top and bottom margins of the plot (in inches)
         annotations         dict         A dictionary of text, positions, xycoords, and other options to be placed on the plot
         varlabel_style      str          Set to 'extra_axes' for each variable on its own axis, or 'extra_panel' for a more compact display in a single panel
+        background          color        Background color for the figure and all panels. Accepts any matplotlib color.
+        grid                bool         Turns grid lines on or off for all panels. Per-variable settings take precedence.
+        grid_properties     dict         Keyword arguments passed to matplotlib ``Axes.grid`` for all panels.
         ==================  ==========   =====
 
     Returns
