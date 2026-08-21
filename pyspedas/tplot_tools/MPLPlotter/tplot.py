@@ -653,9 +653,15 @@ def tplot(variables,
         if line_opts is not None:
             panel_title_color = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
             if 'name' in line_opts:
-                this_axis.set_title(line_opts['name'], color=panel_title_color)
+                if panel_title_color is not None:
+                    this_axis.set_title(line_opts['name'], color=panel_title_color)
+                else:
+                    this_axis.set_title(line_opts['name'])
             elif 'title' in line_opts:
-                this_axis.set_title(line_opts['title'], color=panel_title_color)
+                if panel_title_color is not None:
+                    this_axis.set_title(line_opts['title'], color=panel_title_color)
+                else:
+                    this_axis.set_title(line_opts['title'])
 
         plot_extras = var_quants.attrs['plot_options']['extras']
         if pseudo_extra_options is not None and len(pseudo_extra_options) > 0:
@@ -1011,7 +1017,10 @@ def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_
             new_xaxis.set_xticks(xaxis_ticks_dt)
             new_xaxis.set_xticklabels(xaxis_labels)
             ytitle = pyspedas.tplot_tools.data_quants[label].attrs['plot_options']['yaxis_opt']['axis_label']
-            new_xaxis.set_xlabel(ytitle, fontsize=char_size, color=foreground)
+            if foreground is not None:
+                new_xaxis.set_xlabel(ytitle, fontsize=char_size, color=foreground)
+            else:
+                new_xaxis.set_xlabel(ytitle, fontsize=char_size)
 
         # fig.subplots_adjust(bottom=0.05+len(var_label)*0.1)
 

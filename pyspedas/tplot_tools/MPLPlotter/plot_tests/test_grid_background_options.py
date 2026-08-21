@@ -189,6 +189,30 @@ class GridBackgroundPlotOptionsTestCases(unittest.TestCase):
         for label in variable_label_axis.get_yticklabels():
             self.assertEqual(mcolors.to_rgba(label.get_color()), expected_foreground)
 
+    def test_unset_foreground_uses_matplotlib_defaults(self):
+        store_data("labels", data={"x": [1, 2, 3], "y": [10, 20, 30]})
+        options("labels", "ytitle", "Position")
+        options("panel1", "title", "Panel title")
+
+        _, axis = tplot(
+            "panel1",
+            var_label="labels",
+            display=False,
+            return_plot_objects=True,
+        )
+
+        self.assertIsNotNone(axis.title.get_color())
+        self.assertIsNotNone(axis.child_axes[0].xaxis.label.get_color())
+
+        tplot_options("varlabel_style", "extra_panel")
+        _, axes = tplot(
+            "panel1",
+            var_label=["labels"],
+            display=False,
+            return_plot_objects=True,
+        )
+        self.assertTrue(all(text.get_color() is not None for text in axes[1].texts))
+
     def test_panel_grid_properties_override_global_properties(self):
         tplot_options("grid", True)
         tplot_options("grid_properties", {"color": "red", "linewidth": 1.0})

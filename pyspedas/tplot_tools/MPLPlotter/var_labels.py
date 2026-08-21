@@ -59,10 +59,16 @@ def var_label_panel(
     var_label_axis.spines["bottom"].set_visible(False)
     var_label_axis.spines["left"].set_visible(False)
     var_label_axis.tick_params(axis="x", which="both", length=0, labelbottom=False)
-    var_label_axis.tick_params(
-        axis="y", which="both", length=0, pad=font_size * 3,
-        labelsize=font_size, colors=foreground
-    )
+    ytick_options = {
+        "axis": "y",
+        "which": "both",
+        "length": 0,
+        "pad": font_size * 3,
+        "labelsize": font_size,
+    }
+    if foreground is not None:
+        ytick_options["colors"] = foreground
+    var_label_axis.tick_params(**ytick_options)
     var_label_axis.set_ylim(0, len(var_label_list) + 2)
 
     ys = []
@@ -74,10 +80,14 @@ def var_label_panel(
         if i == len(var_label_list) + 1:
             y_label = ""
             _, xmax = var_label_axis.get_xlim()
-            var_label_axis.text(
-                xmax, y, time_prefix, fontsize=font_size, ha="right", va="center",
-                color=foreground
-            )
+            text_options = {
+                "fontsize": font_size,
+                "ha": "right",
+                "va": "center",
+            }
+            if foreground is not None:
+                text_options["color"] = foreground
+            var_label_axis.text(xmax, y, time_prefix, **text_options)
         else:
             xmin, xmax = var_label_axis.get_xlim()
             # Time suffix (Ex. 12:34) is plotted at y = 1.5 (bottom)
@@ -105,15 +115,14 @@ def var_label_panel(
             for xaxis_tick, xaxis_label in zip(xaxis_ticks, xaxis_labels):  # type: ignore
                 # Sometimes ticks produced by locator can be outside xlim, so let exclude them
                 if xmin <= xaxis_tick <= xmax:
-                    var_label_axis.text(
-                        xaxis_tick,
-                        y,
-                        xaxis_label,
-                        fontsize=font_size,
-                        ha="center",
-                        va="center",
-                        color=foreground,
-                    )
+                    text_options = {
+                        "fontsize": font_size,
+                        "ha": "center",
+                        "va": "center",
+                    }
+                    if foreground is not None:
+                        text_options["color"] = foreground
+                    var_label_axis.text(xaxis_tick, y, xaxis_label, **text_options)
             ys.append(y)
             y_labels.append(y_label)
     var_label_axis.set_yticks(ys, y_labels, ha="right")
