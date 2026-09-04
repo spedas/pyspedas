@@ -30,7 +30,8 @@ from pyspedas.utilities.config_testing import TESTING_CONFIG
 import pyspedas
 
 # Whether to display plots during testing
-global_display = TESTING_CONFIG["global_display"]
+#global_display = TESTING_CONFIG["global_display"]
+global_display = False
 # Directory to save testing output files
 output_dir = TESTING_CONFIG["local_testing_dir"]
 # Ensure output directory exists
@@ -1028,6 +1029,7 @@ class PlotTestCases(unittest.TestCase):
             "erg_mgf_l2_igrf_8sec_sm",
             "erg_orb_l2_pos_Lm_x",
         ]
+        tplot_options("varlabel_style", "extra_axes")
 
         tplot(
             plot_vars,
@@ -1073,6 +1075,8 @@ class PlotTestCases(unittest.TestCase):
             "erg_mgf_l2_igrf_8sec_sm",
             "erg_orb_l2_pos_Lm_x",
         ]
+
+        tplot_options("varlabel_style", "extra_axes")
 
         tplot(
             plot_vars,
@@ -1155,6 +1159,41 @@ class PlotTestCases(unittest.TestCase):
             save_png=os.path.join(save_dir, "xlim_am_trange_override.png"),
         )
         tplot_options("title", "")
+
+    def test_varlabel_axes_charsize(self):
+        del_data("*")
+        timespan(reset=True)
+        pyspedas.projects.ace.mfi()
+        tplot_options("varlabel_style", "extra_axes")
+        tplot_options("title", "Default charsize")
+        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_default_charsize.png") # everything is okay before setting the charsize
+        options('BGSM', 'charsize', 6)
+        # the size of the labels were changed for BGSM and Magnitude
+        tplot_options("title","BGSM charsize set to 6, should not affect varlabels")
+        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_bgsm_charsize_6.png")
+        options('Magnitude', 'charsize', 20) # doesn't update the size of the label
+        tplot_options("title","Magnitude charsize changed to 20, should not affect varlabels")
+        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_magnitude_charsize_20.png") # Magnitude is still charsize=6
+        tplot_options("title", "")
+        tplot_options("varlabel_style", None)
+
+    def test_varlabel_panel_charsize(self):
+        del_data("*")
+        timespan(reset=True)
+        pyspedas.projects.ace.mfi()
+        tplot_options("title", "Default charsize")
+        tplot_options("varlabel_style", 'extra_panel')
+        tplot(['BRTN', 'BGSM'], var_label=['Magnitude'],display=global_display, save_png="varlabel_panel_default_charsize.png") # everything is okay before setting the charsize
+        options('BGSM', 'charsize', 6)
+        tplot_options("varlabel_style", "extra_panel")
+        # the size of the labels were changed for BGSM and Magnitude
+        tplot_options("title","BGSM charsize set to 6, should not affect varlabels")
+        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_panel_bgsm_charsize_6.png")
+        options('Magnitude', 'charsize', 20) # doesn't update the size of the label
+        tplot_options("title","Magnitude charsize changed to 20, should not affect varlabels")
+        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_panel_magnitude_charsize_20.png") # Magnitude is still charsize=6
+        tplot_options("title", "")
+        tplot_options("varlabel_style", None)
 
 
 if __name__ == "__main__":
