@@ -485,7 +485,7 @@ def download_file(
             if temp_name is not None:
                 try:
                     os.unlink(temp_name)
-                except FileNotFoundError:
+                except (FileNotFoundError, PermissionError):
                     pass
             
 
