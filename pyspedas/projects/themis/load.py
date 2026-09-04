@@ -26,6 +26,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          no_update=False,
          time_clip=False,
          force_download=False,
+         version=None,
          ):
     """
     This function loads data from the THEMIS mission;
@@ -46,6 +47,14 @@ def load(trange=['2013-11-5', '2013-11-6'],
         pyspedas.projects.themis.ask
         pyspedas.projects.themis.state
         pyspedas.projects.themis.slp
+
+    Parameters
+    ----------
+    version: str, optional
+        CDF version to use in place of a version wildcard, e.g. "v01".
+        For state data, also replaces Berkeley's unversioned link with an
+        explicitly versioned filename. Paths with fixed versions are unchanged.
+        Default: None, which preserves the default file selection.
 
     """
 
@@ -151,8 +160,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_v??.cdf')
         elif instrument == 'state':
-            if 'spdf' in remote_data_dir:
-                # There is no unversioned link at SPDF, specify a versioned file with wildcard.
+            if version is not None or 'spdf' in remote_data_dir:
+                # Use a versioned path for explicit requests and for SPDF,
+                # which has no unversioned link. Substitute the version below.
                 pathformat = ('th' + prb + '/' + level + '/' + instrument
                               + '/%Y/th' + prb + '_' + level + '_' + instrument
                               + '_%Y%m%d_v??.cdf')
@@ -205,6 +215,9 @@ def load(trange=['2013-11-5', '2013-11-6'],
             pathformat = [pathformat]
 
         for file_format in pathformat:
+            if version is not None:
+                file_format = file_format.replace('_v??', '_' + version)
+
             # find the full remote path names using the trange
             remote_names = dailynames(file_format=file_format, trange=trange, res=file_resolution)
 
@@ -212,7 +225,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                              remote_path=remote_data_dir,
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update,
-                             last_version=True,
+                             last_version=version is None,
                              force_download=force_download,)
             if files is not None:
                 for file in files:
