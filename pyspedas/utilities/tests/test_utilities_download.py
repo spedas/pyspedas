@@ -76,6 +76,31 @@ class DownloadTestCases(unittest.TestCase):
 
         response.close.assert_called_once()
 
+    def test_download_file_ignores_permission_error_during_temp_cleanup(self):
+        response = Mock(status_code=200)
+        response.iter_content.return_value = [b"content"]
+        session = Mock()
+        session.get.return_value = response
+
+        with tempfile.TemporaryDirectory() as temp_dir:
+            filename = os.path.join(temp_dir, "downloaded.txt")
+            with patch(
+                "pyspedas.utilities.download.os.unlink",
+                side_effect=PermissionError("temporary file is still in use"),
+            ):
+                result = download_file(
+                    url="https://example.com/downloaded.txt",
+                    filename=filename,
+                    session=session,
+                    text_only=False,
+                )
+
+            self.assertEqual(result, filename)
+            with open(filename, "rb") as downloaded_file:
+                self.assertEqual(downloaded_file.read(), b"content")
+
+        response.close.assert_called_once()
+
     def test_configure_retry_session_preserves_state(self):
         session = requests.Session()
         session.auth = ("test-user", "test-password")
