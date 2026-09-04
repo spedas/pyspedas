@@ -17,6 +17,10 @@ def var_label_panel(
         font_size: float
 ) -> None:
 
+    # Ensure var_label_list is a list and not a string
+    if isinstance(var_label_list, str):
+        var_label_list = [var_label_list]
+
     # Postprocess var label panel
     last_data_idx = len(variables) - 1
     last_data_ax = axs[last_data_idx]
