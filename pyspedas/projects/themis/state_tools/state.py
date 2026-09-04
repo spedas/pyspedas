@@ -16,7 +16,8 @@ def state(trange=['2007-03-23', '2007-03-24'],
           notplot=False,
           no_update=False,
           time_clip=False,
-          keep_spin=False):
+          keep_spin=False,
+          version=None):
     """
     Load THEMIS state data
 
@@ -81,6 +82,10 @@ def state(trange=['2007-03-23', '2007-03-24'],
             If True, do not delete the spin model tplot variables after the spin models are built.
             Default: False
 
+        version: str, optional
+            CDF version to load, e.g. "v01", from either Berkeley or SPDF.
+            Default: None, which uses the unversioned link at Berkeley or
+            the latest available version at SPDF.
 
     Returns
     -------
@@ -111,7 +116,7 @@ def state(trange=['2007-03-23', '2007-03-24'],
                suffix=suffix, get_support_data=get_support_data,
                varformat=varformat, varnames=varnames, exclude_format = exclude_format,
                downloadonly=downloadonly, notplot=notplot,
-               time_clip=time_clip, no_update=no_update)
+               time_clip=time_clip, no_update=no_update, version=version)
     if get_support_data:
         for p in probe:
             # Process spin model variables

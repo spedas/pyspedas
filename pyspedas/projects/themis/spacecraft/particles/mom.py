@@ -19,7 +19,8 @@ def mom(trange=['2008-03-23', '2008-03-24'],
         notplot=False,
         no_update=False,
         time_clip=False,
-        apply_eclipse_corrections=False):
+        apply_eclipse_corrections=False,
+        version=None):
     """
     This function loads THEMIS moments data
 
@@ -82,6 +83,10 @@ def mom(trange=['2008-03-23', '2008-03-24'],
         apply_eclipse_corrections: bool
             If True, apply eclipse spin model corrections to output variables as appropriate.
             Default: False
+        version: str, optional
+            CDF version to use in place of a version wildcard, e.g. "v01".
+            Default: None, which preserves the default file selection.
+
     Returns
     -------
     List of str
@@ -101,7 +106,7 @@ def mom(trange=['2008-03-23', '2008-03-24'],
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
-                probe=probe, time_clip=time_clip, no_update=no_update)
+                probe=probe, time_clip=time_clip, no_update=no_update, version=version)
 
     if not isinstance(level, list):
         level = [level]

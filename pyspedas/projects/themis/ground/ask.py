@@ -13,7 +13,8 @@ def ask(site=None,
          downloadonly=False,
          notplot=False,
          no_update=False,
-         time_clip=False):
+         time_clip=False,
+         version=None):
     """
     This function loads THEMIS All Sky Keograms
 
@@ -69,6 +70,11 @@ def ask(site=None,
             in the trange keyword
             Default: False
 
+        version: str, optional
+            CDF version to use in place of a version wildcard, e.g. "v01".
+            Default: None, which preserves the default file selection.
+            Paths with a fixed version retain that version.
+
     Returns
     -------
         List of str
@@ -87,5 +93,5 @@ def ask(site=None,
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames, stations=site,
                 downloadonly=downloadonly, notplot=notplot, 
-                time_clip=time_clip, no_update=no_update)
+                time_clip=time_clip, no_update=no_update, version=version)
 
