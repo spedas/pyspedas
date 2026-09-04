@@ -45,6 +45,7 @@ def gmag(
     time_clip=False,
     force_download=False,
     sampling_rate=1,
+    version=None,
 ):
     """
     Load ground magnetometer data from the THEMIS mission.
@@ -88,6 +89,10 @@ def gmag(
     sampling_rate: int, optional
         Specify a sampling rate for loading variometer data. Accepts 1 (Hz) or 10 (Hz).
         Default: 1
+    version: str, optional
+        CDF version to use in place of a version wildcard, e.g. "v01".
+        Default: None, which preserves the default file selection.
+
     Returns
     -------
     dict
@@ -397,6 +402,7 @@ def gmag(
         time_clip=time_clip,
         no_update=no_update,
         force_download=force_download,
+        version=version,
     )
 
 

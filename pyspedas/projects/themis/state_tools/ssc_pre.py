@@ -13,6 +13,7 @@ def ssc_pre(
     notplot=False,
     no_update=False,
     time_clip=True,
+    version=None,
 ):
     """
     Load THEMIS predicted orbit data from CDAWeb/SSCWeb (Satellite Situation Center).
@@ -73,6 +74,10 @@ def ssc_pre(
             in the trange keyword
             Default: True
 
+        version: str, optional
+            CDF version to use in place of a version wildcard, e.g. "v01".
+            Default: None, which preserves the default file selection.
+
     Returns
     -------
     List of str
@@ -100,4 +105,5 @@ def ssc_pre(
         probe=probe,
         time_clip=time_clip,
         no_update=no_update,
+        version=version,
     )

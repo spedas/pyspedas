@@ -12,7 +12,8 @@ def slp(trange=['2007-03-23', '2007-03-24'],
           downloadonly=False,
           notplot=False,
           no_update=False,
-          time_clip=False):
+          time_clip=False,
+          version=None):
     """
     This function loads THEMIS Solar and Lunar Ephemeris data (SLP).  
 
@@ -64,6 +65,11 @@ def slp(trange=['2007-03-23', '2007-03-24'],
             in the trange keyword
             Default: False
 
+        version: str, optional
+            CDF version to use in place of a version wildcard, e.g. "v01".
+            Default: None, which preserves the default file selection.
+            Paths with a fixed version retain that version.
+
     Returns
     -------
         List of str
@@ -82,7 +88,7 @@ def slp(trange=['2007-03-23', '2007-03-24'],
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
-                time_clip=time_clip, no_update=no_update)
+                time_clip=time_clip, no_update=no_update, version=version)
 
     if not downloadonly:
         # Coordinate system is not set in the data CDFs, so setting it here for now.

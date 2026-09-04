@@ -223,6 +223,8 @@ jobs:
         # coverage run -a -m  pyspedas.projects.cluster.tests.test_cluster_uri
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m  pyspedas.projects.themis.tests.test_themis_tplot_time
+        echo Starting themis version tests at `date`
+        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_versions
         echo Starting barrel tests at `date`
         coverage run -a -m  pyspedas.projects.barrel.tests.test_barrel
         echo Starting soho tests at `date`

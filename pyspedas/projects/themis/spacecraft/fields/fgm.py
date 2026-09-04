@@ -19,7 +19,8 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
         notplot=False,
         no_update=False,
         time_clip=False,
-        apply_eclipse_corrections:bool = False):
+        apply_eclipse_corrections:bool = False,
+        version=None):
     """
     This function loads Fluxgate magnetometer (FGM) data
 
@@ -79,6 +80,10 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
             If True, apply eclipse spinmodel corrections to applicable L2 quantities
             Default: False
 
+        version: str, optional
+            CDF version to use in place of a version wildcard, e.g. "v01".
+            Default: None, which preserves the default file selection.
+
     Returns
     -------
     List of str
@@ -100,7 +105,7 @@ def fgm(trange=['2007-03-23', '2007-03-24'],
                 suffix=suffix, get_support_data=get_support_data,
                 varformat=varformat, varnames=varnames,
                 downloadonly=downloadonly, notplot=notplot,
-                probe=probe, time_clip=time_clip, no_update=no_update)
+                probe=probe, time_clip=time_clip, no_update=no_update, version=version)
 
     if loaded_vars is None or loaded_vars == []:
         return []
