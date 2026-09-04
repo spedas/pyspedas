@@ -885,7 +885,7 @@ def tplot(variables,
     # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:
         if varlabel_style is None or varlabel_style.lower() == 'extra_axes':
-            varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_extras=plot_extras)
+            varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size)
         else:
             var_label_panel(variables, var_label, axes,  axis_font_size)
 
@@ -968,18 +968,15 @@ def tplot(variables,
         return fig, axes
 
 
-def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_extras):
+def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size):
     # apply any addition x-axes specified by the var_label keyword
     if var_label is not None:
         if not isinstance(var_label, list):
             var_label = [var_label]
 
-        char_size = pyspedas.tplot_tools.tplot_opt_glob.get('charsize')
-        if char_size is None:
-            char_size = 12
-
-        if plot_extras.get('char_size') is not None:
-            char_size = plot_extras['char_size']
+        char_size = 12
+        if axis_font_size is not None:
+            char_size = axis_font_size
 
         axis_delta = 0.0
 
@@ -1005,9 +1002,9 @@ def varlabels_extra_axes(num_panels, this_axis, var_label, axis_font_size, plot_
                 new_xaxis.tick_params(axis='both', colors=foreground)
                 for spine in new_xaxis.spines.values():
                     spine.set_color(foreground)
-            if axis_font_size is not None:
-                new_xaxis.tick_params(axis='x', labelsize=axis_font_size)
-                new_xaxis.tick_params(axis='y', labelsize=axis_font_size)
+
+            new_xaxis.tick_params(axis='x', labelsize=char_size)
+            new_xaxis.tick_params(axis='y', labelsize=char_size)
 
             xaxis_ticks = this_axis.get_xticks().tolist()
             xaxis_ticks_dt = [np.datetime64(mpl.dates.num2date(tick_val).replace(tzinfo=None).isoformat(), 'ns') for
