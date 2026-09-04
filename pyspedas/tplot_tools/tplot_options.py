@@ -88,7 +88,7 @@ def tplot_options(option, value):
         title_size          int          Font size of the title
         data_gap            int          Number of seconds with consecutive nan values allowed before no interp should occur
         x_range             [flt, flt]   The min and max x_range (time) to be plotted on all plots
-        axis_font_size      int          The font size of the axis ticks.  Default is 10.
+        axis_font_size      int          The font size of the axis tick labels and var_labels.  Default is 10.
         charsize            int          The font size for the legend strings
         style               str          The matplotlib plot style to use
         xsize               flt          The size of the plot window in the X dimension (units of inches)
