@@ -292,6 +292,84 @@ class CotransTestCases(unittest.TestCase):
         self.assertTrue(out_len == in_len)
         assert_allclose(res_traces, gsm)
 
+    def test_heliocentric_cotrans(self):
+        """Test GSEQ and the HEE, HAE, and HEEQ graph branches."""
+        times = np.array([
+            time_double("2004-02-14/12:00:00"),
+            time_double("2016-07-01"),
+            time_double("2025-01-10/06:30:00"),
+        ])
+        vectors = np.array([
+            [7000.0, 20.0, -30.0],
+            [-10000.0, 50.0, 80.0],
+            [42164.0, -10.0, 40.0],
+        ])
+        systems = ["gei", "gse", "gseq", "hee", "hae", "heeq"]
+
+        for position in (False, True):
+            for coord_out in systems:
+                transformed = cotrans(
+                    time_in=times,
+                    data_in=vectors,
+                    coord_in="gei",
+                    coord_out=coord_out,
+                    quiet=True,
+                    position=position,
+                )
+                restored = cotrans(
+                    time_in=times,
+                    data_in=transformed,
+                    coord_in=coord_out,
+                    coord_out="gei",
+                    quiet=True,
+                    position=position,
+                )
+                assert_allclose(restored, vectors, atol=2.0e-4, rtol=0.0)
+
+        # A geocentric origin becomes the Earth-Sun distance in HEE, while a
+        # non-position zero vector receives no translation.
+        zeros = np.zeros_like(vectors)
+        hee_position = cotrans(
+            time_in=times,
+            data_in=zeros,
+            coord_in="gse",
+            coord_out="hee",
+            quiet=True,
+            position=True,
+        )
+        hee_vector = cotrans(
+            time_in=times,
+            data_in=zeros,
+            coord_in="gse",
+            coord_out="hee",
+            quiet=True,
+            position=False,
+        )
+        self.assertTrue(
+            np.all(
+                (hee_position[:, 0] > 1.47e8) & (hee_position[:, 0] < 1.53e8)
+            )
+        )
+        assert_allclose(hee_position[:, 1:], 0.0, atol=0.0)
+        assert_allclose(hee_vector, 0.0, atol=0.0)
+
+    def test_heliocentric_tplot_position_metadata(self):
+        """The tplot API infers position translation from st_type metadata."""
+        del_data()
+        times = np.array([time_double("2025-01-10/06:30:00")])
+        data = np.zeros((1, 3))
+        metadata = {"data_att": {"coord_sys": "gse", "st_type": "pos"}}
+        store_data(
+            "gse_position",
+            data={"x": times, "y": data},
+            attr_dict=metadata,
+        )
+        self.assertEqual(
+            cotrans("gse_position", "hee_position", coord_out="hee", quiet=True), 1
+        )
+        self.assertEqual(get_coords("hee_position"), "HEE")
+        self.assertGreater(get_data("hee_position").y[0, 0], 1.47e8)
+
     def test_all_cotrans(self):
         """Test all cotrans pairs.
 
@@ -302,7 +380,19 @@ class CotransTestCases(unittest.TestCase):
             self.assertIn(
                 "cotrans error: No output coordinates were provided.", log.output[0]
             )
-        all_cotrans = ["gei", "geo", "j2000", "gsm", "mag", "gse", "sm"]
+        all_cotrans = [
+            "gei",
+            "geo",
+            "j2000",
+            "gsm",
+            "mag",
+            "gse",
+            "gseq",
+            "sm",
+            "hee",
+            "hae",
+            "heeq",
+        ]
         d = [
             [245.0, -102.0, 251.0],
             [775.0, 10.0, -10],

@@ -4,11 +4,44 @@ Coordinate Systems
 PySPEDAS can transform between many of the standard coordinate systems used in heliophysics:
 
 * GSE (Geocentric Solar Ecliptic)
+* GSEQ (Geocentric Solar Equatorial)
 * GSM (Geocentric Solar Magnetic)
 * GEI (Geocentric Equatorial Inertial)
 * SM (Solar Magnetic)
 * GEO (Geographic)
 * J2000
+* HEE (Heliocentric Earth Ecliptic)
+* HAE (Heliocentric Aries Ecliptic)
+* HEEQ (Heliocentric Earth Equatorial)
+
+Coordinate-system definitions
+------------------------------------
+
+The solar coordinate systems use the following axis conventions. In each case,
+the Y axis completes a right-handed Cartesian system:
+
+* **GSE** is centered on Earth. Its X axis points from Earth toward the Sun,
+  and its Z axis points toward ecliptic north.
+* **GSEQ** is centered on Earth. Its X axis points from Earth toward the Sun,
+  and its Z axis is the projection of the solar north rotation axis onto the
+  plane perpendicular to X.
+* **HEE** is centered on the Sun. Its X axis points from the Sun toward Earth,
+  and its Z axis points toward ecliptic north. Compared with GSE, the HEE X and
+  Y axes are reversed while the Z axis has the same direction.
+* **HAE** is centered on the Sun. Its X axis points toward the First Point of
+  Aries (the J2000 vernal equinox), and its Z axis points toward J2000 ecliptic
+  north.
+* **HEEQ** is centered on the Sun. Its Z axis is the solar north rotation axis,
+  and its X axis is the projection of the Sun-to-Earth direction onto the solar
+  equatorial plane.
+
+Heliocentric transforms use Astropy's bundled solar-system ephemeris to obtain
+the Earth position relative to the Sun. This uses Astropy's built-in ERFA tools
+and does not require downloading an external ephemeris kernel. Set ``position=True``
+when transforming position arrays in km so that the change of origin is applied;
+the default is rotation-only for other vectors such as fields and velocities.
+For tplot variables, ``cotrans`` detects positions automatically when the
+``data_att.st_type`` metadata value is ``"pos"``.
 
 There are also routines for working with other specialized coordinate systems
 
@@ -179,6 +212,14 @@ by users. They are listed here for completeness.
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgei2gse
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.tgsegei_vect
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgse2gei
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgse2gseq
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgseq2gse
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgse2hee
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subhee2gse
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgei2hae
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subhae2gei
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgseq2heeq
+.. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subheeq2gseq
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.tgsegsm_vect
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.subgse2gsm
 .. autofunction:: pyspedas.cotrans_tools.cotrans_lib.tgsmgse_vect

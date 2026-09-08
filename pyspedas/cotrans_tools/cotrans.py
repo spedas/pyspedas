@@ -2,7 +2,7 @@
 Coordinate transformations.
 
 Transform from/to the following coordinate systems:
-GSE, GSM, SM, GEI, GEO, MAG, J2000
+GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE, HEEQ
 
 Times are in Unix seconds for consistency.
 
@@ -31,7 +31,8 @@ def cotrans(
     data_in=None,
     coord_in=None,
     coord_out=None,
-    quiet= False
+    quiet=False,
+    position=None,
 ):
     """
     Transform data from coord_in to coord_out.
@@ -50,12 +51,18 @@ def cotrans(
         Ignored if name_in is provided.
     coord_in: str
         Name of input coordinate system.
-        Valid options: "gse", "gsm", "sm", "gei", "geo", "mag", "j2000"
+        Valid options: "gse", "gseq", "gsm", "sm", "gei", "geo", "mag",
+        "j2000", "hee", "hae", "heeq"
     coord_out: str
         Name of output coordinate system.
-        Valid options: "gse", "gsm", "sm", "gei", "geo", "mag", "j2000"
+        Valid options are the same as for coord_in.
     quiet: bool
         If True, do not output progress messages
+    position: bool, optional
+        If True, treat data as positions in km and apply the Earth-Sun origin
+        translation when entering or leaving a heliocentric system. If False,
+        apply rotations only. For tplot variables, the default detects
+        ``data_att.st_type == "pos"`` when that metadata is present.
 
     Returns
     -------
@@ -93,7 +100,19 @@ def cotrans(
 
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
-    all_coords = ["gse", "gsm", "sm", "gei", "geo", "mag", "j2000"]
+    all_coords = [
+        "gse",
+        "gseq",
+        "gsm",
+        "sm",
+        "gei",
+        "geo",
+        "mag",
+        "j2000",
+        "hee",
+        "hae",
+        "heeq",
+    ]
 
     if coord_in not in all_coords:
         logging.error(
@@ -111,6 +130,13 @@ def cotrans(
         tplot_data = get_data(name_in)
         time_in = tplot_data[0]
         data_in = tplot_data[1]
+        if position is None:
+            metadata = get_data(name_in, metadata=True) or {}
+            st_type = metadata.get("data_att", {}).get("st_type", "")
+            position = str(st_type).lower() == "pos"
+
+    if position is None:
+        position = False
 
     if len(data_in[:]) < 1:
         logging.error("cotrans error: Data is empty.")
@@ -128,7 +154,9 @@ def cotrans(
     # Typical case: ntimes x 3
     if len(dims) == 2 and dims[0] == len(time_in) and dims[1] == 3:
         # Data has the expected shape, call subcotrans
-        data_out = subcotrans(time_in, data_in, coord_in, coord_out, quiet=quiet)
+        data_out = subcotrans(
+            time_in, data_in, coord_in, coord_out, quiet=quiet, position=position
+        )
         pass
     elif len(dims) == 2:
         # Something is mismatched
@@ -148,7 +176,14 @@ def cotrans(
         for i in range(dims[0]):
             trace_times[:] = time_in[i]
             trace_points_in[:,:] = data_in[i,:,:]
-            trace_out =  cotrans(time_in=trace_times, data_in=trace_points_in, coord_in=coord_in, coord_out=coord_out, quiet=True)
+            trace_out = cotrans(
+                time_in=trace_times,
+                data_in=trace_points_in,
+                coord_in=coord_in,
+                coord_out=coord_out,
+                quiet=True,
+                position=position,
+            )
             data_out[i,:,:] = trace_out
 
         if not quiet:

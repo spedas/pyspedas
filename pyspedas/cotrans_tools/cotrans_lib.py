@@ -2,7 +2,7 @@
 Functions for coordinate transformations.
 
 Contains trasformations from/to the following coordinate systems:
-GSE, GSM, SM, GEI, GEO, MAG, J2000
+GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE, HEEQ
 
 Times are in Unix seconds for consistency.
 
@@ -14,6 +14,9 @@ For a comparison to IDL, see: http://spedas.org/wiki/index.php?title=Cotrans
 
 import numpy as np
 import logging
+from astropy.coordinates import get_body_barycentric_posvel, solar_system_ephemeris
+from astropy.time import Time
+import astropy.units as u
 from datetime import datetime, timezone, timedelta
 from pyspedas.cotrans_tools.igrf import set_igrf_params
 from pyspedas.cotrans_tools.j2000 import set_j2000_params
@@ -1245,6 +1248,158 @@ def subj20002gei(time_in, data_in, quiet=False):
     return np.transpose(d_out)
 
 
+_SOLAR_POLE_J2000 = np.array(
+    [
+        np.cos(np.deg2rad(286.13)) * np.cos(np.deg2rad(63.87)),
+        np.sin(np.deg2rad(286.13)) * np.cos(np.deg2rad(63.87)),
+        np.sin(np.deg2rad(63.87)),
+    ]
+)
+
+
+def _earth_heliocentric_j2000(time_in):
+    """Earth position relative to the Sun in J2000/BCRS axes, in km."""
+    obstime = Time(np.asarray(time_in), format="unix", scale="utc")
+    # Pin the bundled ERFA ephemeris so this transform never downloads a
+    # kernel or depends on the caller's global Astropy ephemeris setting.
+    with solar_system_ephemeris.set("builtin"):
+        earth, _ = get_body_barycentric_posvel("earth", obstime)
+        sun, _ = get_body_barycentric_posvel("sun", obstime)
+    return (earth.xyz - sun.xyz).to_value(u.km).T
+
+
+def _gseq_axes(time_in):
+    """Return the GSEQ unit axes expressed in GEI coordinates."""
+    time_in = np.atleast_1d(time_in)
+    _, _, sra, sdec, _ = csundir_vect(time_in)
+    x_axis = np.column_stack(
+        (
+            np.cos(sra) * np.cos(sdec),
+            np.sin(sra) * np.cos(sdec),
+            np.sin(sdec),
+        )
+    )
+    pole = np.tile(_SOLAR_POLE_J2000, (len(time_in), 1))
+    pole_gei = subj20002gei(time_in, pole, quiet=True)
+    y_axis = np.cross(pole_gei, x_axis)
+    y_axis /= np.linalg.norm(y_axis, axis=1)[:, None]
+    z_axis = np.cross(x_axis, y_axis)
+    return x_axis, y_axis, z_axis
+
+
+def subgse2gseq(time_in, data_in, quiet=False):
+    """Transform vectors from GSE to Geocentric Solar Equatorial."""
+    gei = subgse2gei(time_in, data_in, quiet=True)
+    axes = _gseq_axes(time_in)
+    if not quiet:
+        logging.info("Running transformation: subgse2gseq")
+    return np.column_stack([np.sum(gei * axis, axis=1) for axis in axes])
+
+
+def subgseq2gse(time_in, data_in, quiet=False):
+    """Transform vectors from Geocentric Solar Equatorial to GSE."""
+    axes = _gseq_axes(time_in)
+    data = np.asarray(data_in)
+    gei = sum(data[:, i, None] * axes[i] for i in range(3))
+    if not quiet:
+        logging.info("Running transformation: subgseq2gse")
+    return subgei2gse(time_in, gei, quiet=True)
+
+
+def subgse2hee(time_in, data_in, quiet=False, position=False):
+    """Transform GSE vectors or positions in km to HEE."""
+    data_out = np.asarray(data_in, dtype=float).copy()
+    data_out[:, :2] *= -1.0
+    if position:
+        distance = np.linalg.norm(_earth_heliocentric_j2000(time_in), axis=1)
+        data_out[:, 0] = distance - np.asarray(data_in)[:, 0]
+    if not quiet:
+        logging.info("Running transformation: subgse2hee")
+    return data_out
+
+
+def subhee2gse(time_in, data_in, quiet=False, position=False):
+    """Transform HEE vectors or positions in km to GSE."""
+    # The HEE/GSE affine transform is its own inverse.
+    return subgse2hee(time_in, data_in, quiet=quiet, position=position)
+
+
+def subgei2hae(time_in, data_in, quiet=False, position=False):
+    """Transform GEI vectors or positions in km to HAE."""
+    relative = subgei2j2000(time_in, data_in, quiet=True)
+    if position:
+        relative = relative + _earth_heliocentric_j2000(time_in)
+    matrix = np.array(
+        [
+            [1.0, -0.000000230286, 0.0],
+            [0.000000211284, 0.917482137087, 0.397776982902],
+            [-0.000000091603, -0.397776982902, 0.917482137087],
+        ]
+    )
+    if not quiet:
+        logging.info("Running transformation: subgei2hae")
+    return relative @ matrix.T
+
+
+def subhae2gei(time_in, data_in, quiet=False, position=False):
+    """Transform HAE vectors or positions in km to GEI."""
+    inverse = np.array(
+        [
+            [1.0, 0.000000211284, -0.000000091603],
+            [-0.000000230286, 0.917482137087, -0.397776982902],
+            [0.0, 0.397776982902, 0.917482137087],
+        ]
+    )
+    relative = np.asarray(data_in) @ inverse.T
+    if position:
+        relative = relative - _earth_heliocentric_j2000(time_in)
+    if not quiet:
+        logging.info("Running transformation: subhae2gei")
+    return subj20002gei(time_in, relative, quiet=True)
+
+
+def _heeq_axes(time_in):
+    """Return GSEQ and HEEQ axes expressed in J2000/BCRS coordinates."""
+    gx_gei, gy_gei, gz_gei = _gseq_axes(time_in)
+    gx = subgei2j2000(time_in, gx_gei, quiet=True)
+    gy = subgei2j2000(time_in, gy_gei, quiet=True)
+    gy /= np.linalg.norm(gy, axis=1)[:, None]
+    gz = np.cross(gx, gy)
+
+    earth = _earth_heliocentric_j2000(time_in)
+    ehat = earth / np.linalg.norm(earth, axis=1)[:, None]
+    pole = np.tile(_SOLAR_POLE_J2000, (len(np.atleast_1d(time_in)), 1))
+    hx = ehat - np.sum(ehat * pole, axis=1)[:, None] * pole
+    hx /= np.linalg.norm(hx, axis=1)[:, None]
+    hz = pole
+    hy = np.cross(hz, hx)
+    return (gx, gy, gz), (hx, hy, hz), earth
+
+
+def subgseq2heeq(time_in, data_in, quiet=False, position=False):
+    """Transform GSEQ vectors or positions in km to HEEQ."""
+    gaxes, haxes, earth = _heeq_axes(time_in)
+    data = np.asarray(data_in)
+    relative = sum(data[:, i, None] * gaxes[i] for i in range(3))
+    if position:
+        relative = relative + earth
+    if not quiet:
+        logging.info("Running transformation: subgseq2heeq")
+    return np.column_stack([np.sum(relative * axis, axis=1) for axis in haxes])
+
+
+def subheeq2gseq(time_in, data_in, quiet=False, position=False):
+    """Transform HEEQ vectors or positions in km to GSEQ."""
+    gaxes, haxes, earth = _heeq_axes(time_in)
+    data = np.asarray(data_in)
+    absolute = sum(data[:, i, None] * haxes[i] for i in range(3))
+    if position:
+        absolute = absolute - earth
+    if not quiet:
+        logging.info("Running transformation: subheeq2gseq")
+    return np.column_stack([np.sum(absolute * axis, axis=1) for axis in gaxes])
+
+
 def get_all_paths_t1_t2():
     """
     Give a dictionary of existing sub functions in this file.
@@ -1258,13 +1413,27 @@ def get_all_paths_t1_t2():
     Dictionary of strings.
     """
     p = {
-        "gei": {"gse": "subgei2gse", "geo": "subgei2geo", "j2000": "subgei2j2000"},
-        "gse": {"gei": "subgse2gei", "gsm": "subgse2gsm"},
+        "gei": {
+            "gse": "subgei2gse",
+            "geo": "subgei2geo",
+            "j2000": "subgei2j2000",
+            "hae": "subgei2hae",
+        },
+        "gse": {
+            "gei": "subgse2gei",
+            "gsm": "subgse2gsm",
+            "gseq": "subgse2gseq",
+            "hee": "subgse2hee",
+        },
+        "gseq": {"gse": "subgseq2gse", "heeq": "subgseq2heeq"},
         "gsm": {"gse": "subgsm2gse", "sm": "subgsm2sm"},
         "geo": {"gei": "subgeo2gei", "mag": "subgeo2mag"},
         "sm": {"gsm": "subsm2gsm"},
         "mag": {"geo": "submag2geo"},
         "j2000": {"gei": "subj20002gei"},
+        "hee": {"gse": "subhee2gse"},
+        "hae": {"gei": "subhae2gei"},
+        "heeq": {"gseq": "subheeq2gseq"},
     }
     return p
 
@@ -1341,7 +1510,7 @@ def shorten_path_t1_t2(cpath):
     return out
 
 
-def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False):
+def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False, position=False):
     """
     Transform data from coord_in to coord_out.
 
@@ -1354,11 +1523,14 @@ def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False):
     data_in: list of float
         Coordinates in coord_in.
     coord_in: string
-        One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
+        One of GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE, HEEQ.
     coord_out: string
-        One of GSE, GSM, SM, GEI, GEO, MAG, J2000.
+        One of GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE, HEEQ.
     quiet: bool
         If true, suppress progress messages
+    position: bool
+        If true, data are positions in km. Heliocentric edges then include
+        the Earth-Sun origin translation; otherwise they rotate only.
 
     Returns
     -------
@@ -1367,7 +1539,19 @@ def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False):
 
     """
     data_out = data_in
-    coord_systems = ["GSE", "GSM", "SM", "GEI", "GEO", "MAG", "J2000"]
+    coord_systems = [
+        "GSE",
+        "GSEQ",
+        "GSM",
+        "SM",
+        "GEI",
+        "GEO",
+        "MAG",
+        "J2000",
+        "HEE",
+        "HAE",
+        "HEEQ",
+    ]
     coord_all = [a.lower() for a in coord_systems]
     coord_in = coord_in.lower()
     coord_out = coord_out.lower()
@@ -1396,7 +1580,12 @@ def subcotrans(time_in, data_in, coord_in, coord_out, quiet=False):
         c1 = p[i]
         c2 = p[i + 1]
         subname = "sub" + c1 + "2" + c2
-        data_out = globals()[subname](time_in, data_out, quiet=quiet)
+        if c1 in {"hee", "hae", "heeq"} or c2 in {"hee", "hae", "heeq"}:
+            data_out = globals()[subname](
+                time_in, data_out, quiet=quiet, position=position
+            )
+        else:
+            data_out = globals()[subname](time_in, data_out, quiet=quiet)
 
     # Make the output the same type as the input.
     if isinstance(data_in, list):
