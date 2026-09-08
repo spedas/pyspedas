@@ -30,7 +30,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 #  - id: name-tests-test
 
 - repo: https://github.com/macisamuele/language-formatters-pre-commit-hooks
-  rev: v2.15.0
+  rev: v2.16.0
   hooks:
   - id: pretty-format-yaml
     args: [--autofix]
@@ -60,7 +60,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 #  - id: sphinx-lint
 
 - repo: https://github.com/codespell-project/codespell
-  rev: v2.4.1
+  rev: v2.4.3
   hooks:
   - id: codespell
     name: codespell (add false positives to pyproject.toml)
@@ -69,12 +69,12 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     # args: [--write-changes]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.35.0
+  rev: 0.38.0
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/abravalheri/validate-pyproject
-  rev: v0.24.1
+  rev: '0.26'
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
