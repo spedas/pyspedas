@@ -5,6 +5,7 @@
 #from .pytplot import *
 
 from .utilities.is_timezone_aware import is_timezone_aware
+from .utilities.doi import get_doi
 from .tplot_tools import get_y_range
 from .tplot_tools import tplot_rename
 from .tplot_tools import del_data

@@ -125,12 +125,33 @@ Ideally we would maintain at least 90% code coverage for a green badge.
 Build and release process
 --------------------------
 
-pyproject.toml, setuptools, semantic versioning, frequent releases, releasing via Github vs pypi
+Release preparation uses two Zenodo workflows:
+
+#. Run ``zenodo_draft`` manually on the release branch.  It creates or reuses a
+   draft in the configured concept, reserves a version DOI, updates
+   ``project.urls.Versioned_DOI`` in ``pyproject.toml``, and commits the change.
+#. Complete testing, merge the branch, publish to PyPI, and publish the GitHub
+   release in the usual way.
+#. After publishing the GitHub release, run ``zenodo_upload`` manually and
+   provide its release tag.  It verifies that the DOI in the tagged source
+   matches the open draft, replaces the draft payload with GitHub's tagged
+   source zip, and leaves the record unpublished.  Once the production workflow
+   has been validated, this manual trigger can be replaced with a
+   ``release: types: [published]`` trigger.
+#. Inspect and update the metadata and files on Zenodo, then publish the record
+   manually.  This final step is the irreversible QA gate.
+
+The production token is stored as the ``ZENODO_API_TOKEN`` Actions secret.  For
+sandbox testing, also configure ``ZENODO_SANDBOX_API_TOKEN`` and supply the
+sandbox concept record ID when dispatching ``zenodo_draft``.
 
 DOI management
 --------------
 
-How DOIs are minted and used in PySPEDAS metadata, code, and documentation.
+The concept DOI (all versions) is |concept_doi|.  The DOI for this version is
+|versioned_doi|.  Both values come from ``[project.urls]`` in
+``pyproject.toml``; do not maintain duplicate DOI constants.
 
-
-
+At runtime, ``pyspedas.get_doi()`` returns the versioned DOI and
+``pyspedas.get_doi("concept")`` returns the concept DOI.  It reads installed
+package metadata from a wheel, or ``pyproject.toml`` when run in a Git checkout.

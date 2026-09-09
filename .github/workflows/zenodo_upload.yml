@@ -1,0 +1,84 @@
+name: zenodo_upload
+
+on:
+  workflow_dispatch:
+    inputs:
+      tag:
+        description: "Published GitHub release tag to upload (for example, v2.1.0)"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: zenodo-upload-${{ inputs.tag }}
+  cancel-in-progress: false
+
+jobs:
+  upload-release-archive:
+    runs-on: ubuntu-latest
+    env:
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.tag }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install release helpers
+        run: |
+          npm install --global zenodraft@0.14.1
+          python -m pip install 'tomlkit>=0.13,<1'
+
+      - name: Locate and verify the matching draft
+        id: draft
+        run: |
+          concept_url=$(python scripts/update_project_doi.py --key Concept_DOI)
+          expected_doi=$(python scripts/update_project_doi.py --key Versioned_DOI)
+          concept_id="${concept_url##*.}"
+          expected_doi="${expected_doi#https://doi.org/}"
+
+          draft_id=$(zenodraft deposition show draft "$concept_id")
+          [[ -n "$draft_id" ]] || { echo "No draft exists for concept $concept_id" >&2; exit 1; }
+          actual_doi=$(zenodraft deposition show prereserved "$draft_id")
+          if [[ "$actual_doi" != "$expected_doi" ]]; then
+            echo "Draft DOI $actual_doi does not match tagged source DOI $expected_doi" >&2
+            exit 1
+          fi
+          echo "id=$draft_id" >> "$GITHUB_OUTPUT"
+          echo "doi=$actual_doi" >> "$GITHUB_OUTPUT"
+
+      - name: Download GitHub release source archive
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ inputs.tag }}
+        run: |
+          ZIPBALL_URL=$(gh api "repos/$GITHUB_REPOSITORY/releases/tags/$TAG" --jq .zipball_url)
+          archive="${GITHUB_REPOSITORY#*/}-${TAG}.zip"
+          curl --fail --location \
+            --header "Authorization: Bearer $GH_TOKEN" \
+            --header "X-GitHub-Api-Version: 2022-11-28" \
+            --output "$archive" "$ZIPBALL_URL"
+          echo "ARCHIVE=$archive" >> "$GITHUB_ENV"
+
+      - name: Replace draft payload with release archive
+        env:
+          DRAFT_ID: ${{ steps.draft.outputs.id }}
+        run: |
+          while IFS= read -r filename; do
+            [[ -z "$filename" ]] || zenodraft file delete "$DRAFT_ID" "$filename"
+          done < <(zenodraft deposition show files "$DRAFT_ID")
+          zenodraft file add "$DRAFT_ID" "$ARCHIVE"
+          {
+            echo "### Zenodo upload ready for QA"
+            echo "Uploaded **$ARCHIVE** to draft **$DRAFT_ID** (${{ steps.draft.outputs.doi }})."
+            echo "The workflow intentionally did not publish the Zenodo record."
+          } >> "$GITHUB_STEP_SUMMARY"

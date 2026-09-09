@@ -78,6 +78,8 @@ jobs:
           - shard: spdf_themis_etc
             shard_script: |
               # This set of tests mostly exercises load routines using SPDF and THEMIS servers
+              echo Starting DOI metadata tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_doi
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup

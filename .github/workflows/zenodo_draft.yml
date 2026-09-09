@@ -1,0 +1,111 @@
+name: zenodo_draft
+
+on:
+  workflow_dispatch:
+    inputs:
+      concept_id:
+        description: "Zenodo concept record ID (leave blank to read Concept_DOI from pyproject.toml)"
+        required: false
+        type: string
+      sandbox:
+        description: "Use sandbox.zenodo.org (concept_id is required)"
+        required: true
+        default: false
+        type: boolean
+
+permissions:
+  contents: write
+
+concurrency:
+  group: zenodo-draft-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reserve-doi:
+    runs-on: ubuntu-latest
+    env:
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
+      ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.ref }}
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Install release helpers
+        run: |
+          npm install --global zenodraft@0.14.1
+          python -m pip install 'tomlkit>=0.13,<1'
+
+      - name: Select Zenodo concept
+        id: concept
+        env:
+          REQUESTED_CONCEPT: ${{ inputs.concept_id }}
+          USE_SANDBOX: ${{ inputs.sandbox }}
+        run: |
+          concept="$REQUESTED_CONCEPT"
+          if [[ -z "$concept" ]]; then
+            if [[ "$USE_SANDBOX" == "true" ]]; then
+              echo "concept_id is required when using Zenodo Sandbox" >&2
+              exit 1
+            fi
+            concept_url=$(python scripts/update_project_doi.py --key Concept_DOI)
+            concept="${concept_url##*.}"
+          fi
+          [[ "$concept" =~ ^[0-9]+$ ]] || { echo "Invalid concept record ID" >&2; exit 1; }
+          echo "id=$concept" >> "$GITHUB_OUTPUT"
+
+      - name: Create or reuse draft and reserve DOI
+        id: draft
+        env:
+          CONCEPT_ID: ${{ steps.concept.outputs.id }}
+          USE_SANDBOX: ${{ inputs.sandbox }}
+        run: |
+          sandbox_flag=()
+          host="zenodo.org"
+          if [[ "$USE_SANDBOX" == "true" ]]; then
+            sandbox_flag=(--sandbox)
+            host="sandbox.zenodo.org"
+          fi
+
+          draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
+          if [[ -z "$draft_id" ]]; then
+            draft_id=$(zenodraft deposition create version "${sandbox_flag[@]}" "$CONCEPT_ID")
+          fi
+          doi=$(zenodraft deposition show prereserved "${sandbox_flag[@]}" "$draft_id")
+          [[ "$doi" == 10.5281/zenodo.* ]] || { echo "Unexpected DOI: $doi" >&2; exit 1; }
+
+          echo "id=$draft_id" >> "$GITHUB_OUTPUT"
+          echo "doi=$doi" >> "$GITHUB_OUTPUT"
+          echo "url=https://$host/uploads/$draft_id" >> "$GITHUB_OUTPUT"
+          {
+            echo "### Zenodo draft"
+            echo "Reserved **$doi** in [draft $draft_id](https://$host/uploads/$draft_id)."
+          } >> "$GITHUB_STEP_SUMMARY"
+
+      - name: Update versioned DOI
+        env:
+          DOI: ${{ steps.draft.outputs.doi }}
+        run: python scripts/update_project_doi.py --key Versioned_DOI --value "$DOI"
+
+      - name: Commit DOI update
+        env:
+          DOI: ${{ steps.draft.outputs.doi }}
+        run: |
+          if git diff --quiet -- pyproject.toml; then
+            echo "pyproject.toml already contains $DOI"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add pyproject.toml
+          git commit -m "Update versioned DOI to $DOI"
+          git push origin "HEAD:${GITHUB_REF_NAME}"
