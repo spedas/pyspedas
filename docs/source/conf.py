@@ -26,8 +26,12 @@ try:
         toml_dict = tomli.load(f)
 
     pyproj_version = toml_dict['project']['version']
+    concept_doi = toml_dict['project']['urls']['Concept_DOI']
+    versioned_doi = toml_dict['project']['urls']['Versioned_DOI']
 except (KeyError, FileNotFoundError):
     pyproj_version = 'unknown'
+    concept_doi = 'unavailable'
+    versioned_doi = 'unavailable'
 
 print(f"Pyproj_version: {pyproj_version}")
 project = 'PySPEDAS'
@@ -36,6 +40,13 @@ author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags
 release = pyproj_version
+
+# These substitutions keep DOI references in the documentation synchronized
+# with the canonical values in pyproject.toml.
+rst_epilog = f"""
+.. |concept_doi| replace:: {concept_doi}
+.. |versioned_doi| replace:: {versioned_doi}
+"""
 
 
 # -- General configuration ---------------------------------------------------
