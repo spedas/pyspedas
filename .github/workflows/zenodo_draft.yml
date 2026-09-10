@@ -96,9 +96,32 @@ jobs:
           fi
 
           draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
+          draft_action="Reused"
+          if [[ -n "$draft_id" ]]; then
+            details=$(zenodraft deposition show details "${sandbox_flag[@]}" "$draft_id")
+            jq -e '.submitted | type == "boolean"' <<< "$details" > /dev/null || {
+              echo "Zenodo returned an invalid submission state for deposition $draft_id." >&2
+              exit 1
+            }
+            submitted=$(jq -r '.submitted' <<< "$details")
+            if [[ "$submitted" == "true" ]]; then
+              echo "zenodraft returned published deposition $draft_id; creating a new version instead."
+              draft_id=""
+            fi
+          fi
           if [[ -z "$draft_id" ]]; then
             draft_id=$(zenodraft deposition create version "${sandbox_flag[@]}" "$CONCEPT_ID")
+            draft_action="Created"
           fi
+
+          # Never accept a published record as the draft, even if Zenodo exposes
+          # it through a latest_draft link (zenodraft does not check this state).
+          details=$(zenodraft deposition show details "${sandbox_flag[@]}" "$draft_id")
+          jq -e --arg concept "$CONCEPT_ID" \
+            '.submitted == false and (.conceptrecid | tostring) == $concept' <<< "$details" > /dev/null || {
+              echo "Deposition $draft_id is not an unpublished draft in concept $CONCEPT_ID." >&2
+              exit 1
+            }
           doi=$(zenodraft deposition show prereserved "${sandbox_flag[@]}" "$draft_id")
           [[ "$doi" == 10.5281/zenodo.* ]] || { echo "Unexpected DOI: $doi" >&2; exit 1; }
 
@@ -107,7 +130,7 @@ jobs:
           echo "url=https://$host/uploads/$draft_id" >> "$GITHUB_OUTPUT"
           {
             echo "### Zenodo draft"
-            echo "Reserved **$doi** in [draft $draft_id](https://$host/uploads/$draft_id)."
+            echo "$draft_action [draft $draft_id](https://$host/uploads/$draft_id) and reserved **$doi**."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Update versioned DOI

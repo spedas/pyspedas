@@ -59,6 +59,12 @@ jobs:
 
           draft_id=$(zenodraft deposition show draft "$concept_id")
           [[ -n "$draft_id" ]] || { echo "No draft exists for concept $concept_id" >&2; exit 1; }
+          details=$(zenodraft deposition show details "$draft_id")
+          jq -e --arg concept "$concept_id" \
+            '.submitted == false and (.conceptrecid | tostring) == $concept' <<< "$details" > /dev/null || {
+              echo "Deposition $draft_id is not an unpublished draft in concept $concept_id." >&2
+              exit 1
+            }
           actual_doi=$(zenodraft deposition show prereserved "$draft_id")
           if [[ "$actual_doi" != "$expected_doi" ]]; then
             echo "Draft DOI $actual_doi does not match tagged source DOI $expected_doi" >&2
