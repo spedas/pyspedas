@@ -213,6 +213,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
         echo Starting DOI metadata tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_doi
+        echo Starting Zenodo draft client tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
         #echo Starting CDAWeb tests at `date`
         #coverage run -a -m  pyspedas.cdagui_tools.tests.test_cdagui
         echo Starting akebono tests at `date`

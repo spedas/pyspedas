@@ -19,24 +19,29 @@ jobs:
   upload-release-archive:
     runs-on: ubuntu-latest
     env:
-      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_KEY || secrets.ZENODO_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.tag }}
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Install release helpers
+        run: python -m pip install 'requests>=2.34,<3' 'tomlkit>=0.13,<1'
+
+      - name: Validate Zenodo credential
         run: |
-          npm install --global zenodraft@0.14.1
-          python -m pip install 'tomlkit>=0.13,<1'
+          if [[ -z "$ZENODO_ACCESS_TOKEN" ]]; then
+            echo "Repository secret ZENODO_API_KEY is not configured." >&2
+            exit 1
+          fi
+          if [[ "$ZENODO_ACCESS_TOKEN" == *$'\n'* || "$ZENODO_ACCESS_TOKEN" == *$'\r'* ]]; then
+            echo "Repository secret ZENODO_API_KEY contains a newline; save only the raw Zenodo token." >&2
+            exit 1
+          fi
 
       - name: Locate and verify the matching draft
         id: draft
@@ -46,15 +51,8 @@ jobs:
           concept_id="${concept_url##*.}"
           expected_doi="${expected_doi#https://doi.org/}"
 
-          draft_id=$(zenodraft deposition show draft "$concept_id")
-          [[ -n "$draft_id" ]] || { echo "No draft exists for concept $concept_id" >&2; exit 1; }
-          actual_doi=$(zenodraft deposition show prereserved "$draft_id")
-          if [[ "$actual_doi" != "$expected_doi" ]]; then
-            echo "Draft DOI $actual_doi does not match tagged source DOI $expected_doi" >&2
-            exit 1
-          fi
-          echo "id=$draft_id" >> "$GITHUB_OUTPUT"
-          echo "doi=$actual_doi" >> "$GITHUB_OUTPUT"
+          echo "concept=$concept_id" >> "$GITHUB_OUTPUT"
+          echo "doi=$expected_doi" >> "$GITHUB_OUTPUT"
 
       - name: Download GitHub release source archive
         env:
@@ -71,14 +69,15 @@ jobs:
 
       - name: Replace draft payload with release archive
         env:
-          DRAFT_ID: ${{ steps.draft.outputs.id }}
+          CONCEPT_ID: ${{ steps.draft.outputs.concept }}
+          EXPECTED_DOI: ${{ steps.draft.outputs.doi }}
         run: |
-          while IFS= read -r filename; do
-            [[ -z "$filename" ]] || zenodraft file delete "$DRAFT_ID" "$filename"
-          done < <(zenodraft deposition show files "$DRAFT_ID")
-          zenodraft file add "$DRAFT_ID" "$ARCHIVE"
+          result=$(python pyspedas/utilities/zenodo_draft.py replace-files \
+            --concept "$CONCEPT_ID" --expected-doi "$EXPECTED_DOI" "$ARCHIVE")
+          draft_id=$(jq -er .id <<< "$result")
+          doi=$(jq -er .doi <<< "$result")
           {
             echo "### Zenodo upload ready for QA"
-            echo "Uploaded **$ARCHIVE** to draft **$DRAFT_ID** (${{ steps.draft.outputs.doi }})."
+            echo "Uploaded **$ARCHIVE** to draft **$draft_id** ($doi)."
             echo "The workflow intentionally did not publish the Zenodo record."
           } >> "$GITHUB_STEP_SUMMARY"

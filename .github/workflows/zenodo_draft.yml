@@ -24,26 +24,39 @@ jobs:
   reserve-doi:
     runs-on: ubuntu-latest
     env:
-      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
-      ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_KEY || secrets.ZENODO_API_TOKEN }}
+      ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_KEY || secrets.ZENODO_SANDBOX_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ github.ref }}
           fetch-depth: 0
-
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
 
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Install release helpers
+        run: python -m pip install 'requests>=2.34,<3' 'tomlkit>=0.13,<1'
+
+      - name: Validate Zenodo credential
+        env:
+          USE_SANDBOX: ${{ inputs.sandbox }}
         run: |
-          npm install --global zenodraft@0.14.1
-          python -m pip install 'tomlkit>=0.13,<1'
+          token="$ZENODO_ACCESS_TOKEN"
+          secret_name="ZENODO_API_KEY"
+          if [[ "$USE_SANDBOX" == "true" ]]; then
+            token="$ZENODO_SANDBOX_ACCESS_TOKEN"
+            secret_name="ZENODO_SANDBOX_API_KEY"
+          fi
+          if [[ -z "$token" ]]; then
+            echo "Repository secret $secret_name is not configured." >&2
+            exit 1
+          fi
+          if [[ "$token" == *$'\n'* || "$token" == *$'\r'* ]]; then
+            echo "Repository secret $secret_name contains a newline; save only the raw Zenodo token." >&2
+            exit 1
+          fi
 
       - name: Select Zenodo concept
         id: concept
@@ -70,25 +83,22 @@ jobs:
           USE_SANDBOX: ${{ inputs.sandbox }}
         run: |
           sandbox_flag=()
-          host="zenodo.org"
           if [[ "$USE_SANDBOX" == "true" ]]; then
             sandbox_flag=(--sandbox)
-            host="sandbox.zenodo.org"
           fi
-
-          draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
-          if [[ -z "$draft_id" ]]; then
-            draft_id=$(zenodraft deposition create version "${sandbox_flag[@]}" "$CONCEPT_ID")
-          fi
-          doi=$(zenodraft deposition show prereserved "${sandbox_flag[@]}" "$draft_id")
-          [[ "$doi" == 10.5281/zenodo.* ]] || { echo "Unexpected DOI: $doi" >&2; exit 1; }
+          result=$(python pyspedas/utilities/zenodo_draft.py \
+            "${sandbox_flag[@]}" reserve --concept "$CONCEPT_ID")
+          draft_id=$(jq -er .id <<< "$result")
+          doi=$(jq -er .doi <<< "$result")
+          draft_url=$(jq -er .url <<< "$result")
+          draft_action=$(jq -er .action <<< "$result")
 
           echo "id=$draft_id" >> "$GITHUB_OUTPUT"
           echo "doi=$doi" >> "$GITHUB_OUTPUT"
-          echo "url=https://$host/uploads/$draft_id" >> "$GITHUB_OUTPUT"
+          echo "url=$draft_url" >> "$GITHUB_OUTPUT"
           {
             echo "### Zenodo draft"
-            echo "Reserved **$doi** in [draft $draft_id](https://$host/uploads/$draft_id)."
+            echo "${draft_action^} [draft $draft_id]($draft_url) and reserved **$doi**."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Update versioned DOI

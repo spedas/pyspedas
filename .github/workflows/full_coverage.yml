@@ -80,6 +80,8 @@ jobs:
               # This set of tests mostly exercises load routines using SPDF and THEMIS servers
               echo Starting DOI metadata tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_doi
+              echo Starting Zenodo draft client tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
