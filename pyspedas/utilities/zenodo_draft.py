@@ -9,6 +9,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import sys
 from pathlib import Path
 from typing import Any
 from urllib.parse import quote
@@ -104,6 +105,15 @@ class ZenodoDraftClient:
         metadata = dict(published.get("metadata", {}))
         metadata.pop("doi", None)
         metadata.pop("prereserve_doi", None)
+        if metadata.pop("grants", None):
+            # Zenodo's legacy deposition endpoint can return historical grant
+            # identifiers that its own update endpoint now rejects.  Preserve
+            # all other metadata and leave grants for the manual QA step.
+            print(
+                "Warning: omitted grants while repairing metadata because Zenodo "
+                "does not accept its historical grant identifiers on update.",
+                file=sys.stderr,
+            )
         return self._json("PUT", draft["links"]["self"], json={"metadata": metadata})
 
     def reserve(self, concept_id: str) -> dict[str, str]:

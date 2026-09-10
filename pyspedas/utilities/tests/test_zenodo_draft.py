@@ -61,6 +61,19 @@ class ZenodoDraftClientTests(unittest.TestCase):
         self.assertEqual(result["action"], "repaired")
         self.client.update_metadata_from.assert_called_once_with(empty, published)
 
+    def test_metadata_repair_omits_server_managed_doi_and_historical_grants(self):
+        draft = deposition(200)
+        published = deposition(100, submitted=True)
+        published["metadata"]["doi"] = "10.5281/zenodo.100"
+        published["metadata"]["grants"] = [{"id": "027ka1x80::NAS5-02099"}]
+        self.client._json = MagicMock(return_value=draft)
+        self.client.update_metadata_from(draft, published)
+        payload = self.client._json.call_args.kwargs["json"]["metadata"]
+        self.assertNotIn("doi", payload)
+        self.assertNotIn("prereserve_doi", payload)
+        self.assertNotIn("grants", payload)
+        self.assertEqual(payload["creators"], published["metadata"]["creators"])
+
     def test_replace_files_checks_doi_before_writes(self):
         self.client.find_draft = MagicMock(return_value=deposition(200))
         self.client._json = MagicMock()
