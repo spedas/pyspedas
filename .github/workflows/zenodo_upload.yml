@@ -21,7 +21,7 @@ jobs:
     env:
       ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_KEY || secrets.ZENODO_API_TOKEN }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
         with:
           ref: ${{ inputs.tag }}
 
