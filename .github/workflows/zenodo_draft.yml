@@ -95,8 +95,31 @@ jobs:
             host="sandbox.zenodo.org"
           fi
 
+          latest_published_details() {
+            records=$(curl --fail --silent --show-error --get \
+              "https://$host/api/records" \
+              --data-urlencode "q=conceptrecid:$CONCEPT_ID" \
+              --data "sort=mostrecent" \
+              --data "size=1")
+            published_id=$(jq -er '.hits.hits[0].id' <<< "$records")
+            zenodraft deposition show details "${sandbox_flag[@]}" "$published_id"
+          }
+
+          restore_metadata() {
+            local deposition_id="$1"
+            local published_details="$2"
+            local metadata_file="$RUNNER_TEMP/zenodo-metadata.json"
+            # DOI fields are managed by Zenodo for the new version.  All other
+            # metadata, including creators and related identifiers, is cloned.
+            jq '.metadata | del(.doi, .prereserve_doi)' \
+              <<< "$published_details" > "$metadata_file"
+            zenodraft metadata update "${sandbox_flag[@]}" \
+              "$deposition_id" "$metadata_file"
+          }
+
           draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
           draft_action="Reused"
+          published_details=""
           if [[ -n "$draft_id" ]]; then
             details=$(zenodraft deposition show details "${sandbox_flag[@]}" "$draft_id")
             jq -e '.submitted | type == "boolean"' <<< "$details" > /dev/null || {
@@ -106,12 +129,27 @@ jobs:
             submitted=$(jq -r '.submitted' <<< "$details")
             if [[ "$submitted" == "true" ]]; then
               echo "zenodraft returned published deposition $draft_id; creating a new version instead."
+              published_details="$details"
               draft_id=""
             fi
           fi
           if [[ -z "$draft_id" ]]; then
+            if [[ -z "$published_details" ]]; then
+              published_details=$(latest_published_details)
+            fi
             draft_id=$(zenodraft deposition create version "${sandbox_flag[@]}" "$CONCEPT_ID")
+            # zenodraft 0.14.1 clears metadata after Zenodo clones the record.
+            # Put the latest published version's metadata back immediately.
+            restore_metadata "$draft_id" "$published_details"
             draft_action="Created"
+          elif jq -e '
+            (.metadata.title // "" | startswith("Untitled in ")) and
+            ((.metadata.creators // []) | length == 0)
+          ' <<< "$details" > /dev/null; then
+            echo "Repairing metadata cleared by an earlier zenodraft run."
+            published_details=$(latest_published_details)
+            restore_metadata "$draft_id" "$published_details"
+            draft_action="Repaired"
           fi
 
           # Never accept a published record as the draft, even if Zenodo exposes
