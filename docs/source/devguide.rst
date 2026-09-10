@@ -147,6 +147,12 @@ sandbox concept record ID when dispatching ``zenodo_draft``.  The older secret
 names ``ZENODO_API_TOKEN`` and ``ZENODO_SANDBOX_API_TOKEN`` are accepted as
 fallbacks.
 
+Both workflows use ``pyspedas.utilities.zenodo_draft.ZenodoDraftClient`` rather
+than an external Zenodo action.  The client retries read-only requests during
+transient service failures, but never automatically retries writes whose result
+may be ambiguous.  It deliberately provides no record-publication operation;
+publication remains a manual QA decision.
+
 DOI management
 --------------
 

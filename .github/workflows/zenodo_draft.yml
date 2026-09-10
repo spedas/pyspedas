@@ -32,18 +32,12 @@ jobs:
           ref: ${{ github.ref }}
           fetch-depth: 0
 
-      - uses: actions/setup-node@v4
-        with:
-          node-version: "20"
-
       - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
       - name: Install release helpers
-        run: |
-          npm install --global zenodraft@0.14.1
-          python -m pip install 'tomlkit>=0.13,<1'
+        run: python -m pip install 'requests>=2.34,<3' 'tomlkit>=0.13,<1'
 
       - name: Validate Zenodo credential
         env:
@@ -89,104 +83,22 @@ jobs:
           USE_SANDBOX: ${{ inputs.sandbox }}
         run: |
           sandbox_flag=()
-          host="zenodo.org"
-          token="$ZENODO_ACCESS_TOKEN"
           if [[ "$USE_SANDBOX" == "true" ]]; then
             sandbox_flag=(--sandbox)
-            host="sandbox.zenodo.org"
-            token="$ZENODO_SANDBOX_ACCESS_TOKEN"
           fi
-
-          latest_published_details() {
-            records=$(curl --fail --silent --show-error --get \
-              "https://$host/api/records" \
-              --data-urlencode "q=conceptrecid:$CONCEPT_ID" \
-              --data "sort=mostrecent" \
-              --data "size=1")
-            published_id=$(jq -er '.hits.hits[0].id' <<< "$records")
-            zenodraft deposition show details "${sandbox_flag[@]}" "$published_id"
-          }
-
-          restore_metadata() {
-            local deposition_id="$1"
-            local published_details="$2"
-            local request_file="$RUNNER_TEMP/zenodo-metadata-request.json"
-            local response_file="$RUNNER_TEMP/zenodo-metadata-response.json"
-            # DOI fields are managed by Zenodo for the new version.  All other
-            # metadata, including creators and related identifiers, is cloned.
-            jq '{metadata: (.metadata | del(.doi, .prereserve_doi))}' \
-              <<< "$published_details" > "$request_file"
-
-            # zenodraft 0.14.1 rejects metadata fields added by newer Zenodo
-            # releases.  Send the cloned metadata directly so Zenodo performs
-            # authoritative validation against its current schema.
-            http_code=$(curl --silent --show-error \
-              --output "$response_file" \
-              --write-out '%{http_code}' \
-              --request PUT \
-              --header "Authorization: Bearer $token" \
-              --header "Content-Type: application/json" \
-              --data-binary "@$request_file" \
-              "https://$host/api/deposit/depositions/$deposition_id")
-            if [[ "$http_code" != 2* ]]; then
-              echo "Zenodo rejected metadata update for draft $deposition_id (HTTP $http_code)." >&2
-              jq -c '{status, message, errors}' "$response_file" >&2 || head -c 2000 "$response_file" >&2
-              exit 1
-            fi
-          }
-
-          draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
-          draft_action="Reused"
-          published_details=""
-          if [[ -n "$draft_id" ]]; then
-            details=$(zenodraft deposition show details "${sandbox_flag[@]}" "$draft_id")
-            jq -e '.submitted | type == "boolean"' <<< "$details" > /dev/null || {
-              echo "Zenodo returned an invalid submission state for deposition $draft_id." >&2
-              exit 1
-            }
-            submitted=$(jq -r '.submitted' <<< "$details")
-            if [[ "$submitted" == "true" ]]; then
-              echo "zenodraft returned published deposition $draft_id; creating a new version instead."
-              published_details="$details"
-              draft_id=""
-            fi
-          fi
-          if [[ -z "$draft_id" ]]; then
-            if [[ -z "$published_details" ]]; then
-              published_details=$(latest_published_details)
-            fi
-            draft_id=$(zenodraft deposition create version "${sandbox_flag[@]}" "$CONCEPT_ID")
-            # zenodraft 0.14.1 clears metadata after Zenodo clones the record.
-            # Put the latest published version's metadata back immediately.
-            restore_metadata "$draft_id" "$published_details"
-            draft_action="Created"
-          elif jq -e '
-            (.metadata.title // "" | startswith("Untitled in ")) and
-            ((.metadata.creators // []) | length == 0)
-          ' <<< "$details" > /dev/null; then
-            echo "Repairing metadata cleared by an earlier zenodraft run."
-            published_details=$(latest_published_details)
-            restore_metadata "$draft_id" "$published_details"
-            draft_action="Repaired"
-          fi
-
-          # Never accept a published record as the draft, even if Zenodo exposes
-          # it through a latest_draft link (zenodraft does not check this state).
-          details=$(zenodraft deposition show details "${sandbox_flag[@]}" "$draft_id")
-          jq -e --arg concept "$CONCEPT_ID" \
-            '.submitted == false and (.conceptrecid | tostring) == $concept' <<< "$details" > /dev/null || {
-              echo "Deposition $draft_id is not an unpublished draft in concept $CONCEPT_ID." >&2
-              exit 1
-            }
-          doi=$(zenodraft deposition show prereserved "${sandbox_flag[@]}" "$draft_id")
-          [[ "$doi" == 10.5281/zenodo.* ]] || { echo "Unexpected DOI: $doi" >&2; exit 1; }
+          result=$(python pyspedas/utilities/zenodo_draft.py \
+            "${sandbox_flag[@]}" reserve --concept "$CONCEPT_ID")
+          draft_id=$(jq -er .id <<< "$result")
+          doi=$(jq -er .doi <<< "$result")
+          draft_url=$(jq -er .url <<< "$result")
+          draft_action=$(jq -er .action <<< "$result")
 
           echo "id=$draft_id" >> "$GITHUB_OUTPUT"
           echo "doi=$doi" >> "$GITHUB_OUTPUT"
-          echo "url=https://$host/uploads/$draft_id" >> "$GITHUB_OUTPUT"
+          echo "url=$draft_url" >> "$GITHUB_OUTPUT"
           {
             echo "### Zenodo draft"
-            echo "$draft_action [draft $draft_id](https://$host/uploads/$draft_id) and reserved **$doi**."
+            echo "${draft_action^} [draft $draft_id]($draft_url) and reserved **$doi**."
           } >> "$GITHUB_STEP_SUMMARY"
 
       - name: Update versioned DOI
