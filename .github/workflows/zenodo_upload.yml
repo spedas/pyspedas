@@ -19,7 +19,7 @@ jobs:
   upload-release-archive:
     runs-on: ubuntu-latest
     env:
-      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_KEY || secrets.ZENODO_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -37,6 +37,17 @@ jobs:
         run: |
           npm install --global zenodraft@0.14.1
           python -m pip install 'tomlkit>=0.13,<1'
+
+      - name: Validate Zenodo credential
+        run: |
+          if [[ -z "$ZENODO_ACCESS_TOKEN" ]]; then
+            echo "Repository secret ZENODO_API_KEY is not configured." >&2
+            exit 1
+          fi
+          if [[ "$ZENODO_ACCESS_TOKEN" == *$'\n'* || "$ZENODO_ACCESS_TOKEN" == *$'\r'* ]]; then
+            echo "Repository secret ZENODO_API_KEY contains a newline; save only the raw Zenodo token." >&2
+            exit 1
+          fi
 
       - name: Locate and verify the matching draft
         id: draft
