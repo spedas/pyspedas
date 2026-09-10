@@ -24,8 +24,8 @@ jobs:
   reserve-doi:
     runs-on: ubuntu-latest
     env:
-      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_TOKEN }}
-      ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_TOKEN }}
+      ZENODO_ACCESS_TOKEN: ${{ secrets.ZENODO_API_KEY || secrets.ZENODO_API_TOKEN }}
+      ZENODO_SANDBOX_ACCESS_TOKEN: ${{ secrets.ZENODO_SANDBOX_API_KEY || secrets.ZENODO_SANDBOX_API_TOKEN }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -44,6 +44,25 @@ jobs:
         run: |
           npm install --global zenodraft@0.14.1
           python -m pip install 'tomlkit>=0.13,<1'
+
+      - name: Validate Zenodo credential
+        env:
+          USE_SANDBOX: ${{ inputs.sandbox }}
+        run: |
+          token="$ZENODO_ACCESS_TOKEN"
+          secret_name="ZENODO_API_KEY"
+          if [[ "$USE_SANDBOX" == "true" ]]; then
+            token="$ZENODO_SANDBOX_ACCESS_TOKEN"
+            secret_name="ZENODO_SANDBOX_API_KEY"
+          fi
+          if [[ -z "$token" ]]; then
+            echo "Repository secret $secret_name is not configured." >&2
+            exit 1
+          fi
+          if [[ "$token" == *$'\n'* || "$token" == *$'\r'* ]]; then
+            echo "Repository secret $secret_name contains a newline; save only the raw Zenodo token." >&2
+            exit 1
+          fi
 
       - name: Select Zenodo concept
         id: concept

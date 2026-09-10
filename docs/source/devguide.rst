@@ -141,9 +141,11 @@ Release preparation uses two Zenodo workflows:
 #. Inspect and update the metadata and files on Zenodo, then publish the record
    manually.  This final step is the irreversible QA gate.
 
-The production token is stored as the ``ZENODO_API_TOKEN`` Actions secret.  For
-sandbox testing, also configure ``ZENODO_SANDBOX_API_TOKEN`` and supply the
-sandbox concept record ID when dispatching ``zenodo_draft``.
+The production token is stored as the ``ZENODO_API_KEY`` Actions secret.  For
+sandbox testing, also configure ``ZENODO_SANDBOX_API_KEY`` and supply the
+sandbox concept record ID when dispatching ``zenodo_draft``.  The older secret
+names ``ZENODO_API_TOKEN`` and ``ZENODO_SANDBOX_API_TOKEN`` are accepted as
+fallbacks.
 
 DOI management
 --------------
