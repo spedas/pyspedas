@@ -90,9 +90,11 @@ jobs:
         run: |
           sandbox_flag=()
           host="zenodo.org"
+          token="$ZENODO_ACCESS_TOKEN"
           if [[ "$USE_SANDBOX" == "true" ]]; then
             sandbox_flag=(--sandbox)
             host="sandbox.zenodo.org"
+            token="$ZENODO_SANDBOX_ACCESS_TOKEN"
           fi
 
           latest_published_details() {
@@ -108,13 +110,29 @@ jobs:
           restore_metadata() {
             local deposition_id="$1"
             local published_details="$2"
-            local metadata_file="$RUNNER_TEMP/zenodo-metadata.json"
+            local request_file="$RUNNER_TEMP/zenodo-metadata-request.json"
+            local response_file="$RUNNER_TEMP/zenodo-metadata-response.json"
             # DOI fields are managed by Zenodo for the new version.  All other
             # metadata, including creators and related identifiers, is cloned.
-            jq '.metadata | del(.doi, .prereserve_doi)' \
-              <<< "$published_details" > "$metadata_file"
-            zenodraft metadata update "${sandbox_flag[@]}" \
-              "$deposition_id" "$metadata_file"
+            jq '{metadata: (.metadata | del(.doi, .prereserve_doi))}' \
+              <<< "$published_details" > "$request_file"
+
+            # zenodraft 0.14.1 rejects metadata fields added by newer Zenodo
+            # releases.  Send the cloned metadata directly so Zenodo performs
+            # authoritative validation against its current schema.
+            http_code=$(curl --silent --show-error \
+              --output "$response_file" \
+              --write-out '%{http_code}' \
+              --request PUT \
+              --header "Authorization: Bearer $token" \
+              --header "Content-Type: application/json" \
+              --data-binary "@$request_file" \
+              "https://$host/api/deposit/depositions/$deposition_id")
+            if [[ "$http_code" != 2* ]]; then
+              echo "Zenodo rejected metadata update for draft $deposition_id (HTTP $http_code)." >&2
+              jq -c '{status, message, errors}' "$response_file" >&2 || head -c 2000 "$response_file" >&2
+              exit 1
+            fi
           }
 
           draft_id=$(zenodraft deposition show draft "${sandbox_flag[@]}" "$CONCEPT_ID")
