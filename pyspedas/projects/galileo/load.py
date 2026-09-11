@@ -128,7 +128,7 @@ def load(
     elif time_float_one(trange[0]) >= time_float_one(trange[1]):
         raise ValueError("trange start time must be before end time")
     elif time_float_one(trange[1]) - time_float_one(trange[0]) > 172800.0:
-        raise ValueError("trange must be less than 2 days")
+        raise ValueError("trange must not exceed 2 days")
 
     datasets = CONFIG["datasets"]
 

@@ -54,7 +54,7 @@ or suffix changes these names. The `full_path` column is the directory in the DA
 | `heliocentric` | `Juno/Ephemeris/Heliocentric` | Juno Solar orbit parameters | `heliocentric_radius`, `heliocentric_lon`, `heliocentric_lat` | None |
 | `io` | `Juno/Ephemeris/IoCoRotational` | Juno Io Co-Rotational orbit parameters | `io_x`, `io_y`, `io_z`, `io_radius` | JLAT JALT JPLG SALT |
 | `jse` | `Juno/Ephemeris/JSE_Attitude` | Juno Jupiter Solar Ecliptic Pointing angles | `jse_phi`, `jse_theta`, `jse_omega` | None |
-| `jovicentric` | `Juno/Ephemeris/Jovicentric` | Juno Jupiter orbit parameters | `jovicentric_radius`, `jovicentric_long`, `jovicentric_mlat`, `jovicentric_mlt`, `jovicentric_L`, `jovicentric_io_phase` | JLAT JALT JPLG CLAT JULT SALT |
+| `jovicentric` | `Juno/Ephemeris/Jovicentric` | Juno Jupiter orbit parameters | `jovicentric_radius`, `jovicentric_long`, `jovicentric_mlat`, `jovicentric_mlt`, `jovicentric_l`, `jovicentric_io_phase` | JLAT JALT JPLG CLAT JULT SALT |
 | `electron` | `Juno/FGM/ElectronCyclotron` | Electron Cyclotron Resonance Frequency | `electron_fce` | None |
 | `mag` | `Juno/FGM/MagComponents` | Quicklook Magnetic Field Components in Payload, Planetocentric or Sun State Coordinates | `mag_x`, `mag_y`, `mag_z`, `mag_mag` | None |
 | `magnitude` | `Juno/FGM/Magnitude` | Magnetic Field Magnitude from payload coordinates data | `magnitude_mag` | None |

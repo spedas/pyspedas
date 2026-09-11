@@ -5,7 +5,7 @@ datasets = [
         "type": "ephemeris",
         "abrev": "jovicentric",
         "full_set": "Galileo/Ephemeris/Jovicentric",
-        "description": "Galileo PWS Jupiter orbit parameters",
+        "description": "Galileo Jupiter orbit parameters",
     },
     {
         "type": "mag",
