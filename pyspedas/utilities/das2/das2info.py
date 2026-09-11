@@ -31,7 +31,7 @@ def das2info(
     res = ""
 
     if server not in ["list", "peers", "dsdf"]:
-        print("Invalid server parameter. Please use one of the following: list, peers, dsdf, discover")
+        print("Invalid server parameter. Please use one of the following: list, peers, dsdf")
         return res
     if server == "dsdf" and not dataset:
         print("Dataset parameter is required when using 'dsdf' server.")

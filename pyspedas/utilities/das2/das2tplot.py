@@ -239,8 +239,7 @@ def das2tplot(
 
     stream_properties = parse_general_dict(general_dict)
 
-    idx = 0
-    for var in varlist:
+    for idx, var in enumerate(varlist):
         if varnames is None or len(varnames) == 0 or var in varnames:
             var_name = prefix + var.lower() + suffix
             var_attrs = vardict.get(var, {})
@@ -257,15 +256,12 @@ def das2tplot(
                 }
             }
 
-            store_data(var_name, data={"x": timearr, "y": var_data}, attr_dict=attr_dict)
-            options(var_name, "ytitle", ytitle)
-            # Display units separately from the descriptive axis label.
-            options(var_name, "ysubtitle", units)
-            vars_out.append(var_name)
-            idx += 1
-        else:
-            # Just increment the index to keep the variable arrays aligned with the time array.
-            idx += 1
+            sdres = store_data(var_name, data={"x": timearr, "y": var_data}, attr_dict=attr_dict)
+            if sdres:
+                options(var_name, "ytitle", ytitle)
+                # Display units separately from the descriptive axis label.
+                options(var_name, "ysubtitle", units)
+                vars_out.append(var_name)
 
     return vars_out
 

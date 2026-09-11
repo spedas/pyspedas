@@ -53,7 +53,7 @@ datasets = [
         "type": "fgm",
         "abrev": "mag",
         "full_set": "Juno/FGM/MagComponents",
-        "description": "Quicklook Magnetic Field Compontents in Payload; Planetocentric or Sun State Coordinates.",
+        "description": "Quicklook Magnetic Field Components in Payload; Planetocentric or Sun State Coordinates.",
     },
     {
         "type": "fgm",

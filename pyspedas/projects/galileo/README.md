@@ -51,18 +51,18 @@ or suffix changes these names. The `full_path` column is the directory in the DA
 | **abrev** | **full_path** | **description** | **tplot vars loaded** |
 | --- | --- | --- | --- |
 | `jovicentric` | `Galileo/Ephemeris/Jovicentric` | Galileo Jupiter orbit parameters | `galileo_radius`, `galileo_longitude`, `galileo_mlat`, `galileo_lt`, `galileo_l`, `galileo_io_phase` |
-| `fce` | `Galileo/MAG/Fce` | Cyclotron Electron Frequnecy | `galileo_fce` |
+| `fce` | `Galileo/MAG/Fce` | Cyclotron Electron Frequency | `galileo_fce` |
 | `magnitude` | `Galileo/MAG/Magnitude` | Magnetic Field Magnitude  | `galileo_b_mag` |
 
 | **var** |  **description** | **units** |
-| --- | --- | --- | 
+| --- | --- | --- |
 | radius | Distance from the center of Jupiter in Jovian radii | Rj|
 | longitude| Jupiter System III longitude of the sub-spacecraft point| degrees |
 | mlat| Magnetic Latitude |degrees |
 | lt| Magnetic Local time of the sub-spacecraft point | hours |
 | l| L Value | Rj |
 | io_phase | Io phase | degrees |
-| fce | Cyclotron Electron Frequnecy | Hz |
+| fce | Cyclotron Electron Frequency | Hz |
 | b_mag | B-Field Magnitude | nT |
 
 
