@@ -11,7 +11,7 @@ datasets = [
         "type": "mag",
         "abrev": "fce",
         "full_set": "Galileo/MAG/Fce",
-        "description": "Galileo MAG - Cyclotron Electron Frequnecy",
+        "description": "Galileo MAG - Cyclotron Electron Frequency",
     },
     {
         "type": "mag",
