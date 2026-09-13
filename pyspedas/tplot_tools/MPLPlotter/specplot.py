@@ -8,6 +8,55 @@ import pyspedas
 import logging
 from copy import copy
 
+def sort_spectrogram_bins(
+    y_in: np.ndarray,
+    z_in: np.ndarray,
+) -> tuple[np.ndarray, np.ndarray]:
+    """
+    Sort spectrogram bin centers into monotonically increasing order and
+    apply the same permutation to the spectrogram values.
+
+    Parameters
+    ----------
+    y_in
+        Either an M-element array of time-independent bin centers or an
+        N-by-M array of time-dependent bin centers.
+    z_in
+        N-by-M array of spectrogram values. The second dimension must
+        correspond to the bins in ``y_in``.
+
+    Returns
+    -------
+    y_out, z_out
+        Copies of the input arrays with the bin dimension sorted in
+        increasing order.
+
+    Notes
+    -----
+    The caller must validate the input ranks and dimensions.
+
+    For one-dimensional ``y_in``, one permutation is applied at every
+    timestamp. For two-dimensional ``y_in``, each timestamp is sorted
+    independently.
+
+    NumPy places NaNs after finite values when sorting. A stable sort is
+    used so equal values, including multiple NaNs, retain their relative
+    ordering.
+    """
+    y_in = np.asarray(y_in)
+    z_in = np.asarray(z_in)
+
+    if y_in.ndim == 1:
+        order = np.argsort(y_in, kind="stable")
+        y_out = y_in[order]
+        z_out = z_in[:, order]
+    else:
+        order = np.argsort(y_in, axis=1, kind="stable")
+        y_out = np.take_along_axis(y_in, order, axis=1)
+        z_out = np.take_along_axis(z_in, order, axis=1)
+
+    return y_out, z_out
+
 def get_bin_boundaries(bin_centers:np.ndarray, ylog:bool = False):
     """ Calculate a list of bin boundaries from a 1-D array of bin center values.
 
@@ -497,28 +546,52 @@ def specplot(
 
     input_zdata = var_data.y[time_idxs, :]
     input_times = var_data.times[time_idxs]
+    input_bin_centers = np.array([]) # Will be initialized below
+    bin_centers_valid = False
 
     # Figure out which attribute to use for Y bin centers
     #allow use of v1, v2, jmm, 2024-03-20
     if len(var_data) == 3:
         if hasattr(var_data,'v'):
+            bin_centers_valid = True
             input_bin_centers = var_data.v
         elif hasattr(var_data,'v1'):
+            bin_centers_valid = True
             input_bin_centers = var_data.v1
         else:
-            logging.warning("Multidimensional variable %s has no v or v1 attribute",variable)
+            logging.warning("specplot: Multidimensional variable %s has no v or v1 attribute, quitting.",variable)
+            return False
     elif len(var_data) == 4:
         if hasattr(var_data, 'v1'):
             if 'spec_dim_to_plot' in plot_extras:
                 if plot_extras['spec_dim_to_plot'] == 'v1':
+                    bin_centers_valid = True
                     input_bin_centers = var_data.v1
         if hasattr(var_data, 'v2'):
             if 'spec_dim_to_plot' in plot_extras:
                 if plot_extras['spec_dim_to_plot'] == 'v2':
+                    bin_centers_valid = True
                     input_bin_centers = var_data.v2
+        if not bin_centers_valid:
+            logging.warning(f"specplot: Unable to determine bin centers for variable {variable}")
+            return False
     else:
         logging.warning("Too many dimensions on the variable: " + variable)
-        return
+        return False
+
+    if hasattr(zaxis_options, 'sort_spec_bins'):
+        sort_spec_bins = zaxis_options['sort_spec_bins']
+    else:
+        sort_spec_bins = False
+
+    if (
+        sort_spec_bins
+        and input_zdata.ndim == 2
+        and len(input_times) == input_zdata.shape[0]
+        and ((input_bin_centers.ndim == 1 and input_bin_centers.shape[0] == input_zdata.shape[1]) or (input_bin_centers.ndim == 2 and input_bin_centers.shape == input_zdata.shape))
+    ):
+        logging.info(f"specplot: Sorting input_bin_centers for variable {variable}")
+        input_bin_centers, input_zdata = sort_spectrogram_bins(input_bin_centers, input_zdata)
 
     # Clean up any fill values in bin center array
     vtp = np.where(input_bin_centers == -1.e31, np.nan, input_bin_centers)
