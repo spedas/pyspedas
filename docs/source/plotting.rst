@@ -7,7 +7,55 @@ imported from the external pytplot-mpl-temp package.  As of PySPEDAS 2.0, they a
 Plotting
 --------
 
-tplot is the top level plotting routine.  It uses the matplotlib plotting library to render plots of tplot variables.
+``tplot`` is the top level plotting routine.  It uses the matplotlib plotting library to render plots of tplot variables.
+If multiple variables are plotted, they will be stacked vertically in the same Matplotlib figure, with their time
+dimensions aligned (since they will all share an x-axis).
+
+A large number of plot options are supported.  Some apply to the entire set of plots: for example,
+the figure title, figure dimensions, background color, etc.  These global plot options are set
+with the `tplot_options` routine, documented below.
+
+Other plot options are associated with specific variables. These include plot colors, symbols,
+legends, X, Y, and Z axis titles, and many more.  These are set with the `options` routine, documented below.
+
+Since matplotlib is the underlying plot framework used by PySPEDAS, many of the global and per-variable
+plot options accept the same options and argument conventions as matplotlib, although they may not
+necessarily use the same names as Matplotlib.  (We often named the options after their IDL SPEDAS
+counterparts, to make it easier on IDL users who are new to Python and Matplotlib.)
+
+Therefore, when trying to fine tune the appearance of PySPEDAS plots, it may be useful to consult
+the Matplotlib documentation at https://matplotlib.org/stable/ to see what options Matplotlib
+accepts for color names, symbols, line styles, and other plot properties.
+
+Formatting in titles and labels
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Scientific plots often benefit from using mathematical formatting conventions, Greek letters, and symbols
+in plot text. Matplotlib supports this with their ``mathtext`` markup language, which is their flavor
+of Latex.  You can invoke 'mathtext' by enclosing your titles, subtitles, labels, etc. in ``$...$``
+and using Latex notation inside the ``$$`` delimiters.  For example, here's how to
+indicate exponentiation, with a multiple-character superscript:
+
+.. code-block:: python
+
+    from pyspedas import options
+    options(somevar,'ysubtitle',r"$\mathregular{nT^{-2}}$")
+
+Breaking this notation down from the inside out:
+
+``nT^{-1}`` is intended to render "nT" as the base and "-1" as the exponent.
+
+``\mathregular{}`` renders its argument in a plain text font, without italicization or other
+formatting.  This helps it blend in better with any surrounding text.
+
+The ``$$`` delimiters indicate a mathtext expression.
+
+``r""`` is the Python syntax for raw strings.  This prevents the ``\m`` in ``\mathregular`` from
+being interpreted as a control character.
+
+Note the PySPEDAS has supported a nice rendering of superscript expressions like ``base^p`` in ``ysubtitle`` fields.
+However, this only works for single-character exponents, and only in ``ysubtitle``.  We recommend
+using the mathtext markup for mathematical notation instead of relying on this shortcut.
 
 .. autofunction:: pyspedas.tplot
 
@@ -18,7 +66,7 @@ but is documented here for completeness.
 .. autofunction:: pyspedas.lineplot
 
 specplot is a spectrogram plotting routine called by tplot. It is not usually called by users,
-but is docuemented here for completeness.
+but is documented here for completeness.
 
 .. autofunction:: pyspedas.specplot
 
