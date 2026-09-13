@@ -563,13 +563,13 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option in ['data_gap', 'datagap']: #jmm, 2023-06-20
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
 
+            elif option in ["sort_spec_bins", "sort_spectrogram_bins"]:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['sort_spec_bins'] = value
+
             elif option in ['spec_dim_to_plot', 'spec_plot_dim']:
                 if len(pyspedas.tplot_tools.data_quants[i].values.shape) <= 2:
                     logging.warning(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pyspedas.tplot_tools.data_quants[i].name}")
                     continue
-
-            elif option in ["sort_spec_bins", "sort_spectrogram_bins"]:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['sort_spec_bins'] = value
 
                 # Set the 'spec_dim_to_plot' value to either 'v' or 'v1', 'v2', 'v3', etc.
                 if isinstance(value, int):

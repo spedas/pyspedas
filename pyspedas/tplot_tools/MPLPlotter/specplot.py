@@ -579,19 +579,26 @@ def specplot(
         logging.warning("Too many dimensions on the variable: " + variable)
         return False
 
-    if hasattr(zaxis_options, 'sort_spec_bins'):
+    if zaxis_options.get('sort_spec_bins') is not None:
         sort_spec_bins = zaxis_options['sort_spec_bins']
     else:
         sort_spec_bins = False
 
-    if (
-        sort_spec_bins
-        and input_zdata.ndim == 2
-        and len(input_times) == input_zdata.shape[0]
-        and ((input_bin_centers.ndim == 1 and input_bin_centers.shape[0] == input_zdata.shape[1]) or (input_bin_centers.ndim == 2 and input_bin_centers.shape == input_zdata.shape))
-    ):
-        logging.info(f"specplot: Sorting input_bin_centers for variable {variable}")
-        input_bin_centers, input_zdata = sort_spectrogram_bins(input_bin_centers, input_zdata)
+    if sort_spec_bins:
+        if input_zdata.ndim == 2:
+            if len(input_times) == input_zdata.shape[0]:
+                if ((input_bin_centers.ndim == 1) and (input_bin_centers.shape[0] == input_zdata.shape[1])) or ((input_bin_centers.ndim == 2) and (input_bin_centers.shape == input_zdata.shape)):
+                    logging.info(f"specplot: Sorting input_bin_centers for variable {variable}")
+                    input_bin_centers, input_zdata = sort_spectrogram_bins(input_bin_centers, input_zdata)
+                else:
+                    # Probably can't happen, or store_data would have failed
+                    logging.warning(f"specplot: Dimension mismatch between input_bin_centers {input_bin_centers.shape} and input_zdata {input_zdata.shape}, skipping spectrogram bin sorting")
+            else:
+                # Probably can't happen, or store_data would have failed
+                logging.warning(f"Dimension mismatch between input times {input_times.shape} and input zdata {input_zdata.shape}, skipping spectrogram bin sorting.")
+        else:
+            # Could possibly happen if spec_dim_to_plot or spec_slices_to use are set incorrectly on a higher dimensional array?
+            logging.warning(f"Input z data array is not 2-d (shape {input_zdata.shape}), skipping spectrogram bin sorting.")
 
     # Clean up any fill values in bin center array
     vtp = np.where(input_bin_centers == -1.e31, np.nan, input_bin_centers)
