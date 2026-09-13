@@ -27,7 +27,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
     -------
 
     Many of the options are passed directly to matplotlib calls.  For more extensive documentation about how to use these
-    obtions, see the matplotlib documentation: https://matplotlib.org/stable/users/index.html
+    options, see the matplotlib documentation: https://matplotlib.org/stable/users/index.html
 
     Note that many X-axis options are controlled at the level of the entire plot, rather than per-variable (since plots with multiple panels will
     share many X axis properties).  See the tplot_options() routine for available per-plot options,
