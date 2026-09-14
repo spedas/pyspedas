@@ -115,6 +115,10 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     timestamps = [datapoint[0] for datapoint in data]
     unixtimes = [time_double(timestamp.decode('utf-8')) for timestamp in timestamps]
 
+    values_by_name = {}
+    loaded_params = []
+
+    # First pass: collect data arrays and do fill value processing
     for param_idx, param in enumerate(params[1:]):
         spec = False
         param_name = param.get('name')
@@ -160,36 +164,59 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         if fill_value is not None:
             replace_fillvals(data_out, fill_value, param_name, param_type)
 
-        bins = param.get('bins')
+        values_by_name[param_name] = data_out
+        loaded_params.append(param)
 
-        if bins is not None:
-            centers = bins[0].get('centers')
+    # Pass 2: Process any needed indirection (e.g. bin centers in separate variable) and make tplot variables
+    # All parameter values are now available, regardless of parameter order.
+    for param in loaded_params:
+        param_name = param["name"]
+        tname = prefix + param_name + suffix
+        data_out = values_by_name[param_name]
 
-            if centers is not None:
-                spec = True
+        centers = None
+        bins = param.get("bins")
 
-        data_table = {'x': unixtimes, 'y': data_out}
+        # Handle a single spectral axis, as in the IDL implementation.
+        if bins and len(bins) == 1:
+            centers = bins[0].get("centers")
+
+            if isinstance(centers, str):
+                reference = centers
+                centers = values_by_name.get(reference)
+
+                if centers is None:
+                    logging.warning(
+                        f"{param_name!r}: bin centers reference "
+                        f"{reference!r}, but that parameter was not loaded; "
+                        "storing without a spectral axis.",
+                    )
+
+        spec = centers is not None
+        data_table = {"x": unixtimes, "y": data_out}
 
         if spec:
-            data_table['v'] = centers
+            data_table["v"] = centers
 
-        saved = store_data(prefix + param_name + suffix, data=data_table)
-        metadata = get_data(prefix + param_name + suffix, metadata=True)
-        metadata['HAPI'] = param
+        saved = store_data(tname, data=data_table)
+        if not saved:
+            continue
+
+        metadata = get_data(tname, metadata=True)
+        metadata["HAPI"] = param
 
         if spec:
-            options(prefix + param_name + suffix, 'spec', True)
-            options(prefix + param_name + suffix, 'sort_spec_bins', True)
+            options(tname, "spec", True)
+            options(tname, "sort_spec_bins", True)
 
-        param_units = param.get('units')
+        param_units = param.get("units")
         if param_units is not None:
-            options(prefix + param_name + suffix, 'ysubtitle', '[' + str(param_units) + ']')
+            options(tname, "ysubtitle", "[" + str(param_units) + "]")
 
-        param_desc = param.get('description')
+        param_desc = param.get("description")
         if param_desc is not None:
-            options(prefix + param_name + suffix, 'ytitle', param_desc)
+            options(tname, "ytitle", param_desc)
 
-        if saved:
-            out_vars.append(prefix + param_name + suffix)
+        out_vars.append(tname)
 
     return out_vars
