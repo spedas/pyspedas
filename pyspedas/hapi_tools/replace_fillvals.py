@@ -26,12 +26,24 @@ def replace_fillvals(data_array, fillval, varname, param_type):
     the timestamps.  Each element of fillval is searched for and replaced independently, in the correspondina array positions of the data array.
 
     """
+    try:
+        if param_type == 'integer':
+            replacement = 0
+            if np.isscalar(fillval):
+                numeric_fillval = int(fillval)
+            else:
+                numeric_fillval = np.array(fillval).astype(int)
+        else:
+            replacement = np.nan
+            if np.isscalar(fillval):
+                numeric_fillval = float(fillval)
+            else:
+                numeric_fillval = np.array(fillval).astype(float)
+    except ValueError as e:
+        logging.warning(f"replace_fillvals: {str(e)}, skipping fillval replacement for {varname}")
+        return
 
-    if param_type == 'integer':
-        replacement = 0
-    else:
-        replacement = np.nan
-
+    fillval = numeric_fillval
     if np.isscalar(fillval):
         # Scalar fillval, replace scalar fillval everywhere
         idx = np.where(data_array == fillval)
