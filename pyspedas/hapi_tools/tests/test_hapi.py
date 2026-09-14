@@ -73,6 +73,7 @@ class HAPITests(unittest.TestCase):
             dataset="MMS4_EDP_SRVY_L2_HFESP",
         )
         self.assertTrue(h_vars)
+        tplot(h_vars, display=global_display, save_png='hapi_mms.png')
 
     def test_cdaweb_omni(self):
         del_data()
@@ -85,6 +86,7 @@ class HAPITests(unittest.TestCase):
         self.assertTrue(data_exists("BX_GSE"))
         self.assertTrue(data_exists("BY_GSE"))
         self.assertTrue(data_exists("BZ_GSE"))
+        tplot(['BX_GSE', 'BY_GSE', 'BZ_GSE'], display=global_display, save_png='hapi_omni.png')
 
     def test_calgary_specbins(self):
         del_data()
@@ -94,7 +96,7 @@ class HAPITests(unittest.TestCase):
 
         h_vars = hapi(trange=tr, server=server, dataset=dataset)
         self.assertTrue(data_exists("raw_power"))
-        tplot('raw_power', display=global_display, save_png='calgary_hapi_specgins.png')
+        tplot('raw_power', display=global_display, save_png='hapi_calgary_specbins.png')
 
 
 if __name__ == "__main__":
