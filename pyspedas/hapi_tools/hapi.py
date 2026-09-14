@@ -179,6 +179,7 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
 
         if spec:
             options(prefix + param_name + suffix, 'spec', True)
+            options(prefix + param_name + suffix, 'sort_spec_bins', True)
 
         param_units = param.get('units')
         if param_units is not None:
