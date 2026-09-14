@@ -140,6 +140,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         yrange_slice            flt/list     Two numbers that give the y axis range of spectrogram slicing plots.
         xlog_slice              bool         Sets x axis on slice plot to log scale if True.
         ylog_slice              bool         Sets y axis on slice plot to log scale if True.
+        sort_spec_bins          bool         If True, sort spectrogram Y axis bins and Z data values into ascending bin order when ploiting
         spec_dim_to_plot        int/str      If variable has more than two dimensions, this sets which dimension the "v"
         (cont)                  (cont)       variable will display on the y axis in spectrogram plots.
         (cont)                  (cont)       All other dimensions are summed into this one, unless "spec_slices_to_use"
@@ -182,6 +183,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         z_range                 zrange
         data_gap                datagap
         spec_dim_to_plot        spec_plot_dim
+        sort_spec_bins          sort_spectrogram_bins
         var_label_format        varlabel_format
         annotations             annotation
         ======================  ======================================================================================================================================
@@ -560,6 +562,9 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
             elif option in ['data_gap', 'datagap']: #jmm, 2023-06-20
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
+
+            elif option in ["sort_spec_bins", "sort_spectrogram_bins"]:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['sort_spec_bins'] = value
 
             elif option in ['spec_dim_to_plot', 'spec_plot_dim']:
                 if len(pyspedas.tplot_tools.data_quants[i].values.shape) <= 2:

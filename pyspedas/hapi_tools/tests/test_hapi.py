@@ -3,6 +3,9 @@ import numpy as np
 from numpy.testing import assert_array_equal
 from pyspedas import hapi, data_exists, del_data
 from pyspedas.hapi_tools.replace_fillvals import replace_fillvals
+from pyspedas import tplot
+
+global_display=False
 
 
 class HAPITests(unittest.TestCase):
@@ -82,6 +85,16 @@ class HAPITests(unittest.TestCase):
         self.assertTrue(data_exists("BX_GSE"))
         self.assertTrue(data_exists("BY_GSE"))
         self.assertTrue(data_exists("BZ_GSE"))
+
+    def test_calgary_specbins(self):
+        del_data()
+        server = "https://api.phys.ucalgary.ca/hapi"
+        dataset = "SWAN_HSR_K0@GILL"
+        tr = ["2026-01-25", "2026-01-26"]
+
+        h_vars = hapi(trange=tr, server=server, dataset=dataset)
+        self.assertTrue(data_exists("raw_power"))
+        tplot('raw_power', display=global_display, save_png='calgary_hapi_specgins.png')
 
 
 if __name__ == "__main__":

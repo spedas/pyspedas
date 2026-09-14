@@ -626,6 +626,7 @@ class PlotTestCases(unittest.TestCase):
         )
         self.assertTrue("ela_pef_hs_nflux_ch0" in epd_var)
         tplot_options("title", "ELFIN data with time-varying bins, should render accurately")
+        options('ela_pef_hs_nflux_ch0', "sort_spec_bins", True)
         tplot("ela_pef_hs_nflux_ch0", display=global_display, save_png=os.path.join(save_dir, "ELFIN_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
@@ -654,6 +655,7 @@ class PlotTestCases(unittest.TestCase):
             "title",
             "Decreasing and time-varying energies, fillvals, should render correctly",
         )
+        options('tha_peef_en_eflux','sort_spec_bins',True)
         tplot("tha_peef_en_eflux", display=global_display, save_png=os.path.join(save_dir, "PEEF_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
@@ -721,6 +723,7 @@ class PlotTestCases(unittest.TestCase):
             save_png=os.path.join(save_dir, "MAVEN_fluxes_test_nospec.png"),
         )
         options("diff_en_fluxes", "spec", 1)
+        options('diff_en_fluxes', 'sort_spec_bins',True)
         # Setting the "spec" option also sets the spec_dim_to_plot option to v2 in this case
         tplot_options("title", "Plotting as spectrum with default spec_dim_to_plot (v2)")
         tplot("diff_en_fluxes", display=global_display, save_png=os.path.join(save_dir, "MAVEN_fluxes_test_v2.png"))
