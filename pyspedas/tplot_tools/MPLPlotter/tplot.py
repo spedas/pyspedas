@@ -1,5 +1,6 @@
 import copy
 import logging
+import warnings
 import numpy as np
 import matplotlib as mpl
 from datetime import date, datetime, timezone
@@ -217,10 +218,14 @@ def tplot(variables,
           show_colorbar=True,
           slice=False,
           return_plot_objects=False,
-          xwrap=False,
-          ywrap=False,
-          xwrap_width=40,
-          ywrap_width=40):
+          xwrap=None,
+          ywrap=None,
+          xwrap_width=None,
+          ywrap_width=None,
+          x_wrap=None,
+          y_wrap=None,
+          x_wrap_width=None,
+          y_wrap_width=None):
     """
     Plot tplot variables to the display, or as saved files, using Matplotlib
 
@@ -287,13 +292,18 @@ def tplot(variables,
         return_plot_objects: bool, optional
             If true, returns the matplotlib fig and axes objects for further manipulation. Default: False
         xwrap: bool, optional
-            If True, wrap the x-axis title to fit within ``xwrap_width`` characters. Whitespace-only wrap with ``break_long_words=False`` and ``break_on_hyphens=False`` so scientific notation (``1e-6``, ``m/s^2``) and LaTeX fragments (``$cm^{-3}$``) survive intact. Default: False
+            Deprecated. Set the ``xwrap`` per-variable plot option with ``options()`` instead (for example, ``pyspedas.options(name, 'xwrap', True)``).
+            Passing this to ``tplot()`` still works for now, but issues a DeprecationWarning and will be removed in a future release (not yet
+            scheduled as of this writing). The underscore form ``x_wrap`` is accepted as the same deprecated alias.
         ywrap: bool, optional
-            If True, wrap the y-axis title (combined with the y-axis subtitle) to fit within ``ywrap_width`` characters. Same wrapping rules as ``xwrap``. Default: False
+            Deprecated. Set the ``ywrap`` per-variable plot option with ``options()`` instead. See ``xwrap`` above for the deprecation timeline.
+            The underscore form ``y_wrap`` is accepted as the same deprecated alias.
         xwrap_width: int, optional
-            Character width to wrap x-axis titles at when ``xwrap`` is True. Default: 40
+            Deprecated. Set the ``xwrap_width`` per-variable plot option with ``options()`` instead. See ``xwrap`` above for the deprecation timeline.
+            The underscore form ``x_wrap_width`` is accepted as the same deprecated alias.
         ywrap_width: int, optional
-            Character width to wrap y-axis titles at when ``ywrap`` is True. Default: 40
+            Deprecated. Set the ``ywrap_width`` per-variable plot option with ``options()`` instead. See ``xwrap`` above for the deprecation timeline.
+            The underscore form ``y_wrap_width`` is accepted as the same deprecated alias.
 
     Returns
     -------
@@ -329,6 +339,29 @@ def tplot(variables,
     if len(variables) == 0:
         logging.warning("tplot: No matching tplot names were found")
         return
+
+    # Deprecated: xwrap/ywrap/xwrap_width/ywrap_width (and their x_/y_ underscore
+    # aliases) used to be tplot() kwargs. They are now per-variable plot options
+    # set via options(). Forward any values supplied here into the per-variable
+    # options before doing anything else, so the rest of tplot() only ever reads
+    # them from the per-variable options.
+    deprecated_wrap_kwargs = {
+        'xwrap': xwrap if xwrap is not None else x_wrap,
+        'xwrap_width': xwrap_width if xwrap_width is not None else x_wrap_width,
+        'ywrap': ywrap if ywrap is not None else y_wrap,
+        'ywrap_width': ywrap_width if ywrap_width is not None else y_wrap_width,
+    }
+    for opt_name, opt_value in deprecated_wrap_kwargs.items():
+        if opt_value is not None:
+            warnings.warn(
+                f"Passing '{opt_name}' to tplot() is deprecated and will be removed in a "
+                f"future release (not yet scheduled). Set it as a per-variable plot option "
+                f"instead, e.g. pyspedas.options(name, '{opt_name}', value).",
+                DeprecationWarning,
+                stacklevel=2,
+            )
+            for variable in variables:
+                pyspedas.tplot_tools.options(variable, opt_name, opt_value)
 
 
     varlabel_style = pyspedas.tplot_tools.tplot_opt_glob.get('varlabel_style')
@@ -765,8 +798,8 @@ def tplot(variables,
 
         if xtitle is not None and xtitle != '':
             xlabel = xtitle + '\n' + xsubtitle
-            if xwrap:
-                xlabel = _wrap_label(xlabel, width=xwrap_width)
+            if xaxis_options.get('xwrap'):
+                xlabel = _wrap_label(xlabel, width=xaxis_options.get('xwrap_width', 40))
             if xtitle_color is not None:
                 this_axis.set_xlabel(xlabel, fontsize=char_size, color=xtitle_color)
             else:
@@ -774,13 +807,13 @@ def tplot(variables,
 
         if ytitle_color is not None:
             ylabel = ytitle + '\n' + ysubtitle
-            if ywrap:
-                ylabel = _wrap_label(ylabel, width=ywrap_width)
+            if yaxis_options.get('ywrap'):
+                ylabel = _wrap_label(ylabel, width=yaxis_options.get('ywrap_width', 40))
             this_axis.set_ylabel(ylabel, fontsize=char_size, color=ytitle_color)
         else:
             ylabel = ytitle + '\n' + ysubtitle
-            if ywrap:
-                ylabel = _wrap_label(ylabel, width=ywrap_width)
+            if yaxis_options.get('ywrap'):
+                ylabel = _wrap_label(ylabel, width=yaxis_options.get('ywrap_width', 40))
             this_axis.set_ylabel(ylabel, fontsize=char_size)
 
         border = True
