@@ -227,7 +227,7 @@ class DownloadTestCases(unittest.TestCase):
 
     def test_wildcard(self):
         # Test a wildcard pattern with several matches
-        files = download(remote_path="https://themis-data.igpp.ucla.edu/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf", last_version=False)
+        files = download(remote_path="https://themis.ssl.berkeley.edu/data/themis/tha/l1/state/2008/tha_l1_state_20080323_v??.cdf", last_version=False)
         self.assertTrue(len(files) == 4)  # v00, v01, v02, v03 should be available on this date
         self.assertTrue(files[3] == os.path.join(os.getcwd(), 'tha_l1_state_20080323_v03.cdf'))
 
