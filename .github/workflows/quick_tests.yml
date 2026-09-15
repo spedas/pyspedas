@@ -259,6 +259,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.test_xdegap
         echo Starting utilities tplot_math tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.test_math
+        echo Starting utilities interp_nan tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.test_interp_nan
         echo Starting tplot wildcard tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.test_utilities_tplot_wildcard
         echo Starting plotting tests at `date`
