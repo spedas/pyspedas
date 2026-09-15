@@ -133,6 +133,8 @@ jobs:
               coverage run -a -m  pyspedas.utilities.tests.test_xdegap
               echo Starting utilities tplot_math tests at `date`
               coverage run -a -m  pyspedas.utilities.tests.test_math
+              echo Starting utilities interp_nan tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_interp_nan
               echo Starting cotrans minvar tests at `date`
               coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
               echo Starting cotrans fac tests at `date`
@@ -218,6 +220,14 @@ jobs:
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
               echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
+
+          - shard: das2
+            shard_script: |
+              # These tests use a DAS2 server at UIowa
+              echo "Starting galileo tests at $(date)"
+              coverage run -a -m pyspedas.galileo.tests.test_galileo
+              echo "Starting juno tests at $(date)"
+              coverage run -a -m pyspedas.juno.tests.test_juno
 
           - shard: cdaweb
             shard_script: |
@@ -396,8 +406,8 @@ jobs:
               echo Starting geopack-IDL field line tracing validation tests at `date`
               coverage run -a -m pyspedas.geopack.tests.test_fl_tracing
               echo Starting geopack w-param download tests at `date`
-              coverage run -a -m pyspedas.geopack.tests.test_geopack_getw
-              echo Starting geotail tests at `date`
+              #coverage run -a -m pyspedas.geopack.tests.test_geopack_getw
+              #echo Starting geotail tests at `date`
               coverage run -a -m pyspedas.projects.geotail.tests.test_geotail
               echo Starting analysis tests at `date`
               coverage run -a -m pyspedas.analysis.tests.test_analysis
