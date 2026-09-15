@@ -13,6 +13,7 @@ from pyspedas.tplot_tools import lineplot, count_traces, makegap
 from pyspedas.tplot_tools import specplot, specplot_make_1d_ybins, reduce_spec_dataset
 from pyspedas.tplot_tools import get_var_label_ticks
 from .save_plot import save_plot
+from .label_wrap import _wrap_label
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -215,7 +216,11 @@ def tplot(variables,
           pseudo_extra_options=None,
           show_colorbar=True,
           slice=False,
-          return_plot_objects=False):
+          return_plot_objects=False,
+          xwrap=False,
+          ywrap=False,
+          xwrap_width=40,
+          ywrap_width=40):
     """
     Plot tplot variables to the display, or as saved files, using Matplotlib
 
@@ -281,6 +286,14 @@ def tplot(variables,
             If True, show an interactive window with a plot of Z versus Y values for the X axis (time) value under the cursor. Default: False
         return_plot_objects: bool, optional
             If true, returns the matplotlib fig and axes objects for further manipulation. Default: False
+        xwrap: bool, optional
+            If True, wrap the x-axis title to fit within ``xwrap_width`` characters. Whitespace-only wrap with ``break_long_words=False`` and ``break_on_hyphens=False`` so scientific notation (``1e-6``, ``m/s^2``) and LaTeX fragments (``$cm^{-3}$``) survive intact. Default: False
+        ywrap: bool, optional
+            If True, wrap the y-axis title (combined with the y-axis subtitle) to fit within ``ywrap_width`` characters. Same wrapping rules as ``xwrap``. Default: False
+        xwrap_width: int, optional
+            Character width to wrap x-axis titles at when ``xwrap`` is True. Default: 40
+        ywrap_width: int, optional
+            Character width to wrap y-axis titles at when ``ywrap`` is True. Default: 40
 
     Returns
     -------
@@ -751,15 +764,24 @@ def tplot(variables,
             ytitle_color = yaxis_options['axis_color']
 
         if xtitle is not None and xtitle != '':
+            xlabel = xtitle + '\n' + xsubtitle
+            if xwrap:
+                xlabel = _wrap_label(xlabel, width=xwrap_width)
             if xtitle_color is not None:
-                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size, color=xtitle_color)
+                this_axis.set_xlabel(xlabel, fontsize=char_size, color=xtitle_color)
             else:
-                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size)
+                this_axis.set_xlabel(xlabel, fontsize=char_size)
 
         if ytitle_color is not None:
-            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
+            ylabel = ytitle + '\n' + ysubtitle
+            if ywrap:
+                ylabel = _wrap_label(ylabel, width=ywrap_width)
+            this_axis.set_ylabel(ylabel, fontsize=char_size, color=ytitle_color)
         else:
-            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
+            ylabel = ytitle + '\n' + ysubtitle
+            if ywrap:
+                ylabel = _wrap_label(ylabel, width=ywrap_width)
+            this_axis.set_ylabel(ylabel, fontsize=char_size)
 
         border = True
         if plot_extras.get('border') is not None:
