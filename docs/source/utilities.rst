@@ -209,8 +209,12 @@ tplot variables and perform the interpolation on all of them.
 
 .. autofunction:: pyspedas.tinterpol
 
-pyspedas.interp_nan() operates on single tplot variables, and uses the xarray interpolat_na() method to perform
-interpolation, while ignoring sufficiently short runs of NaN values.
+pyspedas.interp_nan() operates on single tplot variables, and uses the xarray interpolate_na() method to perform
+interpolation through NaN values. Use ``max_gap_time`` to limit the duration of
+filled gaps in seconds, or ``max_gap_samples`` to limit the number of consecutive
+NaNs filled. Both limits can be used together. The deprecated ``s_limit`` argument
+now follows its documented meaning in seconds and is an alias for ``max_gap_time``;
+use ``max_gap_samples`` to retain the previous sample-count behavior.
 
 .. autofunction:: pyspedas.interp_nan
 
