@@ -211,6 +211,11 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
+        # These tests use a DAS2 server at UIowa
+        echo "Starting galileo tests at $(date)"
+        coverage run -a -m pyspedas.galileo.tests.test_galileo
+        echo "Starting juno tests at $(date)"
+        coverage run -a -m pyspedas.juno.tests.test_juno
         echo Starting DOI metadata tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_doi
         echo Starting Zenodo draft client tests at `date`
