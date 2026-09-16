@@ -245,6 +245,8 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting MMS utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_mms
               echo "Starting mms_login_lasp tests at $(date)"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_login_lasp
               echo "Starting mms data rate seg tests at $(date)"
@@ -303,6 +305,8 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting ERG utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_erg
               echo Starting erg tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg
               echo Starting erg cotrans tests at `date`
@@ -360,6 +364,8 @@ jobs:
               # This set of tests exercises MAVEN routines
               # echo Starting maven S3 tests at `date`
               # coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
+              echo Starting MAVEN utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_maven
               echo Starting maven tests at `date`
               coverage run -a -m pyspedas.projects.maven.tests.test_maven
               echo "========================================================="
