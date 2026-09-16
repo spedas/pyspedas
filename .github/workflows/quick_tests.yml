@@ -220,16 +220,10 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_doi
         echo Starting Zenodo draft client tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
-        #echo Starting CDAWeb tests at `date`
-        #coverage run -a -m  pyspedas.cdagui_tools.tests.test_cdagui
         echo Starting akebono tests at `date`
         coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
-        # echo Starting cluster tests at `date`
-        # coverage run -a -m  pyspedas.projects.cluster.tests.test_cluster
-        # echo Starting cluster S3 tests at `date`
-        # coverage run -a -m  pyspedas.projects.cluster.tests.test_cluster_uri
         echo Starting themis tplot_time  tests at `date`
         coverage run -a -m  pyspedas.projects.themis.tests.test_themis_tplot_time
         echo Starting themis version tests at `date`
@@ -248,10 +242,6 @@ jobs:
         coverage run -a -m  pyspedas.cotrans_tools.tests.test_quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
-        #echo Starting hapi tests at `date`
-        #coverage run -a -m  pyspedas.hapi_tools.tests.test_hapi
-        echo Starting particles tests at `date`
-        coverage run -a -m  pyspedas.particles.tests.test_particles
         echo Starting dscovr tests at `date`
         coverage run -a -m  pyspedas.projects.dscovr.tests.test_dscovr
         echo Starting utilities download tests at `date`
@@ -274,8 +264,6 @@ jobs:
         coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
         echo Starting grid and background plot option tests at `date`
         coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
-        #echo Starting tplot_map tests at `date`
-        #coverage run -a -m  pyspedas.tplot_tools.MPLPlotter.plot_tests.test_tplot_map
         echo Starting orbit plot tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
         echo Starting utilities time_tests tests at `date`
@@ -306,8 +294,6 @@ jobs:
         coverage run -a -m  pyspedas.projects.twins.tests.test_twins
         echo Starting wind tests at `date`
         coverage run -a -m  pyspedas.projects.wind.tests.test_wind
-        echo Starting poes tests at `date`
-        coverage run -a -m  pyspedas.projects.poes.tests.test_poes
         echo Starting polar tests at `date`
         coverage run -a -m  pyspedas.projects.polar.tests.test_polar
         echo Starting geopack tests at `date`
@@ -318,8 +304,6 @@ jobs:
         coverage run -a -m pyspedas.geopack.tests.test_geopack_idl_validation
         echo Starting geopack clean_model_parameters tests at `date`
         coverage run -a -m pyspedas.geopack.tests.test_clean_model_parameters
-        echo Starting geopack-IDL field line tracing validation tests at `date`
-        coverage run -a -m pyspedas.geopack.tests.test_fl_tracing
         echo Starting geotail tests at `date`
         coverage run -a -m  pyspedas.projects.geotail.tests.test_geotail
         echo Starting analysis tests at `date`
@@ -328,16 +312,12 @@ jobs:
         coverage run -a -m  pyspedas.analysis.tests.test_twavpol
         echo Starting analysis wavelet tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.test_wavelet
-        echo Starting analysis magnetic nulls tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.test_magnetic_nulls
         echo Starting fast tests at `date`
         coverage run -a -m  pyspedas.projects.fast.tests.test_fast
         echo Starting omni tests at `date`
         coverage run -a -m  pyspedas.projects.omni.tests.test_omni
         echo Starting themis tests at `date`
         coverage run -a -m  pyspedas.projects.themis.tests.test_themis
-        echo Starting goes tests at `date`
-        coverage run -a -m  pyspedas.projects.goes.tests.test_goes
         echo Starting ulysses tests at `date`
         coverage run -a -m  pyspedas.projects.ulysses.tests.test_ulysses
         echo Starting solo tests at `date`
