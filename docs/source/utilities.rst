@@ -200,7 +200,7 @@ Interpolation Tools
 There are several routines for performing interpolation in PySPEDAS, each designed
 for slightly different use cases.
 
-pyspedas.tinterpol_mxn() interpolates along time independently for each component
+pyspedas.time_interpolate() interpolates along time independently for each component
 of a scalar, vector, matrix, or higher-dimensional series. It accepts tplot names
 (including lists and wildcards) or dictionaries containing ``x`` and ``y``.
 This initial implementation supports linear interpolation only. Existing
@@ -221,15 +221,15 @@ For example::
 
     # Three matrix-valued samples; interpolate each matrix element in time.
     matrices = np.arange(27).reshape(3, 3, 3)
-    result = pyspedas.tinterpol_mxn(
+    result = pyspedas.time_interpolate(
         {'x': [0, 2, 4], 'y': matrices}, [1, 3])
     assert result['y'].shape == (2, 3, 3)
 
     pyspedas.store_data('input', data={'x': [0, 2], 'y': [0, 4]})
-    names = pyspedas.tinterpol_mxn(
+    names = pyspedas.time_interpolate(
         'input', [-1, 1, 3], nan_extrapolate=True)
     # Creates input_interp with values [NaN, 2, NaN].
-    data = pyspedas.tinterpol_mxn('input', [1], return_data=True)
+    data = pyspedas.time_interpolate('input', [1], return_data=True)
     # Returns a dictionary without creating a tplot variable.
 
 Returned dictionary times use ``datetime64[ns]``. Static dependency coordinates
@@ -249,6 +249,12 @@ NaNs, trimming each source independently in a batch, consistently applying
 repeat filling to tensors, and using previous bin maps instead of interpolating
 them linearly. Invalid options and inputs raise Python exceptions. Stored results return a list of names; empty trimmed
 results are skipped, while returned-data mode returns empty arrays.
+
+.. autofunction:: pyspedas.time_interpolate
+
+``pyspedas.tinterpol_mxn()`` is an IDL SPEDAS compatibility wrapper around
+``time_interpolate``, with identical arguments, defaults and return values.
+Use ``time_interpolate`` in new Python code.
 
 .. autofunction:: pyspedas.tinterpol_mxn
 
