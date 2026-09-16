@@ -200,6 +200,58 @@ Interpolation Tools
 There are several routines for performing interpolation in PySPEDAS, each designed
 for slightly different use cases.
 
+pyspedas.tinterpol_mxn() interpolates along time independently for each component
+of a scalar, vector, matrix, or higher-dimensional series. It accepts tplot names
+(including lists and wildcards) or dictionaries containing ``x`` and ``y``.
+This initial implementation supports linear interpolation only. Existing
+interpolation routines remain unchanged.
+
+Like IDL SPEDAS, the default is to extrapolate. Use ``nan_extrapolate=True`` to
+keep the target grid and fill outside source coverage with NaNs,
+``no_extrapolate=True`` to trim it, or ``repeat_extrapolate=True`` to repeat
+first/last finite values per component. These options are mutually exclusive.
+``ignore_nans=True`` removes NaNs independently for each component; this may
+extrapolate beyond that component's valid samples even inside the original
+source time coverage. No maximum gap duration is imposed.
+
+For example::
+
+    import numpy as np
+    import pyspedas
+
+    # Three matrix-valued samples; interpolate each matrix element in time.
+    matrices = np.arange(27).reshape(3, 3, 3)
+    result = pyspedas.tinterpol_mxn(
+        {'x': [0, 2, 4], 'y': matrices}, [1, 3])
+    assert result['y'].shape == (2, 3, 3)
+
+    pyspedas.store_data('input', data={'x': [0, 2], 'y': [0, 4]})
+    names = pyspedas.tinterpol_mxn(
+        'input', [-1, 1, 3], nan_extrapolate=True)
+    # Creates input_interp with values [NaN, 2, NaN].
+    data = pyspedas.tinterpol_mxn('input', [1], return_data=True)
+    # Returns a dictionary without creating a tplot variable.
+
+Returned dictionary times use ``datetime64[ns]``. Static dependency coordinates
+are copied. Time-dependent ``v``, ``v1``, ``v2``, and ``v3`` bins (including the
+``spec_bins`` alias) repeat the bin map at the latest source time at or before
+each target time. Exact transition times select the new map. Bin-map NaNs are
+retained even with ``ignore_nans=True``. Outside coverage, default extrapolation
+and repeat extrapolation retain endpoint maps; NaN extrapolation fills with NaNs
+and no extrapolation trims the grid. Y values remain linearly interpolated across
+bin changes, without rebinning or suppressing interpolation at mode transitions.
+Tplot output preserves coordinate attributes, data metadata and plot options, while updating
+time and value ranges. Matrix interpolation is component-wise and does not
+preserve special constraints such as rotation-matrix orthogonality.
+
+Intentional differences from IDL include preserving exact valid samples next to
+NaNs, trimming each source independently in a batch, consistently applying
+repeat filling to tensors, and using previous bin maps instead of interpolating
+them linearly. Invalid options and inputs raise Python exceptions. Stored results return a list of names; empty trimmed
+results are skipped, while returned-data mode returns empty arrays.
+
+.. autofunction:: pyspedas.tinterpol_mxn
+
 pyspedas.interpol() operates directly on arrays, not tplot variables. It is a wrapper around scipy.interpolate.interp1d().
 
 .. autofunction:: pyspedas.interpol

@@ -117,6 +117,7 @@ from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
 from .analysis.tvectot import tvectot
 from .analysis.tinterpol import tinterpol
+from .utilities.tinterpol_mxn import tinterpol_mxn
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol
 from .analysis.wavelet import wavelet
