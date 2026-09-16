@@ -300,6 +300,8 @@ jobs:
         coverage run -a -m  pyspedas.projects.geotail.tests.test_geotail
         echo Starting analysis tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.test_analysis
+        echo Starting tinterpol_mxn tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.test_tinterpol_mxn
         echo Starting analysis wavpol tests at `date`
         coverage run -a -m  pyspedas.analysis.tests.test_twavpol
         echo Starting analysis wavelet tests at `date`
