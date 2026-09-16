@@ -13,6 +13,7 @@ from pyspedas.tplot_tools import lineplot, count_traces, makegap
 from pyspedas.tplot_tools import specplot, specplot_make_1d_ybins, reduce_spec_dataset
 from pyspedas.tplot_tools import get_var_label_ticks
 from .save_plot import save_plot
+from .label_wrap import _wrap_label
 
 # the following improves the x-axis ticks labels
 import matplotlib.units as munits
@@ -316,7 +317,6 @@ def tplot(variables,
     if len(variables) == 0:
         logging.warning("tplot: No matching tplot names were found")
         return
-
 
     varlabel_style = pyspedas.tplot_tools.tplot_opt_glob.get('varlabel_style')
     if var_label is None or varlabel_style is None or varlabel_style.lower() == 'extra_axes':
@@ -751,15 +751,24 @@ def tplot(variables,
             ytitle_color = yaxis_options['axis_color']
 
         if xtitle is not None and xtitle != '':
+            xlabel = xtitle + '\n' + xsubtitle
+            if xaxis_options.get('xwrap'):
+                xlabel = _wrap_label(xlabel, width=xaxis_options.get('xwrap_width', 40))
             if xtitle_color is not None:
-                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size, color=xtitle_color)
+                this_axis.set_xlabel(xlabel, fontsize=char_size, color=xtitle_color)
             else:
-                this_axis.set_xlabel(xtitle + '\n' + xsubtitle, fontsize=char_size)
+                this_axis.set_xlabel(xlabel, fontsize=char_size)
 
         if ytitle_color is not None:
-            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size, color=ytitle_color)
+            ylabel = ytitle + '\n' + ysubtitle
+            if yaxis_options.get('ywrap'):
+                ylabel = _wrap_label(ylabel, width=yaxis_options.get('ywrap_width', 40))
+            this_axis.set_ylabel(ylabel, fontsize=char_size, color=ytitle_color)
         else:
-            this_axis.set_ylabel(ytitle + '\n' + ysubtitle, fontsize=char_size)
+            ylabel = ytitle + '\n' + ysubtitle
+            if yaxis_options.get('ywrap'):
+                ylabel = _wrap_label(ylabel, width=yaxis_options.get('ywrap_width', 40))
+            this_axis.set_ylabel(ylabel, fontsize=char_size)
 
         border = True
         if plot_extras.get('border') is not None:

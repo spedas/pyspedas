@@ -84,6 +84,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         xtick_color             str          The color of the x tick marks
         xtick_labelcolor        str          The color of the x tick marks
         xtick_direction         str          The direction of the x tick marks (in, out, inout)
+        xwrap                   bool         If True, wrap the x-axis title to fit within ``xwrap_width`` characters. Alias: x_wrap
+        xwrap_width             int          Character width to wrap the x-axis title at when ``xwrap`` is True. Default: 40. Alias: x_wrap_width
         ======================  ===========  ===========================================================================================================================
 
 
@@ -102,6 +104,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         ytick_direction         str          The direction of the Y tick marks (in, out, inout)
         y_major_ticks           [numeric]    A list of values that will be used to set the major ticks on the Y axis.
         y_minor_tick_interval   numeric      The interval between minor ticks on the Y axis.
+        ywrap                   bool         If True, wrap the y-axis title to fit within ``ywrap_width`` characters. Alias: y_wrap
+        ywrap_width             int          Character width to wrap the y-axis title at when ``ywrap`` is True. Default: 40. Alias: y_wrap_width
         ======================  ===========  ===========================================================================================================================
 
         ======================  ===========  ===========================================================================================================================
@@ -186,6 +190,10 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         sort_spec_bins          sort_spectrogram_bins
         var_label_format        varlabel_format
         annotations             annotation
+        xwrap                   x_wrap
+        xwrap_width             x_wrap_width
+        ywrap                   y_wrap
+        ywrap_width             y_wrap_width
         ======================  ======================================================================================================================================
 
 
@@ -205,6 +213,11 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
         >>> # Change Variable1 to use a log scale
         >>> pyspedas.options('Variable1', 'ylog', 1)
+        >>> pyspedas.tplot('Variable1')
+
+        >>> # Wrap a long y-axis title (underscore form y_wrap is also accepted)
+        >>> pyspedas.options('Variable1', 'ytitle', 'Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1)')
+        >>> pyspedas.options('Variable1', 'ywrap', True)
         >>> pyspedas.tplot('Variable1')
 
         >>> # Multi-dimensional variable
@@ -635,6 +648,18 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp_points'] = value
             elif option == 'y_no_resample':
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_no_resample'] = value
+
+            elif option in ['xwrap', 'x_wrap']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['xwrap'] = value
+
+            elif option in ['xwrap_width', 'x_wrap_width']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['xwrap_width'] = value
+
+            elif option in ['ywrap', 'y_wrap']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['ywrap'] = value
+
+            elif option in ['ywrap_width', 'y_wrap_width']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['ywrap_width'] = value
 
             else:
                 # Apparently cdf_to_tplot is treating all variable attributes as potential plot
