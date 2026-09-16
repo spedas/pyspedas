@@ -203,10 +203,28 @@ for slightly different use cases.
 pyspedas.time_interpolate() interpolates along time independently for each component
 of a scalar, vector, matrix, or higher-dimensional series. It accepts tplot names
 (including lists and wildcards) or dictionaries containing ``x`` and ``y``.
-This initial implementation supports linear interpolation only. Existing
-interpolation routines remain unchanged.
+Select the interpolation with ``method`` (default ``'linear'``):
 
-Like IDL SPEDAS, the default is to extrapolate. Use ``nan_extrapolate=True`` to
+* ``'linear'``: interpolate between adjacent samples.
+* ``'quadratic'``: fit a polynomial through the local three-point neighborhood,
+  matching IDL ``INTERPOL, /QUADRATIC``.
+* ``'spline'``: fit a natural cubic spline over each local four-point neighborhood,
+  matching IDL ``INTERPOL, /SPLINE``. This is not a single global spline fit.
+* ``'nearest'``: copy the closest sample, choosing the earlier time at midpoint ties.
+* ``'previous'``: copy the latest sample at or before the target time. At an exact
+  source time, select that sample.
+
+Quadratic requires three samples and spline requires four. With fewer samples,
+these methods fall back to linear interpolation; a single sample is repeated,
+and a component with no remaining samples produces NaNs. Counts are per
+component after NaN removal when ``ignore_nans=True``. Without NaN removal,
+missing values propagate through the local neighborhood; they do not trigger
+fallback. Exact source samples are copied for all methods.
+Existing interpolation routines remain unchanged.
+
+Like IDL SPEDAS, the default is to extrapolate using the selected method.
+Quadratic and spline extend their endpoint neighborhoods; nearest and previous
+repeat endpoint values. Use ``nan_extrapolate=True`` to
 keep the target grid and fill outside source coverage with NaNs,
 ``no_extrapolate=True`` to trim it, or ``repeat_extrapolate=True`` to repeat
 first/last finite values per component. These options are mutually exclusive.
@@ -232,13 +250,17 @@ For example::
     data = pyspedas.time_interpolate('input', [1], return_data=True)
     # Returns a dictionary without creating a tplot variable.
 
+    data = pyspedas.time_interpolate('input', [0.5, 1.5], method='previous',
+                                    return_data=True)
+    # Both target times use the sample at time 0.
+
 Returned dictionary times use ``datetime64[ns]``. Static dependency coordinates
 are copied. Time-dependent ``v``, ``v1``, ``v2``, and ``v3`` bins (including the
 ``spec_bins`` alias) repeat the bin map at the latest source time at or before
 each target time. Exact transition times select the new map. Bin-map NaNs are
 retained even with ``ignore_nans=True``. Outside coverage, default extrapolation
 and repeat extrapolation retain endpoint maps; NaN extrapolation fills with NaNs
-and no extrapolation trims the grid. Y values remain linearly interpolated across
+and no extrapolation trims the grid. Y values use the selected interpolation method across
 bin changes, without rebinning or suppressing interpolation at mode transitions.
 Tplot output preserves coordinate attributes, data metadata and plot options, while updating
 time and value ranges. Matrix interpolation is component-wise and does not
@@ -247,7 +269,10 @@ preserve special constraints such as rotation-matrix orthogonality.
 Intentional differences from IDL include preserving exact valid samples next to
 NaNs, trimming each source independently in a batch, consistently applying
 repeat filling to tensors, and using previous bin maps instead of interpolating
-them linearly. Invalid options and inputs raise Python exceptions. Stored results return a list of names; empty trimmed
+them linearly. Python also honors ``ignore_nans=True`` for nearest-neighbor
+interpolation, whereas the IDL wrapper bypasses NaN filtering for that method.
+The insufficient-sample fallback avoids IDL failures for undersized quadratic
+and spline neighborhoods. Invalid options and inputs raise Python exceptions. Stored results return a list of names; empty trimmed
 results are skipped, while returned-data mode returns empty arrays.
 
 .. autofunction:: pyspedas.time_interpolate

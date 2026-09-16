@@ -13,6 +13,9 @@ Set PYSPEDAS_TINTERPOL_MXN_CDF to use a local file generated with IDL
 tinterpol_mxn_validate instead. No IDL installation is needed to run the tests.
 If the download is unavailable, only the IDL validation class is skipped. An
 explicitly configured missing file or an incomplete/corrupt fixture is an error.
+
+Both IDL validation classes use this same CDF. Regenerate and publish it when
+adding reference cases; an older fixture missing required variables fails.
 """
 
 from copy import deepcopy
@@ -48,6 +51,153 @@ class TinterpolMxnTests(unittest.TestCase):
                              ignore_nans=True, nan_extrapolate=True)
         self.assertEqual(names, ['mxn_test_wrapper_out'])
         assert_allclose(get_data(names[0]).y, [np.nan, 2, np.nan], equal_nan=True)
+
+    def test_quadratic_polynomial_and_extrapolation(self):
+        result = time_interpolate({'x': [0, 1, 3, 6], 'y': [0, 1, 9, 36]},
+                                  [-2, .5, 2, 4, 8], method='quadratic')
+        assert_allclose(result['y'], [4, .25, 4, 16, 64])
+
+    def test_quadratic_local_neighborhood(self):
+        # Non-polynomial values distinguish IDL's local fit from a global spline.
+        result = time_interpolate({'x': [0, 1, 3, 6, 10, 15], 'y': [0, 2, -1, 4, 3, 9]},
+                                  [4.5, .5, 8, 2], method='quadratic')
+        assert_allclose(result['y'], [.075, 31/24, 193/42, 5/3])
+
+    def test_spline_natural_boundary(self):
+        # Natural spline through these four points has second derivatives 0,-4,4,0.
+        result = time_interpolate({'x': [0, 1, 2, 3], 'y': [0, 1, 0, 1]},
+                                  [-.5, .5, 1.5, 2.5, 3.5], method='spline')
+        assert_allclose(result['y'], [-.75, .75, .5, .25, 1.75])
+
+    def test_nearest_ties_and_endpoints(self):
+        result = time_interpolate({'x': [0, 2, 5], 'y': [10, 20, 30]},
+                                  [-1, 1, 1.5, 2, 3.5, 4, 6], method='nearest')
+        assert_array_equal(result['y'], [10, 10, 20, 20, 20, 30, 30])
+
+    def test_previous_transitions_and_endpoints(self):
+        result = time_interpolate({'x': [0, 2, 5], 'y': [10, 20, 30]},
+                                  [6, 5, 4, 2, 1, 0, -1, 2], method='previous')
+        assert_array_equal(result['y'], [30, 30, 20, 20, 10, 10, 10, 20])
+
+    def test_polynomial_fallback_per_component(self):
+        # 0, 1, 2, 3, and 4 usable samples in separate columns.
+        values = np.array([[np.nan, np.nan, 0, 0, 0],
+                           [np.nan, 7, np.nan, 1, 1],
+                           [np.nan, np.nan, np.nan, np.nan, 4],
+                           [np.nan, np.nan, 9, 9, 9]])
+        result = time_interpolate({'x': [0, 1, 2, 3], 'y': values}, [.5],
+                                  method='quadratic', ignore_nans=True)
+        assert_allclose(result['y'], [[np.nan, 7, 1.5, .25, .25]], equal_nan=True)
+        result = time_interpolate({'x': [0, 1, 2, 3], 'y': values}, [.5],
+                                  method='spline', ignore_nans=True)
+        assert_allclose(result['y'], [[np.nan, 7, 1.5, .5, .35]], equal_nan=True)
+
+    def test_new_methods_bounds_and_short_inputs(self):
+        for method in ['quadratic', 'spline', 'nearest', 'previous']:
+            with self.subTest(method=method):
+                source = {'x': [0, 2], 'y': [0, 4]}
+                result = time_interpolate(source, [-1, 1, 3], method=method,
+                                          nan_extrapolate=True)
+                middle = 2 if method in ('quadratic', 'spline') else 0
+                assert_allclose(result['y'], [np.nan, middle, np.nan], equal_nan=True)
+                result = time_interpolate(source, [-1, 1, 3], method=method,
+                                          repeat_extrapolate=True)
+                assert_array_equal(result['y'], [0, middle, 4])
+                result = time_interpolate(source, [-1, 1, 3], method=method,
+                                          no_extrapolate=True)
+                assert_array_equal(result['y'], [middle])
+                result = time_interpolate(source, [3], method=method, no_extrapolate=True)
+                self.assertEqual(result['y'].shape, (0,))
+                result = time_interpolate({'x': [1], 'y': [7]}, [0, 1, 2], method=method)
+                assert_array_equal(result['y'], [7, 7, 7])
+                result = time_interpolate({'x': [0, 1], 'y': [np.nan, np.nan]}, [.5],
+                                          method=method, ignore_nans=True)
+                self.assertTrue(np.isnan(result['y']).all())
+
+    def test_polynomial_bounds_with_full_neighborhood(self):
+        source = {'x': [0, 1, 2, 3], 'y': [0, 1, 0, 1]}
+        for method in ['quadratic', 'spline']:
+            with self.subTest(method=method):
+                midpoint = .75  # Both local methods give this value at t=.5.
+                result = time_interpolate(source, [-.5, .5, 3.5], method=method,
+                                          nan_extrapolate=True)
+                assert_allclose(result['y'], [np.nan, midpoint, np.nan], equal_nan=True)
+                result = time_interpolate(source, [-.5, .5, 3.5], method=method,
+                                          repeat_extrapolate=True)
+                assert_allclose(result['y'], [0, midpoint, 1])
+                result = time_interpolate(source, [-.5, .5, 3.5], method=method,
+                                          no_extrapolate=True)
+                assert_allclose(result['y'], [midpoint])
+
+    def test_nearest_previous_nan_selection(self):
+        source = {'x': [0, 1, 3], 'y': [0, np.nan, 6]}
+        result = time_interpolate(source, [.75, 2, 3], method='nearest')
+        assert_allclose(result['y'], [np.nan, np.nan, 6], equal_nan=True)
+        result = time_interpolate(source, [.75, 2, 3], method='nearest', ignore_nans=True)
+        assert_array_equal(result['y'], [0, 6, 6])
+        result = time_interpolate(source, [.75, 2, 3], method='previous')
+        assert_allclose(result['y'], [0, np.nan, 6], equal_nan=True)
+        result = time_interpolate(source, [.75, 2, 3], method='previous', ignore_nans=True)
+        assert_array_equal(result['y'], [0, 0, 6])
+
+    def test_polynomial_nan_stencils_and_exact_samples(self):
+        for method in ['quadratic', 'spline']:
+            with self.subTest(method=method):
+                result = time_interpolate({'x': [0, 1, 2, 3], 'y': [0, np.nan, 4, 9]},
+                                          [0, .5, 1, 2, 3], method=method)
+                assert_allclose(result['y'], [0, np.nan, np.nan, 4, 9], equal_nan=True)
+
+    def test_new_methods_descending_tensor_and_bins(self):
+        for method in ['quadratic', 'spline', 'nearest', 'previous']:
+            with self.subTest(method=method):
+                values = np.arange(5.)[:, None, None, None] * np.ones((5, 2, 2, 2))
+                source = {'x': [4, 3, 2, 1, 0], 'y': values[::-1],
+                          'v1': [[40, 41], [30, 31], [20, 21], [10, 11], [0, 1]],
+                          'v2': [10, 20],
+                          'v3': [[140, 141], [130, 131], [120, 121], [110, 111], [100, 101]]}
+                result = time_interpolate(source, [2.75, 1, 2.75], method=method)
+                y = [2.75, 1, 2.75] if method in ('quadratic', 'spline') else (
+                    [3, 1, 3] if method == 'nearest' else [2, 1, 2])
+                assert_allclose(result['y'], np.array(y)[:, None, None, None] * np.ones((3, 2, 2, 2)))
+                assert_array_equal(result['v1'], [[20, 21], [10, 11], [20, 21]])
+                assert_array_equal(result['v2'], [10, 20])
+                assert_array_equal(result['v3'], [[120, 121], [110, 111], [120, 121]])
+
+    def test_new_methods_nanosecond_precision(self):
+        times = np.datetime64('2020-01-01', 'ns') + np.arange(4) * np.timedelta64(2, 'ns')
+        target = times[:1] + np.timedelta64(1, 'ns')
+        result = time_interpolate({'x': times, 'y': [0, 4, 16, 36]}, target, method='quadratic')
+        assert_allclose(result['y'], [1])
+        result = time_interpolate({'x': times, 'y': [0, 1, 0, 1]}, target, method='spline')
+        assert_allclose(result['y'], [.75])
+        result = time_interpolate({'x': times, 'y': [0, 1, 2, 3]}, target, method='nearest')
+        assert_array_equal(result['y'], [0])
+
+    def test_selected_method_applies_to_error_bars_and_auxiliary_coordinates(self):
+        store_data('mxn_test_source', data={'x': [0, 1, 2, 3], 'y': [0, 1, 0, 1]})
+        source = data_quants['mxn_test_source']
+        source.coords['auxiliary'] = ('time', [0, 1, 0, 1])
+        source.attrs['plot_options']['error'] = np.array([0, 1, 0, 1])
+        time_interpolate('mxn_test_source', [.5], method='spline', newname='mxn_test_result')
+        result = data_quants['mxn_test_result']
+        assert_allclose(result.values, [.75])
+        assert_allclose(result.coords['auxiliary'], [.75])
+        assert_allclose(result.attrs['plot_options']['error'], [.75])
+        time_interpolate('mxn_test_source', [.5], method='previous', newname='mxn_test_result')
+        result = data_quants['mxn_test_result']
+        assert_array_equal(result.values, [0])
+        assert_array_equal(result.coords['auxiliary'], [0])
+        assert_array_equal(result.attrs['plot_options']['error'], [0])
+        assert_array_equal(source.attrs['plot_options']['error'], [0, 1, 0, 1])
+
+    def test_new_methods_complex_and_wrapper(self):
+        source = {'x': [0, 1, 2, 3], 'y': np.array([0, 1, 2, 3]) * (1 + 2j)}
+        result = time_interpolate(source, [.5], method='spline')
+        assert_allclose(result['y'], [.5 + 1j])
+        result = time_interpolate(source, [.5], method='quadratic')
+        assert_allclose(result['y'], [.5 + 1j])
+        result = tinterpol_mxn(source, [.5], method='previous')
+        assert_array_equal(result['y'], [0j])
 
     def test_linear_and_default_extrapolation(self):
         result = time_interpolate({'x': [0, 2, 5], 'y': [0, 4, 10]}, [-1, 0, 1, 5, 6])
@@ -301,7 +451,7 @@ class TinterpolMxnTests(unittest.TestCase):
         for times in [[], [0, 0], [0, 2, 1], [0, np.nan], [0, np.inf]]:
             with self.subTest(times=times), self.assertRaises(ValueError):
                 time_interpolate({'x': times, 'y': np.zeros(len(times))}, [1])
-        for options in [dict(method='spline'), dict(method='quadratic'),
+        for options in [dict(method='unsupported'), dict(method='cubic'),
                         dict(no_extrapolate=True, nan_extrapolate=True),
                         dict(newname='mxn_test_out', overwrite=True),
                         dict(newname='mxn_test_out', return_data=True)]:
@@ -326,23 +476,29 @@ class TinterpolMxnTests(unittest.TestCase):
             time_interpolate(['mxn_test_a', 'mxn_test_b'], [.5], return_data=True)
 
 
+def _reference_cdf():
+    """Locate the shared IDL baseline, honoring the local-development override."""
+    override = os.environ.get('PYSPEDAS_TINTERPOL_MXN_CDF')
+    if override:
+        filename = Path(override).expanduser()
+        if not filename.is_file():
+            raise FileNotFoundError(f'IDL reference CDF not found: {filename}')
+    else:
+        filename = download_test_data(
+            TESTING_CONFIG['remote_validation_dir'],
+            'interpolation_tests',
+            'tinterpol_mxn_validate.cdf',
+            TESTING_CONFIG['local_testing_dir'],
+        )
+        if not filename:
+            raise unittest.SkipTest('Could not download tinterpol_mxn_validate.cdf')
+    return filename
+
+
 class TinterpolMxnIDLValidation(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        override = os.environ.get('PYSPEDAS_TINTERPOL_MXN_CDF')
-        if override:
-            filename = Path(override).expanduser()
-            if not filename.is_file():
-                raise FileNotFoundError(f'IDL reference CDF not found: {filename}')
-        else:
-            filename = download_test_data(
-                TESTING_CONFIG['remote_validation_dir'],
-                'interpolation_tests',
-                'tinterpol_mxn_validate.cdf',
-                TESTING_CONFIG['local_testing_dir'],
-            )
-            if not filename:
-                raise unittest.SkipTest('Could not download tinterpol_mxn_validate.cdf')
+        filename = _reference_cdf()
         cls.addClassCleanup(del_data, 'mxn_idl_*')
         required = ['source', 'target', 'linear', 'nan', 'repeat', 'trim',
                     'source_nan', 'target_nan', 'ignore', 'preserve',
@@ -464,6 +620,83 @@ class TinterpolMxnIDLValidation(unittest.TestCase):
         time_interpolate('mxn_idl_single_source', 'mxn_idl_target', newname='mxn_python_single_nan',
                       nan_extrapolate=True)
         self.assert_matches_idl('mxn_python_single_nan', 'mxn_idl_single_nan')
+
+
+class TinterpolMxnMethodsIDLValidation(unittest.TestCase):
+    """Additional-method comparisons using the shared tinterpol_mxn baseline."""
+
+    @classmethod
+    def setUpClass(cls):
+        filename = _reference_cdf()
+        cls.addClassCleanup(del_data, 'mxn_methods_*')
+        required = ['source', 'target', 'quadratic', 'spline', 'nearest', 'previous',
+                    'nan_source', 'nan_target', 'quadratic_ignore', 'spline_ignore',
+                    'quadratic_nan', 'spline_nan', 'matrix_source',
+                    'matrix_quadratic', 'matrix_spline']
+        del_data('mxn_methods_*')
+        cdf_to_tplot(str(filename), varnames=['mxn_methods_' + suffix for suffix in required])
+        for suffix in required:
+            if get_data('mxn_methods_' + suffix) is None:
+                raise AssertionError(f'Missing reference variable mxn_methods_{suffix} in {filename}')
+
+    def tearDown(self):
+        del_data('mxn_methods_python')
+
+    def assert_matches_idl(self, expected_name):
+        actual = get_data('mxn_methods_python', dt=True)
+        expected = get_data(expected_name, dt=True)
+        assert_array_equal(actual.times, expected.times)
+        assert_allclose(actual.y, expected.y, rtol=1e-12, atol=1e-12, equal_nan=True)
+
+    def test_quadratic(self):
+        time_interpolate('mxn_methods_source', 'mxn_methods_target',
+                         method='quadratic', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_quadratic')
+
+    def test_spline(self):
+        time_interpolate('mxn_methods_source', 'mxn_methods_target',
+                         method='spline', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_spline')
+
+    def test_nearest(self):
+        time_interpolate('mxn_methods_source', 'mxn_methods_target',
+                         method='nearest', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_nearest')
+
+    def test_previous(self):
+        time_interpolate('mxn_methods_source', 'mxn_methods_target',
+                         method='previous', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_previous')
+
+    def test_quadratic_ignore(self):
+        time_interpolate('mxn_methods_nan_source', 'mxn_methods_target',
+                         method='quadratic', newname='mxn_methods_python', ignore_nans=True)
+        self.assert_matches_idl('mxn_methods_quadratic_ignore')
+
+    def test_quadratic_nan(self):
+        time_interpolate('mxn_methods_nan_source', 'mxn_methods_nan_target',
+                         method='quadratic', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_quadratic_nan')
+
+    def test_quadratic_matrix(self):
+        time_interpolate('mxn_methods_matrix_source', 'mxn_methods_target',
+                         method='quadratic', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_matrix_quadratic')
+
+    def test_spline_ignore(self):
+        time_interpolate('mxn_methods_nan_source', 'mxn_methods_target',
+                         method='spline', newname='mxn_methods_python', ignore_nans=True)
+        self.assert_matches_idl('mxn_methods_spline_ignore')
+
+    def test_spline_nan(self):
+        time_interpolate('mxn_methods_nan_source', 'mxn_methods_nan_target',
+                         method='spline', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_spline_nan')
+
+    def test_spline_matrix(self):
+        time_interpolate('mxn_methods_matrix_source', 'mxn_methods_target',
+                         method='spline', newname='mxn_methods_python')
+        self.assert_matches_idl('mxn_methods_matrix_spline')
 
 
 if __name__ == '__main__':

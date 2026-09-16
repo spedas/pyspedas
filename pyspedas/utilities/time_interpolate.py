@@ -1,4 +1,4 @@
-"""Component-wise linear interpolation of time series, following IDL SPEDAS."""
+"""Component-wise interpolation of time series, following IDL SPEDAS."""
 
 from collections.abc import Mapping
 from copy import deepcopy
@@ -8,6 +8,7 @@ import re
 import numpy as np
 import pandas as pd
 import xarray as xr
+from scipy.interpolate import CubicSpline
 
 
 def _times(values):
@@ -31,7 +32,51 @@ def _times(values):
     return result
 
 
-def _linear(values, times, target, ignore_nans=False, bounds='extrapolate'):
+def _interval(a, b):
+    """Subtract integer ns ticks without overflow or rounding absolute epochs."""
+    return ((a // 10**9 - b // 10**9).astype(np.float64) * 1e9
+            + (a % 10**9 - b % 10**9))
+
+
+def _local_polynomial(x, v, target, method):
+    """IDL INTERPOL neighborhoods: three-point quadratic or local natural spline.
+
+    Select the neighborhood from the interval's left endpoint, clamping at
+    either edge. Extrapolation evaluates that same endpoint neighborhood.
+    Use relative times to preserve subsecond precision at modern epochs.
+    """
+    left = np.searchsorted(x, target, side='right') - 1
+    width = 3 if method == 'quadratic' else 4
+    start = np.clip(left, 1, len(x) - width + 1) - 1
+    result = np.full(len(target), np.nan, dtype=v.dtype)
+    if method == 'quadratic':
+        result[:] = 0
+        for j in range(3):
+            weight = np.ones(len(target))
+            for k in range(3):
+                if k != j:
+                    weight *= (_interval(target, x[start + k])
+                               / _interval(x[start + j], x[start + k]))
+            result += weight * v[start + j]
+    elif len(target):
+        # Group targets by neighborhood, fitting each local spline only once.
+        order = np.argsort(start, kind='stable')
+        groups = np.split(order, np.flatnonzero(np.diff(start[order])) + 1)
+        for indices in groups:
+            first = start[indices[0]]
+            ys = v[first:first + 4]
+            # A missing value contaminates its entire four-point stencil.
+            # CubicSpline rejects nonfinite values; leave those results NaN.
+            if not np.isfinite(ys).all():
+                continue
+            xs = _interval(x[first:first + 4], x[first]) / 1e9
+            ts = _interval(target[indices], x[first]) / 1e9
+            result[indices] = CubicSpline(xs, ys, bc_type='natural')(ts)
+    return result
+
+
+def _interpolate_values(values, times, target, ignore_nans=False, bounds='extrapolate',
+                        method='linear'):
     """Interpolate each flattened component; ticks are ordered integer ns."""
     values = np.asarray(values)
     if values.dtype.kind not in 'biufc':
@@ -56,17 +101,24 @@ def _linear(values, times, target, ignore_nans=False, bounds='extrapolate'):
             exact = (right < len(x)) & (x[np.minimum(right, len(x) - 1)] == target)
             column[exact] = v[right[exact]]
             evaluate = ~exact
+            t = target[evaluate]
             hi = np.clip(right[evaluate], 1, len(x) - 1)
             lo = hi - 1
-            # Split seconds and nanoseconds before subtraction: no int64
-            # overflow or float conversion of absolute epoch timestamps.
-            def interval(a, b):
-                return ((a // 10**9 - b // 10**9).astype(np.float64) * 1e9
-                        + (a % 10**9 - b % 10**9))
-
-            fraction = interval(target[evaluate], x[lo]) / interval(x[hi], x[lo])
             with np.errstate(invalid='ignore', over='ignore'):
-                column[evaluate] = (1 - fraction) * v[lo] + fraction * v[hi]
+                if method == 'previous':
+                    index = np.clip(np.searchsorted(x, t, side='right') - 1, 0, len(x) - 1)
+                    column[evaluate] = v[index]
+                elif method == 'nearest':
+                    # Strict comparison resolves midpoint ties to the earlier time.
+                    index = np.where(_interval(t, x[lo]) > _interval(x[hi], t), hi, lo)
+                    column[evaluate] = v[index]
+                elif ((method == 'quadratic' and len(x) >= 3)
+                      or (method == 'spline' and len(x) >= 4)):
+                    column[evaluate] = _local_polynomial(x, v, t, method)
+                else:
+                    # Too few samples for the requested polynomial: use linear.
+                    fraction = _interval(t, x[lo]) / _interval(x[hi], x[lo])
+                    column[evaluate] = (1 - fraction) * v[lo] + fraction * v[hi]
         if bounds == 'nan':
             column[outside] = np.nan
         elif bounds == 'repeat':
@@ -118,7 +170,7 @@ def _from_mapping(source):
                         attrs=deepcopy(source.get('metadata', {})))
 
 
-def _interpolate(source, target, bounds, ignore_nans):
+def _interpolate(source, target, bounds, ignore_nans, method):
     if not isinstance(source, xr.DataArray) or not source.dims or source.dims[0] != 'time':
         raise ValueError("Source must be a time series with time as its first dimension.")
     times = _times(source.coords['time'].values).view('i8')
@@ -136,7 +188,7 @@ def _interpolate(source, target, bounds, ignore_nans):
     if bounds == 'trim':
         target = target[(ticks >= times[0]) & (ticks <= times[-1])]
         ticks = target.view('i8')
-    values = _linear(source.values, times, ticks, ignore_nans, bounds)
+    values = _interpolate_values(source.values, times, ticks, ignore_nans, bounds, method)
     coords = {'time': xr.Variable('time', target, attrs=deepcopy(source.time.attrs))}
     for name, coord in source.coords.items():
         if name == 'time':
@@ -147,7 +199,7 @@ def _interpolate(source, target, bounds, ignore_nans):
             if name in ('v', 'v1', 'v2', 'v3', 'spec_bins'):
                 data = _previous_bins(data, times, ticks, bounds)
             else:
-                data = _linear(data, times, ticks, ignore_nans, bounds)
+                data = _interpolate_values(data, times, ticks, ignore_nans, bounds, method)
             data = np.moveaxis(data, 0, axis)
             coords[name] = xr.Variable(coord.dims, data, attrs=deepcopy(coord.attrs))
         else:
@@ -162,7 +214,7 @@ def _interpolate(source, target, bounds, ignore_nans):
             error = np.asarray(plot['error'])
             if descending:
                 error = error[::-1]
-            plot['error'] = _linear(error, times, ticks, ignore_nans, bounds)
+            plot['error'] = _interpolate_values(error, times, ticks, ignore_nans, bounds, method)
     return xr.DataArray(values, dims=source.dims, coords=coords, attrs=attrs)
 
 
@@ -182,7 +234,7 @@ def time_interpolate(source, target, *, method='linear', newname=None,
                  suffix=None, overwrite=False, return_data=False,
                  no_extrapolate=False, nan_extrapolate=False,
                  repeat_extrapolate=False, ignore_nans=False):
-    """Linearly interpolate a time series, independently for every component.
+    """Interpolate a time series, independently for every component.
 
     Parameters
     ----------
@@ -197,7 +249,11 @@ def time_interpolate(source, target, *, method='linear', newname=None,
         also accepted. Times are normalized to datetime64[ns]. Target ordering
         and duplicates are preserved.
     method : str, optional
-        Only 'linear' is currently supported. Other methods raise ValueError.
+        'linear' (default), 'quadratic', 'spline', 'nearest', or 'previous'.
+        Quadratic uses IDL's local three-point polynomial. Spline uses a natural
+        cubic spline over each local four-point neighborhood, not a global fit.
+        Nearest selects the earlier sample at midpoint ties. Previous selects
+        the latest sample at or before the target (exact matches included).
     newname : str or list of str, optional
         Output names, one per expanded source. Cannot be combined with suffix
         or overwrite. A dictionary source requires one name to create output.
@@ -216,12 +272,15 @@ def time_interpolate(source, target, *, method='linear', newname=None,
         Keep target times but fill values outside source coverage with NaNs.
     repeat_extrapolate : bool, optional
         Repeat each component's first/last finite value outside source coverage.
-        Only one boundary option may be enabled. With none enabled, linearly
-        extrapolate from the first/last two samples, as in IDL SPEDAS.
+        Only one boundary option may be enabled. With none enabled, extend
+        the selected interpolant outside coverage: linear uses two endpoint
+        samples, quadratic/spline use their endpoint neighborhoods, and
+        nearest/previous repeat endpoint values.
     ignore_nans : bool, optional
         Remove NaNs per Y component before interpolation. Bin-map NaNs are
-        retained regardless of this option. Default False: missing
-        endpoints produce NaNs between them, but exact source samples are copied.
+        retained regardless of this option. Default False: NaNs propagate through
+        the selected interpolation neighborhood (nearest/previous copy only the
+        selected sample). Exact source samples are copied for every method.
         Boundary options refer to the ORIGINAL source time coverage, as in IDL;
         ignoring NaNs can extrapolate inside that coverage beyond valid samples.
 
@@ -238,8 +297,11 @@ def time_interpolate(source, target, *, method='linear', newname=None,
     Duplicate times, empty sources, incompatible shapes and conflicting options
     raise exceptions. All-NaN components stay NaN. A singleton component is
     extended as a constant, then the selected boundary policy is applied.
-    No gap-duration restriction is imposed. Quadratic, spline and nearest-neighbor
-    methods are outside the scope of this initial implementation. Unlike IDL's
+    Quadratic requires three samples and spline requires four, counted after
+    NaN removal when ignore_nans=True. With fewer samples, use linear; with
+    one sample, use a constant; with none, return NaNs. Without NaN removal,
+    a missing neighborhood value produces NaN rather than triggering fallback.
+    No gap-duration restriction is imposed. Unlike IDL's
     arithmetic at some interval boundaries, an exact valid source sample remains
     valid even when its neighbor is NaN. Matrix elements are interpolated
     independently; rotation-matrix orthogonality is not enforced.
@@ -250,7 +312,10 @@ def time_interpolate(source, target, *, method='linear', newname=None,
     default extrapolation and repeat_extrapolate retain the endpoint maps,
     including their NaNs; nan_extrapolate fills with NaNs, and no_extrapolate
     trims the grid. Unlike IDL, bin maps are never linearly interpolated.
-    Y remains linearly interpolated across bin changes, without rebinning.
+    Y uses the selected method across bin changes, without rebinning.
+    Unlike IDL tinterpol_mxn's nearest-neighbor branch, ignore_nans applies to
+    nearest as well as the other methods. Descending sources are normalized to
+    increasing time, so nearest ties always choose the earlier time.
 
 
     Examples
@@ -262,8 +327,8 @@ def time_interpolate(source, target, *, method='linear', newname=None,
     """
     from pyspedas.tplot_tools import data_quants, tnames, store_data, get_y_range
 
-    if method != 'linear':
-        raise ValueError("time_interpolate currently supports only method='linear'.")
+    if method not in ('linear', 'quadratic', 'spline', 'nearest', 'previous'):
+        raise ValueError("method must be 'linear', 'quadratic', 'spline', 'nearest', or 'previous'.")
     if sum(bool(v) for v in (no_extrapolate, nan_extrapolate, repeat_extrapolate)) > 1:
         raise ValueError("Specify only one extrapolation option.")
     if sum((newname is not None, suffix is not None, bool(overwrite))) > 1:
@@ -305,7 +370,7 @@ def time_interpolate(source, target, *, method='linear', newname=None,
         if len(set(output_names)) != len(output_names):
             raise ValueError("Output names must be distinct.")
     # Compute every result before changing the registry, including overwrite mode.
-    results = [_interpolate(s, target, bounds, ignore_nans) for s in sources]
+    results = [_interpolate(s, target, bounds, ignore_nans, method) for s in sources]
     if return_data:
         return _as_dict(results[0])
     stored = []
