@@ -174,6 +174,112 @@ class PlotTestCases(unittest.TestCase):
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
 
+    def test_axis_title_wrap(self):
+        # Long axis titles wrap via per-variable options (issue #1444).
+        # PNGs are unique so testers can compare against a previous local run.
+        del_data("*")
+        store_data("wrap_data", data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 2, 3, 2, 1, 2]})
+        timespan("1970-01-01", 10, "seconds")
+        long_ytitle = (
+            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
+            "for the MMS FPI instrument"
+        )
+        long_xtitle = "Time since interval start along the GSE-X spacecraft trajectory"
+        options("wrap_data", "ytitle", long_ytitle)
+        options("wrap_data", "ysubtitle", "FPI DIS")
+        options("wrap_data", "xtitle", long_xtitle)
+        options("wrap_data", "xsubtitle", "UT")
+
+        tplot_options("title", "Default: long x/y titles are not wrapped")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_nowrap.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        nowrap_ylabel = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        self.assertEqual(nowrap_ylabel[0], long_ytitle)
+        self.assertGreater(len(nowrap_ylabel[0]), 40)
+
+        options("wrap_data", "ywrap", True)
+        options("wrap_data", "xwrap", True)
+        tplot_options("title", "xwrap and ywrap enabled, default width 40")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_default.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        ylabel_lines = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        xlabel_lines = [ln for ln in ax.get_xlabel().split("\n") if ln]
+        self.assertGreater(len(ylabel_lines), 1)
+        self.assertGreater(len(xlabel_lines), 1)
+        for line in ylabel_lines + xlabel_lines:
+            self.assertLessEqual(len(line), 40)
+
+        options("wrap_data", "y_wrap_width", 20)
+        options("wrap_data", "x_wrap_width", 20)
+        tplot_options("title", "underscore aliases, wrap width 20")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_width20.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        for line in [ln for ln in ax.get_ylabel().split("\n") if ln]:
+            self.assertLessEqual(len(line), 20)
+        for line in [ln for ln in ax.get_xlabel().split("\n") if ln]:
+            self.assertLessEqual(len(line), 20)
+
+        store_data("wrap_other", data={"x": [1, 2, 3, 4, 5, 6], "y": [3, 2, 1, 2, 3, 2]})
+        options("wrap_other", "ytitle", long_ytitle)
+        tplot_options("title", "Only wrap_data has ywrap; wrap_other stays unwrapped")
+        fig, axes = tplot(
+            ["wrap_data", "wrap_other"],
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_per_variable.png"),
+        )
+        axs = np.atleast_1d(axes)
+        wrapped_lines = [ln for ln in axs[0].get_ylabel().split("\n") if ln]
+        unwrapped_lines = [ln for ln in axs[1].get_ylabel().split("\n") if ln]
+        self.assertGreater(len(wrapped_lines), 1)
+        self.assertEqual(unwrapped_lines[0], long_ytitle)
+
+        tplot_options("title", "")
+        timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
+
+    def test_axis_title_wrap_pseudovar(self):
+        # Parent wrap options must reach the recursive tplot() path.
+        del_data("*")
+        store_data("wrap_child_a", data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 2, 3, 2, 1, 2]})
+        store_data("wrap_child_b", data={"x": [1, 2, 3, 4, 5, 6], "y": [3, 2, 1, 2, 3, 2]})
+        store_data("wrap_pseudo", data=["wrap_child_a", "wrap_child_b"])
+        timespan("1970-01-01", 10, "seconds")
+        long_ytitle = (
+            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
+            "for the MMS FPI instrument"
+        )
+        options("wrap_pseudo", "ytitle", long_ytitle)
+        options("wrap_pseudo", "ywrap", True)
+        tplot_options("title", "Pseudovariable inherits parent ywrap")
+        fig, axes = tplot(
+            "wrap_pseudo",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_pseudovar.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        ylabel_lines = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        self.assertGreater(len(ylabel_lines), 1)
+        for line in ylabel_lines:
+            self.assertLessEqual(len(line), 40)
+        tplot_options("title", "")
+        timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
+
     def test_time_data_bars(self):
         del_data("*")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
