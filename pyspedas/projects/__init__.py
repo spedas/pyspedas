@@ -10,11 +10,13 @@ from . import elfin
 from . import equator_s
 from . import erg
 from . import fast
+from . import galileo
 from . import geotail
 from . import goes
 from . import image
 from . import kompsat
 from . import kyoto
+from . import juno
 from . import lanl
 from . import maven
 from . import mica
