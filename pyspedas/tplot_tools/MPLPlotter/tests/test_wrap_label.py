@@ -1,18 +1,15 @@
-"""Unit tests for the ``wrap_label`` helper used by ``tplot`` when ``xwrap``
-or ``ywrap`` is enabled (issue #1444).
+"""Unit tests for the ``wrap_label`` helper and wrap option aliases (issue #1444).
 
 The helper wraps axis titles so long labels do not overflow the panel. We test
 it in isolation because it is a pure string transform (no matplotlib state),
 which is faster and more deterministic than asserting on rendered axes.
 
-The helper lives in :mod:`pyspedas.tplot_tools.MPLPlotter.label_wrap` (kept
-dependency-free) so this test does not need matplotlib or the full
-``pyspedas`` package init chain.
+Rendered ``tplot`` coverage lives in
+``pyspedas.utilities.tests.test_utilities_plot``.
 """
 import unittest
-import warnings
 
-from pyspedas.tplot_tools.MPLPlotter.label_wrap import wrap_label, _wrap_label
+from pyspedas.tplot_tools.MPLPlotter.label_wrap import _wrap_label
 
 
 class TestWrapLabel(unittest.TestCase):
@@ -111,16 +108,10 @@ class TestWrapLabel(unittest.TestCase):
             self.assertLessEqual(len(line), 15)
 
 
-class TestWrapOptionsOnOptionsAndTplot(unittest.TestCase):
-    """Coverage for review item 1 on PR #1456 (comment 5689622959): xwrap/ywrap/
-    xwrap_width/ywrap_width moved out of the tplot() signature and into
-    per-variable plot options set via options(), with underscore aliases and a
-    deprecated forwarding path on tplot().
-    """
+class TestWrapOptionsAliases(unittest.TestCase):
+    """``options()`` underscore aliases write the canonical xaxis/yaxis keys."""
 
     def setUp(self):
-        import matplotlib
-        matplotlib.use("Agg")
         import pyspedas
         self.pyspedas = pyspedas
         pyspedas.del_data("*")
@@ -129,12 +120,9 @@ class TestWrapOptionsOnOptionsAndTplot(unittest.TestCase):
         )
 
     def tearDown(self):
-        import matplotlib.pyplot as plt
         self.pyspedas.del_data("*")
-        plt.close("all")
 
     def test_underscore_option_resolves_to_no_underscore_key(self):
-        # write() with the underscore-aliased names ...
         self.pyspedas.options("wrap_test_var", "x_wrap", True)
         self.pyspedas.options("wrap_test_var", "x_wrap_width", 30)
         self.pyspedas.options("wrap_test_var", "y_wrap", True)
@@ -144,42 +132,25 @@ class TestWrapOptionsOnOptionsAndTplot(unittest.TestCase):
         xaxis_opt = attrs["plot_options"]["xaxis_opt"]
         yaxis_opt = attrs["plot_options"]["yaxis_opt"]
 
-        # ... must land under the no-underscore canonical keys.
         self.assertEqual(xaxis_opt["xwrap"], True)
         self.assertEqual(xaxis_opt["xwrap_width"], 30)
         self.assertEqual(yaxis_opt["ywrap"], True)
         self.assertEqual(yaxis_opt["ywrap_width"], 25)
 
-    def test_tplot_kwarg_issues_deprecation_warning(self):
-        with self.assertWarns(DeprecationWarning):
-            self.pyspedas.tplot(
-                "wrap_test_var", xwrap=True, display=False, return_plot_objects=True
-            )
+    def test_canonical_option_names_also_write_keys(self):
+        self.pyspedas.options("wrap_test_var", "xwrap", True)
+        self.pyspedas.options("wrap_test_var", "xwrap_width", 18)
+        self.pyspedas.options("wrap_test_var", "ywrap", True)
+        self.pyspedas.options("wrap_test_var", "ywrap_width", 22)
 
-    def test_tplot_underscore_kwarg_issues_deprecation_warning(self):
-        with self.assertWarns(DeprecationWarning):
-            self.pyspedas.tplot(
-                "wrap_test_var", x_wrap=True, display=False, return_plot_objects=True
-            )
+        attrs = self.pyspedas.tplot_tools.data_quants["wrap_test_var"].attrs
+        xaxis_opt = attrs["plot_options"]["xaxis_opt"]
+        yaxis_opt = attrs["plot_options"]["yaxis_opt"]
 
-    def test_tplot_kwargs_advance_per_variable_options_before_render(self):
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", DeprecationWarning)
-            self.pyspedas.tplot(
-                "wrap_test_var",
-                xwrap=True,
-                xwrap_width=15,
-                display=False,
-                return_plot_objects=True,
-            )
-
-        # The per-variable option must have been set as a side effect of the
-        # tplot() call, before rendering ran, not merely accepted and dropped.
-        xaxis_opt = self.pyspedas.tplot_tools.data_quants["wrap_test_var"].attrs[
-            "plot_options"
-        ]["xaxis_opt"]
         self.assertEqual(xaxis_opt["xwrap"], True)
-        self.assertEqual(xaxis_opt["xwrap_width"], 15)
+        self.assertEqual(xaxis_opt["xwrap_width"], 18)
+        self.assertEqual(yaxis_opt["ywrap"], True)
+        self.assertEqual(yaxis_opt["ywrap_width"], 22)
 
 
 if __name__ == "__main__":
