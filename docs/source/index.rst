@@ -54,6 +54,7 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    vires
    geopack
    coords
+   interpolation
    utilities
    mission_specific_tools
    plotting
