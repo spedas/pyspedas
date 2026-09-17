@@ -16,6 +16,10 @@ CONFIG = {
     "remote_data_dir_spdf": "https://spdf.gsfc.nasa.gov/pub/data/aaa_special-purpose-datasets/spherical-elementary-and-equivalent-ionospheric-currents-weygand/",
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "secs")
+
 # override local data directory with environment variables
 if os.environ.get("LOCAL_SECS_DATA_DIR"):
     CONFIG["local_data_dir"] = os.environ[

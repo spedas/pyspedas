@@ -111,6 +111,8 @@ jobs:
               coverage run -a -m pyspedas.utilities.tests.test_utilities_download
               echo Starting utilities misc tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
+              echo Starting user preferences tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_preferences
               echo Starting tplot wildcard tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_tplot_wildcard
               echo Starting plotting tests at `date`

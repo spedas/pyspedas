@@ -6,6 +6,10 @@ CONFIG = {
     "noaa_remote_data_dir": "https://www.ngdc.noaa.gov/stp/space-weather/geomagnetic-data/INDICES/KP_AP/"
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "noaa")
+
 # override local data directory with environment variables
 if os.environ.get("SPEDAS_DATA_DIR"):
     CONFIG["local_data_dir"] = os.sep.join(

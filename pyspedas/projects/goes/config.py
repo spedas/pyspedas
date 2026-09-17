@@ -5,6 +5,10 @@ CONFIG = {
     "remote_data_dir": "https://www.ncei.noaa.gov/data/goes-space-environment-monitor/access/",
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "goes")
+
 # override local data directory with environment variables
 if os.environ.get("SPEDAS_DATA_DIR"):
     CONFIG["local_data_dir"] = os.sep.join([os.environ["SPEDAS_DATA_DIR"], "goes"])
