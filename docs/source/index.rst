@@ -42,6 +42,7 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    getting_started
    examples_and_tutorials
    getting_help
+   managing_preferences
 
 .. toctree::
    :maxdepth: 1

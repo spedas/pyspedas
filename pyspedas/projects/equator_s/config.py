@@ -5,6 +5,10 @@ CONFIG = {
     "remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/equator-s/",
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "equator_s")
+
 # override local data directory with environment variables
 if os.environ.get("EQUATORS_DATA_DIR"):
     CONFIG["local_data_dir"] = os.environ["EQUATORS_DATA_DIR"]

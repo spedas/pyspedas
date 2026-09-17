@@ -248,6 +248,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.test_utilities_download
         echo Starting utilities misc tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.test_utilities_misc
+        echo Starting user preferences tests at `date`
+        coverage run -a -m pyspedas.utilities.tests.test_preferences
         echo Starting utilities URI tests at `date`
         coverage run -a -m  pyspedas.utilities.tests.test_utilities_download_uri
         echo Starting utilities xdegap tests at `date`

@@ -5,6 +5,10 @@ CONFIG = {
     "remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/fast/",
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "fast")
+
 # override local data directory with environment variables
 if os.environ.get("FAST_DATA_DIR"):
     CONFIG["local_data_dir"] = os.environ["FAST_DATA_DIR"]
