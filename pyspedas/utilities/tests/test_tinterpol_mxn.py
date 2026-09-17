@@ -199,6 +199,150 @@ class TinterpolMxnTests(unittest.TestCase):
         result = tinterpol_mxn(source, [.5], method='previous')
         assert_array_equal(result['y'], [0j])
 
+    def test_max_gap_samples_rejects_entire_run(self):
+        source = {'x': [0, 1, 2, 3, 4, 5, 6],
+                  'y': [0, np.nan, np.nan, 3, 4, np.nan, 6]}
+        result = time_interpolate(source, source['x'], ignore_nans=True, max_gap_samples=1)
+        assert_allclose(result['y'], [0, np.nan, np.nan, 3, 4, 5, 6], equal_nan=True)
+        result = time_interpolate(source, source['x'], ignore_nans=True, max_gap_samples=2)
+        assert_allclose(result['y'], [0, 1, 2, 3, 4, 5, 6])
+
+    def test_max_gap_samples_counts_source_not_target_samples(self):
+        source = {'x': [0, 1, 2, 3, 10, 11, 20],
+                  'y': [0, np.nan, np.nan, 3, 10, np.nan, 20]}
+        result = time_interpolate(source, [15, 1.5, 3, .5, 15, 5, 10],
+                                  ignore_nans=True, max_gap_samples=1)
+        assert_allclose(result['y'], [15, np.nan, 3, np.nan, 15, 5, 10], equal_nan=True)
+        # Many output points within a gap still count as one missing input sample.
+        result = time_interpolate(source, np.linspace(10, 20, 101),
+                                  ignore_nans=True, max_gap_samples=1)
+        assert_allclose(result['y'], np.linspace(10, 20, 101))
+
+    def test_max_gap_samples_does_not_enable_nan_removal(self):
+        source = {'x': [0, 1, 2], 'y': [0, np.nan, 2]}
+        result = time_interpolate(source, [0, 1, 2], max_gap_samples=1)
+        assert_allclose(result['y'], [0, np.nan, 2], equal_nan=True)
+
+    def test_gap_limit_argument_validation(self):
+        for value in [-1, np.nan, np.inf, '3s', True, 1j]:
+            with self.subTest(max_gap_time=value), self.assertRaises(ValueError):
+                time_interpolate({'x': [0, 1], 'y': [0, 1]}, [.5], max_gap_time=value)
+        for value in [0, -1, 1.5, np.nan, np.inf, '2', True]:
+            with self.subTest(max_gap_samples=value), self.assertRaises(ValueError):
+                time_interpolate({'x': [0, 1], 'y': [0, 1]}, [.5], max_gap_samples=value)
+        result = time_interpolate({'x': [0, 1], 'y': [0, 1]}, [.5],
+                                  max_gap_time=np.float64(1), max_gap_samples=np.int64(1))
+        assert_allclose(result['y'], [.5])
+
+    def test_max_gap_time_threshold_and_acquisition_outage(self):
+        source = {'x': [0, 1, 2, 3, 10, 11, 20],
+                  'y': [0, np.nan, np.nan, 3, 10, np.nan, 20]}
+        result = time_interpolate(source, [0, 1, 2, 3, 5, 10, 11, 20],
+                                  ignore_nans=True, max_gap_time=3)
+        assert_allclose(result['y'], [0, 1, 2, 3, np.nan, 10, np.nan, 20], equal_nan=True)
+        result = time_interpolate({'x': [0, 10], 'y': [0, 10]}, [0, 5, 10], max_gap_time=9)
+        assert_allclose(result['y'], [0, np.nan, 10], equal_nan=True)
+        result = time_interpolate({'x': [0, 10], 'y': [0, 10]}, [0, 5, 10], max_gap_time=10)
+        assert_allclose(result['y'], [0, 5, 10])
+        result = time_interpolate({'x': [0, 10], 'y': [0, 10]}, [0, 5, 10], max_gap_time=0)
+        assert_allclose(result['y'], [0, np.nan, 10], equal_nan=True)
+
+    def test_gap_limits_both_apply(self):
+        source = {'x': [0, 1, 2, 3, 4, 5, 6, 10, 20],
+                  'y': [0, np.nan, np.nan, 3, 4, np.nan, 6, np.nan, 20]}
+        result = time_interpolate(source, source['x'], ignore_nans=True,
+                                  max_gap_time=3, max_gap_samples=1)
+        assert_allclose(result['y'], [0, np.nan, np.nan, 3, 4, 5, 6, np.nan, 20], equal_nan=True)
+        result = tinterpol_mxn(source, source['x'], ignore_nans=True,
+                               max_gap_time=3, max_gap_samples=1)
+        assert_allclose(result['y'], [0, np.nan, np.nan, 3, 4, 5, 6, np.nan, 20], equal_nan=True)
+
+    def test_gap_limits_all_methods_preserve_exact_values(self):
+        source = {'x': [0, 1, 2, 3, 4, 5, 6, 10],
+                  'y': [0, np.nan, np.nan, 3, 4, 5, 6, 10]}
+        for method in ['linear', 'quadratic', 'spline', 'nearest', 'previous']:
+            with self.subTest(method=method):
+                result = time_interpolate(source, [3, 1.5, 8, 0, 10, 1.5], method=method,
+                                          ignore_nans=True, max_gap_time=3, max_gap_samples=1)
+                assert_allclose(result['y'], [3, np.nan, np.nan, 0, 10, np.nan], equal_nan=True)
+
+    def test_gap_limits_per_component_and_descending_matrix(self):
+        values = np.array([[[0, 0], [0, np.nan]],
+                           [[np.nan, 1], [np.nan, np.nan]],
+                           [[np.nan, 2], [2, np.nan]],
+                           [[3, 3], [np.nan, np.nan]],
+                           [[4, 4], [4, np.nan]]])
+        result = time_interpolate({'x': [4, 3, 2, 1, 0], 'y': values[::-1]},
+                                  [2.5, .5, 1.5, 2.5], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1)
+        expected = np.array([[[np.nan, 2.5], [2.5, np.nan]],
+                             [[np.nan, .5], [.5, np.nan]],
+                             [[np.nan, 1.5], [1.5, np.nan]],
+                             [[np.nan, 2.5], [2.5, np.nan]]])
+        assert_allclose(result['y'], expected, equal_nan=True)
+
+    def test_gap_limits_preserve_extrapolation_policies(self):
+        source = {'x': [0, 1, 2, 3], 'y': [0, np.nan, np.nan, 3]}
+        result = time_interpolate(source, [-1, 1, 4], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1)
+        assert_allclose(result['y'], [-1, np.nan, 4], equal_nan=True)
+        result = time_interpolate(source, [-1, 1, 4], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1, repeat_extrapolate=True)
+        assert_allclose(result['y'], [0, np.nan, 3], equal_nan=True)
+        result = time_interpolate(source, [-1, 1, 4], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1, nan_extrapolate=True)
+        self.assertTrue(np.isnan(result['y']).all())
+        result = time_interpolate(source, [-1, 1, 4], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1, no_extrapolate=True)
+        assert_array_equal(result['x'], np.array([1_000_000_000], dtype='datetime64[ns]'))
+        self.assertTrue(np.isnan(result['y']).all())
+        result = time_interpolate(source, [-1, 4], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1, no_extrapolate=True)
+        self.assertEqual(result['y'].shape, (0,))
+
+    def test_gap_limits_unbounded_missing_runs_and_singletons(self):
+        source = {'x': [0, 1, 2, 3, 4, 5], 'y': [np.nan, np.nan, 2, 3, np.nan, np.nan]}
+        result = time_interpolate(source, [-1, 0, 2, 2.5, 3, 5, 6], ignore_nans=True,
+                                  max_gap_time=0, max_gap_samples=1)
+        assert_allclose(result['y'], [-1, 0, 2, np.nan, 3, 5, 6], equal_nan=True)
+        result = time_interpolate({'x': [0, 1, 2], 'y': [np.nan, 7, np.nan]},
+                                  [-1, 0, 1, 2, 3], ignore_nans=True,
+                                  max_gap_time=0, max_gap_samples=1)
+        assert_array_equal(result['y'], [7, 7, 7, 7, 7])
+        result = time_interpolate({'x': [0, 1], 'y': [np.nan, np.nan]}, [.5],
+                                  ignore_nans=True, max_gap_time=0, max_gap_samples=1)
+        self.assertTrue(np.isnan(result['y']).all())
+
+    def test_gap_limits_nanosecond_threshold(self):
+        times = np.datetime64('2020-01-01', 'ns') + np.arange(3) * np.timedelta64(1, 'ns')
+        source = {'x': times, 'y': [0, np.nan, 2]}
+        result = time_interpolate(source, times, ignore_nans=True, max_gap_time=2e-9)
+        assert_allclose(result['y'], [0, 1, 2])
+        result = time_interpolate(source, times, ignore_nans=True, max_gap_time=1e-9)
+        assert_allclose(result['y'], [0, np.nan, 2], equal_nan=True)
+
+    def test_gap_limits_bin_maps_remain_previous(self):
+        source = {'x': [0, 1, 2, 3], 'y': [[0, 10], [np.nan, 11], [np.nan, 12], [3, 13]],
+                  'v': [[1, 2], [10, 20], [100, 200], [1000, 2000]]}
+        result = time_interpolate(source, [.5, 1.5, 2.5], ignore_nans=True,
+                                  max_gap_time=2, max_gap_samples=1)
+        assert_allclose(result['y'], [[np.nan, 10.5], [np.nan, 11.5], [np.nan, 12.5]], equal_nan=True)
+        assert_array_equal(result['v'], [[1, 2], [10, 20], [100, 200]])
+
+    def test_gap_limits_tplot_storage_and_auxiliary_values(self):
+        store_data('mxn_test_gap_source', data={'x': [0, 1, 2, 3], 'y': [0, np.nan, np.nan, 3]})
+        source = data_quants['mxn_test_gap_source']
+        source.coords['auxiliary'] = ('time', [0, 1, 2, 3])
+        source.attrs['plot_options']['error'] = np.array([0, np.nan, np.nan, 3])
+        names = time_interpolate('mxn_test_gap_source', [1.5], ignore_nans=True,
+                                 max_gap_time=2, max_gap_samples=1, newname='mxn_test_gap_result')
+        self.assertEqual(names, ['mxn_test_gap_result'])
+        result = data_quants[names[0]]
+        self.assertTrue(np.isnan(result.values).all())
+        assert_allclose(result.coords['auxiliary'], [1.5])
+        self.assertTrue(np.isnan(result.attrs['plot_options']['error']).all())
+        assert_allclose(source.values, [0, np.nan, np.nan, 3], equal_nan=True)
+
     def test_linear_and_default_extrapolation(self):
         result = time_interpolate({'x': [0, 2, 5], 'y': [0, 4, 10]}, [-1, 0, 1, 5, 6])
         assert_array_equal(result['y'], [-2, 0, 2, 10, 12])
