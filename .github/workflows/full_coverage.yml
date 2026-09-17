@@ -421,6 +421,8 @@ jobs:
               coverage run -a -m pyspedas.analysis.tests.test_analysis
               echo Starting tinterpol_mxn tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_tinterpol_mxn
+              echo Starting interpolate_rotation tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_interpolate_rotation
               echo Starting analysis wavpol tests at `date`
               coverage run -a -m pyspedas.analysis.tests.test_twavpol
               echo Starting analysis wavelet tests at `date`

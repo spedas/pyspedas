@@ -118,6 +118,7 @@ from .analysis.deriv_data import deriv_data
 from .analysis.tvectot import tvectot
 from .analysis.tinterpol import tinterpol
 from .utilities.time_interpolate import time_interpolate
+from .utilities.interpolate_rotation import interpolate_rotation
 from .utilities.tinterpol_mxn import tinterpol_mxn
 from .analysis.yclip import yclip
 from .analysis.twavpol import twavpol

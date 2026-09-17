@@ -3,6 +3,8 @@
 from collections.abc import Mapping
 from copy import deepcopy
 import logging
+import math
+from numbers import Integral, Real
 import re
 
 import numpy as np
@@ -75,8 +77,37 @@ def _local_polynomial(x, v, target, method):
     return result
 
 
+def _gap_mask(values, times, target, max_gap_time, max_gap_samples):
+    """Flag targets strictly inside over-limit intervals between non-NaN samples.
+
+    Count missing SOURCE samples, independently of target spacing and ordering.
+    A target at a non-NaN source sample is never masked. Unbounded leading and
+    trailing gaps remain subject to the existing extrapolation behavior.
+    """
+    rejected = np.zeros(len(target), dtype=bool)
+    if max_gap_time is None and max_gap_samples is None:
+        return rejected
+    good = np.flatnonzero(~np.isnan(values))
+    if len(good) < 2:
+        return rejected
+    x = times[good]
+    right = np.searchsorted(x, target, side='left')
+    inside = (right > 0) & (right < len(x))
+    indices = np.flatnonzero(inside)
+    hi = right[indices]
+    # Exclude exact matches at the right endpoint as well as outer endpoints.
+    indices = indices[target[indices] != x[hi]]
+    hi = right[indices]
+    lo = hi - 1
+    if max_gap_time is not None:
+        rejected[indices] |= _interval(x[hi], x[lo]) / 1e9 > max_gap_time
+    if max_gap_samples is not None:
+        rejected[indices] |= good[hi] - good[lo] - 1 > max_gap_samples
+    return rejected
+
+
 def _interpolate_values(values, times, target, ignore_nans=False, bounds='extrapolate',
-                        method='linear'):
+                        method='linear', max_gap_time=None, max_gap_samples=None):
     """Interpolate each flattened component; ticks are ordered integer ns."""
     values = np.asarray(values)
     if values.dtype.kind not in 'biufc':
@@ -119,6 +150,8 @@ def _interpolate_values(values, times, target, ignore_nans=False, bounds='extrap
                     # Too few samples for the requested polynomial: use linear.
                     fraction = _interval(t, x[lo]) / _interval(x[hi], x[lo])
                     column[evaluate] = (1 - fraction) * v[lo] + fraction * v[hi]
+        if max_gap_time is not None or max_gap_samples is not None:
+            column[_gap_mask(y, times, target, max_gap_time, max_gap_samples)] = np.nan
         if bounds == 'nan':
             column[outside] = np.nan
         elif bounds == 'repeat':
@@ -170,7 +203,7 @@ def _from_mapping(source):
                         attrs=deepcopy(source.get('metadata', {})))
 
 
-def _interpolate(source, target, bounds, ignore_nans, method):
+def _interpolate(source, target, bounds, ignore_nans, method, max_gap_time, max_gap_samples):
     if not isinstance(source, xr.DataArray) or not source.dims or source.dims[0] != 'time':
         raise ValueError("Source must be a time series with time as its first dimension.")
     times = _times(source.coords['time'].values).view('i8')
@@ -188,7 +221,8 @@ def _interpolate(source, target, bounds, ignore_nans, method):
     if bounds == 'trim':
         target = target[(ticks >= times[0]) & (ticks <= times[-1])]
         ticks = target.view('i8')
-    values = _interpolate_values(source.values, times, ticks, ignore_nans, bounds, method)
+    values = _interpolate_values(source.values, times, ticks, ignore_nans, bounds, method,
+                                 max_gap_time, max_gap_samples)
     coords = {'time': xr.Variable('time', target, attrs=deepcopy(source.time.attrs))}
     for name, coord in source.coords.items():
         if name == 'time':
@@ -199,7 +233,8 @@ def _interpolate(source, target, bounds, ignore_nans, method):
             if name in ('v', 'v1', 'v2', 'v3', 'spec_bins'):
                 data = _previous_bins(data, times, ticks, bounds)
             else:
-                data = _interpolate_values(data, times, ticks, ignore_nans, bounds, method)
+                data = _interpolate_values(data, times, ticks, ignore_nans, bounds, method,
+                                           max_gap_time, max_gap_samples)
             data = np.moveaxis(data, 0, axis)
             coords[name] = xr.Variable(coord.dims, data, attrs=deepcopy(coord.attrs))
         else:
@@ -214,7 +249,8 @@ def _interpolate(source, target, bounds, ignore_nans, method):
             error = np.asarray(plot['error'])
             if descending:
                 error = error[::-1]
-            plot['error'] = _interpolate_values(error, times, ticks, ignore_nans, bounds, method)
+            plot['error'] = _interpolate_values(error, times, ticks, ignore_nans, bounds, method,
+                                                max_gap_time, max_gap_samples)
     return xr.DataArray(values, dims=source.dims, coords=coords, attrs=attrs)
 
 
@@ -233,7 +269,8 @@ def _as_dict(result):
 def time_interpolate(source, target, *, method='linear', newname=None,
                  suffix=None, overwrite=False, return_data=False,
                  no_extrapolate=False, nan_extrapolate=False,
-                 repeat_extrapolate=False, ignore_nans=False):
+                 repeat_extrapolate=False, ignore_nans=False,
+                 max_gap_time=None, max_gap_samples=None):
     """Interpolate a time series, independently for every component.
 
     Parameters
@@ -284,6 +321,19 @@ def time_interpolate(source, target, *, method='linear', newname=None,
         Boundary options refer to the ORIGINAL source time coverage, as in IDL;
         ignoring NaNs can extrapolate inside that coverage beyond valid samples.
 
+    max_gap_time : float, optional
+        Maximum interval in seconds between surrounding non-NaN source samples,
+        per component. Targets strictly inside longer intervals become NaN,
+        including outages with no recorded NaNs. Equality is allowed. Must be
+        finite and non-negative; None (default) imposes no time limit.
+    max_gap_samples : int, optional
+        Maximum number of consecutive NaNs between surrounding non-NaN source
+        samples, per component. Targets strictly inside a gap with more missing
+        samples become NaN: the whole gap is rejected, unlike interp_nan's
+        partial filling. Counts refer to the source grid, never the target grid.
+        Must be a positive integer; None (default) imposes no sample limit.
+        When both limits are set, exceeding either rejects the gap.
+
     Returns
     -------
     list of str or dict
@@ -301,7 +351,15 @@ def time_interpolate(source, target, *, method='linear', newname=None,
     NaN removal when ignore_nans=True. With fewer samples, use linear; with
     one sample, use a constant; with none, return NaNs. Without NaN removal,
     a missing neighborhood value produces NaN rather than triggering fallback.
-    No gap-duration restriction is imposed. Unlike IDL's
+    Gap limits do not enable NaN removal: use ignore_nans=True to bridge missing
+    source values. They preserve exact non-NaN source samples, do not trim the
+    target grid, and do not restrict extrapolation beyond the first/last non-NaN
+    sample (including leading/trailing NaN runs and singleton components).
+    They mask targets based on their enclosing interval without changing the
+    quadratic/spline fitting neighborhoods. Thus an allowed result can still
+    depend on samples across a neighboring rejected gap. Limits also apply to
+    numeric time-dependent auxiliary coordinates and error bars, but not bin
+    maps, which retain repeat-previous behavior. Unlike IDL's
     arithmetic at some interval boundaries, an exact valid source sample remains
     valid even when its neighbor is NaN. Matrix elements are interpolated
     independently; rotation-matrix orthogonality is not enforced.
@@ -327,6 +385,14 @@ def time_interpolate(source, target, *, method='linear', newname=None,
     """
     from pyspedas.tplot_tools import data_quants, tnames, store_data, get_y_range
 
+    if max_gap_time is not None:
+        if (not isinstance(max_gap_time, Real) or isinstance(max_gap_time, bool)
+                or not math.isfinite(max_gap_time) or max_gap_time < 0):
+            raise ValueError("max_gap_time must be finite and non-negative.")
+    if max_gap_samples is not None:
+        if (not isinstance(max_gap_samples, Integral) or isinstance(max_gap_samples, bool)
+                or max_gap_samples <= 0):
+            raise ValueError("max_gap_samples must be a positive integer.")
     if method not in ('linear', 'quadratic', 'spline', 'nearest', 'previous'):
         raise ValueError("method must be 'linear', 'quadratic', 'spline', 'nearest', or 'previous'.")
     if sum(bool(v) for v in (no_extrapolate, nan_extrapolate, repeat_extrapolate)) > 1:
@@ -370,7 +436,8 @@ def time_interpolate(source, target, *, method='linear', newname=None,
         if len(set(output_names)) != len(output_names):
             raise ValueError("Output names must be distinct.")
     # Compute every result before changing the registry, including overwrite mode.
-    results = [_interpolate(s, target, bounds, ignore_nans, method) for s in sources]
+    results = [_interpolate(s, target, bounds, ignore_nans, method, max_gap_time, max_gap_samples)
+               for s in sources]
     if return_data:
         return _as_dict(results[0])
     stored = []

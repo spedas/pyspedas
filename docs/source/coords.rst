@@ -186,6 +186,11 @@ Combining quaternions (by multiplying)
 Interpolating rotations (Quaternion Spherical Linear intERPolation)
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+For time series of matrices or quaternions (including tplot variables), use
+:func:`pyspedas.interpolate_rotation`. It combines quaternion conversion and
+SLERP, preserves matrix handedness using the ``tvector_rotate`` convention,
+and supports boundary and gap limits. See :doc:`interpolation` for examples.
+
 .. autofunction:: pyspedas.qslerp
 
 Other operations
