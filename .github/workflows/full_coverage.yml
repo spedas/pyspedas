@@ -123,6 +123,8 @@ jobs:
               coverage run -a -m  pyspedas.tplot_tools.MPLPlotter.plot_tests.test_tplot_map
               echo Starting orbit plot tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
+              echo Starting orbit plot range tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_tplotxy_ranges
               echo Starting utilities time_tests tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_time
               echo Starting utilities libs_tests tests at `date`

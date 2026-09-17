@@ -3,7 +3,21 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
+from types import MethodType
+from ._plot_range import set_axis_range
 from .save_plot import save_plot
+
+
+def _set_hrange(fig, limits):
+    """Set the horizontal plot limits without changing their display direction."""
+    set_axis_range(fig.xy_axis, limits, "x")
+    fig.canvas.draw_idle()
+
+
+def _set_vrange(fig, limits):
+    """Set the vertical plot limits without changing their display direction."""
+    set_axis_range(fig.xy_axis, limits, "y")
+    fig.canvas.draw_idle()
 
 def tplotxy(tvars,
             plane='xy',
@@ -33,6 +47,8 @@ def tplotxy(tvars,
             display=True,
             fig=None,
             axis=None,
+            hrange=None,
+            vrange=None,
             ):
     """
     Plot one or more 3d tplot variables, by projecting them onto one of the coordinate planes XY, XY, or YZ.
@@ -103,11 +119,17 @@ def tplotxy(tvars,
         Use an existing figure to plot in (mainly for recursive calls to render composite variables)
     axis: Matplotlib axes object
         Use an existing set of axes to plot on (mainly for recursive calls to render composite variables)
+    hrange: two-element sequence, optional
+        Horizontal plot limits in plot_units, regardless of the projected coordinate.
+    vrange: two-element sequence, optional
+        Vertical plot limits in plot_units, regardless of the projected coordinate.
+        The returned figure provides set_hrange and set_vrange methods for
+        changing the limits after plotting.
 
 
     Returns
     -------
-    None
+    Matplotlib figure with set_hrange and set_vrange methods
     """
 
     tvars = tplot_wildcard_expand(tvars)
@@ -319,6 +341,14 @@ def tplotxy(tvars,
     if reverse_y:
         axis.invert_yaxis()
 
+    fig.xy_axis = axis
+    fig.set_hrange = MethodType(_set_hrange, fig)
+    fig.set_vrange = MethodType(_set_vrange, fig)
+    if hrange is not None:
+        fig.set_hrange(hrange)
+    if vrange is not None:
+        fig.set_vrange(vrange)
+
     if legend_names is not None:
         legend = axis.legend(loc=legend_location, markerfirst=True)
 
@@ -329,4 +359,4 @@ def tplotxy(tvars,
     if display:
         plt.show()
 
-
+    return fig

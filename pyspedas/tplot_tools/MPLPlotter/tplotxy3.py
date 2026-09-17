@@ -3,6 +3,8 @@ import logging
 import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.patches import Wedge
+from types import MethodType
+from ._plot_range import set_axis_range
 from .save_plot import save_plot
 
 km_in_re = 6371.2
@@ -273,6 +275,27 @@ def tplotxy3_add_neutral_sheet( x,
         plt.show()
 
 
+def _set_xrange(fig, limits):
+    """Set X limits on the XY and XZ panels."""
+    set_axis_range(fig.xy_plane, limits, "x")
+    set_axis_range(fig.xz_plane, limits, "x")
+    fig.canvas.draw_idle()
+
+
+def _set_yrange(fig, limits):
+    """Set Y limits on the XY and YZ panels."""
+    set_axis_range(fig.xy_plane, limits, "y")
+    set_axis_range(fig.yz_plane, limits, "x")
+    fig.canvas.draw_idle()
+
+
+def _set_zrange(fig, limits):
+    """Set Z limits on the XZ and YZ panels."""
+    set_axis_range(fig.xz_plane, limits, "y")
+    set_axis_range(fig.yz_plane, limits, "y")
+    fig.canvas.draw_idle()
+
+
 def tplotxy3(tvars,
             center_origin=True,
             reverse_x = False,
@@ -298,6 +321,9 @@ def tplotxy3(tvars,
             display=True,
             fig=None,
             axis=None,
+            xrange=None,
+            yrange=None,
+            zrange=None,
             ):
     """
     Plot one or more 3d tplot variables, by projecting them onto the three coordinate axes planes in a single figure.
@@ -366,6 +392,11 @@ def tplotxy3(tvars,
         Use an existing figure to plot in (mainly for recursive calls to render composite variables)
     axis: Matplotlib axes object
         Use an existing set of axes to plot on (mainly for recursive calls to render composite variables)
+    xrange, yrange, zrange: two-element sequences, optional
+        Limits for the corresponding spatial coordinates in plot_units. Each range
+        applies to both panels showing that coordinate.
+        The returned figure also provides set_xrange, set_yrange, and set_zrange
+        methods for changing these limits after plotting.
 
 
     Note
@@ -631,6 +662,16 @@ def tplotxy3(tvars,
         xy_plane.invert_yaxis()  # This keeps the coordinate system right-handed
         #xz_plane.invert_xaxis() # XY and XZ plots share an X axis, so we don't need another flip
 
+    fig.set_xrange = MethodType(_set_xrange, fig)
+    fig.set_yrange = MethodType(_set_yrange, fig)
+    fig.set_zrange = MethodType(_set_zrange, fig)
+    if xrange is not None:
+        fig.set_xrange(xrange)
+    if yrange is not None:
+        fig.set_yrange(yrange)
+    if zrange is not None:
+        fig.set_zrange(zrange)
+
     # Grab the legend handles created for the XZ plot, and graft them onto the figure
     # instead of showing them on the XZ panel.
 
@@ -658,5 +699,3 @@ def tplotxy3(tvars,
         plt.show()
 
     return fig
-
-
