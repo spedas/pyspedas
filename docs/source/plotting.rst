@@ -119,6 +119,45 @@ boundary data and the Matplotlib figure object to a helper routine to add the ne
 
 .. autofunction:: pyspedas.tplotxy3_add_neutral_sheet
 
+Changing projection ranges after plotting
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Both routines return a Matplotlib figure with methods for changing its limits after
+creation. Pass each range as a two-element sequence in the figure's ``plot_units``.
+Give the lower and upper coordinate values in that order; the methods preserve the
+plot's axis direction, including when ``reverse_x=True`` was used.
+
+For ``tplotxy``, ``set_hrange`` and ``set_vrange`` control the horizontal and vertical
+plot axes. These names apply to any projection: for example, the horizontal axis
+of a YZ plot represents Y rather than X.
+
+.. code-block:: python
+
+    from pyspedas import tplotxy
+
+    fig = tplotxy('tha_pos_gse', plane='yz', display=False)
+    fig.set_hrange((-15, 15))  # Y on this projection
+    fig.set_vrange((-10, 10))  # Z on this projection
+    fig.show()
+
+For ``tplotxy3``, ``set_xrange``, ``set_yrange``, and ``set_zrange`` refer to the
+spatial coordinates. Each method updates both panels containing that coordinate:
+X in XY and XZ, Y in XY and YZ, and Z in XZ and YZ.
+
+.. code-block:: python
+
+    from pyspedas import tplotxy3
+
+    fig = tplotxy3('tha_pos_gse', reverse_x=True, display=False)
+    fig.set_xrange((-15, 15))
+    fig.set_yrange((-15, 15))
+    fig.set_zrange((-10, 10))
+    fig.show()
+
+The corresponding ``hrange`` and ``vrange`` arguments to ``tplotxy``, and
+``xrange``, ``yrange``, and ``zrange`` arguments to ``tplotxy3``, set the same
+limits when creating the figure.
+
 Example
 ^^^^^^^^^
 
