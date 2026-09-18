@@ -9,7 +9,7 @@ from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
-from .mms_config import CONFIG
+from .config import CONFIG
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp

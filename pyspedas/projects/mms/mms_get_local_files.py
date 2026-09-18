@@ -2,7 +2,7 @@ import logging
 import os
 import re
 import shutil
-from .mms_config import CONFIG
+from .config import CONFIG
 from .mms_files_in_interval import mms_files_in_interval
 from dateutil.rrule import rrule, DAILY
 from dateutil.parser import parse

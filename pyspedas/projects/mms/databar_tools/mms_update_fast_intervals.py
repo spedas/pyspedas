@@ -8,7 +8,7 @@ import time
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas import tai2unix, unix2tai, store_data, options
 

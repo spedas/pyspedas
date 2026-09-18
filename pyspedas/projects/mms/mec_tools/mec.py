@@ -1,6 +1,6 @@
 from pyspedas.projects.mms.mms_load_data import mms_load_data
 from pyspedas.projects.mms.mec_tools.mms_mec_set_metadata import mms_mec_set_metadata
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 
 
 def mms_load_mec(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', 

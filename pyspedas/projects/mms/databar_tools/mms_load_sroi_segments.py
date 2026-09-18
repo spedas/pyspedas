@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas import month_intervals
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 from pyspedas.utilities.download import download
 
 def read_mms_srois_csv(filename):
