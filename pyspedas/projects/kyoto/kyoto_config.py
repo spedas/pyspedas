@@ -6,6 +6,10 @@ CONFIG = {
     "local_data_dir": "pydata/geom_indices/kyoto/",
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "kyoto")
+
 # override local data directory with environment variables
 if os.environ.get("SPEDAS_DATA_DIR"):
     CONFIG["local_data_dir"] = os.sep.join(

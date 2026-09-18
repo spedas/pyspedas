@@ -3,7 +3,7 @@
 import os
 import unittest
 import numpy as np
-from pyspedas.projects import themis, elfin, fast, erg, maven, mms, psp
+from pyspedas.projects import themis, elfin, fast, psp
 from pyspedas import (
     store_data,
     options,
@@ -171,6 +171,112 @@ class PlotTestCases(unittest.TestCase):
         tplot_options("title", None)
         options("data", "xtitle", "There should be no main title displayed")
         tplot("data", display=global_display, save_png=os.path.join(save_dir, "title_none.png"))
+        tplot_options("title", "")
+        timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
+
+    def test_axis_title_wrap(self):
+        # Long axis titles wrap via per-variable options (issue #1444).
+        # PNGs are unique so testers can compare against a previous local run.
+        del_data("*")
+        store_data("wrap_data", data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 2, 3, 2, 1, 2]})
+        timespan("1970-01-01", 10, "seconds")
+        long_ytitle = (
+            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
+            "for the MMS FPI instrument"
+        )
+        long_xtitle = "Time since interval start along the GSE-X spacecraft trajectory"
+        options("wrap_data", "ytitle", long_ytitle)
+        options("wrap_data", "ysubtitle", "FPI DIS")
+        options("wrap_data", "xtitle", long_xtitle)
+        options("wrap_data", "xsubtitle", "UT")
+
+        tplot_options("title", "Default: long x/y titles are not wrapped")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_nowrap.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        nowrap_ylabel = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        self.assertEqual(nowrap_ylabel[0], long_ytitle)
+        self.assertGreater(len(nowrap_ylabel[0]), 40)
+
+        options("wrap_data", "ywrap", True)
+        options("wrap_data", "xwrap", True)
+        tplot_options("title", "xwrap and ywrap enabled, default width 40")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_default.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        ylabel_lines = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        xlabel_lines = [ln for ln in ax.get_xlabel().split("\n") if ln]
+        self.assertGreater(len(ylabel_lines), 1)
+        self.assertGreater(len(xlabel_lines), 1)
+        for line in ylabel_lines + xlabel_lines:
+            self.assertLessEqual(len(line), 40)
+
+        options("wrap_data", "y_wrap_width", 20)
+        options("wrap_data", "x_wrap_width", 20)
+        tplot_options("title", "underscore aliases, wrap width 20")
+        fig, axes = tplot(
+            "wrap_data",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_width20.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        for line in [ln for ln in ax.get_ylabel().split("\n") if ln]:
+            self.assertLessEqual(len(line), 20)
+        for line in [ln for ln in ax.get_xlabel().split("\n") if ln]:
+            self.assertLessEqual(len(line), 20)
+
+        store_data("wrap_other", data={"x": [1, 2, 3, 4, 5, 6], "y": [3, 2, 1, 2, 3, 2]})
+        options("wrap_other", "ytitle", long_ytitle)
+        tplot_options("title", "Only wrap_data has ywrap; wrap_other stays unwrapped")
+        fig, axes = tplot(
+            ["wrap_data", "wrap_other"],
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_per_variable.png"),
+        )
+        axs = np.atleast_1d(axes)
+        wrapped_lines = [ln for ln in axs[0].get_ylabel().split("\n") if ln]
+        unwrapped_lines = [ln for ln in axs[1].get_ylabel().split("\n") if ln]
+        self.assertGreater(len(wrapped_lines), 1)
+        self.assertEqual(unwrapped_lines[0], long_ytitle)
+
+        tplot_options("title", "")
+        timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
+
+    def test_axis_title_wrap_pseudovar(self):
+        # Parent wrap options must reach the recursive tplot() path.
+        del_data("*")
+        store_data("wrap_child_a", data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 2, 3, 2, 1, 2]})
+        store_data("wrap_child_b", data={"x": [1, 2, 3, 4, 5, 6], "y": [3, 2, 1, 2, 3, 2]})
+        store_data("wrap_pseudo", data=["wrap_child_a", "wrap_child_b"])
+        timespan("1970-01-01", 10, "seconds")
+        long_ytitle = (
+            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
+            "for the MMS FPI instrument"
+        )
+        options("wrap_pseudo", "ytitle", long_ytitle)
+        options("wrap_pseudo", "ywrap", True)
+        tplot_options("title", "Pseudovariable inherits parent ywrap")
+        fig, axes = tplot(
+            "wrap_pseudo",
+            display=global_display,
+            return_plot_objects=True,
+            save_png=os.path.join(save_dir, "axis_title_wrap_pseudovar.png"),
+        )
+        ax = np.atleast_1d(axes)[0]
+        ylabel_lines = [ln for ln in ax.get_ylabel().split("\n") if ln]
+        self.assertGreater(len(ylabel_lines), 1)
+        for line in ylabel_lines:
+            self.assertLessEqual(len(line), 40)
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
 
@@ -592,25 +698,6 @@ class PlotTestCases(unittest.TestCase):
         options("tha_peef_en_eflux", "x_interp", 0)  # reset for other tests
         options("tha_peef_en_eflux", "y_interp", 0)  # reset for other tests
 
-    def test_mms_epsd_specplot(self):
-        del_data("*")
-
-        timespan("2015-08-01", 1, "days")
-        # Logarithmic Y scale with lowest bin boundary = 0.0 by linear extrapolation from bin centers
-        data = mms.mms_load_dsp(
-            trange=["2015-08-01", "2015-08-02"],
-            datatype=["epsd", "bpsd"],
-            level="l2",
-            data_rate="fast",
-        )
-        self.assertTrue("mms1_dsp_epsd_omni" in data)
-        # options('mms1_dsp_epsd_omni','yrange',[8.0,130000.0])
-        tplot(
-            ["mms1_dsp_epsd_omni", "mms1_dsp_bpsd_omni"],
-            display=global_display,
-            save_png=os.path.join(save_dir, "mms1_epsd_omni.png"),
-        )
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
     def test_elfin_specplot(self):
         del_data("*")
@@ -626,6 +713,7 @@ class PlotTestCases(unittest.TestCase):
         )
         self.assertTrue("ela_pef_hs_nflux_ch0" in epd_var)
         tplot_options("title", "ELFIN data with time-varying bins, should render accurately")
+        options('ela_pef_hs_nflux_ch0', "sort_spec_bins", True)
         tplot("ela_pef_hs_nflux_ch0", display=global_display, save_png=os.path.join(save_dir, "ELFIN_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
@@ -654,6 +742,7 @@ class PlotTestCases(unittest.TestCase):
             "title",
             "Decreasing and time-varying energies, fillvals, should render correctly",
         )
+        options('tha_peef_en_eflux','sort_spec_bins',True)
         tplot("tha_peef_en_eflux", display=global_display, save_png=os.path.join(save_dir, "PEEF_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
@@ -674,62 +763,8 @@ class PlotTestCases(unittest.TestCase):
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
-    def test_erg_specplot(self):
-        del_data("*")
 
-        # ERG specplots, only vertical lines on the bottom panel for original resample...
-        erg.hep(trange=["2017-03-27", "2017-03-28"])
-        timespan("2017-03-27", 1, "days")
-        tplot_options("title", "Time varying spectral bins, should render correctly")
-        tplot(
-            ["erg_hep_l2_FEDO_L", "erg_hep_l2_FEDO_H"],
-            display=global_display,
-            save_png=os.path.join(save_dir, "ERG_test.png"),
-        )
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
-    def test_maven_specplot(self):
-        del_data("*")
-
-        sta_vars = maven.spdf.load(
-            trange=["2020-12-30", "2020-12-31"],
-            instrument="static",
-            datatype="c0-64e2m",
-        )
-        print(sta_vars)
-        timespan("2020-12-30", 1, "days")
-        # This variable contains all zeroes, and is set to plot with log scaling
-        tplot_options("title", "Should be all the same color")
-        tplot("bkg", display=global_display, save_png=os.path.join(save_dir, "MAVEN_test.png"))
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-
-    # @unittest.skip(reason="Failing until we establish a default for spec_dim_to_plot")
-    def test_maven_fluxes_specplot(self):
-        del_data("*")
-
-        swe_vars = maven.spdf.load(trange=["2014-10-18", "2014-10-19"], instrument="swea")
-        print(swe_vars)
-        timespan("2014-10-18", 1, "days")
-        # This variable has 3 dimensions but is not marked in the CDF as being a specplot.
-        # This used to crash in reduce_spec_dataset because the spec_dim_to_plot option was missing.
-        tplot_options("title", "Spec data plotted as lines")
-        tplot(
-            "diff_en_fluxes",
-            display=global_display,
-            save_png=os.path.join(save_dir, "MAVEN_fluxes_test_nospec.png"),
-        )
-        options("diff_en_fluxes", "spec", 1)
-        # Setting the "spec" option also sets the spec_dim_to_plot option to v2 in this case
-        tplot_options("title", "Plotting as spectrum with default spec_dim_to_plot (v2)")
-        tplot("diff_en_fluxes", display=global_display, save_png=os.path.join(save_dir, "MAVEN_fluxes_test_v2.png"))
-        # Test that the "v1" option also works (it used to crash looking for "v" and not checking "v1")
-        options("diff_en_fluxes", "spec_dim_to_plot", "v1")
-        tplot_options("title", "Plotting as spectrum with spec_dim_to_plot=v1")
-        tplot("diff_en_fluxes", display=global_display, save_png=os.path.join(save_dir, "MAVEN_fluxes_test_v1.png"))
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
     def test_pseudovars_title(self):
         del_data("*")
@@ -866,93 +901,8 @@ class PlotTestCases(unittest.TestCase):
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
         tplot_options("title", "")
 
-    def test_pseudo_spectra_plus_line(self):
-        del_data("*")
 
-        mms.fpi(datatype="des-moms", trange=["2015-10-16", "2015-10-17"])
-        mms.edp(trange=["2015-10-16", "2015-10-17"], datatype="scpot")
-        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
-        store_data("spec", data=["mms1_des_energyspectr_omni_fast", "mms1_edp_scpot_fast_l2"])
-        # Set some options so that the spectrum, trace, and y axes are legible
-        options("mms1_edp_scpot_fast_l2", "yrange", [10, 100])
-        options("mms1_edp_scpot_fast_l2", "alpha", 0.5)
-        # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
-        options("spec", "right_axis", "True")
-        options("mms1_des_energyspectr_omni_fast", "ztitle", "This is a green ztitle")
-        options("mms1_des_energyspectr_omni_fast", "zsubtitle", "This is a green z subtitle")
-        options("mms1_des_energyspectr_omni_fast", "ztitle_color", "green")
-        options("mms1_des_energyspectr_omni_fast", "second_axis_size", 0.14)
-        tplot_options("xmargin", [0.1, 0.2])
-        timespan("2015-10-16", 1, "days")
-        tplot_options(
-            "title",
-            "Pseudovar with energy spectrum plus line plot of s/c potential, combined var has right_axis set\nTop: spec Middle: combined Bottom: line",
-        )
-        tplot(
-            "mms1_des_energyspectr_omni_fast spec mms1_edp_scpot_fast_l2",
-            xsize=12,
-            display=global_display,
-            save_png=os.path.join(save_dir, "MMS_pseudo_spec_plus_line.png"),
-        )
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
-    def test_pseudo_spectra_plus_line_pseudovar_options(self):
-        del_data("*")
-
-        mms.fpi(datatype="des-moms", trange=["2015-10-16", "2015-10-17"])
-        mms.edp(trange=["2015-10-16", "2015-10-17"], datatype="scpot")
-        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
-        store_data("spec", data=["mms1_des_energyspectr_omni_fast", "mms1_edp_scpot_fast_l2"])
-        # Set some options so that the spectrum, trace, and y axes are legible
-        options("mms1_edp_scpot_fast_l2", "yrange", [10, 100])
-        options("mms1_edp_scpot_fast_l2", "alpha", 0.5)
-        # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
-        options("spec", "right_axis", "True")
-        options("spec", "ztitle", "This is a ztitle")
-        options("spec", "zsubtitle", "This is a z subtitle")
-        options("spec", "ztitle_color", "green")
-        # Pseudovar option should override base variable option
-        options("mms1_des_energyspectr_omni_fast", "ztitle_color", "red")
-        options("spec", "second_axis_size", 0.14)
-        tplot_options("xmargin", [0.1, 0.2])
-        timespan("2015-10-16", 1, "days")
-        tplot_options(
-            "title",
-            "Pseudovar with energy spectrum plus line plot of s/c potential, combined var has right_axis set\nTop: spec with red ztitle Middle: combined Bottom: line\nShould have ztitle, zsubtitle in green on center panel only",
-        )
-        tplot(
-            "mms1_des_energyspectr_omni_fast spec mms1_edp_scpot_fast_l2",
-            xsize=12,
-            display=global_display,
-            save_png=os.path.join(save_dir, "MMS_pseudo_spec_plus_line_pseudovar_options.png"),
-        )
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-
-    def test_pseudo_spectra_plus_line_copy(self):
-        del_data("*")
-
-        mms.fpi(datatype="des-moms", trange=["2015-10-16", "2015-10-17"])
-        mms.edp(trange=["2015-10-16", "2015-10-17"], datatype="scpot")
-        # Create a pseudovariable with an energy spectrum plus a line plot of spacecraft potential
-        store_data("spec", data=["mms1_des_energyspectr_omni_fast", "mms1_edp_scpot_fast_l2"])
-        # Set some options so that the spectrum, trace, and y axes are legible
-        options("mms1_edp_scpot_fast_l2", "yrange", [10, 100])
-        # options('mms2_edp_scpot_fast_l2', 'right_axis', True)
-        options("spec", "right_axis", "True")
-        tplot_options("xmargin", [0.1, 0.2])
-        timespan("2015-10-16", 1, "days")
-        tplot_options("title", "Pseudovar with energy spectrum plus line plot of s/c potential")
-        tplot_copy("spec", "spec_copy")
-        tplot(
-            "spec_copy",
-            xsize=12,
-            display=global_display,
-            save_png=os.path.join(save_dir, "MMS_pseudo_spec_plus_line.png"),
-        )
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
     def test_psp_flux_plot(self):
         del_data("*")
@@ -1002,139 +952,8 @@ class PlotTestCases(unittest.TestCase):
         self.assertTrue(os.path.exists(local_png))
         tplot_options("title", "")
 
-    def test_original_tplot_vlabels(self):
-        # Test alternate varlabel implementation from Tomo Hori
-        del_data("*")
 
-        timespan("2017-03-27", 1, "days")
-        erg.mgf()
-        erg.orb()
 
-        split_vec("erg_orb_l2_pos_rmlatmlt")
-        split_vec("erg_orb_l2_pos_Lm")
-        options("erg_orb_l2_pos_rmlatmlt_x", "ytitle", "R")
-        options("erg_orb_l2_pos_rmlatmlt_y", "ytitle", "Mlat")
-        options("erg_orb_l2_pos_rmlatmlt_z", "ytitle", "MLT")
-
-        var_label = [
-            "erg_orb_l2_pos_Lm_x",
-            "erg_orb_l2_pos_rmlatmlt_x",
-            "erg_orb_l2_pos_rmlatmlt_y",
-            "erg_orb_l2_pos_rmlatmlt_z",
-        ]
-        # tplot_options('var_label', var_label)
-
-        plot_vars = [
-            "erg_mgf_l2_mag_8sec_sm",
-            "erg_mgf_l2_igrf_8sec_sm",
-            "erg_orb_l2_pos_Lm_x",
-        ]
-        tplot_options("varlabel_style", "extra_axes")
-
-        tplot(
-            plot_vars,
-            var_label=var_label,
-            display=global_display,
-            save_png=os.path.join(save_dir, "original_varlabel.png"),
-        )
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-        tplot_options("title", "")
-
-    def test_original_tplot_vlabels_custom_fontsize(self):
-        # Test alternate varlabel implementation from Tomo Hori
-        del_data("*")
-
-        # Preserve original axis_font_size and charsize
-
-        old_axis_font_size = pyspedas.tplot_tools.tplot_opt_glob.get('axis_font_size')
-        old_charsize = pyspedas.tplot_tools.tplot_opt_glob.get('charsize')
-
-        tplot_options('axis_font_size',20)
-        tplot_options('charsize',20)
-        tplot_options("title", 'varlabel annotations should match rest of plot')
-        timespan("2017-03-27", 1, "days")
-        erg.mgf()
-        erg.orb()
-
-        split_vec("erg_orb_l2_pos_rmlatmlt")
-        split_vec("erg_orb_l2_pos_Lm")
-        options("erg_orb_l2_pos_rmlatmlt_x", "ytitle", "R")
-        options("erg_orb_l2_pos_rmlatmlt_y", "ytitle", "Mlat")
-        options("erg_orb_l2_pos_rmlatmlt_z", "ytitle", "MLT")
-
-        var_label = [
-            "erg_orb_l2_pos_Lm_x",
-            "erg_orb_l2_pos_rmlatmlt_x",
-            "erg_orb_l2_pos_rmlatmlt_y",
-            "erg_orb_l2_pos_rmlatmlt_z",
-        ]
-        # tplot_options('var_label', var_label)
-
-        plot_vars = [
-            "erg_mgf_l2_mag_8sec_sm",
-            "erg_mgf_l2_igrf_8sec_sm",
-            "erg_orb_l2_pos_Lm_x",
-        ]
-
-        tplot_options("varlabel_style", "extra_axes")
-
-        tplot(
-            plot_vars,
-            var_label=var_label,
-            display=global_display,
-            save_png=os.path.join(save_dir, "original_varlabel_custom_fontsize.png"),
-        )
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-        tplot_options("title", "")
-        tplot_options('axis_font_size',old_axis_font_size)
-        tplot_options('charsize',old_charsize)
-
-    def test_tplot_vlabels_extra_panel(self):
-        # Test alternate varlabel implementation from Tomo Hori
-        del_data("*")
-        timespan("2017-03-27", 1, "days")
-        erg.mgf()
-        erg.orb()
-
-        split_vec("erg_orb_l2_pos_rmlatmlt")
-        split_vec("erg_orb_l2_pos_Lm")
-        options("erg_orb_l2_pos_rmlatmlt_x", "ytitle", "R")
-        options("erg_orb_l2_pos_rmlatmlt_y", "ytitle", "Mlat")
-        options("erg_orb_l2_pos_rmlatmlt_z", "ytitle", "MLT")
-
-        var_label = [
-            "erg_orb_l2_pos_Lm_x",
-            "erg_orb_l2_pos_rmlatmlt_x",
-            "erg_orb_l2_pos_rmlatmlt_y",
-            "erg_orb_l2_pos_rmlatmlt_z",
-        ]
-        # tplot_options('var_label', var_label)
-        tplot_options("varlabel_style", "extra_panel")
-        plot_vars = [
-            "erg_mgf_l2_mag_8sec_sm",
-            "erg_mgf_l2_igrf_8sec_sm",
-            "erg_orb_l2_pos_Lm_x",
-        ]
-
-        tplot(
-            plot_vars,
-            var_label=var_label,
-            display=global_display,
-            save_png=os.path.join(save_dir, "varlabel_extra_panel.png"),
-        )
-
-        options(var_label, "var_label_format", "{:.1f}")
-        tplot_options("title", "Var labels should all have 1 digit after the decimal point")
-        tplot(
-            plot_vars,
-            var_label=var_label,
-            display=global_display,
-            save_png=os.path.join(save_dir, "varlabel_extra_panel_single_decimal.png"),
-        )
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-        tplot_options("varlabel_style", None)
-        tplot_options("title", "")
-        timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
 
     def test_tplot_trange(self):
         del_data("*")

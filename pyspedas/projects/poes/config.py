@@ -7,6 +7,10 @@ CONFIG = {
     "ncei_l1b_remote_data_dir": "https://www.ncei.noaa.gov/data/poes-metop-space-environment-monitor/access/l1b/v01r00/"
 }
 
+from pyspedas.preferences import apply_mission_preferences
+
+apply_mission_preferences(CONFIG, "poes")
+
 # override local data directory with environment variables
 if os.environ.get("POES_DATA_DIR"):
     CONFIG["local_data_dir"] = os.environ["POES_DATA_DIR"]

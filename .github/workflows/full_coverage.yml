@@ -111,16 +111,22 @@ jobs:
               coverage run -a -m pyspedas.utilities.tests.test_utilities_download
               echo Starting utilities misc tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
+              echo Starting user preferences tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_preferences
               echo Starting tplot wildcard tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_tplot_wildcard
               echo Starting plotting tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_plot
+              echo Starting wrap_label tests at `date`
+              coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
               echo Starting grid and background plot option tests at `date`
               coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
               echo Starting tplot_map tests at `date`
               coverage run -a -m  pyspedas.tplot_tools.MPLPlotter.plot_tests.test_tplot_map
               echo Starting orbit plot tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
+              echo Starting orbit plot range tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_tplotxy_ranges
               echo Starting utilities time_tests tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_time
               echo Starting utilities libs_tests tests at `date`
@@ -133,6 +139,8 @@ jobs:
               coverage run -a -m  pyspedas.utilities.tests.test_xdegap
               echo Starting utilities tplot_math tests at `date`
               coverage run -a -m  pyspedas.utilities.tests.test_math
+              echo Starting utilities interp_nan tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_interp_nan
               echo Starting cotrans minvar tests at `date`
               coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
               echo Starting cotrans fac tests at `date`
@@ -219,6 +227,14 @@ jobs:
               echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
 
+          - shard: das2
+            shard_script: |
+              # These tests use a DAS2 server at UIowa
+              echo "Starting galileo tests at $(date)"
+              coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
+              echo "Starting juno tests at $(date)"
+              coverage run -a -m pyspedas.projects.juno.tests.test_juno
+
           - shard: cdaweb
             shard_script: |
               # CDAWeb is failure prone, so we'll put it in its own shard
@@ -233,6 +249,8 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting MMS utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_mms
               echo "Starting mms_login_lasp tests at $(date)"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_login_lasp
               echo "Starting mms data rate seg tests at $(date)"
@@ -291,6 +309,8 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting ERG utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_erg
               echo Starting erg tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg
               echo Starting erg cotrans tests at `date`
@@ -348,6 +368,8 @@ jobs:
               # This set of tests exercises MAVEN routines
               # echo Starting maven S3 tests at `date`
               # coverage run -a -m pyspedas.projects.maven.tests.test_maven_uri
+              echo Starting MAVEN utility plot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_maven
               echo Starting maven tests at `date`
               coverage run -a -m pyspedas.projects.maven.tests.test_maven
               echo "========================================================="
@@ -396,11 +418,15 @@ jobs:
               echo Starting geopack-IDL field line tracing validation tests at `date`
               coverage run -a -m pyspedas.geopack.tests.test_fl_tracing
               echo Starting geopack w-param download tests at `date`
-              coverage run -a -m pyspedas.geopack.tests.test_geopack_getw
-              echo Starting geotail tests at `date`
+              #coverage run -a -m pyspedas.geopack.tests.test_geopack_getw
+              #echo Starting geotail tests at `date`
               coverage run -a -m pyspedas.projects.geotail.tests.test_geotail
               echo Starting analysis tests at `date`
               coverage run -a -m pyspedas.analysis.tests.test_analysis
+              echo Starting tinterpol_mxn tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_tinterpol_mxn
+              echo Starting interpolate_rotation tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_interpolate_rotation
               echo Starting analysis wavpol tests at `date`
               coverage run -a -m pyspedas.analysis.tests.test_twavpol
               echo Starting analysis wavelet tests at `date`

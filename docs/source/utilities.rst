@@ -197,26 +197,8 @@ Data Cleanup Operations
 Interpolation Tools
 --------------------
 
-There are several routines for performing interpolation in PySPEDAS, each designed
-for slightly different use cases.
-
-pyspedas.interpol() operates directly on arrays, not tplot variables. It is a wrapper around scipy.interpolate.interp1d().
-
-.. autofunction:: pyspedas.interpol
-
-pyspedas.tinterpol() operates on tplot variables, and uses the xarray interp() method (which itself uses scipy.interp1d) internally.  It can take a list of
-tplot variables and perform the interpolation on all of them.
-
-.. autofunction:: pyspedas.tinterpol
-
-pyspedas.interp_nan() operates on single tplot variables, and uses the xarray interpolat_na() method to perform
-interpolation, while ignoring sufficiently short runs of NaN values.
-
-.. autofunction:: pyspedas.interp_nan
-
-pyspedas.tinterp() operates on single tplot variables, using the xarray interp_like() method internally.
-
-.. autofunction:: pyspedas.tinterp
+See :doc:`interpolation` for time-series interpolation, gap limits, rotation
+interpolation, and the existing interpolation utilities.
 
 
 Wave, Polarization, Power Spectrum operations
