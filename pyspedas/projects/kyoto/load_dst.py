@@ -2,7 +2,7 @@ import logging
 import re
 from pyspedas.tplot_tools import time_double, store_data, options, time_clip as tclip
 from pyspedas import download, dailynames
-from .kyoto_config import CONFIG
+from .config import CONFIG
 
 
 def parse_dst_html(html_text, year=None, month=None):
