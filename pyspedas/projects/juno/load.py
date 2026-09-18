@@ -1,10 +1,15 @@
 """Load Juno data using the shared DAS2 download and parsing utilities."""
 
+import logging
+
 from pyspedas import time_float_one
 from pyspedas.projects.juno.config import CONFIG
 from pyspedas.utilities.das2.das2ascii import das2ascii
 from pyspedas.utilities.das2.das2info import das2info
 from pyspedas.utilities.das2.das2tplot import das2tplot
+
+logging.basicConfig(level=logging.INFO)  # Output to stderr
+logger = logging.getLogger(__name__)
 
 
 def get_info(datatype=""):
@@ -63,7 +68,7 @@ def load(
     datatype="",
     prefix="",
     suffix="",
-    interval=300,
+    interval=None,
     varnames=None,
     params=None,
     extra=None,
@@ -90,8 +95,8 @@ def load(
     suffix : str, optional
         Suffix appended to each output variable name. Defaults to "".
     interval : int or float, optional
-        Sampling interval in seconds passed to the DAS2 server. Defaults
-        to 300. Its effect depends on the selected dataset.
+        Sampling interval in seconds passed to the DAS2 server.
+        Its effect depends on the selected dataset.
     varnames : list of str, optional
         List of variable names to load from the dataset. If omitted or None,
         all variables are loaded. If supplied, the names must match those
@@ -112,8 +117,8 @@ def load(
     TypeError
         If trange is not a list or datatype is not a string.
     ValueError
-        If trange does not contain two entries, the end is not later than
-        the start, the range exceeds two days, or datatype is unsupported.
+        If trange is not a list of two strings, if the start time is not before
+        the end time, if the range exceeds two days, or if datatype is unsupported.
 
     Examples
     --------
@@ -125,6 +130,7 @@ def load(
     ... )
     """
     url = CONFIG["remote_data_dir"]
+    logger = logging.getLogger(__name__)
 
     # Validate the start/end pair before sending a request to the DAS2 server.
     if type(trange) != list:
@@ -153,7 +159,54 @@ def load(
     if not extra:
         extra = "ascii=true"
 
-    # Get ascii data from the DAS2 server. The interval is passed to the server.
+    # Some parameter combinations are not supported by the DAS2 server.
+    if dataset["abrev"] == "europa" or dataset["abrev"] == "ganymede" or dataset["abrev"] == "io":
+        # The only available parameter is SALT.
+        if params is not None and params != "SALT":
+            logger.warning(
+                f"Parameters other than SALT are not supported for the {dataset['abrev']} dataset. Ignoring {params}."
+            )
+            params = "SALT"
+        # Interval are required for these datasets. If not supplied, default to 300 seconds.
+        if interval is None:
+            logger.warning(f"Interval is required for the {dataset['abrev']} dataset. Defaulting to 300 seconds.")
+            interval = 300
+    elif dataset["abrev"] == "geocentric" or dataset["abrev"] == "heliocentric" or dataset["abrev"] == "jse":
+        # Parameters should be None.
+        params = None
+        # Interval is required for the geocentric dataset. If not supplied, default to 300 seconds.
+        if interval is None:
+            logger.warning(f"Interval is required for the {dataset['abrev']} dataset. Defaulting to 300 seconds.")
+            interval = 300
+    elif dataset["abrev"] == "jovicentric":
+        # Interval is required for the jovicentric dataset. If not supplied, default to 300 seconds.
+        if interval is None:
+            logger.warning(f"Interval is required for the {dataset['abrev']} dataset. Defaulting to 300 seconds.")
+            interval = 300
+    elif dataset["abrev"] == "magnitude" or dataset["abrev"] == "electron":
+        # Params and interval should be None.
+        params = None
+        interval = None
+    elif dataset["abrev"] == "mag":
+        # Interval should be None.
+        interval = None
+        # Params can be: coord.eq.PC coord.eq.SS coord.eq.I_PHIO coord.eq.E_PHIO coord.eq.G_PHIO coord.eq.C_PHIO
+        if params is not None:
+            # Convert common abbreviations to the full parameter names.
+            if params.lower() == "pc":
+                params = "coord.eq.PC"
+            elif params.lower() == "ss":
+                params = "coord.eq.SS"
+            elif params.lower() == "i_phio":
+                params = "coord.eq.I_PHIO"
+            elif params.lower() == "e_phio":
+                params = "coord.eq.E_PHIO"
+            elif params.lower() == "g_phio":
+                params = "coord.eq.G_PHIO"
+            elif params.lower() == "c_phio":
+                params = "coord.eq.C_PHIO"
+
+    # Get ascii data from the DAS2 server.
     data = das2ascii(
         url=url,
         server="dataset",
@@ -190,7 +243,7 @@ if __name__ == "__main__":
     info = get_info(datatype=datatype)
     print(info)
 
-    print("=============================== varnames ===============================")
+    print("=============================== jovicentric ===============================")
     vars = load(trange=trange, datatype=datatype, params=params)
     print(vars)
     tplot(vars)

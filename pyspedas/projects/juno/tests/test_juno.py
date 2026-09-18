@@ -39,6 +39,39 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue("jovicentric_clat" in vars)
         self.assertTrue(data_exists("jovicentric_clat"))
 
+    def test_load_europa_data(self):
+        del_data()
+        trange = ["2020-02-02 12:00:00", "2020-02-02 14:00:00"]
+        datatype = "europa"
+        vars = load(trange=trange, datatype=datatype)
+        self.assertTrue("europa_radius" in vars)
+        self.assertTrue(data_exists("europa_radius"))
+
+        del_data()
+        params = "wrong_param"  # SALT will be used instead, with a warning
+        vars = load(trange=trange, datatype=datatype, params=params)
+        self.assertTrue("europa_alt" in vars)
+        self.assertTrue(data_exists("europa_alt"))
+
+    def test_load_geocentric_data(self):
+        del_data()
+        trange = ["2020-02-02 12:00:00", "2020-02-02 14:00:00"]
+        datatype = "geocentric"
+        interval = None
+        vars = load(trange=trange, datatype=datatype, interval=interval)
+        self.assertTrue("geocentric_l_shell" in vars)
+        self.assertTrue(data_exists("geocentric_l_shell"))
+
+    def test_load_mag_data(self):
+        del_data()
+        trange = ["2020-02-02 12:00:00", "2020-02-02 14:00:00"]
+        datatype = "mag"
+        params = "pc"
+        interval = 300
+        vars = load(trange=trange, datatype=datatype, params=params, interval=interval)
+        self.assertTrue("mag_z" in vars)
+        self.assertTrue(data_exists("mag_z"))
+
     def test_get_info(self):
         info = get_info(datatype="mag")
         self.assertTrue(isinstance(info, str))
