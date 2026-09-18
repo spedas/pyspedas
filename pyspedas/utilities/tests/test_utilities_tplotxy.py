@@ -18,13 +18,13 @@ from pyspedas import (
     tplot_restore,
     tplot_names,
 )
-from pyspedas.utilities.config_testing import TESTING_CONFIG
+from pyspedas.config import CONFIG
 from pyspedas import bshock_2, mpause_2, neutral_sheet
 
 # Whether to display plots during testing
-global_display = TESTING_CONFIG["global_display"]
+global_display = CONFIG["testing"]["global_display"]
 # Directory to save testing output files
-output_dir = TESTING_CONFIG["local_testing_dir"]
+output_dir = CONFIG["testing"]["output_dir"]
 # Ensure output directory exists
 save_dir = os.path.join(output_dir, "utilities")
 if not os.path.exists(save_dir):

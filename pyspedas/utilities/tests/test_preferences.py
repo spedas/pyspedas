@@ -1,6 +1,7 @@
 """Tests for user preference storage and CONFIG overlays."""
 
 import os
+import importlib
 from pathlib import Path
 import runpy
 import tempfile
@@ -113,6 +114,126 @@ class TestPreferences(unittest.TestCase):
         saved = preferences.read_preferences()["projects"]
         self.assertEqual(saved["maven"]["maven_password"], "test-password")
         self.assertNotIn("mirror_data_dir", saved["mms"])  # TOML has no null.
+
+    def test_pyspedas_plotting_preferences(self):
+        preferences.set_preference("themis", "local_data_dir", "/mission-data")
+        preferences.save_preferences(
+            "pyspedas.plotting",
+            {"global_display": False, "plot_directory": "my_plots"},
+        )
+        self.assertEqual(
+            preferences.read_preferences()["pyspedas"]["plotting"],
+            {"global_display": False, "plot_directory": "my_plots"},
+        )
+        self.assertEqual(
+            preferences.read_preferences()["projects"]["themis"]["local_data_dir"],
+            "/mission-data",
+        )
+        config = {
+            "plotting": {"global_display": True, "plot_directory": "pyspedas_plots"}
+        }
+        self.assertIs(preferences.apply_pyspedas_preferences(config), config)
+        self.assertEqual(
+            config["plotting"],
+            {"global_display": False, "plot_directory": "my_plots"},
+        )
+        preferences.unset_preference("pyspedas.plotting", "plot_directory")
+        self.assertNotIn(
+            "plot_directory", preferences.read_preferences()["pyspedas"]["plotting"]
+        )
+
+    def test_pyspedas_plotting_types_are_validated(self):
+        with self.assertRaisesRegex(TypeError, "must be bool"):
+            preferences.set_preference("pyspedas.plotting", "global_display", "False")
+        with self.assertRaisesRegex(ValueError, "Unknown preference"):
+            preferences.set_preference("pyspedas.plotting", "unknown", "value")
+        self.assertFalse(self.preference_file.exists())
+
+    def test_pyspedas_testing_preferences(self):
+        preferences.save_preferences(
+            "pyspedas.testing",
+            {"output_dir": "test-artifacts", "global_display": True},
+        )
+        config = {
+            "testing": {
+                "output_dir": "_testing_output",
+                "validation_dir": "https://example.org/validation/",
+                "global_display": False,
+            }
+        }
+        preferences.apply_pyspedas_preferences(config)
+        self.assertEqual(config["testing"]["output_dir"], "test-artifacts")
+        self.assertTrue(config["testing"]["global_display"])
+        self.assertEqual(
+            config["testing"]["validation_dir"],
+            "https://example.org/validation/",
+        )
+
+    def test_testing_environment_overrides_preferences(self):
+        preferences.save_preferences(
+            "pyspedas.testing",
+            {"output_dir": "from-toml", "global_display": True},
+        )
+        with patch.dict(
+            os.environ,
+            {"SPEDAS_DATA_DIR": "from-data-env", "PYSPEDAS_GLOBAL_DISPLAY": "false"},
+        ):
+            config = runpy.run_module("pyspedas.config")["CONFIG"]
+        self.assertEqual(config["testing"]["output_dir"], "from-data-env/_testing_output")
+        self.assertFalse(config["testing"]["global_display"])
+        with patch.dict(os.environ, {"PYSPEDAS_TESTING_DIR": "from-test-env"}):
+            config = runpy.run_module("pyspedas.config")["CONFIG"]
+        self.assertEqual(config["testing"]["output_dir"], "from-test-env")
+        with patch.dict(
+            os.environ, {"PYSPEDAS_VALIDATION_DIR": "/local/validation"}
+        ):
+            config = runpy.run_module("pyspedas.config")["CONFIG"]
+        self.assertEqual(config["testing"]["validation_dir"], "/local/validation")
+
+    def test_testing_display_environment_parses_false(self):
+        with patch.dict(os.environ, {"PYSPEDAS_TEST_GLOBAL_DISPLAY": "False"}):
+            config = runpy.run_module("pyspedas.config")["CONFIG"]
+        self.assertFalse(config["testing"]["global_display"])
+
+    def test_plot_directory_is_used_for_relative_names(self):
+        from pyspedas.config import CONFIG
+
+        save_plot_module = importlib.import_module(
+            "pyspedas.tplot_tools.MPLPlotter.save_plot"
+        )
+        with tempfile.TemporaryDirectory() as directory:
+            plot_directory = Path(directory) / "plots"
+            with patch.dict(CONFIG["plotting"], {"plot_directory": str(plot_directory)}):
+                with patch.object(save_plot_module.plt, "savefig") as savefig:
+                    save_plot_module.save_plot(save_png="figure")
+                    savefig.assert_called_once_with(
+                        str(plot_directory / "figure.png"), dpi=300
+                    )
+                self.assertTrue(plot_directory.is_dir())
+                with patch.object(save_plot_module.plt, "savefig") as savefig:
+                    save_plot_module.save_plot(save_png=str(Path(directory) / "absolute.png"))
+                    savefig.assert_called_once_with(
+                        str(Path(directory) / "absolute.png"), dpi=300
+                    )
+                with patch.object(save_plot_module.plt, "savefig") as savefig:
+                    save_plot_module.save_plot(save_png="existing/relative.png")
+                    savefig.assert_called_once_with("existing/relative.png", dpi=300)
+
+    def test_global_display_is_default_but_explicit_argument_wins(self):
+        import matplotlib.pyplot as plt
+        import pyspedas
+        from pyspedas.config import CONFIG
+
+        variable = "preference_display_test"
+        pyspedas.store_data(variable, data={"x": [1, 2], "y": [3, 4]})
+        self.addCleanup(pyspedas.del_data, variable)
+        self.addCleanup(plt.close, "all")
+        with patch.dict(CONFIG["plotting"], {"global_display": False}):
+            with patch.object(plt, "show") as show:
+                pyspedas.tplot(variable)
+                show.assert_not_called()
+                pyspedas.tplot(variable, display=True)
+                show.assert_called_once()
 
 
 if __name__ == "__main__":

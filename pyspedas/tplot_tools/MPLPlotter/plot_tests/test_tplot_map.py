@@ -30,14 +30,14 @@ from pyspedas import (
     annotate,
     is_pseudovariable,
 )
-from pyspedas.utilities.config_testing import TESTING_CONFIG
+from pyspedas.config import CONFIG
 import pyspedas
 
 # Whether to display plots during testing
-#global_display = TESTING_CONFIG["global_display"]
+#global_display = CONFIG["testing"]["global_display"]
 global_display = False
 # Directory to save testing output files
-output_dir = TESTING_CONFIG["local_testing_dir"]
+output_dir = CONFIG["testing"]["output_dir"]
 # Ensure output directory exists
 save_dir = os.path.join(output_dir, "utilities")
 if not os.path.exists(save_dir):
