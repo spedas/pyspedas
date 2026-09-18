@@ -3,7 +3,7 @@ import json
 import logging
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 from pyspedas.projects.mms.mec_ascii.mms_get_local_state_files import mms_get_local_state_files
 from pyspedas.projects.mms.mec_ascii.mms_load_eph_tplot import mms_load_eph_tplot
 from pyspedas.projects.mms.mec_ascii.mms_load_att_tplot import mms_load_att_tplot

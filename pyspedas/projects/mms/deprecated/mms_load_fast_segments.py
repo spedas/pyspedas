@@ -5,7 +5,7 @@ from scipy.io import readsav
 from pyspedas.tplot_tools import store_data, options
 from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 
 
 def mms_load_fast_segments(trange=None, suffix=''):

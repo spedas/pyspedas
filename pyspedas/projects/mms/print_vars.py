@@ -1,5 +1,5 @@
 import logging
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 
 
 # the following decorator prints the loaded tplot variables after each load routine call

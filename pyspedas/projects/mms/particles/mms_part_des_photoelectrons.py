@@ -1,6 +1,6 @@
 import os
 import logging
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import get_data, cdf_to_tplot
 

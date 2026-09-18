@@ -104,7 +104,7 @@ class TestPreferences(unittest.TestCase):
 
     def test_complete_config_dictionary_can_be_saved(self):
         from pyspedas.projects.maven.config import CONFIG as maven_config
-        from pyspedas.projects.mms.mms_config import CONFIG as mms_config
+        from pyspedas.projects.mms.config import CONFIG as mms_config
 
         maven_values = dict(maven_config, maven_password="test-password")
         mms_values = dict(mms_config, mirror_data_dir=None)

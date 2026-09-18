@@ -3,7 +3,7 @@ import fnmatch
 import glob
 import logging
 import pandas as pd
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 
 from pyspedas.utilities.download import is_fsspec_uri
 import fsspec
