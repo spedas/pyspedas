@@ -44,20 +44,20 @@ and invalid time ranges raise errors.
 ## Supported datatypes
 
 The "tplot vars" variable names below use the default prefix and no suffix. A custom prefix
-or suffix changes these names. The `full_path` column is the directory in the DAS2 server and it also corresponds to the `full_set` field in `config.py`. The "params" column shows optional variables that might be available for each datatype. 
+or suffix changes these names. The `full_path` column is the directory in the DAS2 server and it also corresponds to the `full_set` field in `config.py` and the full dataset name. The "params" column shows optional variables that might be available for each datatype. The "interval" column shows if a measurement interval value in seconds is required for this dataset or not (None means that a value is ignored). 
 
-| **abrev** | **full_path** | **description** | **tplot vars** | **params**|
-| --- | --- | --- | --- | --- |
-| `europa` | `Juno/Ephemeris/EuropaCoRotational` | Juno Europa Co-Rotational orbit | `europa_x`, `europa_y`, `europa_z`, `europa_radius` | JLAT JALT JPLG SALT |
-| `ganymede` | `Juno/Ephemeris/GanymedeCoRotational` | Juno Ganymede Co-Rotational orbit | `ganymede_x`, `ganymede_y`, `ganymede_z`, `ganymede_radius` | JLAT JALT JPLG SALT |
-| `geocentric` | `Juno/Ephemeris/Geocentric` | Juno Earth orbit parameters | `geocentric_radius`, `geocentric_mlat`, `geocentric_mlt`, `geocentric_l_shell` | None |
-| `heliocentric` | `Juno/Ephemeris/Heliocentric` | Juno Solar orbit parameters | `heliocentric_radius`, `heliocentric_lon`, `heliocentric_lat` | None |
-| `io` | `Juno/Ephemeris/IoCoRotational` | Juno Io Co-Rotational orbit parameters | `io_x`, `io_y`, `io_z`, `io_radius` | JLAT JALT JPLG SALT |
-| `jse` | `Juno/Ephemeris/JSE_Attitude` | Juno Jupiter Solar Ecliptic Pointing angles | `jse_phi`, `jse_theta`, `jse_omega` | None |
-| `jovicentric` | `Juno/Ephemeris/Jovicentric` | Juno Jupiter orbit parameters | `jovicentric_radius`, `jovicentric_long`, `jovicentric_mlat`, `jovicentric_mlt`, `jovicentric_l`, `jovicentric_io_phase` | JLAT JALT JPLG CLAT JULT SALT |
-| `electron` | `Juno/FGM/ElectronCyclotron` | Electron Cyclotron Resonance Frequency | `electron_fce` | None |
-| `mag` | `Juno/FGM/MagComponents` | Quicklook Magnetic Field Components in Payload, Planetocentric or Sun State Coordinates | `mag_x`, `mag_y`, `mag_z`, `mag_mag` | None |
-| `magnitude` | `Juno/FGM/Magnitude` | Magnetic Field Magnitude from payload coordinates data | `magnitude_mag` | None |
+| **abrev** | **full_path** | **description** | **tplot vars** | **params**| **interval** |
+| --- | --- | --- | --- | --- | --- |
+| `europa` | `Juno/Ephemeris/EuropaCoRotational` | Juno Europa Co-Rotational orbit | `europa_x`, `europa_y`, `europa_z`, `europa_radius` | SALT | Required |
+| `ganymede` | `Juno/Ephemeris/GanymedeCoRotational` | Juno Ganymede Co-Rotational orbit | `ganymede_x`, `ganymede_y`, `ganymede_z`, `ganymede_radius` | SALT | Required |
+| `geocentric` | `Juno/Ephemeris/Geocentric` | Juno Earth orbit parameters | `geocentric_radius`, `geocentric_mlat`, `geocentric_mlt`, `geocentric_l_shell` | None | Required |
+| `heliocentric` | `Juno/Ephemeris/Heliocentric` | Juno Solar orbit parameters | `heliocentric_radius`, `heliocentric_lon`, `heliocentric_lat` | None | Required |
+| `io` | `Juno/Ephemeris/IoCoRotational` | Juno Io Co-Rotational orbit parameters | `io_x`, `io_y`, `io_z`, `io_radius` | SALT | Required |
+| `jse` | `Juno/Ephemeris/JSE_Attitude` | Juno Jupiter Solar Ecliptic Pointing angles | `jse_phi`, `jse_theta`, `jse_omega` | None | Required |
+| `jovicentric` | `Juno/Ephemeris/Jovicentric` | Juno Jupiter orbit parameters | `jovicentric_radius`, `jovicentric_long`, `jovicentric_mlat`, `jovicentric_mlt`, `jovicentric_l`, `jovicentric_io_phase` | JLAT JALT JPLG CLAT JULT | Required |
+| `electron` | `Juno/FGM/ElectronCyclotron` | Electron Cyclotron Resonance Frequency | `electron_fce` | None | None |
+| `mag` | `Juno/FGM/MagComponents` | Quicklook Magnetic Field Components in Payload, Planetocentric or Sun State Coordinates | `mag_x`, `mag_y`, `mag_z`, `mag_mag` | coord.eq.PC coord.eq.SS coord.eq.I_PHIO coord.eq.E_PHIO coord.eq.G_PHIO coord.eq.C_PHIO | None |
+| `magnitude` | `Juno/FGM/Magnitude` | Magnetic Field Magnitude from payload coordinates data | `magnitude_mag` | None | None |
 
 ## Selecting a dataset by its full path
 
@@ -101,6 +101,7 @@ metadata = get_data("magnitude_mag", metadata=True)
 
 stream_title = metadata["DAS2"]["STREAM_TITLE"]
 variable_attributes = metadata["DAS2"]["VATT"]
+print(metadata)
 ```
 
 Each variable carries the shared stream title and its own DAS2 attributes.
