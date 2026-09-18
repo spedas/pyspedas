@@ -4,6 +4,7 @@
 
 #from .pytplot import *
 
+from .preferences import preferences_path, read_preferences, reload_preferences, save_preferences, set_preference, unset_preference, apply_mission_preferences
 from .utilities.is_timezone_aware import is_timezone_aware
 from .utilities.doi import get_doi
 from .tplot_tools import get_y_range
