@@ -3,6 +3,7 @@ from datetime import datetime, timezone
 
 import requests
 
+logging.basicConfig(level=logging.INFO)  # Output to stderr
 logger = logging.getLogger(__name__)
 
 
@@ -102,6 +103,9 @@ def das2ascii(
         response = requests.get(dasurl)
         if response.status_code == 200 and isinstance(response.text, str):
             return_str = response.text
+        else:
+            logger.error(f"Error: DAS2 request failed with status code {response.status_code}.")
+            logger.error(f"Response text: {response.text}")
     except requests.RequestException as e:
         logger.error(f"Error occurred while making the request: {e}")
 
