@@ -3,38 +3,15 @@
 Specify local output directory for testing, and remote directory with SPEDAS validation files.
 """
 
-import os
+from pyspedas.config import CONFIG
 
+# Compatibility for code importing the former test-only configuration. New tests
+# should read CONFIG["testing"] directly.
 TESTING_CONFIG = {
-    "local_testing_dir": "_testing_output",  # Testing output will be saved here
-    "remote_validation_dir": "https://github.com/spedas/test_data/raw/refs/heads/main/",  # SPEDAS-pyspedas validation files can be found here
-    "global_display": False,  # Whether to display plots during testing
+    "local_testing_dir": CONFIG["testing"]["output_dir"],
+    "remote_validation_dir": CONFIG["testing"]["validation_dir"],
+    "global_display": CONFIG["testing"]["global_display"],
 }
-
-# Override local output directory with environment variables, if there are any
-if os.environ.get("SPEDAS_DATA_DIR"):
-    TESTING_CONFIG["local_testing_dir"] = os.sep.join(
-        [os.environ["SPEDAS_DATA_DIR"], "_testing_output"]
-    )
-# Override local output directory with a local path
-# TESTING_CONFIG["local_testing_dir"] = os.path.expanduser("~/data/_testing_output")
-
-if os.environ.get("PYSPEDAS_TESTING_DIR"):
-    TESTING_CONFIG["local_testing_dir"] = os.environ["PYSPEDAS_TESTING_DIR"]
-
-# Override remote validation directory with environment variables, if there are any
-if os.environ.get("PYSPEDAS_VALIDATION_DIR"):
-    TESTING_CONFIG["remote_validation_dir"] = os.environ["PYSPEDAS_VALIDATION_DIR"]
-
-# Override remote validation directory with a local path for offline testing
-# TESTING_CONFIG["remote_validation_dir"] = os.path.expanduser("~/work/GitHub/test_data")
-
-# Override global display setting with environment variables, if there are any
-if os.environ.get("PYSPEDAS_GLOBAL_DISPLAY"):
-    TESTING_CONFIG["global_display"] = bool(os.environ["PYSPEDAS_GLOBAL_DISPLAY"])
-
-# Override global display setting for testing
-# TESTING_CONFIG["global_display"] = True
 
 
 def test_data_download_file(validation_dir, sub_dir, file_name, output_dir):

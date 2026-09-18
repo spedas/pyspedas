@@ -5,10 +5,10 @@ import unittest
 from pyspedas.projects import maven
 from pyspedas import del_data, options, timespan, tplot, tplot_options
 
-from pyspedas.utilities.config_testing import TESTING_CONFIG
+from pyspedas.config import CONFIG
 
 global_display = False
-save_dir = os.path.join(TESTING_CONFIG["local_testing_dir"], "utilities")
+save_dir = os.path.join(CONFIG["testing"]["output_dir"], "utilities")
 os.makedirs(save_dir, exist_ok=True)
 
 

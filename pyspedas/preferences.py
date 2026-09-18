@@ -1,8 +1,8 @@
-"""Persistent, per-user overrides for mission configuration dictionaries.
+"""Persistent, per-user overrides for PySPEDAS configuration dictionaries.
 
-Mission defaults stay in their existing config modules.  Preferences are applied
+Defaults stay in their existing config modules. Mission preferences are applied
 before those modules process environment variables, preserving the precedence
-default < preferences < environment < explicit loader arguments.
+default < preferences < environment < explicit arguments.
 """
 
 from __future__ import annotations
@@ -18,7 +18,6 @@ from platformdirs import user_config_path
 import tomlkit
 
 
-_CONFIG_MODULES = {"mms": "mms_config", "kyoto": "kyoto_config"}
 _SUBCONFIGS = {"maven": {"spdf"}}
 
 
@@ -76,46 +75,71 @@ def _mission_values(mission: str) -> dict:
             if key not in _SUBCONFIGS.get(mission, ())}
 
 
+def _apply_values(config: dict, values: dict, section: str) -> None:
+    unknown = set(values) - set(config)
+    if unknown:
+        names = ", ".join(sorted(unknown))
+        raise ValueError(f"Unknown preference(s) for {section}: {names}")
+    for key, value in values.items():
+        default = config[key]
+        if default is not None and type(value) is not type(default):
+            raise TypeError(
+                f"Preference {section}.{key} must be "
+                f"{type(default).__name__}, not {type(value).__name__}"
+            )
+        config[key] = value
+
+
 def apply_mission_preferences(config: dict, mission: str) -> dict:
     """Overlay a mission's stored values on its existing CONFIG dictionary.
 
     Call immediately after defining CONFIG, before existing environment-variable
     overrides.  The dictionary is updated in place to preserve imported aliases.
     """
-    values = _mission_values(mission)
-    unknown = set(values) - set(config)
-    if unknown:
-        names = ", ".join(sorted(unknown))
-        raise ValueError(f"Unknown preference(s) for {mission}: {names}")
-    for key, value in values.items():
-        default = config[key]
-        if default is not None and type(value) is not type(default):
-            raise TypeError(
-                f"Preference projects.{mission}.{key} must be "
-                f"{type(default).__name__}, not {type(value).__name__}"
-            )
-        config[key] = value
+    _apply_values(config, _mission_values(mission), f"projects.{mission}")
     return config
 
 
-def _config_for(mission: str) -> dict:
-    if not mission or not all(part.isidentifier() for part in mission.split(".")):
-        raise ValueError(f"Invalid mission name: {mission!r}")
-    parts = mission.split(".")
-    module_name = _CONFIG_MODULES.get(mission, "config")
+def apply_pyspedas_preferences(config: dict) -> dict:
+    """Overlay ``[pyspedas.*]`` tables on the top-level PySPEDAS CONFIG."""
+    sections = _read_file(preferences_path()).get("pyspedas", {})
+    if not isinstance(sections, dict):
+        raise ValueError("[pyspedas] in PySPEDAS preferences must be a table")
+    unknown = set(sections) - set(config)
+    if unknown:
+        raise ValueError(f"Unknown PySPEDAS preference section(s): {', '.join(sorted(unknown))}")
+    for section, values in sections.items():
+        if not isinstance(values, dict):
+            raise ValueError(f"[pyspedas.{section}] must be a table")
+        _apply_values(config[section], values, f"pyspedas.{section}")
+    return config
+
+
+def _config_for(section: str) -> dict:
+    if not section or not all(part.isidentifier() for part in section.split(".")):
+        raise ValueError(f"Invalid preference section: {section!r}")
+    if section.startswith("pyspedas."):
+        parts = section.split(".")[1:]
+        config = importlib.import_module("pyspedas.config").CONFIG
+        for part in parts:
+            if part not in config or not isinstance(config[part], dict):
+                raise ValueError(f"Unknown PySPEDAS preference section: {section}")
+            config = config[part]
+        return config
     try:
-        module = importlib.import_module(
-            f"pyspedas.projects.{'.'.join(parts)}.{module_name}"
-        )
+        module = importlib.import_module(f"pyspedas.projects.{section}.config")
     except ModuleNotFoundError as exc:
-        raise ValueError(f"Unknown mission: {mission}") from exc
+        raise ValueError(f"Unknown mission: {section}") from exc
     return module.CONFIG
 
 
-def _set_nested(table, mission: str, values: Mapping) -> None:
-    projects = table.setdefault("projects", tomlkit.table())
-    section = projects
-    for part in mission.split("."):
+def _set_nested(table, section_name: str, values: Mapping) -> None:
+    parts = section_name.split(".")
+    if section_name.startswith("pyspedas."):
+        section = table
+    else:
+        section = table.setdefault("projects", tomlkit.table())
+    for part in parts:
         section = section.setdefault(part, tomlkit.table())
     for key, value in values.items():
         if value is None:
@@ -125,10 +149,12 @@ def _set_nested(table, mission: str, values: Mapping) -> None:
 
 
 def save_preferences(mission: str, values: Mapping) -> Path:
-    """Save selected CONFIG keys for a mission, preserving unrelated entries.
+    """Save selected CONFIG keys for a mission or ``pyspedas.*`` section.
 
-    ``values`` may be the mission's complete CONFIG dictionary or a smaller
-    patch.  A ``None`` value removes the corresponding TOML override.
+    ``mission`` is a project name such as ``"themis"`` or a package section
+    such as ``"pyspedas.plotting"``. ``values`` may be the section's complete
+    CONFIG dictionary or a smaller patch. A ``None`` value removes the TOML
+    override.
     """
     if not isinstance(values, Mapping):
         raise TypeError("values must be a mapping of CONFIG keys to values")
@@ -139,7 +165,8 @@ def save_preferences(mission: str, values: Mapping) -> Path:
     for key, value in values.items():
         default = config[key]
         if value is not None and default is not None and type(value) is not type(default):
-            raise TypeError(f"Preference projects.{mission}.{key} must be {type(default).__name__}")
+            section = mission if mission.startswith("pyspedas.") else f"projects.{mission}"
+            raise TypeError(f"Preference {section}.{key} must be {type(default).__name__}")
 
     path = preferences_path()
     if path.exists():
@@ -168,10 +195,10 @@ def save_preferences(mission: str, values: Mapping) -> Path:
 
 
 def set_preference(mission: str, key: str, value) -> Path:
-    """Set or remove one mission preference (``None`` removes it)."""
+    """Set one mission or ``pyspedas.*`` preference (``None`` removes it)."""
     return save_preferences(mission, {key: value})
 
 
 def unset_preference(mission: str, key: str) -> Path:
-    """Remove one mission preference, restoring lower-priority sources."""
+    """Remove one preference, restoring lower-priority sources."""
     return set_preference(mission, key, None)

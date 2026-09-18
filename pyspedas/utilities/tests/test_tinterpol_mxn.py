@@ -29,8 +29,8 @@ from numpy.testing import assert_allclose, assert_array_equal
 
 from pyspedas import cdf_to_tplot, del_data, get_data, store_data, time_interpolate, tinterpol_mxn
 from pyspedas.tplot_tools import data_quants
+from pyspedas.config import CONFIG
 from pyspedas.utilities.config_testing import (
-    TESTING_CONFIG,
     test_data_download_file as download_test_data,
 )
 
@@ -629,10 +629,10 @@ def _reference_cdf():
             raise FileNotFoundError(f'IDL reference CDF not found: {filename}')
     else:
         filename = download_test_data(
-            TESTING_CONFIG['remote_validation_dir'],
+            CONFIG["testing"]["validation_dir"],
             'interpolation_tests',
             'tinterpol_mxn_validate.cdf',
-            TESTING_CONFIG['local_testing_dir'],
+            CONFIG["testing"]["output_dir"],
         )
         if not filename:
             raise unittest.SkipTest('Could not download tinterpol_mxn_validate.cdf')
