@@ -203,7 +203,7 @@ def tplot(variables,
           save_pdf='',
           save_jpeg='',
           dpi=None,
-          display=True,
+          display=None,
           fig=None,
           axis=None,
           running_trace_count=None,
@@ -253,8 +253,8 @@ def tplot(variables,
         dpi: float, optional
             The resolution of the plot in dots per inch
         display: bool, optional
-            If True, then this function will display the plotted tplot variables. Use False to suppress display (for example, if
-            saving to a file, or returning plot objects to be displayed later). Default: True
+            If True, display the plotted variables. If False, suppress display.
+            If omitted, use the ``pyspedas.plotting.global_display`` preference (default: True).
         fig: Matplotlib figure object
             Use an existing figure to plot in (mainly for recursive calls to render composite variables)
         axis: Matplotlib axes object
@@ -312,6 +312,11 @@ def tplot(variables,
         >>> pyspedas.tplot(["Variable2", "Variable3"], var_label='Variable1')
 
     """
+    if display is None:
+        from pyspedas.config import CONFIG
+
+        display = CONFIG["plotting"]["global_display"]
+
     # This call resolves wildcard patterns and converts integers to variable names
     variables = tplot_wildcard_expand(variables)
     if len(variables) == 0:

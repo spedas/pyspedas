@@ -3,7 +3,7 @@ from pyspedas.projects.mms.fpi_tools.mms_fpi_set_metadata import mms_fpi_set_met
 from pyspedas.projects.mms.fpi_tools.mms_load_fpi_calc_pad import mms_load_fpi_calc_pad
 from pyspedas.projects.mms.fpi_tools.mms_fpi_make_compressionlossbars import mms_fpi_make_compressionlossbars
 from pyspedas.projects.mms.fpi_tools.mms_fpi_make_errorflagbars import mms_fpi_make_errorflagbars
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 from pyspedas import tplot_rename, del_data
 
 

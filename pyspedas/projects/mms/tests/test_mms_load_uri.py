@@ -7,7 +7,7 @@ import unittest
 import subprocess
 
 from pyspedas.tplot_tools import data_exists, del_data, tplot, get_data
-from pyspedas.projects.mms import mms_config, mms_load_state,            \
+from pyspedas.projects.mms import config, mms_load_state,            \
                                   mms_load_tetrahedron_qf, mms_load_mec, \
                                   mms_load_fgm, mms_load_scm,            \
                                   mms_load_hpca, mms_load_edp,           \
@@ -87,7 +87,7 @@ class LoadTestCases(unittest.TestCase):
     # Adapted unit tests for AWS-specific URI testing.
     def test_state_load_eph_no_update(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_state(datatypes=['pos', 'vel']) # ensure the files are stored locally
         del_data('*') # remove the current tplot vars
@@ -99,7 +99,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_state_load_eph_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_state(datatypes=['pos', 'vel'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
@@ -110,7 +110,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_state_load_eph_multiprobe_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_state(datatypes=['pos', 'vel'],probe=['1','2','3','4'])
         self.assertTrue(data_exists('mms1_defeph_pos'))
@@ -127,7 +127,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_state_load_tqf(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_tetrahedron_qf()
         self.assertTrue(data_exists('mms_tetrahedron_qf'))
@@ -136,7 +136,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_state_load_tqf_no_update(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_tetrahedron_qf()  # Ensure that some data is downloaded
         del_data('mms_tetrahedron_qf')    # Delete the tplot variable
@@ -147,7 +147,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_state_load_att_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_state(trange=['2015-10-16', '2015-10-16/06:00'], datatypes=['spinras', 'spindec'])
         self.assertTrue(data_exists('mms1_defatt_spinras'))
@@ -158,7 +158,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_mec_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -167,21 +167,21 @@ class LoadTestCases(unittest.TestCase):
 
     def test_mec_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_mec_r_sm'))
 
     def test_mec_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_mec(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_mec_r_sm_test'))
     
     def test_fgm_regression_multi_imports_spdf(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
         t1, d1 = get_data('mms1_fgm_b_gse_brst_l2')
@@ -192,7 +192,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fgm_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'],available=True)
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -203,7 +203,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fgm_load_default_data_exclude(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         # Capture all log messages of level INFO or above
         with self.assertLogs(level=logging.INFO) as captured:
@@ -223,14 +223,14 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fgm_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], spdf=True)
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
 
     def test_fgm_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], suffix='_test')
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2_test'))
@@ -244,7 +244,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fgm_load_brst_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_fgm_b_gse_brst_l2'))
@@ -252,7 +252,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_fgm_load_data_no_update(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_fgm(trange=['2015-10-16', '2015-10-16/01:00']) # make sure the files exist locally
         del_data('*') 
@@ -261,7 +261,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_scm_brst_dpwrspc_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_scm(probe=4, data_rate='brst', datatype='scb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
         tdpwrspc('mms4_scm_acb_gse_scb_brst_l2', notmvariance=True)
@@ -276,7 +276,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_scm_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -284,21 +284,21 @@ class LoadTestCases(unittest.TestCase):
 
     def test_scm_load_schb(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = pyspedas.mms.scm(probe=4, data_rate='brst', datatype='schb', trange=['2015-10-01/10:48:16', '2015-10-01/10:49:16'])
         self.assertTrue(data_exists('mms4_scm_acb_gse_schb_brst_l2'))
 
     def test_scm_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_scm(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_scm_acb_gse_scsrvy_srvy_l2_test'))
 
     def test_scm_load_multiple_sc(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_scm(probe=['1', '2', '3', '4'], trange=['2017-12-15', '2017-12-16'])
         # self.assertTrue(data_exists('mms1_scm_acb_gse_scsrvy_srvy_l2'))
@@ -308,21 +308,21 @@ class LoadTestCases(unittest.TestCase):
 
     def test_scm_load_brst_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb')
         self.assertTrue(data_exists('mms1_scm_acb_gse_scb_brst_l2'))
 
     def test_scm_available(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         files = mms_load_scm(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'], datatype='scb', available=True)
         self.assertTrue(len(files) == 2)
     
     def test_hpca_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -331,7 +331,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_hpca_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_hpca(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_hpca_hplus_number_density'))
@@ -339,7 +339,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_hpca_load_ion_omni_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         del_data('*')
         data = mms_load_hpca(probe=2, trange=['2016-08-09/09:10', '2016-08-09/10:10:00'], datatype='ion', data_rate='brst', suffix='_brst')
@@ -350,7 +350,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_hpca_load_ion_omni(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         del_data('*')
         data = mms_load_hpca(trange=['2016-10-16', '2016-10-16/6:00'], datatype='ion')
@@ -367,7 +367,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_hpca_center_fast_moments_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_hpca(trange=['2015-10-16/14:00', '2015-10-16/15:00'])
         centered = mms_load_hpca(trange=['2015-10-16/14:00', '2015-10-16/15:00'], center_measurement=True, suffix='_centered')
@@ -378,7 +378,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_hpca_center_brst_moments_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_hpca(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst')
         centered = mms_load_hpca(trange=['2015-10-16/13:06', '2015-10-16/13:07'], data_rate='brst', center_measurement=True, suffix='_centered')
@@ -393,7 +393,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_edp_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -402,7 +402,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_edp_load_hfesp_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], datatype='hfesp', data_rate='srvy')
         self.assertTrue(data_exists('mms1_edp_hfesp_srvy_l2'))
@@ -410,7 +410,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_edp_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
@@ -418,14 +418,14 @@ class LoadTestCases(unittest.TestCase):
 
     def test_edp_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edp(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edp_dce_gse_fast_l2'))
 
     def test_edp_load_brst_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edp(data_rate='brst', trange=['2015-10-16/13:06', '2015-10-16/13:10'])
         self.assertTrue(data_exists('mms1_edp_dce_gse_brst_l2'))
@@ -433,7 +433,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_edi_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], available=True)
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'])
@@ -442,7 +442,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_edi_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], spdf=True)
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2'))
@@ -450,7 +450,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_edi_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_edi(trange=['2016-10-17/13:00', '2016-10-17/14:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_edi_e_gse_srvy_l2_test'))
@@ -458,7 +458,7 @@ class LoadTestCases(unittest.TestCase):
     
     def test_aspoc_load_default_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], available=True)
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'])
@@ -467,21 +467,21 @@ class LoadTestCases(unittest.TestCase):
 
     def test_aspoc_load_spdf_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], spdf=True)
         self.assertTrue(data_exists('mms1_aspoc_ionc_l2'))
 
     def test_aspoc_load_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_aspoc(trange=['2015-10-16', '2015-10-16/01:00'], suffix='_test')
         self.assertTrue(data_exists('mms1_aspoc_ionc_l2_test'))
     
     def test_dsp_load_epsd_bpsd_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype=['epsd', 'bpsd'], level='l2', data_rate='fast')
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
@@ -490,7 +490,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_dsp_load_bpsd_data(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast', available=True)
         data = mms_load_dsp(trange=['2015-10-16','2015-10-17'], datatype='bpsd', level='l2', data_rate='fast')
@@ -499,7 +499,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_dsp_load_epsd_spdf(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', spdf=True)
         self.assertTrue(data_exists('mms1_dsp_epsd_omni'))
@@ -507,7 +507,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_dsp_load_epsd_suffix(self):
         self.clean_data()
-        mms_config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
+        config.CONFIG['local_data_dir'] = f"s3://{bucket_name}"
 
         data = mms_load_dsp(trange=['2015-08-01','2015-08-02'], datatype='epsd', level='l2', data_rate='fast', suffix='_test')
         self.assertTrue(data_exists('mms1_dsp_epsd_omni_test'))

@@ -5,7 +5,7 @@ import pandas as pd
 from pyspedas.tplot_tools import time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.mms_config import CONFIG
+from pyspedas.projects.mms.config import CONFIG
 
 
 def mms_brst_events(trange=None, reload=False):

@@ -4,7 +4,7 @@ from datetime import datetime, timedelta
 from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import store_data, options
 from pyspedas import dailynames, download
-from .kyoto_config import CONFIG
+from .config import CONFIG
 from pyspedas import time_string,get_data, time_double, time_string, del_data, tnames
 from pyspedas import tplot_copy
 import numpy as np

@@ -7,19 +7,20 @@ import numpy as np
 from numpy.testing import assert_allclose
 import pyspedas
 from pyspedas import get_data, tplot, tplot_rename, tplot_copy, twavpol
-from pyspedas.utilities.config_testing import TESTING_CONFIG, test_data_download_file
+from pyspedas.config import CONFIG
+from pyspedas.utilities.config_testing import test_data_download_file
 
 # Whether to display plots during testing
-global_display = TESTING_CONFIG["global_display"]
+global_display = CONFIG["testing"]["global_display"]
 # Directory to save testing output files
-output_dir = TESTING_CONFIG["local_testing_dir"]
+output_dir = CONFIG["testing"]["output_dir"]
 # Ensure output directory exists
 analysis_dir = "analysis_tools"
 save_dir = os.path.join(output_dir, analysis_dir)
 if not os.path.exists(save_dir):
     os.makedirs(save_dir)
 # Directory with IDL SPEDAS validation files
-validation_dir = TESTING_CONFIG["remote_validation_dir"]
+validation_dir = CONFIG["testing"]["validation_dir"]
 
 
 class TwavpolDataValidation(unittest.TestCase):
