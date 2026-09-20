@@ -330,7 +330,7 @@ def download_file(
     # update header from URI
     if is_fsspec_uri(filename):
         protocol, path = filename.split("://")
-        fs = fsspec.filesystem(protocol, anon=False)
+        fs = fsspec.filesystem(protocol, anon=True)
 
         if fs.exists(filename) and not force_download:
             mod_tm = (fs.info(path)["LastModified"]).strftime("%a, %d %b %Y %H:%M:%S GMT")
@@ -456,7 +456,7 @@ def download_file(
 
             if is_fsspec_uri(filename):
                 protocol, path = filename.split("://")
-                fs = fsspec.filesystem(protocol, anon=False)
+                fs = fsspec.filesystem(protocol, anon=True)
 
                 # copy method is within filesystems under fsspec
                 if check_downloaded_file(temp_name):
@@ -499,7 +499,7 @@ def download_file(
         logging.info("There was a problem with the file: " + filename)
         logging.info("We are going to download it for a second time.")
         if is_fsspec_uri(filename):
-            fs = fsspec.filesystem(protocol, anon=False)
+            fs = fsspec.filesystem(protocol, anon=True)
             fs.delete(filename)
         elif os.path.exists(filename):
             os.unlink(filename)
@@ -527,7 +527,7 @@ def download_file(
         logging.info("Tried twice. There was a problem with the file: " + filename)
         logging.info("File will be removed. Try to download it again at a later time.")
         if is_fsspec_uri(filename):
-            fs = fsspec.filesystem(protocol, anon=False)
+            fs = fsspec.filesystem(protocol, anon=True)
             fs.delete(filename)
         elif os.path.exists(filename):
             os.unlink(filename)
@@ -705,7 +705,7 @@ def download(
                 elif is_fsspec_uri(url):
                     # when remote is URI, do not download data / read in place
                     protocol, path = url.split("://")
-                    fs = fsspec.filesystem(protocol, anon=False)
+                    fs = fsspec.filesystem(protocol, anon=True)
 
                     if not is_fsspec_uri(local_path):
                         if force_download:
@@ -876,7 +876,7 @@ def download(
             # find matching files from URI
             if is_fsspec_uri(local_path_to_search):
                 protocol, path = local_path_to_search.split("://")
-                fs = fsspec.filesystem(protocol, anon=False)
+                fs = fsspec.filesystem(protocol, anon=True)
                 walk = fs.walk(local_path_to_search)
             else:
                 walk = os.walk(local_path_to_search)

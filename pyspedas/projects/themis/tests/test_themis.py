@@ -291,6 +291,13 @@ class LoadTestCases(unittest.TestCase):
                                     varnames=['thc_eff_e12_efs'])
         self.assertTrue(os.path.exists(files[0]))
 
+    def test_themis_state_s3(self):
+        from pyspedas.preferences import set_preference
+        set_preference('themis','remote_data_dir','s3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/')
+        vars = pyspedas.projects.themis.state()
+        self.assertTrue('thc_pos' in vars)
+        self.assertTrue(data_exists('thc_pos'))
+
 
 if __name__ == '__main__':
     unittest.main()
