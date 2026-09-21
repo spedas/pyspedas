@@ -21,3 +21,5 @@ xarray
 sphinx>=1.7.6
 sphinx-rtd-theme
 tomli
+platformdirs>=4.0.0
+tomlkit>=0.13.0
