@@ -3,6 +3,7 @@ import re
 import sys
 import warnings
 import requests
+import time
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import logging
@@ -45,6 +46,9 @@ class LoggingRetry(Retry):
 
         if response is not None and response.status in self.status_forcelist:
             retry_after = response.headers.get("Retry-After")
+            # Delay for a bit, even if we would otherwise retry immediately
+            # May help with LASP servers that send no Retry-After
+            time.sleep(5)
             logging.warning(
                 "HTTP %d from %s; retrying request "
                 "(retries remaining: %s, Retry-After: %s)",
