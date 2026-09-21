@@ -24,6 +24,12 @@ os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
 os.environ["AWS_S3_ENDPOINT"] = localhost
 os.environ["AWS_ENDPOINT_URL"] = localhost
 
+# For these tests, use authenticated access instead of the current default anon access
+from pyspedas.config import CONFIG
+
+CONFIG["s3"]["use_anon_access"] = False
+
+
 class LoadTestCases(unittest.TestCase):
     """
     Cloud Awareness Unit Tests
