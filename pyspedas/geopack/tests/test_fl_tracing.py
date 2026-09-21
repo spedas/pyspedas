@@ -870,6 +870,19 @@ class LoadTestCases(unittest.TestCase):
         ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', trace_name='py_iono_trace', iopt=3, foot_out_units='km', trace_out_units='km',
                         bvec_name='trace_bvec', diag_nevals_name='trace_nevals', diag_reached_name='trace_reached', diag_s_max_name='trace_s_max', diag_npts_name='trace_npts')
 
+        reached = get_data('trace_reached').y.astype(bool)
+        feet = get_data('py_iono_t89_foot').y
+        self.assertTrue(np.any(reached))
+        self.assertTrue(np.any(~reached))
+        # Unlike IDL, incomplete traces must not report their last point as a foot point.
+        self.assertTrue(np.isnan(feet[~reached]).all())
+        self.assertTrue(np.isfinite(feet[reached]).all())
+        traces = get_data('py_iono_trace').y
+        counts = get_data('trace_npts').y.astype(int)
+        for i in np.flatnonzero(~reached):
+            self.assertGreater(counts[i], 1)
+            self.assertTrue(np.isfinite(traces[i, :counts[i]]).all())
+
         # Don't request trace points the second time, use a different max_s parameter
         ttrace2endpoint('circle_magpoles_5re_km',"t89", "ionosphere-south", foot_name='py_iono_t89_foot', iopt=3, foot_out_units='km', trace_out_units='km',
                         bvec_name='trace_bvec2', diag_nevals_name='trace_nevals2', diag_reached_name='trace_reached2', diag_s_max_name='trace_s_max2', diag_npts_name='trace_npts2',
@@ -879,6 +892,11 @@ class LoadTestCases(unittest.TestCase):
         pyspedas.tplot('trace_nevals trace_reached trace_s_max trace_npts trace_nevals2 trace_reached2 trace_s_max2 trace_npts2', display=global_display, save_png='trace_diags.png')
         d=get_data('trace_s_max2')
         self.assertTrue(np.nanmax(d.y) <= 100.0)
+        reached = get_data('trace_reached2').y.astype(bool)
+        feet = get_data('py_iono_t89_foot').y
+        self.assertTrue(np.any(~reached))
+        self.assertTrue(np.isnan(feet[~reached]).all())
+        self.assertTrue(np.isfinite(feet[reached]).all())
 
 if __name__ == "__main__":
     unittest.main()
