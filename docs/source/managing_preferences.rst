@@ -29,7 +29,6 @@ The order of precedence is: explicit load-function parameter, existing
 environment variable, user preference, then PySPEDAS default. A preference
 cannot override an environment variable already recognized by the mission.
 Only keys already present in a mission's ``CONFIG`` dictionary are supported.
-This phase does not add source selection or new transport methods.
 
 Package-wide plotting defaults live in ``pyspedas.config.CONFIG``. With no
 preference file, ``global_display`` is ``true`` and ``plot_directory`` is
@@ -85,11 +84,11 @@ package-wide plotting settings. ``reload_preferences()`` refreshes the parsed
 file for subsequent reads but does not mutate already-imported ``CONFIG``
 dictionaries.
 
-.. autofunction:: pyspedas.preferences.preferences_path
-.. autofunction:: pyspedas.preferences.read_preferences
-.. autofunction:: pyspedas.preferences.reload_preferences
-.. autofunction:: pyspedas.preferences.save_preferences
-.. autofunction:: pyspedas.preferences.set_preference
-.. autofunction:: pyspedas.preferences.unset_preference
-.. autofunction:: pyspedas.preferences.apply_mission_preferences
-.. autofunction:: pyspedas.preferences.apply_pyspedas_preferences
+.. autofunction:: pyspedas.preferences_path
+.. autofunction:: pyspedas.read_preferences
+.. autofunction:: pyspedas.reload_preferences
+.. autofunction:: pyspedas.save_preferences
+.. autofunction:: pyspedas.set_preference
+.. autofunction:: pyspedas.unset_preference
+.. autofunction:: pyspedas.apply_mission_preferences
+.. autofunction:: pyspedas.apply_pyspedas_preferences

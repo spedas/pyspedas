@@ -22,7 +22,13 @@ _SUBCONFIGS = {"maven": {"spdf"}}
 
 
 def preferences_path() -> Path:
-    """Return the preferences path, honoring ``PYSPEDAS_CONFIG_FILE``."""
+    """ Return the preferences path, honoring ``PYSPEDAS_CONFIG_FILE``.
+
+    Returns
+    --------
+    Path
+        A path to the preferences file
+    """
     override = os.environ.get("PYSPEDAS_CONFIG_FILE")
     if override:
         return Path(override).expanduser()
@@ -45,7 +51,13 @@ def _read_file(path: Path) -> dict:
 
 
 def read_preferences() -> dict:
-    """Read a copy of the user preferences (without applying defaults)."""
+    """Read a copy of the user preferences (without applying defaults).
+
+    Returns
+    --------
+    dict
+        The parameter dictionary read from the user preferences file
+    """
     from copy import deepcopy
 
     return deepcopy(_read_file(preferences_path()))
@@ -56,6 +68,11 @@ def reload_preferences() -> dict:
 
     Restart Python to apply hand-edited preferences to mission modules already
     imported, because their loaders retain references to the CONFIG dictionaries.
+
+    Returns
+    --------
+    dict
+        The updated config dictionary
     """
     _read_file.cache_clear()
     return read_preferences()
@@ -95,13 +112,37 @@ def apply_mission_preferences(config: dict, mission: str) -> dict:
 
     Call immediately after defining CONFIG, before existing environment-variable
     overrides.  The dictionary is updated in place to preserve imported aliases.
+
+    Parameters
+    ----------
+    config : dict
+        A dictionary of parameters to update
+    mission: str
+        The mission whose parameters are to be updated
+
+    Returns
+    -------
+    dict
+        The updated CONFIG dictionary
     """
     _apply_values(config, _mission_values(mission), f"projects.{mission}")
     return config
 
 
 def apply_pyspedas_preferences(config: dict) -> dict:
-    """Overlay ``[pyspedas.*]`` tables on the top-level PySPEDAS CONFIG."""
+    """Overlay ``[pyspedas.*]`` tables on the top-level PySPEDAS CONFIG.
+
+    Parameters
+    ----------
+    config : dict
+        User preferences to be overlaid on the PySPEDAS defaults
+
+    Returns
+    -------
+    dict
+        The updated config dictionary
+
+    """
     sections = _read_file(preferences_path()).get("pyspedas", {})
     if not isinstance(sections, dict):
         raise ValueError("[pyspedas] in PySPEDAS preferences must be a table")
@@ -151,10 +192,18 @@ def _set_nested(table, section_name: str, values: Mapping) -> None:
 def save_preferences(mission: str, values: Mapping) -> Path:
     """Save selected CONFIG keys for a mission or ``pyspedas.*`` section.
 
-    ``mission`` is a project name such as ``"themis"`` or a package section
-    such as ``"pyspedas.plotting"``. ``values`` may be the section's complete
-    CONFIG dictionary or a smaller patch. A ``None`` value removes the TOML
-    override.
+    Parameters
+    ----------
+    mission: str
+        A project name such as ``"themis"`` or a package section such as ``"pyspedas.plotting"``.
+
+    values: Mapping
+        The section's complete CONFIG dictionary or a smaller patch. A ``None`` value removes the TOML override.
+
+    Returns
+    --------
+    Path
+        Path to the preferences file updated
     """
     if not isinstance(values, Mapping):
         raise TypeError("values must be a mapping of CONFIG keys to values")
@@ -195,10 +244,41 @@ def save_preferences(mission: str, values: Mapping) -> Path:
 
 
 def set_preference(mission: str, key: str, value) -> Path:
-    """Set one mission or ``pyspedas.*`` preference (``None`` removes it)."""
+    """Set one mission or ``pyspedas.*`` preference (``None`` removes it).
+
+    Parameters
+    -----------
+    mission: str
+        Identifies the mission whose parameter is to be updated
+    key: str
+        The parameter to be updated
+    value: Any
+        The new value.  ''None'' removes it.
+
+    Returns
+    -------
+    Path
+        The path to the updated preference file
+
+    """
     return save_preferences(mission, {key: value})
 
 
 def unset_preference(mission: str, key: str) -> Path:
-    """Remove one preference, restoring lower-priority sources."""
+    """Remove one preference, restoring lower-priority sources.
+
+    Parameters
+    -----------
+
+    mission: str
+        The mission whose parameter should be unset
+    key: str
+        The parameter to be unset
+
+    Returns
+    -------
+    Path
+        The path to the updated preference file
+
+    """
     return set_preference(mission, key, None)
