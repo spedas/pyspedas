@@ -16,6 +16,9 @@ CONFIG = {
         "validation_dir": "https://github.com/spedas/test_data/raw/refs/heads/main/",
         "global_display": False,
     },
+    "s3": {
+        "use_anon_access": True,
+    },
 }
 
 apply_pyspedas_preferences(CONFIG)
@@ -48,3 +51,6 @@ if os.environ.get("PYSPEDAS_TESTING_DIR"):
     CONFIG["testing"]["output_dir"] = os.environ["PYSPEDAS_TESTING_DIR"]
 if os.environ.get("PYSPEDAS_VALIDATION_DIR"):
     CONFIG["testing"]["validation_dir"] = os.environ["PYSPEDAS_VALIDATION_DIR"]
+
+if os.environ.get("PYSPEDAS_S3_USE_ANON_ACCESS"):
+    CONFIG["s3"]["use_anon_access"] = os.environ["PYSPEDAS_S3_USE_ANON_ACCESS"]

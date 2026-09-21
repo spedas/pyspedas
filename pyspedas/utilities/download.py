@@ -3,12 +3,14 @@ import re
 import sys
 import warnings
 import requests
+import time
 from requests.adapters import HTTPAdapter
 from urllib3.util.retry import Retry
 import logging
 import fnmatch
 import datetime
 import fsspec
+from contextlib import contextmanager
 from importlib.metadata import version, PackageNotFoundError
 
 from pathlib import Path
@@ -44,6 +46,9 @@ class LoggingRetry(Retry):
 
         if response is not None and response.status in self.status_forcelist:
             retry_after = response.headers.get("Retry-After")
+            # Delay for a bit, even if we would otherwise retry immediately
+            # May help with LASP servers that send no Retry-After
+            time.sleep(5)
             logging.warning(
                 "HTTP %d from %s; retrying request "
                 "(retries remaining: %s, Retry-After: %s)",
@@ -88,6 +93,32 @@ def is_fsspec_uri(uri):
             and bool(_RFC3896_.match(uri))
             and not uri.startswith(("http://", "https://"))
     )
+
+
+def _close_filesystem(fs):
+    """Close resources owned by an uncached fsspec filesystem instance."""
+    close = getattr(fs, "close", None)
+    if callable(close):
+        close()
+        return
+
+    # S3FileSystem currently has no public close() method. Keep its private
+    # session cleanup details confined to this compatibility helper.
+    s3_creator = getattr(fs, "_s3creator", None)
+    close_session = getattr(fs, "close_session", None)
+    if s3_creator is not None and callable(close_session):
+        close_session(getattr(fs, "loop", None), s3_creator)
+
+
+@contextmanager
+def _managed_filesystem(protocol, **kwargs):
+    """Yield an fsspec filesystem and reliably release its client resources."""
+    fs = fsspec.filesystem(protocol, skip_instance_cache=True, **kwargs)
+    try:
+        yield fs
+    finally:
+        _close_filesystem(fs)
+
 
 class LinkParser(HTMLParser):
     """
@@ -264,77 +295,79 @@ def download_file(
     headers_original = headers
     session_original = session
 
+    from pyspedas.config import CONFIG
+    s3_use_anon = CONFIG["s3"]["use_anon_access"]
+
     # Cloud Awareness
     if is_fsspec_uri(url):
         protocol, path = url.split("://")
-        remote_fs = fsspec.filesystem(protocol, anon=False)
-        remote_modtime = remote_fs.info(path)["LastModified"]
+        with _managed_filesystem(protocol, anon=s3_use_anon) as remote_fs:
+            remote_modtime = remote_fs.info(path)["LastModified"]
 
-        if is_fsspec_uri(filename): # two URIs given
-            local_protocol, local_path = filename.split("://")
-            local_fs = fsspec.filesystem(local_protocol, anon=False)
+            if is_fsspec_uri(filename): # two URIs given
+                local_protocol, local_path = filename.split("://")
+                with _managed_filesystem(local_protocol) as local_fs:
 
-            if local_fs.exists(filename):
-                local_modtime = local_fs.info(local_path)["LastModified"]
+                    if local_fs.exists(filename):
+                        local_modtime = local_fs.info(local_path)["LastModified"]
 
-                # local newer than remote
-                if local_modtime >= remote_modtime:
-                    logging.info("Streaming from local URI (current): " + filename)
+                        # local newer than remote
+                        if local_modtime >= remote_modtime:
+                            logging.info("Streaming from local URI (current): " + filename)
+                            return filename
+
+                    # priority to stream from remote URI
+                    if not force_download:
+                        logging.info("Streaming from remote: " + url)
+                        return url
+
+                    # save remote file to host os and push to uri referred to as "local"
+                    logging.info("Retrieving newer remote file: " + url)
+                    remote_fs.get(url, os.getcwd())
+                    local_path = os.path.join(os.getcwd(), url[url.rfind("/")+1:])
+                    local_fs.put(local_path, filename)
+                    logging.info("File placed on \"local\": " + filename)
+                    os.remove(local_path) # cleanup on host os
+
                     return filename
 
-            # priority to stream from remote URI
+            # filename is not URI
+            if os.path.exists(filename):
+                if force_download:
+                    logging.info("Retrieving remote file: " + url)
+                    remote_fs.get(url, filename)
+                    logging.info("File placed on \"local\": " + filename)
+                    return filename
+                local_modtime = datetime.datetime.fromtimestamp(os.path.getmtime(filename), datetime.timezone.utc)
+
+                # remote newer than local
+                if local_modtime < remote_modtime:
+                    logging.info("Streaming from remote: " + url)
+                    return url
+
+                logging.info("File is current " + filename)
+                return filename
+
             if not force_download:
                 logging.info("Streaming from remote: " + url)
                 return url
 
-            # save remote file to host os and push to uri referred to as "local"
-            logging.info("Retrieving newer remote file: " + url)
-            remote_fs.get(url, os.getcwd())
-            local_path = os.path.join(os.getcwd(), url[url.rfind("/")+1:])
-            local_fs.put(local_path, filename)
+            # download from remote
+            logging.info("Retrieving remote file: " + url)
+            remote_fs.get(url, filename)
             logging.info("File placed on \"local\": " + filename)
-            os.remove(local_path) # cleanup on host os
 
             return filename
-
-        # filename is not URI
-        if os.path.exists(filename):
-            if force_download:
-                logging.info("Retrieving remote file: " + url)
-                remote_fs.get(url, filename)
-                logging.info("File placed on \"local\": " + filename)
-                return filename
-            local_modtime = datetime.datetime.fromtimestamp(os.path.getmtime(filename), datetime.timezone.utc)
-
-            # remote newer than local
-            if local_modtime < remote_modtime:
-                logging.info("Streaming from remote: " + url)
-                return url
-
-            logging.info("File is current " + filename)
-            return filename
-
-        if not force_download:
-            logging.info("Streaming from remote: " + url)
-            return url
-
-        # download from remote
-        logging.info("Retrieving remote file: " + url)
-        remote_fs.get(url, filename)
-        logging.info("File placed on \"local\": " + filename)
-
-        return filename
 
     # from this point, remote is NOT fsspec URI
 
     # update header from URI
     if is_fsspec_uri(filename):
         protocol, path = filename.split("://")
-        fs = fsspec.filesystem(protocol, anon=True)
-
-        if fs.exists(filename) and not force_download:
-            mod_tm = (fs.info(path)["LastModified"]).strftime("%a, %d %b %Y %H:%M:%S GMT")
-            headers["If-Modified-Since"] = mod_tm
+        with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+            if fs.exists(filename) and not force_download:
+                mod_tm = (fs.info(path)["LastModified"]).strftime("%a, %d %b %Y %H:%M:%S GMT")
+                headers["If-Modified-Since"] = mod_tm
     else:
         # check if the file exists, and if so, set the last modification time in the header
         # this allows you to avoid re-downloading files that haven't changed
@@ -456,15 +489,14 @@ def download_file(
 
             if is_fsspec_uri(filename):
                 protocol, path = filename.split("://")
-                fs = fsspec.filesystem(protocol, anon=True)
-
-                # copy method is within filesystems under fsspec
-                if check_downloaded_file(temp_name):
-                    fs.put(temp_name, filename)
-                    logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
-                else:
-                    logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
-                    logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
+                with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+                    # copy method is within filesystems under fsspec
+                    if check_downloaded_file(temp_name):
+                        fs.put(temp_name, filename)
+                        logging.info(f"Download of {filename} complete, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality})")
+                    else:
+                        logging.error(f"Download of {filename} failed, {transfer_mbytes:.3f} MB in {elapsed_secs:.1f} sec ({transfer_rate:.3f} MB/sec) ({transfer_quality}). The temp file will be removed.")
+                        logging.error("If the same file has been already downloaded previously, it might be possible to use that instead.")
             else:
                 # make sure the directory exists
                 if (
@@ -499,8 +531,8 @@ def download_file(
         logging.info("There was a problem with the file: " + filename)
         logging.info("We are going to download it for a second time.")
         if is_fsspec_uri(filename):
-            fs = fsspec.filesystem(protocol, anon=True)
-            fs.delete(filename)
+            with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+                fs.delete(filename)
         elif os.path.exists(filename):
             os.unlink(filename)
 
@@ -527,8 +559,8 @@ def download_file(
         logging.info("Tried twice. There was a problem with the file: " + filename)
         logging.info("File will be removed. Try to download it again at a later time.")
         if is_fsspec_uri(filename):
-            fs = fsspec.filesystem(protocol, anon=True)
-            fs.delete(filename)
+            with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+                fs.delete(filename)
         elif os.path.exists(filename):
             os.unlink(filename)
         filename = None
@@ -622,6 +654,9 @@ def download(
     >>> print(files)
     ['/tmp/omni/omni_hro_5min_20121101_v01.cdf', '/tmp/omni/omni_hro_5min_20121201_v01.cdf']
     """
+    from pyspedas.config import CONFIG
+    s3_use_anon = CONFIG["s3"]["use_anon_access"]
+
     local_file_in = local_file
 
     if isinstance(remote_path, list):
@@ -705,31 +740,30 @@ def download(
                 elif is_fsspec_uri(url):
                     # when remote is URI, do not download data / read in place
                     protocol, path = url.split("://")
-                    fs = fsspec.filesystem(protocol, anon=True)
+                    with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+                        if not is_fsspec_uri(local_path):
+                            if force_download:
+                                # obtain the file names to be used in the new remote_file argument
+                                # URIs are not Paths so cannot use Path.name or os.path.basename
+                                links = [link[link.rfind("/")+1:] for link in fs.glob(url)]
+                                index_table[url_base] = links
+                            else:
+                                links = [protocol + "://" + link for link in fs.glob(url)]
 
-                    if not is_fsspec_uri(local_path):
-                        if force_download:
-                            # obtain the file names to be used in the new remote_file argument
-                            # URIs are not Paths so cannot use Path.name or os.path.basename
+                                if len(links) > 0:
+                                    for link in links:
+                                        logging.info("Using remote URI file: "+link)
+                                        out.append(link)
+                                    continue
+                        else:
+                            # local is URI so we are just updating files between URIs
+                            if index_table.get(url_base) is None:
+                                logging.info("Retrieving listings from directory: " + url_base)
+                            else:
+                                # reset since we glob for specific files instead of a full directory listing
+                                index_table = {}
                             links = [link[link.rfind("/")+1:] for link in fs.glob(url)]
                             index_table[url_base] = links
-                        else:
-                            links = [protocol + "://" + link for link in fs.glob(url)]
-
-                            if len(links) > 0:
-                                for link in links:
-                                    logging.info("Using remote URI file: "+link)
-                                    out.append(link)
-                                continue
-                    else:
-                        # local is URI so we are just updating files between URIs
-                        if index_table.get(url_base) is None:
-                            logging.info("Retrieving listings from directory: " + url_base)
-                        else:
-                            # reset since we glob for specific files instead of a full directory listing
-                            index_table = {}
-                        links = [link[link.rfind("/")+1:] for link in fs.glob(url)]
-                        index_table[url_base] = links
                 else:
                     logging.info("Downloading remote index: " + url_base)
 
@@ -876,8 +910,8 @@ def download(
             # find matching files from URI
             if is_fsspec_uri(local_path_to_search):
                 protocol, path = local_path_to_search.split("://")
-                fs = fsspec.filesystem(protocol, anon=True)
-                walk = fs.walk(local_path_to_search)
+                with _managed_filesystem(protocol, anon=s3_use_anon) as fs:
+                    walk = list(fs.walk(local_path_to_search))
             else:
                 walk = os.walk(local_path_to_search)
 

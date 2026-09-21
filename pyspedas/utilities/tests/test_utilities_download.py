@@ -8,6 +8,7 @@ import requests
 
 import pyspedas
 from pyspedas.utilities.download import (
+    _managed_filesystem,
     configure_retry_session,
     download,
     download_file,
@@ -21,6 +22,44 @@ themis_remote = CONFIG['remote_data_dir']
 
 
 class DownloadTestCases(unittest.TestCase):
+    def test_managed_filesystem_closes_s3_session_on_success(self):
+        filesystem = Mock()
+        filesystem.close = None
+        filesystem.loop = Mock()
+        filesystem._s3creator = Mock()
+
+        with patch(
+            "pyspedas.utilities.download.fsspec.filesystem",
+            return_value=filesystem,
+        ) as filesystem_factory:
+            with _managed_filesystem("s3", anon=True) as result:
+                self.assertIs(result, filesystem)
+
+        filesystem_factory.assert_called_once_with(
+            "s3", skip_instance_cache=True, anon=True
+        )
+        filesystem.close_session.assert_called_once_with(
+            filesystem.loop, filesystem._s3creator
+        )
+
+    def test_managed_filesystem_closes_s3_session_on_error(self):
+        filesystem = Mock()
+        filesystem.close = None
+        filesystem.loop = Mock()
+        filesystem._s3creator = Mock()
+
+        with patch(
+            "pyspedas.utilities.download.fsspec.filesystem",
+            return_value=filesystem,
+        ):
+            with self.assertRaisesRegex(RuntimeError, "filesystem operation failed"):
+                with _managed_filesystem("s3", anon=True):
+                    raise RuntimeError("filesystem operation failed")
+
+        filesystem.close_session.assert_called_once_with(
+            filesystem.loop, filesystem._s3creator
+        )
+
     def test_download_file_streams_chunks(self):
         response = Mock(status_code=200)
         response.iter_content.return_value = [b"first", b"", b"second"]

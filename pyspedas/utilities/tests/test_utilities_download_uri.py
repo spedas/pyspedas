@@ -42,6 +42,10 @@ class DownloadTestCases(unittest.TestCase):
         os.environ["AWS_S3_ENDPOINT"] = "http://localhost:3000"
         os.environ["AWS_ENDPOINT_URL"] = "http://localhost:3000"
 
+        # For these tests, use authenticated access instead of the current default anon access
+        from pyspedas.config import CONFIG
+        CONFIG["s3"]["use_anon_access"] = False
+
         # Create a bucket using direct HTTP requests
         bucket_name = "test-bucket"
         response = requests.put(f"http://localhost:3000/{bucket_name}")
@@ -69,12 +73,12 @@ class DownloadTestCases(unittest.TestCase):
 
         # specifying local_path changes the local data directory
         files = download(
-                local_path=s3_url + "/psp_data/spc/13",
-                remote_file="https://spdf.gsfc.nasa.gov/pub/data/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf"
+                local_path=s3_url + "/themis/tha/l1/state/2007/",
+                remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf"
         )
 
         self.assertTrue(len(files) == 1)
-        self.assertTrue(files[0] == s3_url + "/psp_data/spc/13/psp_swp_spc_l3i_20190401_v01.cdf")
+        self.assertTrue(files[0] == s3_url + "/themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf")
 
     def test_remote_path(self):
         # Remote/AWS details
@@ -90,19 +94,23 @@ class DownloadTestCases(unittest.TestCase):
 
         # download (if not already downloaded from prior tests)
         files = download(
-                local_path=s3_url + "/psp/sweap/spc/l3/l3i/2019",
-                remote_file="https://spdf.gsfc.nasa.gov/pub/data/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf"
+                local_path=s3_url + "/themis/tha/l1/state/2019",
+                remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf"
         )
         self.assertTrue(len(files) == 1)
-        self.assertTrue(files[0] == s3_url + "/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf")
+        self.assertTrue(files[0] == s3_url + "/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf")
 
         # stream from remote
         with self.assertLogs(level='INFO') as log:
             files = download(
                     remote_path=s3_url,
-                    remote_file="/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf"
+                    remote_file="/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf"
             )
-            self.assertIn("Streaming from remote", log.output[0])
+        self.assertTrue(
+            any("Streaming from remote" in record.getMessage() for record in log.records),
+            msg=f"Expected a streaming message; captured: {log.output}",
+        )
+
 
     def test_force_download(self):
         # Remote/AWS details
@@ -130,16 +138,22 @@ class DownloadTestCases(unittest.TestCase):
                     local_path=s3_url + "/themis/tha/l1/state/2007",
                     remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf"
             )
-            self.assertIn("File is current", log.output[0])
+        self.assertTrue(
+            any("File is current" in record.getMessage() for record in log.records),
+            msg=f"Expected a File is current message; captured: {log.output}",
+        )
 
         # Download the same file with force_download, should re-download
         with self.assertLogs(level='INFO') as log:
             files = download(
-                    local_path=s3_url + "/psp_data/spc/13",
-                    remote_file="https://spdf.gsfc.nasa.gov/pub/data/psp/sweap/spc/l3/l3i/2019/psp_swp_spc_l3i_20190401_v01.cdf",
+                    local_path=s3_url + "/themis/tha/l1/state/2007",
+                    remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2007/tha_l1_state_20070217_v01.cdf",
                     force_download=True
             )
-            self.assertIn("Downloading", log.output[0])
+        self.assertTrue(
+            any("Downloading" in record.getMessage() for record in log.records),
+            msg=f"Expected a Downloading message; captured: {log.output}",
+        )
 
 if __name__ == '__main__':
     unittest.main(verbosity=2)

@@ -87,10 +87,6 @@ jobs:
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
-              echo Starting cluster tests at `date`
-              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
-              echo Starting cluster S3 tests at `date`
-              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
               echo Starting soho tests at `date`
               coverage run -a -m pyspedas.projects.soho.tests.test_soho
               echo Starting de2 tests at `date`
@@ -173,6 +169,8 @@ jobs:
               coverage run -a -m pyspedas.projects.omni.tests.test_omni
               echo Starting themis tests at `date`
               coverage run -a -m pyspedas.projects.themis.tests.test_themis
+              echo Starting themis S3 tests at `date`
+              coverage run -a -m pyspedas.projects.themis.tests.test_themis_s3
               echo Starting ulysses tests at `date`
               coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
               echo Starting solo tests at `date`
@@ -218,6 +216,14 @@ jobs:
               # this test isolated from the other SPDF/THEMIS tests.
               echo Starting mica tests at `date`
               coverage run -a -m pyspedas.projects.mica.tests.test_mica
+
+          - shard: cluster
+            shard_script: |
+              # The Cluster CSA server is prone to outages, so we'll isolate it
+              echo Starting cluster tests at `date`
+              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster
+              echo Starting cluster S3 tests at `date`
+              coverage run -a -m pyspedas.projects.cluster.tests.test_cluster_uri
 
           - shard: hapi
             shard_script: |
