@@ -71,6 +71,8 @@ def ttrace2endpoint(tvar:str = None,
         (Optional) Units of input variable, overrides any metadata in pos_var. Valid options: ['km', 'Re']
     foot_name:str
         A string specifying the tplot variable to receive the foot point locations.
+        Traces that do not reach the requested endpoint have [NaN, NaN, NaN]
+        foot points; their partial trace points are still available in trace_name.
     foot_out_coord:str
         (Optional) The desired coordinate system for the output foot points. If unspecified, output will be in GSM coordainates.
     foot_out_units: str
@@ -288,11 +290,9 @@ def ttrace2endpoint(tvar:str = None,
             r_iono_re=r_iono_re,
         )
 
-        if status == 'max_s':
-            thistrace_reached = 0
-            logging.warning(f"ttrace2endpoint: Found max_s trace point at index {i} {time_string(time)}")
-        else:
-            thistrace_reached = 1
+        thistrace_reached = int(status == endpoint and len(trace_points) > 0)
+        if not thistrace_reached:
+            logging.warning(f"ttrace2endpoint: Endpoint not reached ({status}) at index {i} {time_string(time)}")
 
         if reached_flag:
             reached_status[i] = thistrace_reached
@@ -314,7 +314,7 @@ def ttrace2endpoint(tvar:str = None,
                 bvec_list.append(b)
             ragged_bvec_list.append(np.array(bvec_list))
 
-        foot_point = trace_points[-1] if len(trace_points) else None
+        foot_point = trace_points[-1] if thistrace_reached else np.full(3, np.nan)
 
         trace_count = len(trace_points)
         if trace_count > max_trace_points:
