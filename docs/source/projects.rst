@@ -84,10 +84,12 @@ Some key points that apply to most or all of these load routines:
    equator-s
    erg
    fast
+   galileo
    geotail
    geomagnetic_indices
    goes
    image
+   juno
    kompsat
    kyoto
    lanl

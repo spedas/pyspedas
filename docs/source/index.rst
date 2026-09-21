@@ -51,6 +51,7 @@ PySPEDAS makes creating multi-mission, multi-instrument figures simple, e.g., to
    projects
    analysis
    cdaweb
+   das2
    hapi
    vires
    geopack
