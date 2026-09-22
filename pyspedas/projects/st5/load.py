@@ -33,7 +33,7 @@ def load(trange=['2006-06-01', '2006-06-02'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"])
     if files is not None:
         for file in files:
             out_files.append(file)

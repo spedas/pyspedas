@@ -1,13 +1,15 @@
 import os
 
 CONFIG = {
+    "no_download": False,
     "local_data_dir": "mica_data/",
     "remote_data_dir": "http://mirl.unh.edu/ULF/cdf/",
 }
 
-from pyspedas.preferences import apply_mission_preferences
+from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
 
 apply_mission_preferences(CONFIG, "mica")
+apply_no_download_environment(CONFIG, "MICA_NO_DOWNLOAD")
 
 # override local data directory with environment variables
 if os.environ.get("SPEDAS_DATA_DIR"):

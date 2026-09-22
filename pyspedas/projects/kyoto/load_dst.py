@@ -81,7 +81,7 @@ def dst(
     remote_data_dir="http://wdc.kugi.kyoto-u.ac.jp/",
     prefix="",
     suffix="",
-    no_download=False,
+    no_download=None,
     local_data_dir="",
     download_only=False,
     force_download=False,
@@ -128,6 +128,9 @@ def dst(
     kyoto_dst
     """
 
+
+    if no_download is None:
+        no_download = CONFIG["no_download"]
 
     vars = []  # list of tplot variables created
 

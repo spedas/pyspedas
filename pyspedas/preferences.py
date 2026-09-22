@@ -129,6 +129,36 @@ def apply_mission_preferences(config: dict, mission: str) -> dict:
     return config
 
 
+def apply_no_download_environment(config: dict, variable: str) -> dict:
+    """Apply a mission-specific ``no_download`` environment override.
+
+    Boolean values are accepted case-insensitively as ``true``/``false``,
+    ``1``/``0``, or ``yes``/``no``. This helper is called after mission
+    preferences are applied so the environment retains the documented higher
+    precedence.
+
+    Parameters
+    ----------
+    config : dict
+        Mission configuration containing a ``no_download`` key.
+    variable : str
+        Name of the mission-specific environment variable.
+
+    Returns
+    -------
+    dict
+        The updated configuration dictionary.
+    """
+    value = os.environ.get(variable)
+    if value is None:
+        return config
+    normalized = value.strip().lower()
+    if normalized not in {"true", "false", "1", "0", "yes", "no"}:
+        raise ValueError(f"{variable} must be true or false")
+    config["no_download"] = normalized in {"true", "1", "yes"}
+    return config
+
+
 def apply_pyspedas_preferences(config: dict) -> dict:
     """Overlay ``[pyspedas.*]`` tables on the top-level PySPEDAS CONFIG.
 

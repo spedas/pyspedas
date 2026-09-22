@@ -92,6 +92,50 @@ class TestPreferences(unittest.TestCase):
             config = runpy.run_path(str(config_path))["CONFIG"]
         self.assertEqual(config["local_data_dir"], "/from/environment")
 
+    def test_no_download_environment_overrides_toml(self):
+        preferences.set_preference("themis", "no_download", True)
+        config_path = Path(__file__).parents[2] / "projects" / "themis" / "config.py"
+        with patch.dict(os.environ, {"THM_NO_DOWNLOAD": "false"}):
+            config = runpy.run_path(str(config_path))["CONFIG"]
+        self.assertFalse(config["no_download"])
+
+    def test_no_download_default_and_preference(self):
+        config = {"no_download": False}
+        preferences.apply_mission_preferences(config, "themis")
+        self.assertFalse(config["no_download"])
+
+        preferences.set_preference("themis", "no_download", True)
+        config = {"no_download": False}
+        preferences.apply_mission_preferences(config, "themis")
+        self.assertTrue(config["no_download"])
+
+    def test_no_download_environment_rejects_invalid_boolean(self):
+        config = {"no_download": False}
+        with patch.dict(os.environ, {"ACE_NO_DOWNLOAD": "sometimes"}):
+            with self.assertRaisesRegex(ValueError, "ACE_NO_DOWNLOAD must be true or false"):
+                preferences.apply_no_download_environment(config, "ACE_NO_DOWNLOAD")
+
+    def test_mission_no_download_reaches_download(self):
+        ace_load = importlib.import_module("pyspedas.projects.ace.load")
+        with patch.dict(ace_load.CONFIG, {"no_download": True}):
+            with patch.object(ace_load, "download", return_value=[]) as download:
+                ace_load.load(downloadonly=True)
+        self.assertTrue(download.call_args.kwargs["no_download"])
+
+    def test_existing_no_download_argument_overrides_config(self):
+        ae_load = importlib.import_module("pyspedas.projects.kyoto.load_ae")
+        with patch.dict(ae_load.CONFIG, {"no_download": True}):
+            with patch.object(ae_load, "dailynames", return_value=["202001/test"]):
+                with patch.object(ae_load, "download", return_value=[]) as download:
+                    ae_load.load_ae_worker(
+                        trange=["2020-01-01", "2020-01-02"],
+                        datatypes=["ae"],
+                        no_download=False,
+                        download_only=True,
+                        skip_realtime=True,
+                    )
+        self.assertFalse(download.call_args.kwargs["no_download"])
+
     def test_comments_are_preserved(self):
         self.preference_file.write_text(
             "# A personal note\n[projects.themis]\n", encoding="utf-8"

@@ -224,7 +224,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
             files = download(remote_file=remote_names,
                              remote_path=remote_data_dir,
                              local_path=CONFIG['local_data_dir'],
-                             no_download=no_update,
+                             no_download=no_update or CONFIG["no_download"],
                              last_version=version is None,
                              force_download=force_download,)
             if files is not None:

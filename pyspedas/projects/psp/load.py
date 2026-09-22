@@ -305,7 +305,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
 
     if username is None:
         files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                         local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version,
+                         local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], last_version=last_version,
                          force_download=force_download)
     else:
         if instrument == 'fields':
@@ -313,7 +313,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 print("Downloading unpublished FIELDS Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['fields_remote_data_dir'],
-                    local_path=CONFIG['local_data_dir'], no_download=no_update,
+                    local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"],
                     username=username, password=password, basic_auth=True, last_version=last_version,
                     force_download=force_download,
                 )
@@ -321,14 +321,14 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                                 local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version,
+                                 local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], last_version=last_version,
                                  force_download=force_download)
         elif instrument == 'spi':
             try:
                 print("Downloading unpublished SWEAP Data....")
                 files = download(
                     remote_file=remote_names, remote_path=CONFIG['sweap_remote_data_dir'],
-                    local_path=CONFIG['local_data_dir'], no_download=no_update,
+                    local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"],
                     username=username, password=password, basic_auth=True, last_version=last_version,
                     force_download=force_download
                 )
@@ -336,7 +336,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     raise RuntimeError("No links found.")
             except:
                 files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                                 local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=last_version,
+                                 local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], last_version=last_version,
                                  force_download=force_download)
 
         elif instrument == 'spc':
@@ -355,7 +355,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                 remote_dates = dailynames(file_format='%Y-%m-%d', trange=trange, res=file_resolution)
                 files = download(
                     remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'],
-                    local_path=CONFIG['local_data_dir'], no_download=no_update,
+                    local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"],
                     username=username, password=password, basic_auth=True, last_version=last_version,
                     force_download=force_download
                 )
@@ -380,7 +380,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     print("Downloading unpublished SWEAP/SPC Data ('spp' prefix)....")
                     files = download(
                         remote_file=remote_names_spc, remote_path=CONFIG['sweap_remote_data_dir'],
-                        local_path=CONFIG['local_data_dir'], no_download=no_update,
+                        local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"],
                         username=username, password=password, basic_auth=True, last_version=last_version,
                         force_download=force_download
                     )
@@ -391,7 +391,7 @@ def load(trange=['2018-11-5', '2018-11-6'],
                     print(e)
                     print("Trying public data....")
                     files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'],
-                                     local_path=CONFIG['local_data_dir'], no_download=no_update,
+                                     local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"],
                                      last_version=last_version, force_download=force_download)
 
     if files is not None:
