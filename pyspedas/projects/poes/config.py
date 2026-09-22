@@ -1,15 +1,17 @@
 import os
 
 CONFIG = {
+    "no_download": False,
     "local_data_dir": "poes_data/",
     "remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/noaa/",
     "ncei_remote_data_dir": "https://www.ncei.noaa.gov/data/poes-metop-space-environment-monitor/access/l2/v01r00/cdf/",
     "ncei_l1b_remote_data_dir": "https://www.ncei.noaa.gov/data/poes-metop-space-environment-monitor/access/l1b/v01r00/"
 }
 
-from pyspedas.preferences import apply_mission_preferences
+from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
 
 apply_mission_preferences(CONFIG, "poes")
+apply_no_download_environment(CONFIG, "POES_NO_DOWNLOAD")
 
 # override local data directory with environment variables
 if os.environ.get("POES_DATA_DIR"):

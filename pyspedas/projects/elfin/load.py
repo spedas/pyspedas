@@ -64,7 +64,7 @@ def load(trange=['2020-11-5', '2020-11-6'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, last_version=True, force_download=force_download)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], last_version=True, force_download=force_download)
 
     if not files:
         logging.error(f"ELFIN LOAD: NO CDF FILE FOUND! check file {remote_names}")

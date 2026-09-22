@@ -1,6 +1,7 @@
 import os
 
 CONFIG = {
+    "no_download": False,
     'local_data_dir': 'barrel_data/',
     'remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/barrel/',
     'defaults': {
@@ -61,9 +62,10 @@ CONFIG = {
     }
 }
 
-from pyspedas.preferences import apply_mission_preferences
+from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
 
 apply_mission_preferences(CONFIG, "barrel")
+apply_no_download_environment(CONFIG, "BARREL_NO_DOWNLOAD")
 
 # override local data directory with environment variables
 if os.environ.get('SPEDAS_DATA_DIR'):

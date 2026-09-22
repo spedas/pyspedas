@@ -94,11 +94,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
     out_files = []
 
     if addmaster:
-        mfile = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update,force_download=force_download,last_version=True)
+        mfile = download(remote_file=masterfile,remote_path=masterpath,local_path=local_master_dir,no_download=no_update or CONFIG["no_download"],force_download=force_download,last_version=True)
     else:
         mfile = [None]
 
-    datafiles = download(remote_file=remote_names, remote_path=remote_data_dir, local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download, last_version=True)
+    datafiles = download(remote_file=remote_names, remote_path=remote_data_dir, local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], force_download=force_download, last_version=True)
 
     out_files.extend(datafiles)
 

@@ -8,6 +8,7 @@ without editing the installed package. For example::
    [projects.themis]
    local_data_dir = "/data/themis"
    remote_data_dir = "https://spdf.gsfc.nasa.gov/pub/data/themis/"
+   no_download = true
 
    [pyspedas.plotting]
    global_display = false
@@ -55,6 +56,30 @@ otherwise ``SPEDAS_DATA_DIR`` places it under that directory as
 ``PYSPEDAS_TEST_GLOBAL_DISPLAY`` overrides the test display setting;
 ``PYSPEDAS_GLOBAL_DISPLAY`` also affects it for backward compatibility.
 Environment variables take precedence over TOML preferences.
+
+Direct-download missions also provide a ``no_download`` setting, which
+defaults to ``false``. When enabled, the effective value is passed to
+``download()`` so loaders use only files already present in the local cache.
+Existing ``no_update=True`` load arguments continue to request cache-only
+operation. Loaders that already have a ``no_download`` argument use the
+configured value only when that argument is omitted, so an explicit
+``no_download=False`` takes precedence.
+
+The environment override is per mission and follows the mission's established
+prefix: ``ACE_NO_DOWNLOAD``, ``AKEBONO_NO_DOWNLOAD``,
+``BARREL_NO_DOWNLOAD``, ``CLUSTER_NO_DOWNLOAD``, ``CNOFS_NO_DOWNLOAD``,
+``CSSWE_NO_DOWNLOAD``, ``DE2_NO_DOWNLOAD``, ``DSC_NO_DOWNLOAD``,
+``ELFIN_NO_DOWNLOAD``, ``EQUATORS_NO_DOWNLOAD``, ``ERG_NO_DOWNLOAD``,
+``FAST_NO_DOWNLOAD``, ``GEOTAIL_NO_DOWNLOAD``, ``GOES_NO_DOWNLOAD``,
+``IMAGE_NO_DOWNLOAD``, ``KYOTO_NO_DOWNLOAD``, ``LANL_NO_DOWNLOAD``,
+``MICA_NO_DOWNLOAD``, ``OMNI_NO_DOWNLOAD``, ``POES_NO_DOWNLOAD``,
+``POLAR_NO_DOWNLOAD``, ``PSP_NO_DOWNLOAD``, ``RBSP_NO_DOWNLOAD``,
+``SECS_NO_DOWNLOAD``, ``SOHO_NO_DOWNLOAD``, ``SOLO_NO_DOWNLOAD``,
+``ST5_NO_DOWNLOAD``, ``STEREO_NO_DOWNLOAD``, ``THM_NO_DOWNLOAD``,
+``TWINS_NO_DOWNLOAD``, ``ULY_NO_DOWNLOAD``, and ``WIND_NO_DOWNLOAD``.
+Accepted boolean values are ``true``/``false``, ``1``/``0``, and
+``yes``/``no`` (case-insensitive). Missions using HAPI, CDAWeb, FTP, or DAS2
+transports are unchanged; MAVEN and MMS are also excluded for now.
 
 Use the Python helpers to create or update the file::
 

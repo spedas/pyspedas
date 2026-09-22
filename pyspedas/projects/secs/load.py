@@ -15,7 +15,7 @@ def load(
     trange=["2012-11-05/00:00:00", "2012-11-06/00:00:00"],
     resolution=10,
     dtype=None,
-    no_download=False,
+    no_download=None,
     downloadonly=False,
     out_type="np",
     save_pickle=False,
@@ -43,7 +43,7 @@ def load(
         Default: None
     no_download : bool, optional
         Only load data from the local cache.
-        Default: False
+        If omitted, use the mission configuration (False by default).
     downloadonly : bool, optional
         Set this flag to download the CDF files, but not load data from them.
         If True, the function returns a list of the downloaded files.
@@ -78,6 +78,9 @@ def load(
     >>> print(secs_vars)
     >>> ['/Users/user/data/secs/EICS/2018/02/EICS20180201.zip']
     """
+
+    if no_download is None:
+        no_download = CONFIG["no_download"]
 
     if dtype is None:
         logging.error("No data type provided.")

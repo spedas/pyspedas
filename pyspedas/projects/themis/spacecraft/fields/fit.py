@@ -266,7 +266,7 @@ def cal_fit(probe='a', no_cal=False):
     calfile = download(remote_file=remote_name,
                        remote_path=CONFIG['remote_data_dir'],
                        local_path=CONFIG['local_data_dir'],
-                       no_download=False)
+                       no_download=CONFIG["no_download"])
     if not calfile:
         # This code should never be executed
         logging.warning(f"Calibration file {thx}_fgmcal.txt is not found")
@@ -396,7 +396,7 @@ def cal_fit(probe='a', no_cal=False):
     eficalfile = download(remote_file=remote_name,
                           remote_path=CONFIG['remote_data_dir'],
                           local_path=CONFIG['local_data_dir'],
-                          no_download=False)
+                          no_download=CONFIG["no_download"])
 
     if not eficalfile:
         # This code should never be executed

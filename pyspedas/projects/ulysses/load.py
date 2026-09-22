@@ -121,7 +121,7 @@ def load(trange:List[str]=['2009-01-01', '2009-01-02'],
 
     out_files = []
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update, force_download=force_download)
+    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG['local_data_dir'], no_download=no_update or CONFIG["no_download"], force_download=force_download)
     if files is not None:
         for file in files:
             out_files.append(file)

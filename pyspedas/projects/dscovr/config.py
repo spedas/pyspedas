@@ -1,11 +1,13 @@
 import os
 
-CONFIG = {'local_data_dir': 'dscovr_data/',
+CONFIG = {'no_download': False,
+          'local_data_dir': 'dscovr_data/',
           'remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/dscovr/'}
 
-from pyspedas.preferences import apply_mission_preferences
+from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
 
 apply_mission_preferences(CONFIG, "dscovr")
+apply_no_download_environment(CONFIG, "DSC_NO_DOWNLOAD")
 
 # override local data directory with environment variables
 if os.environ.get('DSC_DATA_DIR'):

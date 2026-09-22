@@ -75,7 +75,7 @@ def load_ae_worker(
     remote_data_dir="",
     prefix="",
     suffix="",
-    no_download=False,
+    no_download=None,
     local_data_dir="",
     download_only=False,
     force_download=False,
@@ -107,7 +107,7 @@ def load_ae_worker(
         Default: "".
     no_download : bool, optional
         If True, the data will not be downloaded, the local file will be used.
-        Default: False.
+        If omitted, use the mission configuration (False by default).
     local_data_dir : str, optional
         The local directory where the data will be downloaded.
         Default: "".
@@ -129,6 +129,9 @@ def load_ae_worker(
         A list of tplot variable names created.
 
     """
+
+    if no_download is None:
+        no_download = CONFIG["no_download"]
 
     vars = []  # list of tplot variables created
     ack = """
@@ -290,7 +293,7 @@ def load_ae(
         remote_data_dir="",
         prefix="",
         suffix="",
-        no_download=False,
+        no_download=None,
         local_data_dir="",
         download_only=False,
         force_download=False,
@@ -324,7 +327,7 @@ def load_ae(
         Default: "".
     no_download : bool, optional
         If True, the data will not be downloaded, the local file will be used.
-        Default: False.
+        If omitted, use the mission configuration (False by default).
     local_data_dir : str, optional
         The local directory where the data will be downloaded.
         Default: "".
@@ -348,6 +351,9 @@ def load_ae(
     >>> print(vars)
     ['kyoto_ae', 'kyoto_al', 'kyoto_ao', 'kyoto_au', 'kyoto_ax']
     """
+
+    if no_download is None:
+        no_download = CONFIG["no_download"]
 
     vars = []  # list of tplot variables created
 
