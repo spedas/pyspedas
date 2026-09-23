@@ -3,16 +3,18 @@ import pyspedas
 import logging
 
 
-def lineplot(var_data,
-             var_times,
-             this_axis,
-             line_opts,
-             yaxis_options,
-             plot_extras,
-             running_trace_count=None,
-             time_idxs=None,
-             style=None,
-             var_metadata=None):
+def lineplot(
+    var_data,
+    var_times,
+    this_axis,
+    line_opts,
+    yaxis_options,
+    plot_extras,
+    running_trace_count=None,
+    time_idxs=None,
+    style=None,
+    var_metadata=None,
+):
     """
     Generate a matplotlib line plot from a tplot variable
 
@@ -44,7 +46,7 @@ def lineplot(var_data,
         True
 
     """
-    alpha = plot_extras.get('alpha')
+    alpha = plot_extras.get("alpha")
 
     if len(var_data.y.shape) == 1:
         num_lines = 1
@@ -52,49 +54,49 @@ def lineplot(var_data,
         num_lines = var_data.y.shape[1]
 
     is_errorbar_plot = False
-    if 'dy' in var_data._fields:
+    if "dy" in var_data._fields:
         is_errorbar_plot = True
 
-    if yaxis_options.get('legend_names') is not None:
-        labels = yaxis_options['legend_names']
+    if yaxis_options.get("legend_names") is not None:
+        labels = yaxis_options["legend_names"]
         labels = get_trace_options(labels, running_trace_count, num_lines)
 
         if labels[0] is None:
             labels = None
     else:
         labels = None
-        if var_metadata.get('CDF') is not None:
-            labels = var_metadata['CDF'].get('LABELS')
+        if var_metadata.get("CDF") is not None:
+            labels = var_metadata["CDF"].get("LABELS")
 
-    legend_location = yaxis_options.get('legend_location')
+    legend_location = yaxis_options.get("legend_location")
 
     bbox_to_anchor = None
     if legend_location is not None:
-        if legend_location == 'spedas':
+        if legend_location == "spedas":
             # the spedas legend puts the legend on the outside of the panel
             # to the right of the panel (just like in IDL)
-            legend_location = 'center left'
+            legend_location = "center left"
             bbox_to_anchor = (1.04, 0.5)
     else:
-        legend_location = 'upper right'
+        legend_location = "upper right"
 
-    legend_size = yaxis_options.get('legend_size')
-    legend_shadow = yaxis_options.get('legend_shadow')
-    legend_title = yaxis_options.get('legend_title')
-    legend_titlesize = yaxis_options.get('legend_titlesize')
-    legend_color = yaxis_options.get('legend_color')
-    legend_markerfirst = yaxis_options.get('legend_markerfirst')
-    legend_markerscale = yaxis_options.get('legend_markerscale')
-    legend_linewidth = yaxis_options.get('legend_linewidth')
-    legend_edgecolor = yaxis_options.get('legend_edgecolor')
-    legend_facecolor = yaxis_options.get('legend_facecolor')
-    legend_frameon = yaxis_options.get('legend_frameon')
-    legend_ncols = yaxis_options.get('legend_ncols')
+    legend_size = yaxis_options.get("legend_size")
+    legend_shadow = yaxis_options.get("legend_shadow")
+    legend_title = yaxis_options.get("legend_title")
+    legend_titlesize = yaxis_options.get("legend_titlesize")
+    legend_color = yaxis_options.get("legend_color")
+    legend_markerfirst = yaxis_options.get("legend_markerfirst")
+    legend_markerscale = yaxis_options.get("legend_markerscale")
+    legend_linewidth = yaxis_options.get("legend_linewidth")
+    legend_edgecolor = yaxis_options.get("legend_edgecolor")
+    legend_facecolor = yaxis_options.get("legend_facecolor")
+    legend_frameon = yaxis_options.get("legend_frameon")
+    legend_ncols = yaxis_options.get("legend_ncols")
     if legend_ncols is None:
         legend_ncols = 1
 
-    foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
-    background = pyspedas.tplot_tools.tplot_opt_glob.get('background')
+    foreground = pyspedas.tplot_tools.tplot_opt_glob.get("foreground")
+    background = pyspedas.tplot_tools.tplot_opt_glob.get("background")
     if legend_color is None:
         legend_color = foreground
     if legend_edgecolor is None:
@@ -106,90 +108,94 @@ def lineplot(var_data,
         legend_linewidth = 4
 
     if legend_size is None:
-        legend_size = pyspedas.tplot_tools.tplot_opt_glob.get('charsize')
+        legend_size = pyspedas.tplot_tools.tplot_opt_glob.get("charsize")
 
     markers = None
-    if line_opts.get('marker') is not None:
-        markers = line_opts['marker']
+    if line_opts.get("marker") is not None:
+        markers = line_opts["marker"]
         markers = get_trace_options(markers, running_trace_count, num_lines, repeat=True)
 
     colors = None
-    if plot_extras.get('line_color') is not None:
-        colors = plot_extras['line_color']
+    if plot_extras.get("line_color") is not None:
+        colors = plot_extras["line_color"]
     else:
         if style is None:
             if num_lines == 1:
-                colors = ['k']
+                colors = ["k"]
             elif num_lines == 2:
-                colors = ['r', 'g']
+                colors = ["r", "g"]
             elif num_lines == 3:
-                colors = ['b', 'g', 'r']
+                colors = ["b", "g", "r"]
             elif num_lines == 4:
-                colors = ['b', 'g', 'r', 'k']
+                colors = ["b", "g", "r", "k"]
             else:
-                colors = ['k', 'C2', 'C3', 'C4', 'C5', 'C6', 'C7', 'C8', 'C9']
+                colors = ["k", "C2", "C3", "C4", "C5", "C6", "C7", "C8", "C9"]
     colors = get_trace_options(colors, running_trace_count, num_lines, repeat=True)
 
     # line thickness
-    if line_opts.get('line_width') is not None:
-        thick = line_opts['line_width']
+    if line_opts.get("line_width") is not None:
+        thick = line_opts["line_width"]
     else:
         thick = [0.5]
     thick = get_trace_options(thick, running_trace_count, num_lines, repeat=True)
 
     # line style
-    if line_opts.get('line_style_name') is not None:
-        line_style_user = line_opts['line_style_name']
+    if line_opts.get("line_style_name") is not None:
+        line_style_user = line_opts["line_style_name"]
 
         # line_style_user should already be a list
         # handle legacy values
         line_style = []
         for linestyle in line_style_user:
-            if linestyle == 'solid_line':
-                line_style.append('solid')
-            elif linestyle == 'dot':
-                line_style.append('dotted')
-            elif linestyle == 'dash':
-                line_style.append('dashed')
-            elif linestyle == 'dash_dot':
-                line_style.append('dashdot')
+            if linestyle == "solid_line":
+                line_style.append("solid")
+            elif linestyle == "dot":
+                line_style.append("dotted")
+            elif linestyle == "dash":
+                line_style.append("dashed")
+            elif linestyle == "dash_dot":
+                line_style.append("dashdot")
             else:
                 line_style.append(linestyle)
     else:
-        line_style = ['solid']
+        line_style = ["solid"]
     line_style = get_trace_options(line_style, running_trace_count, num_lines, repeat=True)
 
     symbols = False
-    if line_opts.get('symbols') is not None:
-        if line_opts['symbols']:
+    if line_opts.get("symbols") is not None:
+        if line_opts["symbols"]:
             symbols = True
 
     # create the plot
-    line_options = {'alpha': alpha}
+    line_options = {"alpha": alpha}
 
     marker_every = None
-    if line_opts.get('markevery') is not None:
-        marker_every = line_opts['markevery']
+    if line_opts.get("markevery") is not None:
+        marker_every = line_opts["markevery"]
         marker_every = get_trace_options(marker_every, running_trace_count, num_lines, repeat=True)
 
     marker_sizes = None
-    if line_opts.get('marker_size') is not None:
-        marker_sizes = line_opts['marker_size']
+    if line_opts.get("marker_size") is not None:
+        marker_sizes = line_opts["marker_size"]
         marker_sizes = get_trace_options(marker_sizes, running_trace_count, num_lines, repeat=True)
 
     # check for error data first
     if is_errorbar_plot:
         # error data provided
-        line_options['yerr'] = var_data.dy[time_idxs]
+        errorbars = var_data.dy[time_idxs]
+        if var_data.y.ndim == 1 and errorbars.ndim == 2 and errorbars.shape[1] == 2:
+            # Stored as (time, minus/plus); matplotlib expects (minus/plus, time).
+            errorbars = errorbars.T
+        line_options["yerr"] = errorbars
         plotter = this_axis.errorbar
-        if line_opts.get('ecolor') is not None:
-            line_options['ecolor'] = line_opts['ecolor']
-        if line_opts.get('elinewidth') is not None:
-            line_options['elinewidth'] = line_opts['elinewidth']
-        if line_opts.get('errorevery') is not None:
-            line_options['errorevery'] = line_opts['errorevery']
-        if line_opts.get('capsize') is not None:
-            line_options['capsize'] = line_opts['capsize']
+        if line_opts.get("ecolor") is not None:
+            line_options["ecolor"] = line_opts["ecolor"]
+        if line_opts.get("elinewidth") is not None:
+            line_options["elinewidth"] = line_opts["elinewidth"]
+        if line_opts.get("errorevery") is not None:
+            line_options["errorevery"] = line_opts["errorevery"]
+        if line_opts.get("capsize") is not None:
+            line_options["capsize"] = line_opts["capsize"]
     else:
         # no error data provided
         plotter = this_axis.plot
@@ -216,20 +222,27 @@ def lineplot(var_data,
             # Maybe that should be enforced here....???
 
             if symbols:
-                line_options['s'] = marker_sizes[line]
+                line_options["s"] = marker_sizes[line]
             else:
-                line_options['markersize'] = marker_sizes[line]
+                line_options["markersize"] = marker_sizes[line]
 
         if symbols:
-            this_line_style='None'
+            this_line_style = "None"
         else:
-            this_line_style=line_style[line]
+            this_line_style = line_style[line]
 
         if marker_every is not None:
-            line_options['markevery'] = marker_every[line]
+            line_options["markevery"] = marker_every[line]
 
-        this_line = plotter(var_times, var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line], color=color,
-                            linestyle=this_line_style, linewidth=thick[line], marker=marker, **line_options)
+        this_line = plotter(
+            var_times,
+            var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line],
+            color=color,
+            linestyle=this_line_style,
+            linewidth=thick[line],
+            marker=marker,
+            **line_options,
+        )
 
         if labels is not None:
             try:
@@ -241,10 +254,21 @@ def lineplot(var_data,
                 continue
 
     if labels is not None:
-        legend = this_axis.legend(loc=legend_location, fontsize=legend_size, shadow=legend_shadow, title=legend_title,
-                         labelcolor=legend_color, markerfirst=legend_markerfirst, markerscale=legend_markerscale,
-                         facecolor=legend_facecolor, edgecolor=legend_edgecolor, frameon=legend_frameon, ncols=legend_ncols,
-                         title_fontsize=legend_titlesize, bbox_to_anchor=bbox_to_anchor)
+        legend = this_axis.legend(
+            loc=legend_location,
+            fontsize=legend_size,
+            shadow=legend_shadow,
+            title=legend_title,
+            labelcolor=legend_color,
+            markerfirst=legend_markerfirst,
+            markerscale=legend_markerscale,
+            facecolor=legend_facecolor,
+            edgecolor=legend_edgecolor,
+            frameon=legend_frameon,
+            ncols=legend_ncols,
+            title_fontsize=legend_titlesize,
+            bbox_to_anchor=bbox_to_anchor,
+        )
         try:
             handles = legend.legend_handles
         except AttributeError:
@@ -254,8 +278,9 @@ def lineplot(var_data,
 
     return True
 
+
 def get_trace_options(parent_array, start_trace=None, num_traces=1, repeat=False, fill=False, fillval=None):
-    """ Get options for a set of traces from a parent array, extending or slicing as necessary to handle pseudovariable options
+    """Get options for a set of traces from a parent array, extending or slicing as necessary to handle pseudovariable options
 
     Parameters
     -----------
@@ -288,39 +313,39 @@ def get_trace_options(parent_array, start_trace=None, num_traces=1, repeat=False
         list of option values with num_traces entries
 
     """
-    if not isinstance(parent_array,list):
-        parent_array=[parent_array]
+    if not isinstance(parent_array, list):
+        parent_array = [parent_array]
     parent_length = len(parent_array)
     output_array = parent_array
     if start_trace is not None:
         end_trace = start_trace + num_traces
-        if parent_length >= start_trace+num_traces:
+        if parent_length >= start_trace + num_traces:
             output_array = parent_array[start_trace:end_trace]
         elif parent_length == num_traces:
             output_array = parent_array
         else:
             if repeat:
-                expansion_factor = int((end_trace/parent_length + 1))
-                expanded_array = np.tile(parent_array,expansion_factor)
+                expansion_factor = int((end_trace / parent_length + 1))
+                expanded_array = np.tile(parent_array, expansion_factor)
                 output_array = expanded_array[start_trace:end_trace]
             elif fill:
                 output_array = parent_array
-                missing=num_traces-parent_length
-                output_array.extend(np.tile([fillval],missing))
+                missing = num_traces - parent_length
+                output_array.extend(np.tile([fillval], missing))
             else:
-                logging.warning("Length of trace options (%d) smaller than number of traces (%d)",parent_length, num_traces)
+                logging.warning("Length of trace options (%d) smaller than number of traces (%d)", parent_length, num_traces)
     else:
         if len(parent_array) >= num_traces:
             output_array = parent_array[0:num_traces]
         else:
             if repeat:
-                expansion_factor = int(num_traces/parent_length + 1)
-                expanded_array = np.tile(parent_array,expansion_factor)
+                expansion_factor = int(num_traces / parent_length + 1)
+                expanded_array = np.tile(parent_array, expansion_factor)
                 output_array = expanded_array[0:num_traces]
             elif fill:
                 output_array = parent_array
                 missing = num_traces - parent_length
                 output_array.extend(np.tile([fillval], missing))
             else:
-                logging.warning("Length of trace options (%d) smaller than number of traces (%d)",parent_length, num_traces)
+                logging.warning("Length of trace options (%d) smaller than number of traces (%d)", parent_length, num_traces)
     return output_array
