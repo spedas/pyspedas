@@ -18,25 +18,30 @@ tplot_num = 1
 
 
 def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
-    
     """
     Create a "Tplot Variable" (similar to the IDL SPEDAS concept) based on the inputs, and
     stores this data in memory.  Tplot Variables store all of the information
-    needed to generate a plot.  
-    
+    needed to generate a plot.
+
     Parameters
     ----------
-        name : str 
+        name : str
             Name of the tplot variable that will be created
         data : dict or list[str]
             A python dictionary object for creating a single variable, or a list of base variables to combine them into a 'pseudovariable'
-            
+
             'x' should be a 1-dimensional array that represents the data's x axis.  If x is a numeric type, it is interpreted
             as seconds since the Unix epoch.  x can also be passed as Pandas Series object, datetime.datetime, numpy.datetime64, or strings.
             represented in seconds since epoch (January 1st 1970)
-            
+
             'y' should be the data values. This can be 2 dimensions if multiple lines or a spectrogram are desired.
-            
+
+            'dy' is optional and supplies error-bar magnitudes for a one-dimensional 'y'.
+            Use shape (N,) for symmetric errors or (N, 2) for asymmetric errors,
+            where N is the number of times. Each pair is [minus_error, plus_error];
+            both magnitudes must be nonnegative. For example, [0.25, 0.3] extends
+            from y - 0.25 to y + 0.3. get_data() preserves this time-first shape.
+
             'v' is optional, and is only used for spectrogram plots.  This will be a list of bins to be used.  If this
             is provided, then 'y' should have dimensions of x by z.
 
@@ -52,16 +57,16 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         attr_dict: dict
             A dictionary object of attributes (these do not affect routines in pyspedas, this is merely to keep metadata alongside the file)
             Default: {} (empty dictionary)
-        
+
     .. note::
         If you want to combine multiple tplot variables into one, simply supply the list of tplot variables to the
         "data" parameter.  This will cause the data to overlay when plotted.
-        
+
     Returns
     -------
         bool
             True if successful, False otherwise
-        
+
     Examples
     --------
         >>> # Store a single line
@@ -69,27 +74,27 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [1,2,3,4,5]
         >>> pyspedas.store_data("Variable1", data={'x':x_data, 'y':y_data})
-    
+
         >>> # Store two lines
         >>> x_data = [1,2,3,4,5]
         >>> y_data = [[1,5],[2,4],[3,3],[4,2],[5,1]]
         >>> pyspedas.store_data("Variable2", data={'x':x_data, 'y':y_data})
-        
+
         >>> # Store a spectrogram
         >>> x_data = [1,2,3]
         >>> y_data = [ [1,2,3] , [4,5,6], [7,8,9] ]
         >>> v_data = [1,2,3]
         >>> pyspedas.store_data("Variable3", data={'x':x_data, 'y':y_data, 'v':v_data})
-        
+
         >>> # Combine two different line plots
         >>> pyspedas.store_data("Variable1and2", data=['Variable1', 'Variable2'])
-        
+
         >>> #Rename TVar
         >>> pyspedas.store_data('a', data={'x':[0,4,8,12,16], 'y':[1,2,3,4,5]})
         >>> pyspedas.store_data('a',newname='f')
 
     """
-    
+
     # global tplot_num
     create_time = datetime.datetime.now()
     # If delete is specified, we are just deleting the variable
@@ -98,11 +103,11 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         return False
 
     if data is None and newname is None and attr_dict is None:
-        logging.error('store_data: data array, newname, and attr_dict all unspecified, nothing to do.')
+        logging.error("store_data: data array, newname, and attr_dict all unspecified, nothing to do.")
         return False
 
     if data is None and newname is None and attr_dict is not None:
-        replace_metadata(name,attr_dict)
+        replace_metadata(name, attr_dict)
         return True
 
     # If newname is specified, we are just renaming the variable
@@ -114,28 +119,28 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     #     pyspedas.tplot_tools.data_quants[name] = {'name': name, 'data': data}
     #     return True
     if isinstance(data, str):
-        data = data.split(' ')
+        data = data.split(" ")
 
     # If the data is a list instead of a dictionary, user is looking to overplot
     if isinstance(data, list):
-        base_data = _get_base_tplot_vars(name,data)
+        base_data = _get_base_tplot_vars(name, data)
         if len(base_data) == 0:
-            logging.warning("store_data: None of the base variables exist to construct pseudovariable %s",name)
+            logging.warning("store_data: None of the base variables exist to construct pseudovariable %s", name)
             return False
         # Copying the first variable to use all of its plot options
         # However, we probably want each overplot to retain its original plot option
         pyspedas.tplot_tools.data_quants[name] = copy.deepcopy(pyspedas.tplot_tools.data_quants[base_data[0]])
         pyspedas.tplot_tools.data_quants[name].attrs = copy.deepcopy(pyspedas.tplot_tools.data_quants[base_data[0]].attrs)
         pyspedas.tplot_tools.data_quants[name].name = name
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['overplots'] = base_data[1:]
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['overplots_mpl'] = base_data
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["overplots"] = base_data[1:]
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["overplots_mpl"] = base_data
         # These sets of options should default to the sub-variables' options, not simply
         # copied from the first variable in the list.   These options can be still be set
         # on the pseudovariable, and they will override the sub-variable options.
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['yaxis_opt'] = {}
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['zaxis_opt'] = {}
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['line_opt'] = {}
-        pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras'] = {}
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["yaxis_opt"] = {}
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["zaxis_opt"] = {}
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["line_opt"] = {}
+        pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["extras"] = {}
         return True
 
     # store_data consumes coordinate keys internally with pop(); copy the
@@ -145,45 +150,49 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     data = data.copy()
 
     # if the data table doesn't contain an 'x', assume this is a non-record varying variable
-    if 'x' not in data.keys():
-        values = np.array(data.pop('y'))
-        pyspedas.tplot_tools.data_quants[name] = {'data': values}
-        pyspedas.tplot_tools.data_quants[name]['name'] = name
+    if "x" not in data.keys():
+        values = np.array(data.pop("y"))
+        pyspedas.tplot_tools.data_quants[name] = {"data": values}
+        pyspedas.tplot_tools.data_quants[name]["name"] = name
         return True
 
-    times = data.pop('x')
+    times = data.pop("x")
 
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
-        values = np.array(data.pop('y'))
+        values = np.array(data.pop("y"))
 
-    if 'dy' in data.keys():
-        err_values = np.array(data.pop('dy'))
+    if "dy" in data.keys():
+        err_values = np.array(data.pop("dy"))
 
         if len(err_values) != len(times):
-            logging.warning('store_data: Warning: %s: length of error values (%d) does not match length of time values (%d)',name,len(err_values),
-                            len(times))
+            logging.warning(
+                "store_data: Warning: %s: length of error values (%d) does not match length of time values (%d)",
+                name,
+                len(err_values),
+                len(times),
+            )
     else:
         err_values = None
 
     # Convert input time representation to np.datetime64 objects, if needed
     if isinstance(times, pd.Series):
-        datetimes = times.to_numpy(dtype='datetime64[ns]')  # if it is pandas series, convert to numpy array
-    elif isinstance(times[0],datetime.datetime):
+        datetimes = times.to_numpy(dtype="datetime64[ns]")  # if it is pandas series, convert to numpy array
+    elif isinstance(times[0], datetime.datetime):
         # Timezone-naive datetime, do explicit conversion to np.datetime64[ns] and ensure container is a numpy array
         if is_timezone_aware(times):
             # Numpy will complain if it is given timezone-aware datetimes to convert.
             # So we convert to UTC first, then drop the timezone entirely
             tz_aware_utc = [aware_dt.astimezone(datetime.timezone.utc) for aware_dt in times]
             tz_naive = [aware_dt.replace(tzinfo=None) for aware_dt in tz_aware_utc]
-            datetimes = np.array(tz_naive,dtype='datetime64[ns]')
-        elif isinstance(times,np.ndarray):
-            datetimes = times.astype('datetime64[ns]')
+            datetimes = np.array(tz_naive, dtype="datetime64[ns]")
+        elif isinstance(times, np.ndarray):
+            datetimes = times.astype("datetime64[ns]")
         else:
-            datetimes = np.array(times,dtype='datetime64[ns]')
-    elif isinstance(times[0],np.datetime64):
+            datetimes = np.array(times, dtype="datetime64[ns]")
+    elif isinstance(times[0], np.datetime64):
         # np.datetime64, use as-is, but we might have to convert the container to a numpy array
-        if isinstance(times,np.ndarray):
+        if isinstance(times, np.ndarray):
             datetimes = times
         else:
             datetimes = np.array(times)
@@ -191,23 +200,23 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         # convert to ns.  In the future, we might support storing times in any resolution,
         # and dealing with the conversion in get_data or in client code.
         dtype = datetimes.dtype
-        if dtype.name != 'datetime64[ns]':
-            datetimes = datetimes.astype('datetime64[ns]')
-    elif isinstance(times[0],(int,np.integer,float,np.float64)):
+        if dtype.name != "datetime64[ns]":
+            datetimes = datetimes.astype("datetime64[ns]")
+    elif isinstance(times[0], (int, np.integer, float, np.float64)):
         # Assume seconds since Unix epoch, convert to np.datetime64 with nanosecond precision
         # Make sure we have a numpy array
-        if not isinstance(times,np.ndarray):
-            times=np.array(times)
+        if not isinstance(times, np.ndarray):
+            times = np.array(times)
         # Replace any NaN or inf values with 0
         cond = np.logical_not(np.isfinite(times))
         times[cond] = 0
-        datetimes = np.array(times*1e09,dtype='datetime64[ns]')
-    elif isinstance(times[0],str):
+        datetimes = np.array(times * 1e09, dtype="datetime64[ns]")
+    elif isinstance(times[0], str):
         # Interpret strings as timestamps, convert to np.datetime64 with nanosecond precision
-        datetimes = np.array(times,dtype='datetime64[ns]')
+        datetimes = np.array(times, dtype="datetime64[ns]")
     else:
         # Hope it's convertable to a numpy array!  This case will get hit for an xarray DataArray.
-        datetimes = np.array(times).astype('datetime64[ns]')
+        datetimes = np.array(times).astype("datetime64[ns]")
 
     times = datetimes
 
@@ -216,13 +225,15 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     if len(values.shape) == 0:
         # This can happen for Cluster variables with only a single sample, as they can
         # be incorrectly marked as NRV and lose their leading (time) dimension.
-        logging.warning("store_data: Data array for %s appears to be a zero-dimensional array; converting to 1-D array.",name)
+        logging.warning("store_data: Data array for %s appears to be a zero-dimensional array; converting to 1-D array.", name)
         if len(times) == 1:
-            logging.warning("store_data: This is possibly due to the leading array dimension being lost in a scalar variable with a single timestamp.")
+            logging.warning(
+                "store_data: This is possibly due to the leading array dimension being lost in a scalar variable with a single timestamp."
+            )
         values = np.array([values])
 
     if len(values) == 0:
-        logging.warning('store_data: %s has empty y component, cannot create variable',name)
+        logging.warning("store_data: %s has empty y component, cannot create variable", name)
         return False
 
     if len(times) != len(values):
@@ -230,17 +241,24 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         # the variable, but give an informational message about the mismatch.  The fix would probably be for the
         # data provider to mark the variable as non-record-variant, and avoid giving it a DEPEND_0 or DEPEND_TIME
         # attribute.
-        logging.info("store_data: %s: lengths of x (%d) and y (%d) do not match! Mislabeled NRV variable?",name,len(times),len(values))
+        logging.info(
+            "store_data: %s: lengths of x (%d) and y (%d) do not match! Mislabeled NRV variable?",
+            name,
+            len(times),
+            len(values),
+        )
 
-    if not isinstance(times,np.ndarray):
+    if not isinstance(times, np.ndarray):
         logging.warning("store_data: times was not converted to a numpy array. This should not happen.")
         times = np.array(times)
 
     # assumes monotonically increasing time series
     if isinstance(times[0], datetime.datetime):
         # This may be dead code now?
-        trange = [times[0].replace(tzinfo=datetime.timezone.utc).timestamp(),
-                  times[-1].replace(tzinfo=datetime.timezone.utc).timestamp()]
+        trange = [
+            times[0].replace(tzinfo=datetime.timezone.utc).timestamp(),
+            times[-1].replace(tzinfo=datetime.timezone.utc).timestamp(),
+        ]
     elif isinstance(times[0], np.datetime64):
         trange = np.float64([times[0], times[-1]]) / 1e9
     else:
@@ -253,29 +271,29 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     # attribute.  Then join_vec can find it and restore the depend_1 array from split-out components.
     extra_v_values = None
     if len(values.shape) == 1:
-        if 'v' in data.keys():
-            extra_v_values = np.array(data.pop('v'))
-        elif 'v1' in data.keys():
-            extra_v_values = np.array(data.pop('v1'))
+        if "v" in data.keys():
+            extra_v_values = np.array(data.pop("v"))
+        elif "v1" in data.keys():
+            extra_v_values = np.array(data.pop("v1"))
 
     # Figure out the 'v' data
     # This seems to be conflating specplot bins with general DEPEND_N attributes.
     # Maybe only do this stuff if it's marked as a spectrum?  But what if it's from
     # a NetCDF rather than a CDF?
     spec_bins_exist = False
-    if 'v' in data or 'v1' in data or 'v2' in data or 'v3' in data:
+    if "v" in data or "v1" in data or "v2" in data or "v3" in data:
         # Generally the data is 1D, but occasionally
         # the bins will vary in time.
         spec_bins_exist = True
-        if 'v' in data:
-            spec_bins = data['v']
-            spec_bins_dimension = 'v'
+        if "v" in data:
+            spec_bins = data["v"]
+            spec_bins_dimension = "v"
         elif ("v1" in data) and ("v2" in data) and ("v3" in data):
-            spec_bins = data['v2']
-            spec_bins_dimension = 'v2'
+            spec_bins = data["v2"]
+            spec_bins_dimension = "v2"
         elif ("v1" in data) and ("v2" in data):
-            spec_bins = data['v2']
-            spec_bins_dimension = 'v2'
+            spec_bins = data["v2"]
+            spec_bins_dimension = "v2"
         else:
             # At least one vn is missing.
             logging.warning("At least one Vn tag is missing, cannot create spec_bins from variable %s.", name)
@@ -285,14 +303,13 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             try:
                 spec_bins = pd.DataFrame(spec_bins)
             except:
-                if spec_bins_dimension=='v':
-                    spec_bins = np.arange(1, len(values[0])+1)
-                elif spec_bins_dimension=="v2":
+                if spec_bins_dimension == "v":
+                    spec_bins = np.arange(1, len(values[0]) + 1)
+                elif spec_bins_dimension == "v2":
                     spec_bins = np.arange(1, len(values[0][0]) + 1)
-                elif spec_bins_dimension=="v3":
+                elif spec_bins_dimension == "v3":
                     spec_bins = np.arange(1, len(values[0][0][0]) + 1)
                 spec_bins = pd.DataFrame(spec_bins)
-
 
         if spec_bins_exist and len(spec_bins.columns) != 1:
             # The spec_bins are time varying
@@ -301,7 +318,12 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             if len(spec_bins) != len(times):
                 # Maybe it's not a spectrum at all?
                 # Cluster pressure tensor variablea havw a DEPEND_1 that's 2-D, 1x3 [['x','y','z']]
-                logging.error("store_data: Length of spec_bins (%d) and times (%d) do not match for variable %s.",len(spec_bins),len(times),name)
+                logging.error(
+                    "store_data: Length of spec_bins (%d) and times (%d) do not match for variable %s.",
+                    len(spec_bins),
+                    len(times),
+                    name,
+                )
                 spec_bins = None
                 spec_bins_exist = False
         elif spec_bins_exist:
@@ -311,47 +333,52 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
         spec_bins = None
         # Provide another dimension if values are more than 1 dimension
         if len(values.shape) == 2:
-            data['v'] = None
+            data["v"] = None
         if len(values.shape) > 2:
-            data['v1'] = None
-            data['v2'] = None
+            data["v1"] = None
+            data["v2"] = None
         if len(values.shape) > 3:
-            data['v3'] = None
+            data["v3"] = None
 
     # Set up xarray dimension and coordinates
     coordinate_list = sorted(list(data.keys()))
-    dimension_list = [d + '_dim' for d in coordinate_list]
+    dimension_list = [d + "_dim" for d in coordinate_list]
 
-    if len(coordinate_list) < len(values.shape)-1:
-        logging.warning("store_data: Data array for variable %s has %d dimensions, but only %d v_n keys plus time. Adding empty v_n keys.", name, len(values.shape), len(coordinate_list))
+    if len(coordinate_list) < len(values.shape) - 1:
+        logging.warning(
+            "store_data: Data array for variable %s has %d dimensions, but only %d v_n keys plus time. Adding empty v_n keys.",
+            name,
+            len(values.shape),
+            len(coordinate_list),
+        )
         if len(values.shape) == 2:
-            data['v'] = None
+            data["v"] = None
         elif len(values.shape) == 3:
-            if 'v' in data:
-                vdat = data.pop('v')
-                data['v1'] = vdat
-            elif 'v1' in data:
+            if "v" in data:
+                vdat = data.pop("v")
+                data["v1"] = vdat
+            elif "v1" in data:
                 pass
-            if 'v1' not in data:
-                data['v1'] = None
-            if 'v2' not in data:
-                data['v2'] = None
+            if "v1" not in data:
+                data["v1"] = None
+            if "v2" not in data:
+                data["v2"] = None
         elif len(values.shape) == 4:
             # ERG LEPI 3dflux quality flags have this issue
-            if 'v' in data:
-                vdat = data.pop('v')
-                data['v1'] = vdat
-            elif 'v1' in data:
+            if "v" in data:
+                vdat = data.pop("v")
+                data["v1"] = vdat
+            elif "v1" in data:
                 pass
-            if 'v1' not in data:
-                data['v1'] = None
-            if 'v2' not in data:
-                data['v2'] = None
-            if 'v3' not in data:
-                data['v3'] = None
+            if "v1" not in data:
+                data["v1"] = None
+            if "v2" not in data:
+                data["v2"] = None
+            if "v3" not in data:
+                data["v3"] = None
 
         coordinate_list = sorted(list(data.keys()))
-        dimension_list = [d + '_dim' for d in coordinate_list]
+        dimension_list = [d + "_dim" for d in coordinate_list]
         # Don't try to use these dimensions as coordinates
         spec_bins_exist = False
         spec_bins = None
@@ -359,22 +386,27 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     temp = None
     # Ignore warnings about cdflib non-nanosecond precision timestamps for now
     with warnings.catch_warnings():
-        warnings.filterwarnings("ignore",message="^.*non-nanosecond precision.*$")
+        warnings.filterwarnings("ignore", message="^.*non-nanosecond precision.*$")
         try:
-            temp = xr.DataArray(values, dims=['time']+dimension_list,
-                                coords={'time': ('time', times)})
+            temp = xr.DataArray(values, dims=["time"] + dimension_list, coords={"time": ("time", times)})
         except ValueError as err:
             logging.warning("store_data: ValueError trying to set xarray coordinates for variable %s: %s", name, str(err))
             spec_bins_exist = False
             spec_bins = None
             if len(times) == 1:
-                logging.warning("store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp.")
+                logging.warning(
+                    "store_data: This is possibly due to the leading data dimension being lost in an array-valued or vector-valued variable with a single timestamp."
+                )
             # If data is 1-dimensional, ignore any DEPEND_N supplied
             elif (len(values.shape) == 1) and len(dimension_list) > 0:
-                logging.warning("store_data: variable %s is 1-dimensional, but has additional keys defined: %s.  Dropping redundant coordinate(s).",name, dimension_list)
-                temp = xr.DataArray(values, dims=['time'], coords={'time': ('time', times)})
-                coordinate_list=[]
-                dimension_list=[]
+                logging.warning(
+                    "store_data: variable %s is 1-dimensional, but has additional keys defined: %s.  Dropping redundant coordinate(s).",
+                    name,
+                    dimension_list,
+                )
+                temp = xr.DataArray(values, dims=["time"], coords={"time": ("time", times)})
+                coordinate_list = []
+                dimension_list = []
             else:
                 logging.warning("Giving up on this variable.")
                 return
@@ -388,12 +420,12 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     if spec_bins_exist:
         try:
             if spec_bins_time_varying:
-                temp.coords['spec_bins'] = (('time', spec_bins_dimension+'_dim'), spec_bins.values)
+                temp.coords["spec_bins"] = (("time", spec_bins_dimension + "_dim"), spec_bins.values)
             else:
-                temp.coords['spec_bins'] = (spec_bins_dimension+'_dim', np.squeeze(spec_bins.values))
+                temp.coords["spec_bins"] = (spec_bins_dimension + "_dim", np.squeeze(spec_bins.values))
         except ValueError as err:
-            logging.warning('store_data: conflicting size for at least one dimension for variable %s', name)
-            logging.warning('store_data: ValueError exception text: %s',str(err))
+            logging.warning("store_data: conflicting size for at least one dimension for variable %s", name)
+            logging.warning("store_data: ValueError exception text: %s", str(err))
 
     for d in coordinate_list:
         if data[d] is None:
@@ -402,31 +434,39 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
             d_dimension = pd.DataFrame(data[d])
             if len(d_dimension.columns) != 1:
                 if len(d_dimension) != len(times):
-                    logging.warning("store_data: Length of %s (%d) and time (%d) do not match.  Cannot create coordinate for %s.",d,len(d_dimension),len(times),name)
+                    logging.warning(
+                        "store_data: Length of %s (%d) and time (%d) do not match.  Cannot create coordinate for %s.",
+                        d,
+                        len(d_dimension),
+                        len(times),
+                        name,
+                    )
                     continue
-                temp.coords[d] = (('time', d+'_dim'), d_dimension.values)
+                temp.coords[d] = (("time", d + "_dim"), d_dimension.values)
             else:
                 d_dimension = d_dimension.transpose()
-                squeezed_array = np.squeeze(d_dimension.values)# np.squeeze() does something funny here if this dimension has length 1, causing a ValueError exception
+                squeezed_array = np.squeeze(
+                    d_dimension.values
+                )  # np.squeeze() does something funny here if this dimension has length 1, causing a ValueError exception
                 if d_dimension.size == 1:
-                    logging.warning("store_data: Dimension %s of variable %s has length 1",d,name)
-                    temp.coords[d] = (d+'_dim', d_dimension.values[0])
+                    logging.warning("store_data: Dimension %s of variable %s has length 1", d, name)
+                    temp.coords[d] = (d + "_dim", d_dimension.values[0])
                 else:
-                    temp.coords[d] = (d+'_dim', squeezed_array)
+                    temp.coords[d] = (d + "_dim", squeezed_array)
         except ValueError as err:
-            logging.warning("store_data: Could not create coordinate %s_dim for variable %s",d, name)
+            logging.warning("store_data: Could not create coordinate %s_dim for variable %s", d, name)
             logging.warning("store_data: ValueError exception text: %s", str(err))
 
     # Set up Attributes Dictionaries
-    xaxis_opt = dict(axis_label='')
-    yaxis_opt = dict(axis_label=name) if (spec_bins is None) else dict(axis_label='')
-    zaxis_opt = dict(axis_label='Z-Axis') if (spec_bins is None) else dict(axis_label=name)
-    xaxis_opt['crosshair'] = 'X'
-    yaxis_opt['crosshair'] = 'Y'
-    zaxis_opt['crosshair'] = 'Z'
-    xaxis_opt['x_axis_type'] = 'linear'
-    yaxis_opt['y_axis_type'] = 'linear'
-    zaxis_opt['z_axis_type'] = 'linear'
+    xaxis_opt = dict(axis_label="")
+    yaxis_opt = dict(axis_label=name) if (spec_bins is None) else dict(axis_label="")
+    zaxis_opt = dict(axis_label="Z-Axis") if (spec_bins is None) else dict(axis_label=name)
+    xaxis_opt["crosshair"] = "X"
+    yaxis_opt["crosshair"] = "Y"
+    zaxis_opt["crosshair"] = "Z"
+    xaxis_opt["x_axis_type"] = "linear"
+    yaxis_opt["y_axis_type"] = "linear"
+    zaxis_opt["z_axis_type"] = "linear"
     line_opt = {}
     time_bar = []
     extras = dict(panel_size=1, border=True)
@@ -436,42 +476,42 @@ def store_data(name, data=None, delete=False, newname=None, attr_dict={}):
     temp.name = name
     temp.attrs = copy.deepcopy(attr_dict)
     if extra_v_values is not None:
-        temp.attrs['extra_v_values'] = extra_v_values
+        temp.attrs["extra_v_values"] = extra_v_values
 
-    if 'plot_options' not in temp.attrs.keys():
-        temp.attrs['plot_options'] = {}
-        temp.attrs['plot_options']['xaxis_opt'] = xaxis_opt
-        temp.attrs['plot_options']['yaxis_opt'] = yaxis_opt
-        temp.attrs['plot_options']['zaxis_opt'] = zaxis_opt
-        temp.attrs['plot_options']['line_opt'] = line_opt
-        temp.attrs['plot_options']['trange'] = trange
-        temp.attrs['plot_options']['time_bar'] = time_bar
-        temp.attrs['plot_options']['extras'] = extras
-        temp.attrs['plot_options']['create_time'] = create_time
-        temp.attrs['plot_options']['links'] = links
-        #temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
-        temp.attrs['plot_options']['overplots'] = []
-        temp.attrs['plot_options']['overplots_mpl'] = []
-        temp.attrs['plot_options']['interactive_xaxis_opt'] = {}
-        temp.attrs['plot_options']['interactive_yaxis_opt'] = {}
-        temp.attrs['plot_options']['error'] = err_values
+    if "plot_options" not in temp.attrs.keys():
+        temp.attrs["plot_options"] = {}
+        temp.attrs["plot_options"]["xaxis_opt"] = xaxis_opt
+        temp.attrs["plot_options"]["yaxis_opt"] = yaxis_opt
+        temp.attrs["plot_options"]["zaxis_opt"] = zaxis_opt
+        temp.attrs["plot_options"]["line_opt"] = line_opt
+        temp.attrs["plot_options"]["trange"] = trange
+        temp.attrs["plot_options"]["time_bar"] = time_bar
+        temp.attrs["plot_options"]["extras"] = extras
+        temp.attrs["plot_options"]["create_time"] = create_time
+        temp.attrs["plot_options"]["links"] = links
+        # temp.attrs['plot_options']['spec_bins_ascending'] = _check_spec_bins_ordering(times, spec_bins)
+        temp.attrs["plot_options"]["overplots"] = []
+        temp.attrs["plot_options"]["overplots_mpl"] = []
+        temp.attrs["plot_options"]["interactive_xaxis_opt"] = {}
+        temp.attrs["plot_options"]["interactive_yaxis_opt"] = {}
+        temp.attrs["plot_options"]["error"] = err_values
 
     pyspedas.tplot_tools.data_quants[name] = temp
 
-    pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(temp)
+    pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["yaxis_opt"]["y_range"] = get_y_range(temp)
 
     return True
 
 
-def _get_base_tplot_vars(name,data):
+def _get_base_tplot_vars(name, data):
     base_vars = []
     if not isinstance(data, list):
         data = [data]
     for var in data:
         if var not in pyspedas.tplot_tools.data_quants:
-            logging.warning('store_data: Pseudovariable %s component %s not found, skipping', name, var)
+            logging.warning("store_data: Pseudovariable %s component %s not found, skipping", name, var)
         elif isinstance(pyspedas.tplot_tools.data_quants[var].data, list):
-            base_vars += _get_base_tplot_vars(name,pyspedas.tplot_tools.data_quants[var].data)
+            base_vars += _get_base_tplot_vars(name, pyspedas.tplot_tools.data_quants[var].data)
         else:
             base_vars += [var]
     return base_vars
@@ -568,4 +608,3 @@ def store(name, data=None, delete=False, newname=None, metadata={}):
         >>> pyspedas.store('a',newname='f')
     """
     return store_data(name, data=data, delete=delete, newname=newname, attr_dict=metadata)
-
