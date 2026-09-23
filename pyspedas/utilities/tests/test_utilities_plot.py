@@ -30,7 +30,7 @@ from pyspedas.config import CONFIG
 import pyspedas
 
 # Whether to display plots during testing
-#global_display = CONFIG["testing"]["global_display"]
+# global_display = CONFIG["testing"]["global_display"]
 global_display = False
 # Directory to save testing output files
 output_dir = CONFIG["testing"]["output_dir"]
@@ -92,6 +92,13 @@ class PlotTestCases(unittest.TestCase):
         timespan("1970-01-01", 10, "seconds")
         tplot_options("title", "Line plot with error bars")
         tplot("data", display=global_display, save_png=os.path.join(save_dir, "simple_lineplot_errbars.png"))
+        store_data(
+            "asym_data",
+            data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 1, 1, 1, 1, 1], "dy": [[0.1, 0.4]] * 6},
+        )
+        timespan("1970-01-01", 10, "seconds")
+        tplot_options("title", "Line plot with asymmetric error bars")
+        tplot("asym_data", display=global_display, save_png=os.path.join(save_dir, "simple_lineplot_errbars_asym.png"))
         options("data", "marker", "X")
         tplot_options("title", "Line plot with error bars and X markers")
         tplot("data", display=global_display, save_png=os.path.join(save_dir, "markers_lineplot_errbars.png"))
@@ -180,10 +187,7 @@ class PlotTestCases(unittest.TestCase):
         del_data("*")
         store_data("wrap_data", data={"x": [1, 2, 3, 4, 5, 6], "y": [1, 2, 3, 2, 1, 2]})
         timespan("1970-01-01", 10, "seconds")
-        long_ytitle = (
-            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
-            "for the MMS FPI instrument"
-        )
+        long_ytitle = "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) for the MMS FPI instrument"
         long_xtitle = "Time since interval start along the GSE-X spacecraft trajectory"
         options("wrap_data", "ytitle", long_ytitle)
         options("wrap_data", "ysubtitle", "FPI DIS")
@@ -259,10 +263,7 @@ class PlotTestCases(unittest.TestCase):
         store_data("wrap_child_b", data={"x": [1, 2, 3, 4, 5, 6], "y": [3, 2, 1, 2, 3, 2]})
         store_data("wrap_pseudo", data=["wrap_child_a", "wrap_child_b"])
         timespan("1970-01-01", 10, "seconds")
-        long_ytitle = (
-            "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) "
-            "for the MMS FPI instrument"
-        )
+        long_ytitle = "Differential Energy Flux (cm^-2 s^-1 sr^-1 keV^-1) for the MMS FPI instrument"
         options("wrap_pseudo", "ytitle", long_ytitle)
         options("wrap_pseudo", "ywrap", True)
         tplot_options("title", "Pseudovariable inherits parent ywrap")
@@ -698,7 +699,6 @@ class PlotTestCases(unittest.TestCase):
         options("tha_peef_en_eflux", "x_interp", 0)  # reset for other tests
         options("tha_peef_en_eflux", "y_interp", 0)  # reset for other tests
 
-
     def test_elfin_specplot(self):
         del_data("*")
 
@@ -713,7 +713,7 @@ class PlotTestCases(unittest.TestCase):
         )
         self.assertTrue("ela_pef_hs_nflux_ch0" in epd_var)
         tplot_options("title", "ELFIN data with time-varying bins, should render accurately")
-        options('ela_pef_hs_nflux_ch0', "sort_spec_bins", True)
+        options("ela_pef_hs_nflux_ch0", "sort_spec_bins", True)
         tplot("ela_pef_hs_nflux_ch0", display=global_display, save_png=os.path.join(save_dir, "ELFIN_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # reset to avoid interfering with other tests
@@ -742,7 +742,7 @@ class PlotTestCases(unittest.TestCase):
             "title",
             "Decreasing and time-varying energies, fillvals, should render correctly",
         )
-        options('tha_peef_en_eflux','sort_spec_bins',True)
+        options("tha_peef_en_eflux", "sort_spec_bins", True)
         tplot("tha_peef_en_eflux", display=global_display, save_png=os.path.join(save_dir, "PEEF_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
@@ -762,9 +762,6 @@ class PlotTestCases(unittest.TestCase):
         tplot("tha_peef_copy", display=global_display, save_png=os.path.join(save_dir, "PEEF_copy_test.png"))
         tplot_options("title", "")
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
-
-
-
 
     def test_pseudovars_title(self):
         del_data("*")
@@ -901,9 +898,6 @@ class PlotTestCases(unittest.TestCase):
         timespan("2007-03-23", 1, "days")  # Reset to avoid interfering with other tests
         tplot_options("title", "")
 
-
-
-
     def test_psp_flux_plot(self):
         del_data("*")
 
@@ -952,9 +946,6 @@ class PlotTestCases(unittest.TestCase):
         self.assertTrue(os.path.exists(local_png))
         tplot_options("title", "")
 
-
-
-
     def test_tplot_trange(self):
         del_data("*")
         themis.fit(probe="e", trange=["2007-03-23", "2007-03-24"])
@@ -985,14 +976,18 @@ class PlotTestCases(unittest.TestCase):
         pyspedas.projects.ace.mfi()
         tplot_options("varlabel_style", "extra_axes")
         tplot_options("title", "Default charsize")
-        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_default_charsize.png") # everything is okay before setting the charsize
-        options('BGSM', 'charsize', 6)
+        tplot(
+            ["BRTN", "BGSM"], var_label="Magnitude", display=global_display, save_png="varlabel_axes_default_charsize.png"
+        )  # everything is okay before setting the charsize
+        options("BGSM", "charsize", 6)
         # the size of the labels were changed for BGSM and Magnitude
-        tplot_options("title","BGSM charsize set to 6, should not affect varlabels")
-        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_bgsm_charsize_6.png")
-        options('Magnitude', 'charsize', 20) # doesn't update the size of the label
-        tplot_options("title","Magnitude charsize changed to 20, should not affect varlabels")
-        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_axes_magnitude_charsize_20.png") # Magnitude is still charsize=6
+        tplot_options("title", "BGSM charsize set to 6, should not affect varlabels")
+        tplot(["BRTN", "BGSM"], var_label="Magnitude", display=global_display, save_png="varlabel_axes_bgsm_charsize_6.png")
+        options("Magnitude", "charsize", 20)  # doesn't update the size of the label
+        tplot_options("title", "Magnitude charsize changed to 20, should not affect varlabels")
+        tplot(
+            ["BRTN", "BGSM"], var_label="Magnitude", display=global_display, save_png="varlabel_axes_magnitude_charsize_20.png"
+        )  # Magnitude is still charsize=6
         tplot_options("title", "")
         tplot_options("varlabel_style", None)
 
@@ -1001,16 +996,23 @@ class PlotTestCases(unittest.TestCase):
         timespan(reset=True)
         pyspedas.projects.ace.mfi()
         tplot_options("title", "Default charsize")
-        tplot_options("varlabel_style", 'extra_panel')
-        tplot(['BRTN', 'BGSM'], var_label=['Magnitude'],display=global_display, save_png="varlabel_panel_default_charsize.png") # everything is okay before setting the charsize
-        options('BGSM', 'charsize', 6)
+        tplot_options("varlabel_style", "extra_panel")
+        tplot(
+            ["BRTN", "BGSM"], var_label=["Magnitude"], display=global_display, save_png="varlabel_panel_default_charsize.png"
+        )  # everything is okay before setting the charsize
+        options("BGSM", "charsize", 6)
         tplot_options("varlabel_style", "extra_panel")
         # the size of the labels were changed for BGSM and Magnitude
-        tplot_options("title","BGSM charsize set to 6, should not affect varlabels")
-        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_panel_bgsm_charsize_6.png")
-        options('Magnitude', 'charsize', 20) # doesn't update the size of the label
-        tplot_options("title","Magnitude charsize changed to 20, should not affect varlabels")
-        tplot(['BRTN', 'BGSM'], var_label='Magnitude',display=global_display, save_png="varlabel_panel_magnitude_charsize_20.png") # Magnitude is still charsize=6
+        tplot_options("title", "BGSM charsize set to 6, should not affect varlabels")
+        tplot(["BRTN", "BGSM"], var_label="Magnitude", display=global_display, save_png="varlabel_panel_bgsm_charsize_6.png")
+        options("Magnitude", "charsize", 20)  # doesn't update the size of the label
+        tplot_options("title", "Magnitude charsize changed to 20, should not affect varlabels")
+        tplot(
+            ["BRTN", "BGSM"],
+            var_label="Magnitude",
+            display=global_display,
+            save_png="varlabel_panel_magnitude_charsize_20.png",
+        )  # Magnitude is still charsize=6
         tplot_options("title", "")
         tplot_options("varlabel_style", None)
 
