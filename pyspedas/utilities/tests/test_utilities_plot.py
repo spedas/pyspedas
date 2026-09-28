@@ -1016,6 +1016,13 @@ class PlotTestCases(unittest.TestCase):
         tplot_options("title", "")
         tplot_options("varlabel_style", None)
 
+    def test_tplot_numeric_trange(self):
+        del_data("*")
+        timespan(reset=True)
+        string_trange=['2007-03-23','2007-03-24']
+        numeric_trange=pyspedas.time_double(string_trange)
+        pyspedas.projects.themis.state(probe='a',trange=string_trange)
+        tplot('tha_pos',trange=numeric_trange, display=global_display, save_png="tplot_numeric_trange.png")
 
 if __name__ == "__main__":
     unittest.main()
