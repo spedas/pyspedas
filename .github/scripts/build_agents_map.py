@@ -27,6 +27,7 @@ import sys
 from collections import defaultdict
 from pathlib import Path
 
+sys.dont_write_bytecode = True  # don't leave __pycache__ in the repo
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from check_agents_md import NAME, list_files, nearest_parent, split_header  # noqa: E402
 
