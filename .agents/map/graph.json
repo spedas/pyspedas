@@ -5,12 +5,42 @@
       "path": "AGENTS.md",
       "parent": null,
       "children": [
-        "pyspedas/projects/themis/AGENTS.md"
+        "pyspedas/analysis/AGENTS.md",
+        "pyspedas/cotrans_tools/AGENTS.md",
+        "pyspedas/geopack/AGENTS.md",
+        "pyspedas/particles/AGENTS.md",
+        "pyspedas/projects/AGENTS.md",
+        "pyspedas/tplot_tools/AGENTS.md",
+        "pyspedas/utilities/AGENTS.md"
       ],
       "header_ok": true,
       "related_files": [
         {
-          "path": "pyspedas/projects/themis/AGENTS.md",
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/utilities/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/geopack/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/particles/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/analysis/AGENTS.md",
           "kind": "agents"
         },
         {
@@ -36,6 +66,10 @@
         {
           "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
           "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/AGENTS.md",
+          "kind": "agents"
         },
         {
           "path": "pyspedas/projects/mms/__init__.py",
@@ -104,13 +138,2883 @@
       ]
     },
     {
-      "path": "pyspedas/projects/themis/AGENTS.md",
+      "path": "pyspedas/analysis/AGENTS.md",
       "parent": "AGENTS.md",
       "children": [],
       "header_ok": true,
       "related_files": [
         {
           "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/analysis/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/avg_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/deriv_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/yclip.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tinterpol.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tvectot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/interp_gap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/rebin.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/reduce_tres.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/roundsig.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/time_domain_filter.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/twavpol.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/wavelet.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/wav_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/wavelet2.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/wavelet98.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/wave_signif.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/lingradest.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/find_magnetic_nulls.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/neutral_sheet.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/test_analysis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/test_twavpol.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/test_wavelet.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/test_magnetic_nulls.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/wavetest.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/utilities/time_interpolate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/config_testing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/config.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/cotrans_tools/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cotrans.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cotrans_lib.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/igrf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/j2000.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/matrix_array_lib.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/quaternions.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/tvector_rotate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/fac_matrix_make.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/lmn_matrix_make.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/minvar_matrix_make.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/minvar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/gsm2lmn.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/rotmat_get_coords.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/rotmat_set_coords.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cart2spc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/spc2cart.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cart_to_sphere.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/sphere_to_cart.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/xyz_to_polar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/sm2mlt.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/tests",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/data_att_getters_setters.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/omni/omni_solarwind_load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/projects/mms/cotrans",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/erg_cotrans.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/quaternions.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/igrf.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/geopack/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/geopack/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/generic_geopack_adapters.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/prepare_pos_variable.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/clean_model_parameters.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/igrf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/t89.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/t96.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/t01.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/ts04.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/kp2iopt.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/get_tsy_params.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/get_w_params.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/ttrace2endpoint.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/trace_to_event.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/calculate_lshell.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/geopack/tests",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/geopack/tests/test_geopack_idl_validation.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cotrans.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/igrf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/noaa/noaa_load_kp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/load_dst.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/omni/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/tplot_map.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/particles/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/particles/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/moments/moments_3d.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/moments/moments_3d_omega_weights.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/moments/spd_pgs_moments.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/moments/spd_pgs_moments_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_do_fac.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_regrid.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_v_shift.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_limit_range.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_make_e_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_make_phi_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_make_theta_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_make_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_progress_update.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/slice2d.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/slice2d_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/slice1d_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/slice2d_get_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/tplot_average.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d/quaternions.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_units_string.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/tests/test_particles.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_slice2d.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_pad_fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_lep_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/quaternions.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [
+        "pyspedas/projects/ace/AGENTS.md",
+        "pyspedas/projects/akebono/AGENTS.md",
+        "pyspedas/projects/barrel/AGENTS.md",
+        "pyspedas/projects/cluster/AGENTS.md",
+        "pyspedas/projects/elfin/AGENTS.md",
+        "pyspedas/projects/erg/AGENTS.md",
+        "pyspedas/projects/fast/AGENTS.md",
+        "pyspedas/projects/geotail/AGENTS.md",
+        "pyspedas/projects/goes/AGENTS.md",
+        "pyspedas/projects/image/AGENTS.md",
+        "pyspedas/projects/kyoto/AGENTS.md",
+        "pyspedas/projects/maven/AGENTS.md",
+        "pyspedas/projects/mms/AGENTS.md",
+        "pyspedas/projects/polar/AGENTS.md",
+        "pyspedas/projects/psp/AGENTS.md",
+        "pyspedas/projects/rbsp/AGENTS.md",
+        "pyspedas/projects/secs/AGENTS.md",
+        "pyspedas/projects/soho/AGENTS.md",
+        "pyspedas/projects/solo/AGENTS.md",
+        "pyspedas/projects/stereo/AGENTS.md",
+        "pyspedas/projects/themis/AGENTS.md",
+        "pyspedas/projects/ulysses/AGENTS.md",
+        "pyspedas/projects/wind/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/ace/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/akebono/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/barrel/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/cluster/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/elfin/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/fast/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/geotail/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/goes/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/image/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/maven/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/polar/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/psp/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/secs/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/soho/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/solo/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/stereo/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/wind/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cnofs/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/de2/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/galileo/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/juno/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kompsat/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kompsat/esa_hapi_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mica/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/noaa/noaa_load_kp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/omni/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/omni/omni_solarwind_load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/poes/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/swarm/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/download_files_utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/load_csa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/pyspedas_functools.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/das2",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/hapi_tools/hapi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/netcdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/sts_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/time_clip.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/ace/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/ace/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/mfi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/swe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/epam.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/cris.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/sis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/uleis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/sepica.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/swics.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ace/tests/test_ace.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/akebono/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/akebono/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/pws.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/rdm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/orb.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/pws_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/rdm_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/orb_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/load_csv_file.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/akebono/tests/test_akebono.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/xyz_to_polar.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/barrel/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/barrel/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/sspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/mspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/fspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/rcnt.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/magn.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/ephm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/hkpg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/barrel/tests/test_barrel.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/cluster/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/cluster/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/load_csa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/aspoc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/cis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/dwp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/edi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/efw.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/peace.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/rapid.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/staff.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/wbd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/whi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/particle_tools/cluster_get_codif_dist.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/particle_tools/cluster_get_hia_dist.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/tests/test_cluster.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/cluster/tests/test_cluster_uri.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/elfin/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/elfin/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/epd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/calibration_l1.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/calibration_l2.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/ela_epde_cal_data.txt",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/epd/elb_epde_cal_data.txt",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/fgm/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/state/state.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/mrma/mrma.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/mrmi/mrmi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/eng/eng.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_elfin.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_epd_l1.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_epd_l2.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_epd_calibration.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_state.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/elfin/tests/test_epde_cal_data.txt",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/erg/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [
+        "pyspedas/projects/erg/ground/AGENTS.md",
+        "pyspedas/projects/erg/satellite/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/get_gatt_ror.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/mgf/mgf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_isee_fluxgate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg_ground.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg_cotrans.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/erg/ground/AGENTS.md",
+      "parent": "pyspedas/projects/erg/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/erg/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_isee_fluxgate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_isee_induction.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_stel_fluxgate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_stel_induction.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_magdas_1sec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/geomag/gmag_mm210.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/camera/camera_omti_asi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/radar/superdarn/sd_fit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/radar/superdarn/get_sphcntr.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/riometer/isee_brio.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/ground/vlf/isee_vlf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/get_gatt_ror.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg_ground.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/erg/satellite/AGENTS.md",
+      "parent": "pyspedas/projects/erg/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/erg/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/erg/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/get_gatt_ror.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/att/att.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/mgf/mgf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/orb/orb.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/orb/remove_duplicated_tframe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/hep/hep.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/lepe/lepe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/lepi/lepi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/mepe/mepe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/mepi/mepi_nml.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/mepi/mepi_tof.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/xep/xep.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/pwe/pwe_efd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/pwe/pwe_hfa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/pwe/pwe_ofa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/pwe/pwe_wfc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/erg_cotrans.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/sga2sgi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/sgi2dsi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/dsi2j2000.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/common/cotrans/erg_interpolate_att.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_mep_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_lep_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_hep_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_xep_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/satellite/erg/particle/erg_pgs_make_fac.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/moments/spd_pgs_moments.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products/spd_pgs_regrid.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cotrans.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg_mepe.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/fast/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/fast/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/fast/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/fast/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/fast/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/fast/tests/test_fast.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/pyspedas_functools.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/geotail/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/geotail/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/mgf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/efd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/lep.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/cpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/epic.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/pwi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/geotail/tests/test_geotail.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/goes/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/goes/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/load_orbit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/tests/test_goes.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/pyspedas_functools.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/netcdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/image/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/image/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/lena.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/mena.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/hena.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/rpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/euv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/fuv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/orbit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/image/tests/test_image.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/kyoto/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/load_dst.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/load_ae.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/load_geomagnetic_indices.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/kyoto/tests/test_kyoto.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/ground/gmag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/noaa/noaa_load_kp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/omni/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/maven/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/maven/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/maven_load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/download_files_utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/file_regex.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/orbit_time.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/maven_kp_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/read_iuvs_file.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/read_iuvs_file_unused_modes.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/kp_utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/interp_utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/list_utilities.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/access.txt",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/mag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/swea.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/swia.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/sta.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/sep.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/lpw.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/euv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/iuv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/ngi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/rse.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/kp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/spdf/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/spdf/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/spdf/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/spdf/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/tests/test_maven.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/tests/test_maven_uri.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/mms/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [
+        "pyspedas/projects/mms/feeps_tools/AGENTS.md",
+        "pyspedas/projects/mms/fpi_tools/AGENTS.md",
+        "pyspedas/projects/mms/particles/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data_spdf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_login_lasp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_files_in_interval.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_get_local_files.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_file_filter.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fgm_tools/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mec_ascii/state.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/databar_tools/spd_mms_load_bss.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/deprecated/mms_load_fast_segments.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_orbit_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_events.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/print_vars.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_python_startup.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_login_lasp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/mms/feeps_tools/AGENTS.md",
+      "parent": "pyspedas/projects/mms/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/mms/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/feeps.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_correct_energies.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_energy_table.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_flat_field_corrections.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_remove_bad_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_active_eyes.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_split_integral_ch.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_remove_sun.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_read_feeps_sector_masks_csv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_omni.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_spin_avg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_pad.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_pad_spinavg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_pitch_angles.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_gpd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/mms_feeps_getgyrophase.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/feeps_tools/sun",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_feeps.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/mms/fpi_tools/AGENTS.md",
+      "parent": "pyspedas/projects/mms/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/mms/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_fpi_set_metadata.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_load_fpi_calc_pad.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_fpi_make_errorflagbars.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_fpi_make_compressionlossbars.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_get_fpi_dist.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_pad_fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_fpi_ang_ang.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_fpi_split_tensor.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_slice2d.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/moka_mms_clean_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_fpi.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/mms/particles/AGENTS.md",
+      "parent": "pyspedas/projects/mms/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/mms/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_getspec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_products.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_slice2d.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_convert_flux_units.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_clean_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_clean_support.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_make_e_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_make_theta_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_make_phi_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_make_fac.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_pgs_split_hpca.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/particles/moka_mms_clean_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_get_fpi_dist.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/fpi_tools/mms_pad_fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/hpca_tools/mms_get_hpca_dist.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/particles/spd_part_products",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/particles/moments",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/particles/spd_slice2d",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_part_getspec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_getspec_bulkv.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_slice2d.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/polar/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/polar/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/mfe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/efi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/pwi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/hydra.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/tide.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/timas.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/cammice.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/ceppad.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/uvi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/vis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/pixie.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/orbit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/polar/tests/test_polar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/psp/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/psp/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/fields.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/spc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/spe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/spi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/epihi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/epilo.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/epi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/rfs.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/filter.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/psp/tests/test_psp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/rbsp/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/emfisis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/efw.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/mageis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/hope.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rept.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rps.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/magephem.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice_lib/rbsp_load_rbspice_read.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice_lib/rbsp_rbspice_omni.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice_lib/rbsp_rbspice_spin_avg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice_lib/rbsp_rbspice_pad.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/rbspice_lib/rbsp_rbspice_pad_spinavg.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/rbsp/tests/test_rbsp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/secs/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/secs/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/read_data_files.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/makeplots.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/secs/tests/test_secs.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/soho/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/soho/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/celias.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/costep.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/erne.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/orbit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/celias_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/costep_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/erne_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/orbit_postprocessing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/soho/tests/test_soho.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/solo/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/solo/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/mag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/rpw.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/swa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/epd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/solo/tests/test_solo.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/stereo/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/stereo/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/mag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/plastic.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/swea.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/ste.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/sept.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/sit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/let.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/het.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/waves.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/beacon.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/stereo/tests/test_stereo.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/preferences.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/themis/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [
+        "pyspedas/projects/themis/spacecraft/AGENTS.md",
+        "pyspedas/projects/themis/state_tools/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/AGENTS.md",
           "kind": "agents"
         },
         {
@@ -147,6 +3051,1006 @@
         },
         {
           "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/themis/spacecraft/AGENTS.md",
+      "parent": "pyspedas/projects/themis/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/themis/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/efi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/scm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fft.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fbk.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/particles/esa.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/particles/esd.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/particles/sst.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/particles/mom.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/particles/gmom.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/autoload_support.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/eclipse_spinmodel_corrections_vector.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/eclipse_spinmodel_corrections_tensor.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans/dsl2gse.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_cal_fit.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/themis/state_tools/AGENTS.md",
+      "parent": "pyspedas/projects/themis/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/themis/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/state.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/apply_spinaxis_corrections.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/autoload_support.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/slp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/ssc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/ssc_pre.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/spinmodel.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/spinmodel_segment.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/spinmodel_postprocess.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/eclipse_spinmodel_corrections_vector.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/state_tools/spinmodel/eclipse_spinmodel_corrections_tensor.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans/ssl2dsl.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans/dsl2gse.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans/gse2sse.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/cotrans/sse2sel.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_state.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_spinmodel.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_autoload_support.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_lunar_cotrans.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/ulysses/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/vhm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/swoops.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/swics.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/urap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/epac.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/hiscale.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/cospin.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/grb.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/ulysses/tests/test_ulysses.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/wind/AGENTS.md",
+      "parent": "pyspedas/projects/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/wind/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/mfi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/swe.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/sms.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/waves.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/threedp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/orbit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/wind/tests/test_wind.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/tplot_tools/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [
+        "pyspedas/tplot_tools/MPLPlotter/AGENTS.md",
+        "pyspedas/tplot_tools/importers/AGENTS.md",
+        "pyspedas/tplot_tools/tplot_math/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/store_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/get_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/del_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_rename.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_copy.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/replace_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tnames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/wildcard_routines.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/is_pseudovariable.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/options.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_options.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/timespan.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/xlim.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tlimit.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/ylim.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/zlim.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/timebar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/databar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/link.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/spedas_colorbar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/rgb_color.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/data_att_getters_setters.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/time_double.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/time_string.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/exporters/tplot_save.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/exporters/tplot_ascii.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/tplot_restore.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tcopy.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_math.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_tplot_wildcard.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_time.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/tplot_tools/MPLPlotter/AGENTS.md",
+      "parent": "pyspedas/tplot_tools/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/tplot_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/lineplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/specplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/var_labels.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/get_var_label_ticks.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/save_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/label_wrap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/_plot_range.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/annotate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/highlight.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/ctime.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/tplotxy.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/tplotxy3.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/tplot_map.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/MPLPlotter/plot_tests",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/tplot_tools/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/reduce_spec_dataset.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/timebar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/spedas_colorbar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/makegap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_plot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_tplotxy.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/tplot_tools/importers/AGENTS.md",
+      "parent": "pyspedas/tplot_tools/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/tplot_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/netcdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/sts_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/tplot_restore.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/exporters/tplot_save.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/store_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/options.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/data_att_getters_setters.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/goes/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/poes/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/maven/maven_load.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/tplot_tools/tplot_math/AGENTS.md",
+      "parent": "pyspedas/tplot_tools/AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/tplot_tools/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/add.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/subtract.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/multiply.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/divide.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tinterp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tdotp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tcrossp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/crop.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/add_across.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/avg_res_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/clip.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/derive.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tnormalize.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tkm2re.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/spec_mult.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/split_vec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/join_vec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/deflag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tdeflag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/degap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/makegap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/interp_nan.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/clean_spikes.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tsmooth.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/subtract_average.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/subtract_median.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/time_clip.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/pwrspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/dpwrspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tpwrspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/tdpwrspc.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_math/pwr_spec.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tinterpol.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/time_interpolate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_math.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_interp_nan.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/analysis/tests/test_analysis.py",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/utilities/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download_ftp.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/datasets.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/pyspedas_functools.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/time_interpolate.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/interpolate_rotation.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tinterpol_mxn.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/interpol.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/xdegap.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tcopy.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/leap_seconds.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/unix2tai.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tai2unix.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/month_intervals.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/is_timezone_aware.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/spice/time_ephemeris.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/mpause_2.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/mpause_t96.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/bshock_2.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/libs.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/doi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/is_gzip.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/find_ip_address.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/rate_connection_quality.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/config_testing.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/zenodo_draft.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/das2/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests",
+          "kind": "folder"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/time_double.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/time_string.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/zenodo_draft.yml",
           "kind": "file"
         }
       ]
