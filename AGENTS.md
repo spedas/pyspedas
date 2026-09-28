@@ -1,12 +1,19 @@
 ---
 related_files:
-  - pyspedas/projects/themis/AGENTS.md
+  - pyspedas/projects/AGENTS.md
+  - pyspedas/tplot_tools/AGENTS.md
+  - pyspedas/utilities/AGENTS.md
+  - pyspedas/cotrans_tools/AGENTS.md
+  - pyspedas/geopack/AGENTS.md
+  - pyspedas/particles/AGENTS.md
+  - pyspedas/analysis/AGENTS.md
   - pyspedas/__init__.py
   - pyspedas/projects/themis/spacecraft/fields/fgm.py
   - pyspedas/projects/themis/load.py
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/download.py
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
+  - pyspedas/projects/mms/AGENTS.md
   - pyspedas/projects/mms/__init__.py
   - pyspedas/projects/mms/mms_load_data.py
   - pyspedas/tplot_tools/__init__.py
@@ -36,6 +43,8 @@ analyzes, transforms and plots those variables. Package code is in `pyspedas/`;
 dependencies are in `pyproject.toml`.
 
 ## Layout
+
+Each of these folders has its own AGENTS.md, and so do most mission packages.
 
 - `pyspedas/projects/<mission>/`: one package per mission (39). Each has a
   `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`,
@@ -84,8 +93,8 @@ a name bound at import time goes stale.
 - A mission's `__init__.py` imports each loader over its module name, so
   `pyspedas.projects.themis.fgm` is the function, not the module.
 - MMS wrappers in `pyspedas/projects/mms/__init__.py` take `*args, **kwargs`; the
-  real signature is on the `mms_load_<instrument>` function they wrap, in
-  `pyspedas/projects/mms/<instrument>_tools/`.
+  real signature is on the function they wrap, usually `mms_load_<instrument>` in
+  `pyspedas/projects/mms/<instrument>_tools/` (see `pyspedas/projects/mms/AGENTS.md`).
 - Version 2.0 moved missions under `pyspedas.projects` (`pyspedas.mms` is now
   `pyspedas.projects.mms`); see `docs/source/pyspedas_2_migration.rst`. Some
   READMEs still show the old paths.

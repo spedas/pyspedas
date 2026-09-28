@@ -1,6 +1,8 @@
 ---
 related_files:
-  - AGENTS.md
+  - pyspedas/projects/AGENTS.md
+  - pyspedas/projects/themis/spacecraft/AGENTS.md
+  - pyspedas/projects/themis/state_tools/AGENTS.md
   - pyspedas/projects/themis/__init__.py
   - pyspedas/projects/themis/config.py
   - pyspedas/projects/themis/load.py
@@ -21,9 +23,9 @@ maintenance: |
 
 - `spacecraft/fields/` (`fgm`, `fit`, `efi`, `fft`, `fbk`, `scm`),
   `spacecraft/particles/` (`esa`, `esd`, `sst`, `mom`, `gmom`) and `ground/`
-  (`gmag`, `ask`): one loader per module.
+  (`gmag`, `ask`): one loader per module. `spacecraft/` has its own AGENTS.md.
 - `state_tools/`: orbit and attitude (`state`), the spin model, and lunar
-  coordinates (`slp`, `ssc`).
+  coordinates (`slp`, `ssc`). Has its own AGENTS.md.
 - `cotrans/`: THEMIS coordinate systems (`dsl2gse`, `ssl2dsl`, `gse2sse`, `sse2sel`).
 - `analysis/`: density from spacecraft potential (`scpot2dens`).
 - `common/check_args.py`: normalizes the `probe` and `level` arguments for the loaders.
