@@ -1,0 +1,155 @@
+{
+  "generated_by": ".github/scripts/build_agents_map.py",
+  "agents": [
+    {
+      "path": "AGENTS.md",
+      "parent": null,
+      "children": [
+        "pyspedas/projects/themis/AGENTS.md"
+      ],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "pyspedas/projects/themis/AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_load_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/store_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/get_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/tplot_rename.py",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/pyspedas_2_migration.rst",
+          "kind": "file"
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/agents_md.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/scripts/check_agents_md.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/scripts/build_agents_map.py",
+          "kind": "file"
+        },
+        {
+          "path": ".agents/skills/agents-map/SKILL.md",
+          "kind": "file"
+        },
+        {
+          "path": ".agents/map/MAP.md",
+          "kind": "file"
+        },
+        {
+          "path": ".agents/map/graph.json",
+          "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "pyspedas/projects/themis/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyspedas/projects/themis/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/common/check_args.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/spacecraft/fields/fgm.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/README.md",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/dailynames.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/download.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/importers/cdf_to_tplot.py",
+          "kind": "file"
+        }
+      ]
+    }
+  ]
+}
