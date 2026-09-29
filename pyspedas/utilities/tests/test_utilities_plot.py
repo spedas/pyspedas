@@ -1024,5 +1024,25 @@ class PlotTestCases(unittest.TestCase):
         pyspedas.projects.themis.state(probe='a',trange=string_trange)
         tplot('tha_pos',trange=numeric_trange, display=global_display, save_png="tplot_numeric_trange.png")
 
+    def test_timebar_pseudovarlabel(self):
+        del_data("*")
+        timespan(reset=True)
+        trange=['2007-03-23','2007-03-24']
+        vars=pyspedas.projects.themis.state(probe='a',trange=trange)
+        print(vars)
+        store_data('pseudovar',data=['tha_pos', 'tha_vel'])
+        pyspedas.timebar('2007-03-23/12:00:00','pseudovar',color='green')
+        pyspedas.databar('pseudovar', 10000.0,color='red')
+        # Timebar and databar on pseudovariable
+        tplot('pseudovar',display=global_display,save_png='pseudovar_timebar.png')
+        # Timebar and databar on component variable
+        pyspedas.timebar('2007-03-23/12:00:00','tha_pos',color='green')
+        pyspedas.databar('tha_pos',10000.0, color='red')
+        # Timebar and databar on one of the component variables
+        tplot('pseudovar',display=global_display,save_png='component_var_timebar.png')
+
+
+
+
 if __name__ == "__main__":
     unittest.main()
