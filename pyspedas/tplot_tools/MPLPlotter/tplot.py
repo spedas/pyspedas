@@ -605,10 +605,10 @@ def tplot(variables,
                 if len(trange) != 2:
                     logging.error('Invalid trange setting: must be a 2-element list or array')
                     return
-                if isinstance(trange[0], str):
-                    x_range = pyspedas.tplot_tools.time_double(trange) # seconds since epoch
-                    x_range_start = x_range[0]
-                    x_range_stop = x_range[1]
+                # Parse trange using time_double:
+                x_range = pyspedas.tplot_tools.time_double(trange) # seconds since epoch
+                x_range_start = x_range[0]
+                x_range_stop = x_range[1]
             else:
                 x_range = pyspedas.tplot_tools.tplot_opt_glob['x_range']  # Seconds since epoch
                 x_range_start = x_range[0]
