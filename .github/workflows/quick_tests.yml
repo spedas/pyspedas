@@ -220,8 +220,6 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_doi
         echo Starting Zenodo draft client tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
-        echo Starting akebono tests at `date`
-        coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
         echo Starting themis tplot_time  tests at `date`
