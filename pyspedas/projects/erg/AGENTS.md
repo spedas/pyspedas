@@ -14,6 +14,8 @@ related_files:
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/download.py
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
+  - pyspedas/projects/erg/tests/test_erg_load.py
+  - pyspedas/projects/erg/tests/test_erg_spdf.py
   - pyspedas/projects/erg/tests/test_erg.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
   - pyspedas/projects/erg/tests/test_erg_cotrans.py
@@ -34,7 +36,8 @@ particle products. The code follows IDL SPEDAS's `erg` plug-in closely.
   the particle products. Has its own AGENTS.md.
 - `ground/`: magnetometer, all-sky imager, SuperDARN, riometer and VLF loaders. Has its own
   AGENTS.md.
-- `config.py`: `CONFIG` with `local_data_dir`, `remote_data_dir` and `no_download`.
+- `config.py`: `CONFIG` with `local_data_dir`, separate `ground_remote_data_dir` and
+  `satellite_remote_data_dir`, legacy `remote_data_dir`, and `no_download`.
 - `__init__.py`: imports every loader and tool under its short name
   (`pyspedas.projects.erg.mgf`, `...sd_fit`, `...erg_cotrans`).
 - `tests/`: unittest modules; they download from ERG-SC.
@@ -48,8 +51,10 @@ Every loader, satellite or ground, builds its own file path template and calls `
 with `ground/` (see `ground/geomag/gmag_isee_fluxgate.py`). `load()`:
 
 1. expands the template with `dailynames()` using the caller's `file_res` (daily or hourly);
-2. downloads from `CONFIG['remote_data_dir']` with `download()`, taking the last version
-   that matches the wildcard and passing `uname`/`passwd` as the user name and password;
+2. selects the ground or satellite URL, strips the corresponding template prefix for
+   remote names, translates SPDF product directories and EFD filename case, and
+   retains the original ERG-SC directories in the local cache path; `download()` selects
+   the last version only for wildcard paths and passes `uname`/`passwd` as credentials;
 3. loads the files with `cdf_to_tplot()`, using the caller's `prefix` and `suffix`;
 4. with `notplot=True`, adds each file's CDF attributes to the returned dicts under
    `['CDF']` (`VATT`, `GATT`, `FILENAME`), which several wrappers use to build variables.
@@ -61,12 +66,14 @@ variables (fill value clipping, plot options, renaming).
 ## Things to know
 
 - Server: `https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/`, overridden by
-  `ERG_REMOTE_DATA_DIR`. Local folder: `ERG_DATA_DIR`, else `SPEDAS_DATA_DIR/ergsc`, else
+  `ERG_REMOTE_DATA_DIR` (legacy common base URL), or independently by
+  `ERG_GROUND_REMOTE_DATA_DIR` and `ERG_SATELLITE_REMOTE_DATA_DIR`. SPDF satellite URL:
+  `https://spdf.gsfc.nasa.gov/pub/data/arase/`. Local folder: `ERG_DATA_DIR`, else `SPEDAS_DATA_DIR/ergsc`, else
   `erg_data/`. `ERG_NO_DOWNLOAD` turns downloads off. Stored preferences
   (`pyspedas/preferences.py`) are applied first, then these variables.
 - Some data sets need an ERG-SC account; pass `uname` and `passwd` to the wrapper.
-- Satellite wrappers put `version` into the path template themselves; `load()` ignores
-  its own `version` argument. Wrappers also differ in which keywords they pass to
+- All satellite wrappers put explicit `version` strings into the path template; `None`
+  uses a wildcard. The shared `load()` retains its unused `version` argument for compatibility. Wrappers also differ in which keywords they pass to
   `load()`, so check before relying on one (for example `varnames`).
 - Rules of the road are printed with `print()`, not `logging`, unless `ror=False`.
 - Names start with the product: `erg_mgf_l2_mag_8sec_dsi`, `erg_mepe_l2_3dflux_FEDU`,
@@ -79,3 +86,7 @@ variables (fill value clipping, plot options, renaming).
 `tests/test_erg.py` covers the satellite loaders and `get_dist` routines,
 `tests/test_erg_ground.py` the ground loaders, `tests/test_erg_cotrans.py` the transforms;
 the other modules cover the particle products of one instrument each.
+`tests/test_erg_load.py` checks routing, cache paths, URL overrides and version handling
+without network access. `tests/test_erg_spdf.py` tests satellite loading from SPDF in a
+fresh cache, including explicit versions; it runs in the SPDF-heavy full coverage shard,
+not in quick_tests, and excludes particle get_dist tests.

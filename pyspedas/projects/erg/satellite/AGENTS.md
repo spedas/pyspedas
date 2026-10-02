@@ -36,7 +36,7 @@ related_files:
   - pyspedas/projects/erg/tests/test_erg_mepe.py
 maintenance: |
   Update when an instrument wrapper is added or renamed, when a wrapper changes how it
-  handles notplot or builds its own variables, or when the cotrans chain or the support
+  handles versions, notplot or builds its own variables, or when the cotrans chain or the support
   data it loads automatically changes.
 ---
 
@@ -47,7 +47,9 @@ code is under `erg/`; this folder level only holds that package.
 
 ## Layout
 
-- `erg/load.py`: the shared `load()`, also used by the ground loaders.
+- `erg/load.py`: the shared `load()`, also used by the ground loaders. It selects the
+  separate ground/satellite URL, preserves the existing cache paths, and enables
+  latest-version selection only for wildcard templates.
 - `erg/get_gatt_ror.py`: gets CDF global attributes for the rules-of-the-road printout.
 - Instrument wrappers, one module each: `erg/att/att.py` (attitude, from text files),
   `erg/mgf/mgf.py` (magnetic field), `erg/orb/orb.py` (orbit), `erg/hep/hep.py`,
@@ -72,6 +74,9 @@ multi-dimensional products (2D/3D flux, omni flux, L3 pitch angle data) and then
 tplot variables themselves with `store_data()`, using the CDF attributes that `load()`
 attaches. They remember the caller's `notplot` in `initial_notplot_flag`. `orb()` also
 removes duplicated time frames from position variables (`erg/orb/remove_duplicated_tframe.py`).
+
+All satellite wrappers accept `version=None` for latest-version wildcard selection
+or an explicit version string including the leading `v` for direct downloads.
 
 ## Coordinate transforms
 

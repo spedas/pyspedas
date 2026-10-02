@@ -16,6 +16,7 @@ def att(
     uname: Optional[str] = None,
     passwd: Optional[str] = None,
     force_download: bool = False,
+    version: Optional[str] = None,
 ) -> List[str]:
     """
     This function loads attitude data from the Arase mission
@@ -48,6 +49,10 @@ def att(
         passwd: str
             Password. Default: None
 
+        version: str
+            File version including the 'v' prefix, such as 'v03'.
+            Default: None (load the latest available version).
+
         force_download: bool
             Download file even if local version is more recent than server version
             Default: False
@@ -66,8 +71,9 @@ def att(
 
 
     """
+    file_version = 'v??' if version is None else version
     file_res = 24*3600.
-    pathformat = 'satellite/erg/att/txt/erg_att_'+level+'_%Y%m%d_v??.txt'
+    pathformat = 'satellite/erg/att/txt/erg_att_'+level+'_%Y%m%d_' + file_version + '.txt'
 
     out_files = load(pathformat=pathformat, trange=trange, file_res=file_res,
                      downloadonly=True, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
