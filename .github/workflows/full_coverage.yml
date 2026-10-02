@@ -85,6 +85,10 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting ERG SPDF satellite tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_spdf
+              echo Starting ERG loader routing tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_load
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
               echo Starting soho tests at `date`

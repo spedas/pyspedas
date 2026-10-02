@@ -1391,6 +1391,14 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/erg/tests/test_erg_load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/erg/tests/test_erg_spdf.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/erg/tests/test_erg.py",
           "kind": "file"
         },

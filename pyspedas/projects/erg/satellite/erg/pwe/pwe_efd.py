@@ -26,6 +26,7 @@ def pwe_efd(
     time_clip: bool = False,
     ror: bool = True,
     force_download: bool = False,
+    version: Optional[str] = None,
 ) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission
@@ -90,6 +91,10 @@ def pwe_efd(
         passwd: str
             Password. Default: None
 
+        version: str
+            File version including the 'v' prefix, such as 'v01_02'.
+            Default: None (load the latest available version).
+
         force_download: bool
             Download file even if local version is more recent than server version
             Default: False
@@ -109,6 +114,7 @@ def pwe_efd(
     initial_notplot_flag = False
     if notplot:
         initial_notplot_flag = True
+    file_version = 'v??_??' if version is None else version
     file_res = 3600. * 24
     prefix = 'erg_pwe_efd_'+level+'_'
 
@@ -119,7 +125,7 @@ def pwe_efd(
             mode = '256Hz'
         md = 'E'+mode
         pathformat = 'satellite/erg/pwe/efd/'+level+'/'+md + \
-            '/%Y/%m/erg_pwe_efd_'+level+'_'+md+'_'+coord+'_%Y%m%d_v??_??.cdf'
+            '/%Y/%m/erg_pwe_efd_'+level+'_'+md+'_'+coord+'_%Y%m%d_' + file_version + '.cdf'
         prefix += md + '_' + coord + '_'
         if coord == 'wpt':
             component = ['Eu_waveform', 'Ev_waveform']
@@ -129,7 +135,7 @@ def pwe_efd(
 
     else:
         pathformat = 'satellite/erg/pwe/efd/'+level+'/'+datatype + \
-            '/%Y/%m/erg_pwe_efd_'+level+'_'+datatype+'_%Y%m%d_v??_??.cdf'
+            '/%Y/%m/erg_pwe_efd_'+level+'_'+datatype+'_%Y%m%d_' + file_version + '.cdf'
         prefix += datatype + '_'
         if 'spin' in datatype:
             component = ['Eu', 'Ev', 'Eu1', 'Ev1', 'Eu2', 'Ev2']

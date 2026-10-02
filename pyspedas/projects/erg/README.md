@@ -5,6 +5,36 @@ the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 
 Please note that the routines in this module are still highly EXPERIMENTAL.
 
+### Data servers and file versions
+
+Ground and satellite data use separate configurable URLs. Both default to ERG-SC.
+To load satellite data from the SPDF Arase mirror:
+
+```python
+from pyspedas.projects.erg.config import CONFIG
+from pyspedas.projects.erg import mepe
+
+CONFIG['satellite_remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/arase/'
+mepe(version='v01_02')
+```
+
+`CONFIG['ground_remote_data_dir']` controls ground data independently. SPDF mirrors
+only some satellite products; ground data still come from ERG-SC. The shared loader
+translates SPDF directory layouts and EFD filename case automatically. Existing local
+cache paths (`satellite/erg/` and `ground/` beneath `local_data_dir`) are preserved.
+
+Stored ERG preferences accept both URL keys. Environment variables
+`ERG_SATELLITE_REMOTE_DATA_DIR` and `ERG_GROUND_REMOTE_DATA_DIR` override them.
+The legacy `remote_data_dir` preference and `ERG_REMOTE_DATA_DIR` environment
+variable still set the common ERG-SC base URL; the separate environment variables
+take precedence over the legacy environment variable.
+
+Every satellite loader accepts `version`, including the leading `v` and the
+product's separator (for example, `v03` for ATT, `v03.03` for MGF or `v01_02`
+for MEPE). An exact filename avoids a directory listing. The default `None`
+uses a wildcard to select the latest available version. Versions and product
+availability can differ between ERG-SC and SPDF.
+
 ### Arase (ERG) Satellite Data Load Routines
 - Attitude data (ATT)
 - High Energy Electron Experiments (HEP)

@@ -23,6 +23,7 @@ def pwe_hfa(
     time_clip: bool = False,
     ror: bool = True,
     force_download: bool = False,
+    version: Optional[str] = None,
 ) -> List[str]:
     """
     This function loads data from the PWE experiment from the Arase mission
@@ -88,6 +89,10 @@ def pwe_hfa(
         passwd: str
             Password. Default: None
 
+        version: str
+            File version including the 'v' prefix, such as 'v01_02'.
+            Default: None (load the latest available version).
+
     Returns
     -------
         List of tplot variables created.
@@ -105,6 +110,7 @@ def pwe_hfa(
     if notplot:
         initial_notplot_flag = True
 
+    file_version = 'v??_??' if version is None else version
     file_res = 3600. * 24
 
     if level == 'l2':
@@ -112,11 +118,11 @@ def pwe_hfa(
 
     if level == 'l2':
         pathformat = 'satellite/erg/pwe/hfa/'+level+'/'+datatype+'/'+mode + \
-            '/%Y/%m/erg_pwe_hfa_'+level+'_'+datatype+'_'+mode+'_%Y%m%d_v??_??.cdf'
+            '/%Y/%m/erg_pwe_hfa_'+level+'_'+datatype+'_'+mode+'_%Y%m%d_' + file_version + '.cdf'
     elif level == 'l3':
         prefix = 'erg_pwe_hfa_'+level+'_1min_'
         pathformat = 'satellite/erg/pwe/hfa/'+level + \
-            '/%Y/%m/erg_pwe_hfa_'+level+'_1min_%Y%m%d_v??_??.cdf'
+            '/%Y/%m/erg_pwe_hfa_'+level+'_1min_%Y%m%d_' + file_version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
