@@ -1,144 +1,78 @@
 """Configure filled regions for tplot panels."""
 
-from copy import deepcopy
-from numbers import Real
-
+import logging
 import numpy as np
-import pyspedas
-from pyspedas.tplot_tools import tplot_wildcard_expand
+from pyspedas.tplot_tools import tplot_wildcard_expand, get_data, join_vec, del_data
+from matplotlib import pyplot as plt
 
 
-def fill_between(variables, y1=None, y2=0, color="gray", alpha=0.2,
-                 hatch=None, label=None, zorder=1, delete=False):
-    """Store a filled region between two bounds on tplot variables.
+def _get_bounds(tvars: list[str]) -> tuple[np.ndarray,np.ndarray]:
+    """
+    Takes list of tplot variables, gets the y data, and returns the maximum and minimum bounds as an
+    array of size (n,2), where the first column is the minimum and the second column is the maximum. 
+    """
+    temp_name="fill_between_min_max" 
+    join_vec(tvars, newname=temp_name)
+    data_concat = get_data(temp_name)
+    del_data(temp_name)
+    return (np.min(data_concat.y,axis=1),np.max(data_concat.y,axis=1),data_concat.times)
 
+# TODO: is fig needed?
+def fill_between(
+    tvars: str | list[str],
+    y_fill_line = None,
+    fill_between_kw: dict = {},
+    display:bool=False,
+    fig=None,
+    axis=None
+):
+    """
+    Fills area of curves using tplot variable y data.
+    For two or more tplot variables, fills between the maximum and minimum bounds of y data.
+    If y reference value specified, instead fills between all curves and the specified y value.
+    For one tplot variable, fills between the tplot y data and a reference y value (defaults to 0 
+    if not specified).
+    
     Parameters
     ----------
-    variables : str or list of str
-        Target panel variables. Wildcards are accepted. A pseudovariable can
-        be used to display the two bound variables in the same panel.
-    y1 : str or real scalar, optional
-        First bound: an exact name of a scalar time-series variable, or a
-        finite constant. Defaults to the target variable for each panel.
-        Specify an explicit bound when targeting a pseudovariable.
-    y2 : str or real scalar, optional
-        Second bound, in the same format as y1. Defaults to zero.
-        At least one bound must be a time-series variable. Two variable
-        bounds must have identical timestamps; no interpolation is performed.
-    color : matplotlib color, optional
-        Fill color. Defaults to gray.
-    alpha : float, optional
-        Fill opacity between zero and one. Defaults to 0.2.
-    hatch : str, optional
-        Matplotlib hatch pattern.
-    label : str, optional
-        Legend label for the region.
-    zorder : real scalar, optional
-        Drawing order. Defaults to 1, beneath ordinary Matplotlib lines.
-    delete : bool, optional
-        Clear all fill regions on the target variables. Other arguments are
-        ignored when True.
-
+        tvars: str or list of str, required
+            Tplot variables which to fill. Expands wildcards.
+        fig: Matplotlib figure object
+                Use an existing figure to plot in (mainly for recursive calls to render composite variables)
+        axis: Matplotlib axes object
+            Use an existing set of axes to plot on (mainly for recursive calls to render composite variables)
+        
     Returns
     -------
-    list of str
-        Names of the target variables whose metadata was updated.
-
-    Raises
-    ------
-    ValueError
-        If targets or bounds are invalid, timestamps differ, or opacity or
-        drawing order is invalid. Validation completes before any updates.
-
-    Notes
-    -----
-    This helper only stores configuration in
-    ``attrs['plot_options']['fill_between']``. Rendering support in tplot is
-    still required before these settings produce shading.
-
-    Each call appends a region. Bounds are stored as variable references,
-    so their data should be resolved and revalidated at draw time. A renderer
-    must preserve NaNs and data gaps, apply the requested time range, mask
-    nonpositive bounds on logarithmic axes, and respect explicit axis limits.
-    Numeric bounds use the same units as the panel.
-
-    Examples
-    --------
-    >>> from pyspedas.tplot_tools.MPLPlotter.fill_between import fill_between
-    >>> pyspedas.store_data('lower', data={'x': [1, 2, 3], 'y': [1, 2, 1]})
-    True
-    >>> pyspedas.store_data('upper', data={'x': [1, 2, 3], 'y': [3, 4, 3]})
-    True
-    >>> pyspedas.store_data('bounds', data=['lower', 'upper'])
-    True
-    >>> fill_between('bounds', y1='lower', y2='upper', color='steelblue')
-    ['bounds']
-    >>> fill_between('lower', y2=0)
-    ['lower']
-    >>> fill_between('bounds', delete=True)
-    ['bounds']
+        matplotlib fig object
     """
-    names = tplot_wildcard_expand(variables)
-    if not names:
-        raise ValueError("fill_between: No valid target variables specified.")
+    # This call resolves wildcard patterns and converts integers to variable names
+    tvars = tplot_wildcard_expand(tvars)
+    # tvars should now be list[str]
+    if len(tvars) == 0:
+        logging.warning("fill_between: No matching tplot names were found")
+        return
 
-    for name in names:
-        quant = pyspedas.tplot_tools.data_quants[name]
-        if isinstance(quant, dict) or "time" not in quant.dims:
-            raise ValueError(f"fill_between: Target {name!r} must be time-varying.")
+    # If fig and axis have not been specified, define them here:
+    #if fig is None and axis is None:
+    fig, axis = plt.subplots(nrows=1, sharex=True, gridspec_kw={'height_ratios': [1]}, layout='constrained')
+    
+    if len(tvars) == 1:
+        data_tvar = get_data(tvars[0])
+        if y_fill_line is None:
+            y_fill_line = 0
+        axis.fill_between(data_tvar.times,data_tvar.y,y_fill_line,**fill_between_kw)
+    else:
+        bound_lower, bound_upper, data_x = _get_bounds(tvars)
+        axis.fill_between(data_x,bound_upper,bound_lower,**fill_between_kw)
+    
+    if display:
+        plt.show()
 
-    if delete:
-        for name in names:
-            pyspedas.tplot_tools.data_quants[name].attrs["plot_options"].pop(
-                "fill_between", None)
-        return names
-
-    if not isinstance(alpha, Real) or not np.isfinite(alpha) or not 0 <= alpha <= 1:
-        raise ValueError("fill_between: alpha must be between zero and one.")
-    if not isinstance(zorder, Real) or not np.isfinite(zorder):
-        raise ValueError("fill_between: zorder must be a finite real scalar.")
-
-    def validate_bound(bound):
-        if isinstance(bound, str):
-            quant = pyspedas.tplot_tools.data_quants.get(bound)
-            if quant is None or isinstance(quant, dict):
-                raise ValueError(f"fill_between: Bound {bound!r} must be time-varying.")
-            opts = quant.attrs.get("plot_options", {})
-            if opts.get("overplots_mpl") or opts.get("extras", {}).get("spec"):
-                raise ValueError(f"fill_between: Bound {bound!r} must be a scalar time series.")
-            if ("time" not in quant.dims or quant.dims[0] != "time"
-                    or quant.ndim not in (1, 2)
-                    or (quant.ndim == 2 and quant.shape[1] != 1)
-                    or not np.issubdtype(quant.dtype, np.number)
-                    or np.issubdtype(quant.dtype, np.complexfloating)):
-                raise ValueError(f"fill_between: Bound {bound!r} must be a scalar time series.")
-            times = quant.time.values
-            if times.size == 0 or np.isnat(times).any():
-                raise ValueError(f"fill_between: Bound {bound!r} has empty or invalid timestamps.")
-            return times
-        if not isinstance(bound, Real) or not np.isfinite(bound):
-            raise ValueError("fill_between: Bounds must be variable names or finite real scalars.")
-        return None
-
-    regions = []
-    for name in names:
-        first_bound = name if y1 is None else y1
-        first_times = validate_bound(first_bound)
-        second_times = validate_bound(y2)
-        if first_times is None and second_times is None:
-            raise ValueError("fill_between: At least one bound must be a time-series variable.")
-        if (first_times is not None and second_times is not None
-                and not np.array_equal(first_times, second_times)):
-            raise ValueError("fill_between: Variable bounds must have identical timestamps.")
-        regions.append({
-            "y1": first_bound, "y2": y2,
-            "color": color, "alpha": alpha, "hatch": hatch,
-            "label": label, "zorder": zorder,
-        })
-
-    for name, region in zip(names, regions):
-        opts = pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]
-        if opts.get("fill_between") is None:
-            opts["fill_between"] = []
-        opts["fill_between"].append(deepcopy(region))
-    return names
+if __name__ == "__main__": # for testing, remove when done
+    import pyspedas
+    pyspedas.store_data("Variable1", data={'x':[1,2,3,4,5,6], 'y':[1,2,2,-1,-3,1]})
+    pyspedas.store_data("Variable2", data={'x':[1,2,3,4,5,6], 'y':[5,-4,3,2,1,0]})
+    #fill_between("Variable*", display=True) 
+    #fill_between("Variable1", display=True) 
+    fill_between("Variable1", y_fill_line = -1, display=True) 
