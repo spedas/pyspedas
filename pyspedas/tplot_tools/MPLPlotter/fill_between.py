@@ -64,18 +64,16 @@ def fill_between(
     #if fig is None and axis is None:
     fig, axis = plt.subplots(nrows=1, sharex=True, gridspec_kw={'height_ratios': [1]}, layout='constrained')
     
-    if len(tvars) == 1:
-        data_tvar = get_data(tvars[0])
-        if y_fill_line is None:
-            y_fill_line = 0
-        axis.fill_between(data_tvar.times,data_tvar.y,y_fill_line,**fill_between_kw)
-    else:
+    if len(tvars) == 1 and y_fill_line is None:
+        y_fill_line = 0
+    
+    if y_fill_line is None:
         curve_a, curve_b, data_x = _get_bounds(tvars,use_envelope=use_envelope)
-        if y_fill_line is None:
-            axis.fill_between(data_x,curve_a,curve_b,**fill_between_kw)
-        else:
-            axis.fill_between(data_x,curve_a,y_fill_line,**fill_between_kw)
-            axis.fill_between(data_x,curve_b,y_fill_line,**fill_between_kw)
+        axis.fill_between(data_x,curve_a,curve_b,**fill_between_kw)
+    else:
+        for tvar in tvars:
+            data_tvar = get_data(tvar)
+            axis.fill_between(data_tvar.times,data_tvar.y,y_fill_line,**fill_between_kw)
     
     if display:
         plt.show()
