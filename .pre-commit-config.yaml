@@ -69,7 +69,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     # args: [--write-changes]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.38.0
+  rev: 0.38.2
   hooks:
   - id: check-github-workflows
 
