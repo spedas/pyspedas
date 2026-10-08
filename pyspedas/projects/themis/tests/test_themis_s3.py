@@ -183,6 +183,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_ffp_16_edc34'))
         self.assertTrue('thc_ffp_16_edc34' in fft_vars)
 
+    @unittest.skip("This data not available via heliocloud")
     def test_load_fft_l1_data(self):
         """Load L1 FFT."""
         fft_vars = pyspedas.projects.themis.fft(level='l1', varnames=['thc_ffp_16'])
