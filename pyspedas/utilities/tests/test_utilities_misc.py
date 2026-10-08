@@ -2,6 +2,7 @@
 
 import unittest
 import numpy as np
+from astropy import units as u
 from numpy.testing import assert_allclose
 
 from pyspedas.projects import themis, mms
@@ -29,6 +30,68 @@ from pyspedas import (
 
 class UtilTestCases(unittest.TestCase):
     """Test fuctions in the utilites folder."""
+
+    def test_get_data_units_nonnumeric_values(self):
+        """Warn for string data while still attaching numeric dependency units."""
+        name = 'test_get_data_units_strings'
+        self.addCleanup(del_data, name)
+        values = [['on', 'off'], ['off', 'on']]
+        store_data(name, data={'x': [0, 1], 'y': values, 'v': [1., 2.]},
+                   attr_dict={'data_att': {'units': 'nT', 'depend_1_units': 'eV'}})
+        with self.assertLogs(level='WARNING') as logs:
+            result = get_data(name, units=True)
+        self.assertEqual(len(logs.output), 1)
+        self.assertIn(name, logs.output[0])
+        self.assertIn('non-numeric data values (y)', logs.output[0])
+        np.testing.assert_array_equal(result.y, values)
+        self.assertEqual(result.v.unit, u.eV)
+        np.testing.assert_array_equal(result.v.value, [1., 2.])
+
+    def test_get_data_units_nonnumeric_dependencies(self):
+        """Warn for each string dependency without skipping numeric arrays."""
+        name = 'test_get_data_units_dependencies'
+        self.addCleanup(del_data, name)
+        for field in ('v', 'v1', 'v2', 'v3'):
+            with self.subTest(field=field):
+                dimensions = ['v'] if field == 'v' else ['v1', 'v2', 'v3']
+                values = np.ones((2,) + (2,) * len(dimensions))
+                data = {'x': [0, 1], 'y': values}
+                data.update({key: ['A', 'B'] if key == field else [1., 2.]
+                             for key in dimensions})
+                store_data(name, data=data, attr_dict={'data_att': {
+                    'units': 'nT', 'depend_1_units': 'eV',
+                    'depend_2_units': 's', 'depend_3_units': 'deg'}})
+                with self.assertLogs(level='WARNING') as logs:
+                    result = get_data(name, units=True)
+                self.assertEqual(len(logs.output), 1)
+                self.assertIn(name, logs.output[0])
+                number = '1' if field == 'v' else field[-1]
+                self.assertIn('non-numeric DEPEND_' + number, logs.output[0])
+                np.testing.assert_array_equal(getattr(result, field), ['A', 'B'])
+                self.assertEqual(result.y.unit, u.nT)
+                np.testing.assert_array_equal(result.y.value, values)
+                for key, unit in zip(dimensions, (u.eV, u.s, u.deg)):
+                    if key != field:
+                        self.assertEqual(getattr(result, key).unit, unit)
+
+    def test_get_data_units_without_warnings(self):
+        """Numeric arrays work; strings warn only when unit attachment is requested."""
+        name = 'test_get_data_units_quiet'
+        self.addCleanup(del_data, name)
+        with self.assertNoLogs(level='WARNING'):
+            store_data(name, data={'x': [0, 1], 'y': [1., 2.]},
+                       attr_dict={'data_att': {'units': 'nT'}})
+            result = get_data(name, units=True)
+            self.assertEqual(result.y.unit, u.nT)
+            np.testing.assert_array_equal(result.y.value, [1., 2.])
+            store_data(name, data={'x': [0, 1], 'y': ['on', 'off']},
+                       attr_dict={'data_att': {'units': 'nT'}})
+            np.testing.assert_array_equal(get_data(name, units=False).y, ['on', 'off'])
+            store_data(name, data={'x': [0, 1], 'y': ['on', 'off']})
+            np.testing.assert_array_equal(get_data(name, units=True).y, ['on', 'off'])
+            store_data(name, data={'x': [0, 1], 'y': np.array([1., 2.], dtype=object)},
+                       attr_dict={'data_att': {'units': 'nT'}})
+            self.assertEqual(get_data(name, units=True).y.unit, u.nT)
 
     def test_dailynames(self):
         """Test dailynames function."""

@@ -6,6 +6,7 @@ import numpy as np
 import pyspedas
 from collections import namedtuple
 import logging
+from numbers import Number
 from astropy import units as u
 
 
@@ -131,19 +132,30 @@ def get_data(name, xarray=False, metadata=False, dt=False, units=False, data_qua
         v2_units = temp_data_quant.attrs['data_att'].get('depend_2_units')
         v3_units = temp_data_quant.attrs['data_att'].get('depend_3_units')
 
-        try:
-            if data_units is not None:
-                data_values = data_values * u.Unit(data_units)
-            if v1_values is not None and v1_units is not None:
-                v1_values = v1_values * u.Unit(v1_units)
-            if v2_values is not None and v2_units is not None:
-                v2_values = v2_values * u.Unit(v2_units)
-            if v3_values is not None and v3_units is not None:
-                v3_values = v3_values * u.Unit(v3_units)
-        except (ValueError,TypeError):
-            # occurs when there's a problem converting the units string
-            # to astropy units
-            pass
+        # Handle each array independently: string labels must not prevent
+        # numeric data or other dependencies from receiving their units.
+        arrays = [data_values, v1_values, v2_values, v3_values]
+        unit_names = [data_units, v1_units, v2_units, v3_units]
+        fields = ['data values (y)', 'DEPEND_1', 'DEPEND_2', 'DEPEND_3']
+        for index, (values, unit_name, field) in enumerate(zip(arrays, unit_names, fields)):
+            if values is None or unit_name is None:
+                continue
+            numeric = np.issubdtype(values.dtype, np.number)
+            if values.dtype == object:
+                numeric = all(isinstance(value, Number) for value in values.flat)
+            if not numeric:
+                logging.warning(
+                    "get_data: Cannot attach units %r to non-numeric %s "
+                    "of variable %r (dtype %s); returning this array without units.",
+                    unit_name, field, name, values.dtype,
+                )
+                continue
+            try:
+                arrays[index] = values * u.Unit(unit_name)
+            except (ValueError, TypeError):
+                # Preserve the existing behavior for unrecognized unit strings.
+                pass
+        data_values, v1_values, v2_values, v3_values = arrays
 
     if 'v1' in coord_names and 'v2' in coord_names and 'v3' in coord_names:
         if ensure_writeable and not v1_values.flags['WRITEABLE']:
