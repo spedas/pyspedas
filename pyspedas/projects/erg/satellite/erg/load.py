@@ -1,4 +1,3 @@
-import os
 from urllib.parse import urlparse
 
 import cdflib
@@ -80,8 +79,8 @@ def load(trange=['2017-03-27', '2017-03-28'],
         pyspedas.projects.erg.xep()
     """
 
-    # Templates retain their ERG-SC prefixes so the existing cache is reusable.
-    # Only the remote names are relative to the configurable data-family URL.
+    # File paths are relative to the selected data-family URL for both remote
+    # access and the local cache.
     if pathformat.startswith('satellite/erg/'):
         path_prefix = 'satellite/erg/'
         remote_path = CONFIG['satellite_remote_data_dir']
@@ -91,44 +90,20 @@ def load(trange=['2017-03-27', '2017-03-28'],
     else:
         path_prefix = ''
         remote_path = CONFIG['remote_data_dir']
-    local_path = os.path.join(CONFIG['local_data_dir'], path_prefix)
     remote_format = pathformat[len(path_prefix):]
     last_version = any(char in pathformat for char in '?*')
 
-    # find the full remote path names using the trange
-    remote_names = dailynames(file_format=remote_format,
-                              trange=trange, res=file_res)
-
-    out_files = []
     if path_prefix == 'satellite/erg/' and urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov':
-        spdf_names = dailynames(file_format=_spdf_path(remote_format),
-                               trange=trange, res=file_res)
-        # Keep each product in its original ERG-SC cache directory even though
-        # SPDF's remote directory layout is different. Group requests so hourly
-        # files share one directory listing per local directory.
-        groups = {}
-        for original, remote in zip(remote_names, spdf_names):
-            key = (os.path.dirname(original), os.path.dirname(remote))
-            names = groups.setdefault(key, [])
-            names.append(os.path.basename(remote))
-            # Older ERG-SC EFD cache files have mixed-case product names.
-            if (no_update or CONFIG["no_download"]) and os.path.basename(original) != os.path.basename(remote):
-                names.append(os.path.basename(original))
-        requests = [(names, remote_path.rstrip('/') + '/' + remote_dir + '/',
-                     os.path.join(local_path, local_dir))
-                    for (local_dir, remote_dir), names in groups.items()]
-    else:
-        requests = [(remote_names, remote_path.rstrip('/') + '/', local_path)]
+        remote_format = _spdf_path(remote_format)
 
-    for names, url, cache in requests:
-        files = download(remote_file=names, remote_path=url, local_path=cache,
-                         no_download=no_update or CONFIG["no_download"],
-                         last_version=last_version, username=uname, password=passwd,
-                         force_download=force_download)
-        if files is not None:
-            out_files.extend(files)
-
-    out_files = sorted(set(out_files))
+    remote_names = dailynames(file_format=remote_format, trange=trange, res=file_res)
+    files = download(remote_file=remote_names,
+                     remote_path=remote_path.rstrip('/') + '/',
+                     local_path=CONFIG['local_data_dir'],
+                     no_download=no_update or CONFIG["no_download"],
+                     last_version=last_version, username=uname, password=passwd,
+                     force_download=force_download)
+    out_files = sorted(set(files or []))
 
     if downloadonly:
         return out_files

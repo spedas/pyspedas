@@ -48,7 +48,7 @@ code is under `erg/`; this folder level only holds that package.
 ## Layout
 
 - `erg/load.py`: the shared `load()`, also used by the ground loaders. It selects the
-  separate ground/satellite URL, preserves the existing cache paths, and enables
+  separate ground/satellite URL, uses its layout for the local cache, and enables
   latest-version selection only for wildcard templates.
 - `erg/get_gatt_ror.py`: gets CDF global attributes for the rules-of-the-road printout.
 - Instrument wrappers, one module each: `erg/att/att.py` (attitude, from text files),
