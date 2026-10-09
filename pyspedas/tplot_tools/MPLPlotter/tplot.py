@@ -23,6 +23,23 @@ munits.registry[np.datetime64] = converter
 munits.registry[date] = converter
 munits.registry[datetime] = converter
 
+def _draw_bars(axis, plot_options):
+    """Draw the vertical and horizontal bars attached to a variable."""
+    for bar in plot_options.get('time_bar') or []:
+        line_options = {
+            'color': np.array(bar.get('line_color')) / 256.0,
+            'lw': bar.get('line_width'),
+            'linestyle': bar.get('line_dash'),
+        }
+        if bar['dimension'] == 'height':
+            axis.axvline(
+                x=datetime.fromtimestamp(bar['location'], tz=timezone.utc),
+                **line_options,
+            )
+        elif bar['dimension'] == 'width':
+            axis.axhline(y=bar['location'], **line_options)
+
+
 def pseudovar_component_props(varname: str):
     """ Return or calculate the plot properties for a single normal tplot variable
 
@@ -581,6 +598,8 @@ def tplot(variables,
                       pseudo_right_axis=pseudo_right_axis,
                       show_colorbar=pseudo_show_colorbar)
                 traces_processed += trace_count_thisvar
+
+            _draw_bars(this_axis, var_quants.attrs['plot_options'])
             
 
             continue
@@ -850,21 +869,7 @@ def tplot(variables,
                 continue
 
         # apply any vertical/horizontal bars
-        if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
-            time_bars = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['time_bar']
-
-            for time_bar in time_bars:
-                # vertical bars
-                if time_bar['dimension'] == 'height':
-                    this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc),
-                        color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'),
-                                      linestyle=time_bar.get('line_dash'))
-
-                # horizontal bars
-                if time_bar['dimension'] == 'width':
-                    this_axis.axhline(y=time_bar['location'], color=np.array(time_bar.get('line_color'))/256.0,
-                                      lw=time_bar.get('line_width'),
-                                      linestyle=time_bar.get('line_dash'))
+        _draw_bars(this_axis, var_quants.attrs['plot_options'])
 
         # highlight time intervals
         if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
