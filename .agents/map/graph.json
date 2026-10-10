@@ -781,19 +781,19 @@
         },
         {
           "path": "pyspedas/projects/dmsp/__init__.py",
-          "kind": "missing"
+          "kind": "file"
         },
         {
           "path": "pyspedas/projects/dmsp/load.py",
-          "kind": "missing"
+          "kind": "file"
         },
         {
           "path": "pyspedas/projects/dmsp/config.py",
-          "kind": "missing"
+          "kind": "file"
         },
         {
           "path": "pyspedas/projects/dmsp/README.md",
-          "kind": "missing"
+          "kind": "file"
         },
         {
           "path": "pyspedas/projects/__init__.py",
