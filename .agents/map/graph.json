@@ -780,6 +780,22 @@
           "kind": "agents"
         },
         {
+          "path": "pyspedas/projects/swfo/load.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/swfo/config.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/swfo/__init__.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/swfo/README.md",
+          "kind": "missing"
+        },
+        {
           "path": "pyspedas/projects/__init__.py",
           "kind": "file"
         },

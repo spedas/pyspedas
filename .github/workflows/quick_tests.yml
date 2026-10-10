@@ -240,6 +240,8 @@ jobs:
         coverage run -a -m  pyspedas.cotrans_tools.tests.test_quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
+        echo Starting swfo tests at `date`
+        coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
         echo Starting dscovr tests at `date`
         coverage run -a -m  pyspedas.projects.dscovr.tests.test_dscovr
         echo Starting utilities download tests at `date`

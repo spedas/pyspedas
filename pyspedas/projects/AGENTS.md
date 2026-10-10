@@ -24,6 +24,10 @@ related_files:
   - pyspedas/projects/themis/AGENTS.md
   - pyspedas/projects/ulysses/AGENTS.md
   - pyspedas/projects/wind/AGENTS.md
+  - pyspedas/projects/swfo/load.py
+  - pyspedas/projects/swfo/config.py
+  - pyspedas/projects/swfo/__init__.py
+  - pyspedas/projects/swfo/README.md
   - pyspedas/projects/__init__.py
   - pyspedas/projects/cnofs/load.py
   - pyspedas/projects/de2/__init__.py
@@ -60,7 +64,7 @@ maintenance: |
 
 # Mission packages
 
-One package per mission (39). `__init__.py` imports all of them, so `import pyspedas`
+One package per mission (40). `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.
 
 ## Missions
@@ -101,6 +105,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - `solo/`: Solar Orbiter, SPDF. AGENTS.md: [solo/AGENTS.md](solo/AGENTS.md)
 - `st5/`: Space Technology 5, SPDF: `mag()` over `load()`.
 - `stereo/`: STEREO, Berkeley SPRG mirror. AGENTS.md: [stereo/AGENTS.md](stereo/AGENTS.md)
+- `swfo/`: SWFO / SOLAR-1, NOAA NCEI S3-compatible archive: `mag()`, `swips()`, `stis()` over `load()`. Reads compressed netCDF using each variable's time coordinate; env `SWFO_DATA_DIR`, `SWFO_NO_DOWNLOAD`.
 - `swarm/`: Swarm, VirES HAPI server: `mag()` over `load()` in `swarm/load.py`, which calls `hapi()` (`pyspedas/hapi_tools/hapi.py`).
 - `themis/`: THEMIS/ARTEMIS, Berkeley. AGENTS.md: [themis/AGENTS.md](themis/AGENTS.md)
 - `twins/`: TWINS, SPDF: `ephemeris()`, `lad()`, `imager()`.
