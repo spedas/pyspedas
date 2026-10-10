@@ -13,7 +13,10 @@
 
 import os
 import sys
-sys.path.insert(0, os.path.abspath('../..'))
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(REPO_ROOT))
 import tomli
 
 import pyspedas
@@ -22,7 +25,7 @@ import pyspedas.cotrans_tools.cotrans
 # -- Project information -----------------------------------------------------
 
 try:
-    with open("../../pyproject.toml", "rb") as f:
+    with (REPO_ROOT / "pyproject.toml").open("rb") as f:
         toml_dict = tomli.load(f)
 
     pyproj_version = toml_dict['project']['version']
@@ -93,7 +96,7 @@ html_static_path = ['_static']
 
 html_css_files = ['css/custom.css']
 
-autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets']
+autodoc_mock_imports = ['sip', 'PyQt5', 'PyQt5.QtGui', 'PyQt5.QtCore', 'PyQt5.QtWidgets', 'mth5']
 
 # Intersphinx generates automatic links to the documentation of objects
 # in other packages. When mappings are removed or added, please update
@@ -110,3 +113,18 @@ intersphinx_mapping = {
     ),
     "sphinx": ("https://www.sphinx-doc.org/en/master/", None),
 }
+
+
+# Requests uses a bundled CA list that can miss enterprise roots on Windows.
+# Use the OS trust store for documentation links while retaining verification.
+# Respect an explicitly configured requests certificate bundle.
+if sys.platform == "win32" and not os.environ.get("REQUESTS_CA_BUNDLE"):
+    import atexit
+    import ssl
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(mode="w", suffix=".pem", delete=False) as bundle:
+        for certificate in ssl.create_default_context().get_ca_certs(binary_form=True):
+            bundle.write(ssl.DER_cert_to_PEM_cert(certificate))
+    tls_cacerts = bundle.name
+    atexit.register(Path(bundle.name).unlink, missing_ok=True)

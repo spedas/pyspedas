@@ -107,6 +107,7 @@ Some key points that apply to most or all of these load routines:
    solo
    st5
    stereo
+   swfo
    swarm
    themis
    twins
