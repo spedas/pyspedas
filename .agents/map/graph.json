@@ -780,6 +780,22 @@
           "kind": "agents"
         },
         {
+          "path": "pyspedas/projects/dmsp/__init__.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/load.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/config.py",
+          "kind": "missing"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/README.md",
+          "kind": "missing"
+        },
+        {
           "path": "pyspedas/projects/__init__.py",
           "kind": "file"
         },

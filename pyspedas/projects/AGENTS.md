@@ -24,6 +24,10 @@ related_files:
   - pyspedas/projects/themis/AGENTS.md
   - pyspedas/projects/ulysses/AGENTS.md
   - pyspedas/projects/wind/AGENTS.md
+  - pyspedas/projects/dmsp/__init__.py
+  - pyspedas/projects/dmsp/load.py
+  - pyspedas/projects/dmsp/config.py
+  - pyspedas/projects/dmsp/README.md
   - pyspedas/projects/__init__.py
   - pyspedas/projects/cnofs/load.py
   - pyspedas/projects/de2/__init__.py
@@ -60,7 +64,7 @@ maintenance: |
 
 # Mission packages
 
-One package per mission (39). `__init__.py` imports all of them, so `import pyspedas`
+One package per mission (40). `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.
 
 ## Missions
@@ -74,6 +78,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - `cnofs/`: C/NOFS, SPDF: `cindi()`, `plp()`, `vefi()` over `load()`.
 - `csswe/`: CSSWE, SPDF: `reptile()` over `load()`.
 - `de2/`: Dynamics Explorer 2, SPDF: `mag`, `nacs`, `rpa`, `fpi`, `idm`, `wats`, `vefi`, `lang`, all `better_partial(load, instrument=...)` in `de2/__init__.py`.
+- `dmsp/`: DMSP, SPDF CDF: `ssj()`, `ssies()`, `ssm()` over `load()`. SSIES files cover individual orbits; env `DMSP_DATA_DIR`, `DMSP_NO_DOWNLOAD`.
 - `dscovr/`: DSCOVR, SPDF: `mag`, `fc`, `orb`, `att`, `all` (partials of `load()`).
 - `elfin/`: ELFIN, UCLA server. AGENTS.md: [elfin/AGENTS.md](elfin/AGENTS.md)
 - `equator_s/`: Equator-S, SPDF: `mam`, `edi`, `epi`, `ici`, `pcd`, `sfd` (partials of `load()`).
