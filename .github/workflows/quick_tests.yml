@@ -211,6 +211,8 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
+        echo "Starting HAPI TestData tests"
+        coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
         # These tests use a DAS2 server at UIowa
         echo "Starting galileo tests at $(date)"
         coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
