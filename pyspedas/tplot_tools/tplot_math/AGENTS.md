@@ -47,8 +47,8 @@ maintenance: |
 # tplot_math
 
 Operations on tplot variables: arithmetic, interpolation, clipping, gap and flag
-handling, smoothing and power spectra. Each module holds one public function (plus
-helpers), imported in `pyspedas/tplot_tools/__init__.py` and re-exported from `pyspedas`.
+handling, smoothing and power spectra. Each module holds one public function (`tsmooth.py`
+holds two), imported in `pyspedas/tplot_tools/__init__.py` and re-exported from `pyspedas`.
 
 ## Layout
 

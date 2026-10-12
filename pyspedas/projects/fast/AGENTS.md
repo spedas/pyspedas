@@ -16,8 +16,8 @@ maintenance: |
 
 # FAST
 
-Loaders for the FAST auroral satellite: DC and AC fields, ESA electron and ion
-spectrometers, and TEAMS ion composition. All data are CDF files from SPDF.
+Loaders for the FAST auroral satellite: DC and AC fields, electrostatic
+analyzers (ESA), and the TEAMS mass spectrograph. All data are CDF files from SPDF.
 
 ## Layout
 
@@ -55,7 +55,8 @@ Files go through `download()` and `cdf_to_tplot()` one instrument at a time.
   instrument only.
 - `time_clip` defaults to False; when set, variables are clipped in place.
 - The local data folder is `FAST_DATA_DIR`, else `SPEDAS_DATA_DIR/fast`, else
-  `fast_data/` (`config.py`). Setting `FAST_NO_DOWNLOAD` turns downloads off.
+  `fast_data/` (`config.py`). Setting `FAST_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

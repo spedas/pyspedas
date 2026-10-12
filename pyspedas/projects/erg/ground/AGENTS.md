@@ -30,16 +30,16 @@ all-sky imagers, SuperDARN radars, riometers and VLF receivers. There is no grou
 
 ## Layout
 
-- `geomag/gmag_isee_fluxgate.py`, `geomag/gmag_isee_induction.py`: ISEE (formerly STEL)
-  fluxgate and induction magnetometers.
-- `geomag/gmag_stel_fluxgate.py`, `geomag/gmag_stel_induction.py`: old names that pass all
-  arguments to the ISEE loaders.
+- `geomag/gmag_isee_fluxgate.py`, `geomag/gmag_isee_induction.py`: ISEE fluxgate and
+  induction magnetometers.
+- `geomag/gmag_stel_fluxgate.py`, `geomag/gmag_stel_induction.py`: STEL-named wrappers that
+  pass all arguments to the ISEE loaders.
 - `geomag/gmag_magdas_1sec.py`: MAGDAS 1-second magnetometer data.
-- `geomag/gmag_mm210.py`: 210 MM magnetometer chain.
+- `geomag/gmag_mm210.py`: mm210 magnetometer data.
 - `camera/camera_omti_asi.py`: OMTI all-sky imagers, by site and `wavelength` (default 5577).
-- `radar/superdarn/sd_fit.py`: SuperDARN fitacf data by radar; `get_sphcntr.py` computes
-  cell-centre positions for the range-gate tables.
-- `riometer/isee_brio.py`: ISEE broad-beam riometers.
+- `radar/superdarn/sd_fit.py`: SuperDARN fitacf data by radar; `get_sphcntr.py` gets the
+  table of the pixel centers from the table of the pixel corners.
+- `riometer/isee_brio.py`: ISEE riometers.
 - `vlf/isee_vlf.py`: ISEE VLF receivers (`cal_gain=True` applies the CDF's gain calibration).
 - The `__init__.py` files are empty; `pyspedas/projects/erg/__init__.py` exports the loaders.
 
@@ -56,12 +56,12 @@ Take `gmag_isee_fluxgate()`:
    `_<site>`.
 3. It prints the station's PI and rules of the road from the CDF global attributes
    (`pyspedas/projects/erg/satellite/erg/get_gatt_ror.py`).
-4. It renames the loaded variables to the IDL SPEDAS names
+4. It renames the loaded variables
    (`isee_fluxgate_mag_<site>_<res>_hdz`), clips fill values, and sets ylim and labels.
 
 The other loaders follow the same site loop. Several (`isee_brio`, `isee_vlf`,
 `gmag_isee_induction`, `camera_omti_asi`, `sd_fit`) reopen the CDF with cdflib after
-loading, to read fill values, calibration or position tables that `cdf_to_tplot()` skips.
+loading, to read fill values, calibration or position tables.
 
 ## Things to know
 
@@ -69,11 +69,11 @@ loading, to read fill values, calibration or position tables that `cdf_to_tplot(
   `isee_brio()` loads with a temporary `iseetmp_` prefix and renames to
   `isee_brio<freq>_<site>_<res>_<param>`.
 - Hourly 1h fluxgate data live in the 1min files, so `datatype='1h'` loads 1min files.
-- `sd_fit()` loads one file per radar per day (version wildcard `*`) and builds numbered
+- `sd_fit()` loads daily files per radar (`sd_fitacf_l2_<site>_%Y%m%d*.cdf`) and builds numbered
   variables that follow the CDF's `position_tbl_<n>` tables (`sd_<site>_pwr_<n>`,
   `sd_<site>_vlos_<n>`, ...); `compact=True` keeps only a minimal set.
 - Site lists are fixed in each module; a new station needs an edit there.
-- None of these loaders take `probe` or `level`; the level is part of the template.
+- None of these loaders take `probe` or `level`.
 
 ## Tests
 

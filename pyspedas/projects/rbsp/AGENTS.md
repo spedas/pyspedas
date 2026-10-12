@@ -33,7 +33,7 @@ maintenance: |
 
 Loaders for the two Van Allen Probes, `a` and `b`: EMFISIS, EFW, RBSPICE, the
 ECT suite (MagEIS, HOPE, REPT), the RPS proton spectrometer and the ECT magnetic
-ephemeris. All data are daily CDF files from SPDF
+ephemeris. All data are CDF files from SPDF
 (`https://spdf.gsfc.nasa.gov/pub/data/rbsp/`).
 
 ## Layout
@@ -62,7 +62,8 @@ under `rbsp<probe>/<level>/ect/<instr>/...` and the ephemeris under
 in `_v*.cdf` (EFW `_v??.cdf`), and `last_version` is not passed, so every
 matching version on the server is downloaded.
 
-`rbspice()` then runs, for each probe, `rbsp_load_rbspice_read()`,
+`rbspice()` then runs, for each probe (if `datatype` is `TOFxEH`, `TOFxEnonH`
+or `TOFxPHHHELT`), `rbsp_load_rbspice_read()`,
 `rbsp_rbspice_omni()` and `rbsp_rbspice_spin_avg()` and adds the new variable
 names to its return list.
 
@@ -84,7 +85,8 @@ names to its return list.
 - `rbspice()` and `rps()` default to `get_support_data=True`.
 - The local data folder is `RBSP_DATA_DIR`, else `SPEDAS_DATA_DIR/rbsp`, else
   `rbsp_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `RBSP_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `RBSP_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads
+  off.
 
 ## Tests
 

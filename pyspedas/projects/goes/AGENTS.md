@@ -65,7 +65,7 @@ Each probe and instrument goes through `dailynames()`, `download()` and
   into the instrument's `else` branch, which is low resolution for some
   instruments and full resolution for others, so read the branch in `load.py`.
 - Names: an empty `prefix` or `'probename'` gives `g<probe>_<instrument>_`
-  (`g15_fgm_BX_1`, `g16_mag_b_gsm`, `g15_orbit_XYZ_GSM`). Any other `prefix`
+  (`g15_fgm_BX_1`, `g13_mag_b_gsm`, `g15_orbit_XYZ_GSM`). Any other `prefix`
   replaces it entirely, so multi-probe loads then collide.
 - `load()` has no `varformat`, `varnames`, `get_support_data` or `notplot`;
   `load_orbit()` has them. `time_clip` defaults to True in both.
@@ -73,7 +73,7 @@ Each probe and instrument goes through `dailynames()`, `download()` and
   (yearly `goes<N>_ephemeris_ssc_%Y0101_v??.cdf` files).
 - All three servers share one local folder, each mirroring its server paths:
   `GOES_DATA_DIR`, else `SPEDAS_DATA_DIR/goes`, else `goes_data/` (`config.py`).
-  Setting `GOES_NO_DOWNLOAD` turns downloads off.
+  Setting `GOES_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

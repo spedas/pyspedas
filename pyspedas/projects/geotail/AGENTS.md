@@ -22,7 +22,7 @@ maintenance: |
 
 # Geotail
 
-Loaders for the Geotail magnetotail mission: magnetic field, electric field,
+Loaders for the Geotail mission: magnetic field, electric field,
 plasma, energetic particles and plasma waves. All data are CDF files from SPDF.
 
 ## Layout
@@ -43,7 +43,7 @@ Each wrapper calls `load(instrument=...)`; `epic()` passes `instrument='epi'`.
 and runs the usual `dailynames()`, `download()`, `cdf_to_tplot()` pipeline.
 EPIC files sit under `epic/epi_<datatype>/`.
 
-Every wrapper defaults to `datatype='k0'` (key parameters). `mgf` also takes
+Every wrapper defaults to `datatype='k0'`. `mgf` also takes
 `eda3sec` and `edb3sec` (3-second data, under `mgf/<datatype>_mgf/`); `lep` has
 a branch only for `k0`.
 
@@ -55,8 +55,8 @@ a branch only for `k0`.
   options on `IDiffI_I`.
 - `time_clip` defaults to False in the wrappers and in `load()`.
 - The local data folder is `GEOTAIL_DATA_DIR`, else `SPEDAS_DATA_DIR/geotail`,
-  else `geotail_data/` (`config.py`). Setting `GEOTAIL_NO_DOWNLOAD` turns
-  downloads off.
+  else `geotail_data/` (`config.py`). Setting `GEOTAIL_NO_DOWNLOAD` to true
+  turns downloads off.
 
 ## Tests
 
