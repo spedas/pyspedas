@@ -1,7 +1,9 @@
 # Useful resources
 * Email point of contact for PySPEDAS developers: <jwl@ssl.berkeley.edu>
 * PySPEDAS code: [PySPEDAS Github repository](https://github.com/spedas/pyspedas)
-* Documentation: [SPEDAS and PySPEDAS wiki](https://spedas.org/wiki)
+* Definitive documentation: [PySPEDAS on Read the Docs](https://pyspedas.readthedocs.io/)
+* Development process and setup: [PySPEDAS developer guide](https://pyspedas.readthedocs.io/en/latest/devguide.html)
+* Additional resources: [SPEDAS and PySPEDAS wiki](https://spedas.org/wiki)
 * PySPEDAS example repositories, including many Jupyter notebooks
   * [PySPEDAS examples](https://github.com/spedas/pyspedas_examples)
   * [THEMIS examples](https://github.com/spedas/themis-examples)
@@ -15,6 +17,40 @@ __Impostor syndrome disclaimer__: Yes, this includes you! Even if you're new to 
 undertake toward making PySPEDAS a more powerful, easier to use, and better documented package. 
 
 Contributions may take many forms other than coding or bug fixing!
+
+## Preparing a code contribution
+
+Work in a separate branch, starting from an up-to-date `master`, or in a branch
+in your personal fork. The `master` branch is protected; all changes require a
+pull request and human review by a package maintainer.
+
+Before requesting review:
+
+1. Add one or more `unittest` tests for each new feature or bug fix. For a bug
+   fix, include a regression test that exercises the original failure. Run the
+   relevant test modules locally and report the results.
+2. If you create a new test module, add it to
+   `.github/workflows/full_coverage.yml` in a suitable shard. Add it to
+   `.github/workflows/quick_tests.yml` only if it runs quickly and reliably.
+   Tests added to an existing module use its existing workflow entries; check
+   that the module is included in the intended workflows.
+3. Update NumPy-style docstrings and the RST documentation for new user-facing
+   routines or changed parameters, data types, return values, or behavior. Build
+   the HTML locally and inspect the affected pages.
+4. Check `git status` and the diff. Stage intended new source files, tests, RST
+   pages and images with `git add`, including files created by a coding assistant.
+   Keep downloaded data, local environments and scratch files out of the commit.
+5. Commit and push the branch, then open a pull request targeting `master`.
+   Describe the change, tests and documentation updates. To close an issue on
+   merge, use a closing keyword such as `Fixes #123` in the PR description when
+   the change fully resolves that issue; merely mentioning an issue is not enough.
+
+A maintainer reviews and squash-merges approved pull requests. After merging,
+you can delete the issue branch. Start follow-up work in a fresh branch from
+updated `master`, even if an issue is reopened.
+
+See the [developer guide](https://pyspedas.readthedocs.io/en/latest/devguide.html)
+for detailed testing, documentation and pull request guidance.
 
 ## Ask Questions
 Are you having trouble downloading, installing, or using PySPEDAS?  Do you have questions about how the various tools work?  Are you wondering how to accomplish a certain workflow in PySPEDAS, or if there's some other package that might 
@@ -34,9 +70,25 @@ Fixes to bugs you come across are always welcomed, and can be added by creating 
 Is there a capability or tool you'd like to see included in PySPEDAS?  If you already have some code that does what you want, fantastic!  Send us a pull request and we'll take a look!  Otherwise, please feel free to open a Github issue, or email the developers directly, and let us know what you'd like us to add. 
 
 ## Add, update, edit, or translate documentation
-We strive to have complete, easy to understand documentation for all user-facing routines. An easy way to contribute to pySPEDAS is to improve our documentation. We use standard, numpy-style docstrings in our code to allow users to access the documentation using the help() function. As a user's guide, we use README.md (markdown) files in each project directory; this is where we show information on each mission, such as datasets available, acknowledgements and provide a few examples.
+The definitive documentation lives at
+[pyspedas.readthedocs.io](https://pyspedas.readthedocs.io/). We build it with Sphinx
+and the Read the Docs theme from RST pages in `docs/source/`. Pushing to `master`
+triggers a rebuild on Read the Docs. Mission README files and the SPEDAS wiki
+provide additional resources.
 
-We some (rather sparse, at the moment) documentation available on the SPEDAS wiki.  It takes a fair amount of effort to keep this up to date with new PySPEDAS features, and we can always use some help in that department.
+Use NumPy-style docstrings for public functions and add an `.. autofunction::`
+directive to the appropriate RST page so Sphinx renders the parameters, return
+values, usage notes and examples. Keep docstrings current when the interface or
+behavior changes. Loader examples may also appear in RST code blocks with static
+sample plots; keep the repeated examples and images consistent.
+
+New missions need their own RST page and an entry in `docs/source/projects.rst`.
+Add new analysis tools to an appropriate existing page, or create a page and
+index entry for a new group of tools. The `doc` dependency group in
+`pyproject.toml` supplies Sphinx and its theme for local builds, alongside the
+package's runtime dependencies. Run `make html` from `docs/` (`make.bat html` on
+Windows), then inspect the output in `docs/build/html/` and review build warnings.
+Read the Docs uses `.readthedocs.yaml` and `docs/requirements.txt` for hosted builds.
 
 If you're fluent enough in another language to help translate some of our documentation, that would be an outstanding act of service to the PySPEDAS user community!
 
@@ -46,11 +98,27 @@ the THEMIS/ARTEMIS and MMS missions, and general PySPEDAS and PyTplot capabiliti
 If you've created something that might interest or help other PySPEDAS users, please feel free to share it (preferably as a Github pull request, or by emailing the maintainers) and we'll be happy to take a look.
 
 ## Add Unit Tests
-We use GitHub Actions to run our test suite automatically on every commit to the repository, and coveralls.io to measure code coverage. We use Python's unittest framework to implement these tests, and examples can be found in the 'tests' directory of any mission. 
+We use Python's `unittest` framework, with test modules in `tests/` directories
+beside the source code. New features and bug fixes should include tests. Most
+mission tests download real data and require network access.
+
+The GitHub Actions workflows list the test modules to run explicitly:
+
+- `quick_tests.yml` runs a selected sequence of tests on pushes and pull requests,
+  and can also be run manually. It provides relatively quick, reliable feedback;
+  it does not cover the entire package.
+- `full_coverage.yml` is run manually. It groups tests into parallel shards,
+  often by data server or related functionality. Failed shards do not cancel the
+  others. For transient data server failures, manually rerun failed jobs in the
+  same workflow run. Once all shards succeed, coverage data is combined and
+  uploaded to Coveralls.
+
+Always register new test modules in full coverage. Include them in quick tests
+only when they avoid lengthy calculations, large downloads and unreliable data
+providers. Adding a test to an existing module does not require another workflow
+entry if that module is already listed.
 
 ## Add Cross-Validation Tests
 We also implement validation scripts, which load data and print/compare some subset of the test outputs with results from IDL SPEDAS or other relevant tools.
 These files are typically stored in the 'tests/validation/' directories, and (for example) might be called from our IDL test suite to validate that the data loaded/calculated in our IDL code matches that in our Python code. 
 
-## Add Support for New Missions
-We have a robust, well-tested template for adding new missions to pySPEDAS. If you would like to contribute a new mission or project to pySPEDAS, please contact the SPEDAS team for the latest copy of the template, or just code it up on your own (hopefully as consistent as possible with the conventions followed by other missions), and send us a PR on Github.

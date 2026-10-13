@@ -5,6 +5,7 @@
       "path": "AGENTS.md",
       "parent": null,
       "children": [
+        "docs/AGENTS.md",
         "pyspedas/analysis/AGENTS.md",
         "pyspedas/cotrans_tools/AGENTS.md",
         "pyspedas/geopack/AGENTS.md",
@@ -96,6 +97,10 @@
           "kind": "file"
         },
         {
+          "path": "docs/AGENTS.md",
+          "kind": "agents"
+        },
+        {
           "path": "docs/source/pyspedas_2_migration.rst",
           "kind": "file"
         },
@@ -104,11 +109,23 @@
           "kind": "file"
         },
         {
+          "path": "README.md",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/devguide.rst",
+          "kind": "file"
+        },
+        {
           "path": "pyproject.toml",
           "kind": "file"
         },
         {
           "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
           "kind": "file"
         },
         {
@@ -134,6 +151,90 @@
         {
           "path": ".agents/map/graph.json",
           "kind": "file"
+        }
+      ]
+    },
+    {
+      "path": "docs/AGENTS.md",
+      "parent": "AGENTS.md",
+      "children": [],
+      "header_ok": true,
+      "related_files": [
+        {
+          "path": "AGENTS.md",
+          "kind": "agents"
+        },
+        {
+          "path": "pyproject.toml",
+          "kind": "file"
+        },
+        {
+          "path": ".readthedocs.yaml",
+          "kind": "file"
+        },
+        {
+          "path": "docs/requirements.txt",
+          "kind": "file"
+        },
+        {
+          "path": "docs/Makefile",
+          "kind": "file"
+        },
+        {
+          "path": "docs/make.bat",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/conf.py",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/index.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/devguide.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/contributing.rst",
+          "kind": "file"
+        },
+        {
+          "path": "CONTRIBUTING.md",
+          "kind": "file"
+        },
+        {
+          "path": "README.md",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/projects.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/coords.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/geopack.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/utilities.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/analysis.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/akebono.rst",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/_static",
+          "kind": "folder"
         }
       ]
     },
@@ -2135,6 +2236,10 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/mms/feeps_tools/feeps.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/mms/mec_ascii/state.py",
           "kind": "file"
         },
@@ -3042,6 +3147,10 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/themis/tests/test_themis_check_args.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/themis/spacecraft/fields/fgm.py",
           "kind": "file"
         },
@@ -3339,6 +3448,10 @@
         },
         {
           "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
           "kind": "file"
         }
       ]

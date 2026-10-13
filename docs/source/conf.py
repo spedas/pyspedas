@@ -35,7 +35,7 @@ except (KeyError, FileNotFoundError):
 
 print(f"Pyproj_version: {pyproj_version}")
 project = 'PySPEDAS'
-copyright = '2018-2025, Regents of the University of California, unless otherwise indicated'
+copyright = '2018-2026, Regents of the University of California, unless otherwise indicated'
 author = 'The PySPEDAS Community'
 
 # The full version, including alpha/beta/rc tags

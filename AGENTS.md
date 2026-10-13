@@ -20,10 +20,14 @@ related_files:
   - pyspedas/tplot_tools/store_data.py
   - pyspedas/tplot_tools/get_data.py
   - pyspedas/tplot_tools/tplot_rename.py
+  - docs/AGENTS.md
   - docs/source/pyspedas_2_migration.rst
   - CONTRIBUTING.md
+  - README.md
+  - docs/source/devguide.rst
   - pyproject.toml
   - .github/workflows/quick_tests.yml
+  - .github/workflows/full_coverage.yml
   - .github/workflows/agents_md.yml
   - .github/scripts/check_agents_md.py
   - .github/scripts/build_agents_map.py
@@ -32,10 +36,11 @@ related_files:
   - .agents/map/graph.json
 maintenance: |
   Update when the package layout, the loader pipeline, tplot storage or the test
-  setup changes, and list any new AGENTS.md whose nearest parent is this file.
+  setup, branching policy or documentation workflow changes, and list any new
+  AGENTS.md whose nearest parent is this file.
 ---
 
-# pySPEDAS
+# PySPEDAS
 
 Python Space Physics Environment Data Analysis Software. Mission loaders download
 data files (mostly CDF) and store them as tplot variables; the rest of the package
@@ -57,6 +62,23 @@ Each of these folders has its own AGENTS.md, and so do most mission packages.
   `pyspedas/analysis/`: coordinate transforms, field models, particle
   distributions and general analysis.
 - `pyspedas/__init__.py` re-exports the public API by name (no `import *`).
+
+## Branching and pull requests
+
+The `master` branch has protection rules that prevent direct pushes. Perform all
+work in a separate branch, and create a pull request when it is ready for review
+by a package maintainer. Do not commit or merge changes to `master` without human
+review. Approved pull requests are squash-merged into `master`.
+
+After a pull request is squash-merged, start subsequent work in a fresh branch
+from updated `master`. Reusing an already-merged branch can complicate the history
+of subsequent pull requests and may cause merge conflicts.
+
+Before committing, review `git status` and the diff, and stage intended new
+source files, tests, documentation and images, including files created by an
+agent. Keep downloaded data, local environments and scratch files out of commits.
+See `CONTRIBUTING.md` and `docs/source/devguide.rst` for the human development
+process; `README.md` provides a brief overview.
 
 ## How a loader works
 
@@ -88,6 +110,10 @@ Read it as `pyspedas.tplot_tools.data_quants`, never with
 (`pyspedas/tplot_tools/tplot_rename.py`) replaces the dict with a new object, so
 a name bound at import time goes stale.
 
+Treat the details of the `data_quants` structure as an implementation detail,
+not an API contract. Most user-facing routines should interact with this structure
+via `get_data()`, `store_data()`, and similar utilities.
+
 ## Finding code
 
 - Short names repeat across missions (`fgm`, `load`, `config`), so search within
@@ -103,13 +129,51 @@ a name bound at import time goes stale.
 
 ## Tests and style
 
+- Include one or more `unittest` tests for each new feature or bug fix. For bug
+  fixes, add a regression test that exercises the original failure. Run relevant
+  tests and report their results before requesting review.
+- CI lists test modules explicitly. Tests added to an existing module use its
+  existing workflow entries; verify that the module is included. Register every
+  new module in the appropriate workflows as described below.
 - Tests sit next to the code in `tests/` folders and most download real data, so
   they need network access. Run one module the way CI
   (`.github/workflows/quick_tests.yml`) does:
   `python -m pyspedas.projects.themis.tests.test_themis`.
 - `SPEDAS_DATA_DIR`, or a per-mission variable such as `THM_DATA_DIR`, sets where
   data is downloaded.
+- The two primary CI workflows are `.github/workflows/quick_tests.yml` and
+  `.github/workflows/full_coverage.yml`. Always add new test suites to the
+  `full_coverage` workflow, preferably in a test group ("shard") that exercises
+  the same data server or is otherwise related to the test being added. New test
+  suites may also be added to `quick_tests`, but only if they avoid lengthy
+  computations, large amounts of downloaded data, or known unreliable data
+  providers.
+- `quick_tests` runs automatically on pushes and pull requests, and can also be
+  triggered manually (`workflow_dispatch`). `full_coverage` is triggered manually.
+  If shards fail because of transient data server failures, manually rerun the
+  failed jobs in the same workflow run; the workflow does not retry them
+  automatically. Once all shards have succeeded, it combines their coverage data,
+  generates a code coverage report, and uploads it to coveralls.io.
 - Docstrings are numpy style (`CONTRIBUTING.md`).
+
+## Documentation
+
+The definitive PySPEDAS documentation is at
+[pyspedas.readthedocs.io](https://pyspedas.readthedocs.io/). It is built with Sphinx
+and the Read the Docs theme from the RST sources, indices, images and build
+scripts in `docs/`. Pushing to `master` triggers a documentation rebuild on
+Read the Docs.
+
+The documentation follows the package structure, with mission pages and pages
+for coordinate transforms, field modeling, utilities and analysis tools. RST
+pages use `autofunction` extensively to render function docstrings, including
+arguments, return values, usage notes and examples. Keep docstrings and any
+examples repeated in RST pages consistent with the code.
+
+New missions must have their own RST page and an entry in the mission index.
+Document new analysis tools in an appropriate existing page, or create a page
+and index entry for a new group of tools. See `docs/AGENTS.md` for source layout,
+local build dependencies and documentation authoring guidance.
 
 ## AGENTS.md files
 
