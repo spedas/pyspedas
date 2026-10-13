@@ -46,7 +46,7 @@ maintenance: |
 
 Loaders for the MAVEN Mars orbiter. The default route asks the MAVEN Science
 Data Center (SDC) file API at LASP which files exist and downloads them one by
-one; it is unlike the directory-listing loaders of other missions. Some
+one. Some
 wrappers also have `spdf=True`, which reads CDFs from SPDF with the usual
 pipeline through the `spdf/` subpackage.
 

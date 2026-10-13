@@ -17,6 +17,7 @@ related_files:
   - pyspedas/projects/ulysses/tests/test_ulysses.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - .github/workflows/quick_tests.yml
 maintenance: |
   Update when load.py gains or changes an instrument branch or keyword, when a
   wrapper is added to __init__.py, or when the SPDF Ulysses folder layout changes.
@@ -63,9 +64,9 @@ yearly file `uy_<datatype>_%Y0101_v??.cdf`. `cospin` datatypes are bare names
 - `prefix=None` and `suffix=None` are treated as empty strings.
 - The environment variables use `ULY`, not `ULYSSES`: the local data folder is
   `ULY_DATA_DIR`, else `SPEDAS_DATA_DIR/ulysses`, else `ulysses_data/`
-  (`config.py`). Setting `ULY_NO_DOWNLOAD` turns downloads off.
+  (`config.py`). Setting `ULY_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 
 `python -m pyspedas.projects.ulysses.tests.test_ulysses`. CI runs it in
-`.github/workflows/full_coverage.yml`, not in the quick tests.
+`.github/workflows/full_coverage.yml` and `.github/workflows/quick_tests.yml`.

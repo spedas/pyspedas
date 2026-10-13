@@ -82,7 +82,7 @@ or an explicit version string including the leading `v` for direct downloads.
 
 `erg_cotrans()` (`erg/common/cotrans/erg_cotrans.py`) converts between the spacecraft
 frames SGA, SGI, DSI and J2000 by chaining `sga2sgi.py`, `sgi2dsi.py` and `dsi2j2000.py`.
-Geophysical frames (GSE, GSM, SM, ...) are reached from J2000 with `cotrans()` in
+Geophysical frames (GEI, GSE, etc) are reached from J2000 with `cotrans()` in
 `pyspedas/cotrans_tools/cotrans.py`.
 
 - If `in_coord`/`out_coord` are not given, the frame is taken from the last `_`-part of
@@ -96,8 +96,8 @@ Geophysical frames (GSE, GSM, SM, ...) are reached from J2000 with `cotrans()` i
 
 The `*_part_products` routines take the name of a loaded 3D flux variable, such as
 `erg_mepe_l2_3dflux_FEDU` or `erg_xep_l2_FEDU_SSD`, and read the instrument from the second
-`_`-part of the name, so renamed variables fail. They follow the same design as MMS
-`mms_part_products()` but use their own `erg_pgs_*` helpers, borrowing only
+`_`-part of the name, so a renamed variable must keep the instrument there. They use
+their own `erg_pgs_*` helpers, borrowing only
 `spd_pgs_moments()` and `spd_pgs_regrid()` from `pyspedas/particles/`. The outputs `pa`,
 `gyro`, `fac_energy` and `fac_moments` need `mag_name` (MGF in DSI, e.g.
 `erg_mgf_l2_mag_8sec_dsi`) and `pos_name` (e.g. `erg_orb_l2_pos_gse`), loaded beforehand;

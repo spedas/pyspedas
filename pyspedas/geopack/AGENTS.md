@@ -43,7 +43,7 @@ parameters. Public names are re-exported from `pyspedas/__init__.py`.
 
 ## Layout
 
-- `igrf.py` (`tigrf`), `t89.py` (`tt89`), `t96.py` (`tt96`), `t01.py` (`tt01`), `ts04.py` (`tts04`): field at each position; each also has a `get_<model>_parameters()` that builds the N x 10 `parmod` array.
+- `igrf.py` (`tigrf`), `t89.py` (`tt89`), `t96.py` (`tt96`), `t01.py` (`tt01`), `ts04.py` (`tts04`): field at each position; each except `igrf.py` also has a `get_<model>_parameters()` that builds the N x 10 `parmod` array.
 - `generic_geopack_adapters.py`: `make_model(name, time, parmod)` calls `geopack.recalc(time)` and returns an object whose `B_gsm(pos_re)` adds the external model to IGRF.
 - `prepare_pos_variable.py`: converts the input position to GSM and Re, using its `data_att` metadata or `coord_in`/`units_in`.
 - `clean_model_parameters.py`: turns a scalar, array or tplot name into one value per position time (nearest or interpolated).

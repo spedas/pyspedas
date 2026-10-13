@@ -29,8 +29,8 @@ maintenance: |
 
 # Polar
 
-Loaders for the Polar magnetospheric mission. All data are daily key-parameter
-CDF files from SPDF (`https://spdf.gsfc.nasa.gov/pub/data/polar/`).
+Loaders for the Polar magnetospheric mission. All data are daily `k0` CDF
+files from SPDF (`https://spdf.gsfc.nasa.gov/pub/data/polar/`).
 
 ## Layout
 
@@ -54,15 +54,15 @@ and runs the usual `dailynames()`, `download()`, `cdf_to_tplot()` pipeline, then
 
 ## Things to know
 
-- `datatype` defaults to `'k0'` in every wrapper, and the wrapper docstrings
-  list no other value.
+- `datatype` defaults to `'k0'` in every wrapper. The wrapper docstrings leave
+  "Valid options:" empty; the `load()` docstring lists only `'k0'`.
 - There is no automatic prefix; variables keep their CDF names, so use `prefix`
   or `suffix` to keep instruments apart.
 - `__init__.py` does not export `load`; import it from
   `pyspedas.projects.polar.load` if needed.
 - The local data folder is `POLAR_DATA_DIR`, else `SPEDAS_DATA_DIR/polar`, else
   `polar_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `POLAR_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `POLAR_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads off.
 
 ## Tests
 

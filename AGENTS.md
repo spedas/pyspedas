@@ -46,9 +46,10 @@ dependencies are in `pyproject.toml`.
 
 Each of these folders has its own AGENTS.md, and so do most mission packages.
 
-- `pyspedas/projects/<mission>/`: one package per mission (39). Each has a
-  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`,
-  one module per instrument, a README.md user guide and a `tests/` folder.
+- `pyspedas/projects/<mission>/`: one package per mission (39). Most have a
+  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`
+  and one module per instrument; each has a README.md user guide and a `tests/`
+  folder.
 - `pyspedas/tplot_tools/`: tplot variable storage and plotting. This is the former
   PyTplot package, now part of pySPEDAS; there is no external `pytplot` dependency.
 - `pyspedas/utilities/`: shared helpers, including downloading and file naming.
@@ -66,11 +67,12 @@ Most loaders run the same pipeline. For `pyspedas.projects.themis.fgm()`:
 2. `load()` picks a file path template for the instrument in an if/elif chain.
 3. `dailynames()` (`pyspedas/utilities/dailynames.py`) expands the template over
    the time range, and `download()` (`pyspedas/utilities/download.py`) fetches the
-   files by reading the remote directory listing (S3 and fsspec also work).
+   files; when a file name has wildcards (`?`, `*`) it first reads the remote
+   directory listing to expand them (S3 and fsspec also work).
 4. `cdf_to_tplot()` (`pyspedas/tplot_tools/importers/cdf_to_tplot.py`) stores the
    file contents as tplot variables.
 
-MMS is the main exception: `pyspedas/projects/mms/mms_load_data.py` queries the
+MMS is an exception: `pyspedas/projects/mms/mms_load_data.py` queries the
 LASP SDC file API instead of a directory listing.
 
 ## tplot variables
@@ -118,6 +120,15 @@ header with exactly two fields:
   describes and every related AGENTS.md (the nearest parent, the children, and
   any other it points to), as repo-relative paths.
 - `maintenance`: when and how to update that AGENTS.md.
+
+Write only what the code or its comments show. Every statement about what a
+routine does, its keywords and defaults, or the science or instrument behind it
+must be checkable against a file in this tree; if you can't point to one, leave
+the statement out. Keep the source's own terms (for example "onboard moments",
+"L2", or a coordinate system name) instead of paraphrasing them, because
+dropping a qualifier can change the meaning. Don't generalize from a few
+examples ("all loaders", "always"), and don't state counts that will go stale.
+When you revise an AGENTS.md, keep text that a maintainer added by hand.
 
 CI (`.github/workflows/agents_md.yml`) runs `.github/scripts/check_agents_md.py`
 on every push and pull request. A missing or malformed header fails the build.

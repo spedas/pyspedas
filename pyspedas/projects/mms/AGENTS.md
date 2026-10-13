@@ -13,6 +13,7 @@ related_files:
   - pyspedas/projects/mms/mms_get_local_files.py
   - pyspedas/projects/mms/mms_file_filter.py
   - pyspedas/projects/mms/fgm_tools/fgm.py
+  - pyspedas/projects/mms/feeps_tools/feeps.py
   - pyspedas/projects/mms/mec_ascii/state.py
   - pyspedas/projects/mms/databar_tools/spd_mms_load_bss.py
   - pyspedas/projects/mms/deprecated/mms_load_fast_segments.py
@@ -45,10 +46,12 @@ Center (SDC) file API for file names instead of reading a remote directory listi
   `feeps`, `fgm`, `fpi`, `fsm`, `hpca`, `mec`, `scm`). Each has `<instr>.py` with the
   loader `mms_load_<instr>`, usually a `mms_<instr>_set_metadata.py` for plot options,
   and extra analysis (EIS pitch angles, HPCA anode sums, curlometer `mms_curl` and
-  `mms_lingradest` in `fgm_tools/`). `feeps_tools/` and `fpi_tools/` have their own AGENTS.md.
+  linear gradient/curl estimator `mms_lingradest` in `fgm_tools/`). `feeps_tools/` and
+  `fpi_tools/` have their own AGENTS.md.
 - `particles/`: spectra, moments and 2D slices from FPI and HPCA distributions. Own AGENTS.md.
 - `mec_ascii/`: `mms_load_state` (`mec_ascii/state.py`) and `mms_load_tetrahedron_qf`,
-  which read the SDC's ASCII ancillary ephemeris/attitude files, not CDFs.
+  which read the SDC's ASCII ancillary files (ephemeris/attitude and tetrahedron quality
+  factor), not CDFs.
 - `databar_tools/`: burst, fast and SROI segment bars and `spd_mms_load_bss`.
 - `cotrans/`: `mms_qcotrans` (uses MEC quaternions), `mms_cotrans_lmn` and helpers.
 - `plots/`, `mms_orbit_plot.py`, `mms_events.py`: overview and orbit plots, burst event text.
@@ -87,8 +90,8 @@ an instrument without a branch there cannot use `spdf=True`.
 - Login: `mms_login_lasp()` reads `~/mms_auth_info.pkl`, then the IDL `~/mms_auth_info.sav`
   (which wins if both exist), else prompts with `input()` and `getpass()`; a blank user
   means public access. A good prompted login is pickled; a 401 falls back to public.
-  `always_prompt=True` forces the prompt. Logged-in users query `sdc/sitl`, which also
-  serves team-only data (for example FEEPS L1b).
+  `always_prompt=True` forces the prompt. Logged-in users query `sdc/sitl`. The `feeps.py`
+  docstring says FEEPS L1b data is "restricted to MMS team members at present".
 - Names: `mms<probe>_<instr>_<quantity>_<rate>_<level>` (`mms1_fgm_b_gsm_srvy_l2`); FPI drops
   the level (`mms1_dis_numberdensity_fast`). Probes are strings `'1'`-`'4'`.
 - Burst queries start 10 min early near midnight and `mms_files_in_interval()` keeps one
@@ -100,5 +103,5 @@ an instrument without a branch there cannot use `spdf=True`.
 
 ## Tests
 
-`tests/` has one module per instrument or tool; most download from the SDC.
+`tests/` has test modules for loaders and tools; most download from the SDC.
 `tests/test_mms_login_lasp.py` mocks the network and covers the credential fallbacks.
