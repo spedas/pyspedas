@@ -95,16 +95,16 @@ class DownloadTestCases(unittest.TestCase):
         # download (if not already downloaded from prior tests)
         files = download(
                 local_path=s3_url + "/themis/tha/l1/state/2019",
-                remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf"
+                remote_file="https://spdf.gsfc.nasa.gov/pub/data/themis/tha/l1/state/2019/tha_l1_state_20190219_v03.cdf"
         )
         self.assertTrue(len(files) == 1)
-        self.assertTrue(files[0] == s3_url + "/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf")
+        self.assertTrue(files[0] == s3_url + "/themis/tha/l1/state/2019/tha_l1_state_20190219_v03.cdf")
 
         # stream from remote
         with self.assertLogs(level='INFO') as log:
             files = download(
                     remote_path=s3_url,
-                    remote_file="/themis/tha/l1/state/2019/tha_l1_state_20190219_v02.cdf"
+                    remote_file="/themis/tha/l1/state/2019/tha_l1_state_20190219_v03.cdf"
             )
         self.assertTrue(
             any("Streaming from remote" in record.getMessage() for record in log.records),
