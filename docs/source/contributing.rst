@@ -73,8 +73,13 @@ and we'll be happy to take a look.
 
 **Add Unit Tests**
 
-We use GitHub Actions to run our test suite automatically on every commit to the repository, and use coveralls.io to measure code coverage. We use Python's unittest
-framework to implement these tests, and examples can be found in the 'tests' directory of most mission directories.
+New features and bug fixes should include tests using Python's ``unittest``
+framework. ``quick_tests.yml`` runs selected tests on pushes and pull requests;
+``full_coverage.yml`` is run manually in parallel shards and uploads combined
+coverage to Coveralls after all shards succeed. Add new test modules explicitly
+to full coverage, and to quick tests when they run quickly and reliably.
+See the :doc:`developer guide <devguide>` for test placement, documentation
+updates and the pull request process.
 
 **Add Cross-Validation Tests**
 
@@ -82,10 +87,6 @@ We also implement validation scripts, which load data and print/compare some sub
 We need a lot more of them to be sure that IDL SPEDAS and PySPEDAS are giving consistent results.
 
 
-**Add Support for New Missions**
-
-We have a robust, well-tested template for adding new missions to pySPEDAS. If you would like to contribute a new mission or project to pySPEDAS, please contact the SPEDAS team
-for the latest copy of the template, or just code it up on your own (hopefully as consistent as possible with the conventions followed by other missions), and send us a PR on Github.
 
 Code of Conduct
 ---------------
