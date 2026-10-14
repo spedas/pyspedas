@@ -5,7 +5,10 @@ on: [push, pull_request, workflow_dispatch]
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    # runs-on: macos-latest
+    defaults:
+      run:
+        # Login shells activate the Conda environment in every run step.
+        shell: bash -el {0}
     strategy:
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
@@ -17,126 +20,49 @@ jobs:
 
     steps:
     - uses: actions/checkout@v5
-    - name: Set up Python ${{ matrix.python-version }}
-      uses: actions/setup-python@v7
+    - name: Set up Conda Python ${{ matrix.python-version }}
+      uses: conda-incubator/setup-miniconda@v4
       with:
+        miniforge-version: latest
+        activate-environment: quick-tests
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies (Linux)
+        channels: conda-forge
+        channel-priority: strict
+    - name: Install h5py from conda-forge
       run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Trying conda install of h5py"
-          conda install -c conda-forge h5py
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'ubuntu-latest'
-    - name: Install dependencies (Windows)
+        conda install --yes --override-channels -c conda-forge \
+          "python=${{ matrix.python-version }}" pip h5py
+        conda list
+        python - <<'PYTHON'
+        import sys, h5py
+        print("Python version:", sys.version)
+        print("Python executable:", sys.executable)
+        print("h5py version:", h5py.__version__)
+        print("h5py location:", h5py.__file__)
+        PYTHON
+    - name: Install lint, setup, and test dependencies with PDM
       run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'windows-latest'
-    - name: Install dependencies (macOS)
+        python -m pip install --upgrade pip
+        python -m pip install pdm
+        # Use PDM's native backend while investigating group selection.
+        pdm config --local use_uv false
+        pdm use "$(python -c 'import sys; print(sys.executable)')"
+        pdm --version
+        pdm info --python
+        pdm -vv install -dG lint -dG test -dG setup --no-default --no-self
+        python -m pip show h5py
+        python -m pip install coverage
+    - name: Build and install PySPEDAS with runtime dependencies
       run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'macos-latest'
+        python -m build
+        wheelbase=$(echo dist/*.whl)
+        extras='[mth5]'
+        echo "Installing pyspedas and its mth5 extra in the Conda environment"
+        python -m pip install "${wheelbase}${extras}"
+        python -m pip check
+        python -m pip show pyspedas xarray h5py
     - name: Lint with flake8
       run: |
-        source ../.venv/bin/activate
         #pip install flake8
         # stop the build if there are Python syntax errors or undefined names
         flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
@@ -144,7 +70,6 @@ jobs:
         flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
     - name: Lint with ruff
       run: |
-        source ../.venv/bin/activate
         # stop the build if there are Python syntax errors or undefined names
         ruff check .  --select=E9,F63,F7,F82 --statistics
         # exit-zero treats all errors as warnings. 
@@ -157,12 +82,10 @@ jobs:
         ls -a
         if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
         ls -a
-        ls $VIRTUAL_ENV
+        ls "$CONDA_PREFIX"
 
     - name: Sanity check import location
-      shell: bash
       run: |
-        source ../.venv/bin/activate
         printenv
         python - <<'PY'
         import pyspedas, pathlib, sys
@@ -204,7 +127,6 @@ jobs:
         ST5_DATA_DIR: st5_data/
         PYTPLOT_LOGGING_LEVEL: error
       run: |
-        source ../.venv/bin/activate
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
