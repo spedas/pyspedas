@@ -49,7 +49,8 @@ jobs:
         pdm use "$(python -c 'import sys; print(sys.executable)')"
         pdm --version
         pdm info --python
-        pdm -vv install -dG lint -dG test -dG setup --no-default --no-self
+        python -m pip install --group lint --group test --group setup
+        #pdm -vv install -dG lint -dG test -dG setup --no-default --no-self
         python -m pip show h5py
         python -m pip install coverage
     - name: Build and install PySPEDAS with runtime dependencies
