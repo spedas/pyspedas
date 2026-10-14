@@ -42,6 +42,8 @@ jobs:
           which pdm
           echo "which uv?"
           which uv
+          echo "Trying conda install of h5py"
+          conda install -c conda-forge h5py
           echo "Installing lint, setup, and test dependencies only"
           pdm install -dG lint -dG test -dG setup --no-default
           echo "which pip?"
@@ -49,8 +51,6 @@ jobs:
           echo "which python?"
           which python
           pip install coverage
-          echo "Trying conda install of h5py"
-          conda install -c conda-forge h5py
           echo "Building pyspedas sdist and wheel"
           python -m build
           wheelbase=$(echo dist/*.whl)
