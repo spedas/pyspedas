@@ -31,7 +31,7 @@ jobs:
     - name: Install h5py from conda-forge
       run: |
         conda install --yes --override-channels -c conda-forge \
-          "python=${{ matrix.python-version }}" pip h5py
+          "python=${{ matrix.python-version }}" pip h5py cfn-lint
         conda list
         python - <<'PYTHON'
         import sys, h5py
