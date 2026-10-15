@@ -26,7 +26,9 @@ related_files:
   - README.md
   - docs/source/devguide.rst
   - pyproject.toml
+  - pdm.lock
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
   - .github/workflows/full_coverage.yml
   - .github/workflows/agents_md.yml
   - .github/scripts/check_agents_md.py
@@ -154,6 +156,12 @@ via `get_data()`, `store_data()`, and similar utilities.
   failed jobs in the same workflow run; the workflow does not retry them
   automatically. Once all shards have succeeded, it combines their coverage data,
   generates a code coverage report, and uploads it to coveralls.io.
+- `latest_dependency_tests` mirrors the `quick_tests` test modules and its
+  `mth5` extra, but resolves dependencies with pip instead of `pdm.lock`. It runs
+  on pushes, pull requests and manual dispatch, using a fixed UTC cutoff seven
+  days before each job starts. It permits only final dependency releases from
+  PyPI and uploads dependency versions, install metadata and the cutoff for
+  diagnosis. Keep its test list aligned with `quick_tests`.
 - Docstrings are numpy style (`CONTRIBUTING.md`).
 
 ## Documentation

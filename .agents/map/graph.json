@@ -121,7 +121,15 @@
           "kind": "file"
         },
         {
+          "path": "pdm.lock",
+          "kind": "file"
+        },
+        {
           "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         },
         {
