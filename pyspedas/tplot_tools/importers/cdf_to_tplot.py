@@ -388,7 +388,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                         # the new way:
                         # store and cache the datetime objects directly
                         # and delay conversion to unix times until get_data is called
-
+                        if len(xdata) == 0:
+                            # cdflib used to raise an exception for empty virtual variables, now it returns a zero-length array
+                            # we will silently skip it
+                            continue
                         # Cluster uses multidimensional DEPEND_0 values on some "caveat" and "dsettings" variables. This will cause the
                         # xdata[0] < 0.0 test to crash
                         if len(xdata.shape) > 1:
@@ -451,7 +454,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     # sure it's not a scalar.
                     ydata = np.array(ydata)
                 if ydata.size == 0:
-                    logging.info("No data records for variable %s", var)
+                    # This was silently handled when cdflib raised an exception for this case
+                    #logging.info("No data records for variable %s", var)
                     continue
                 if "FILLVAL" in var_atts:
                     if new_cdflib:
