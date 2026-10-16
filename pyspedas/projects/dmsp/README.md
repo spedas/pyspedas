@@ -5,9 +5,9 @@ Load Defense Meteorological Satellite Program space physics CDF products from
 
 | Loader | Instrument | Spacecraft |
 | --- | --- | --- |
-| `ssj()` | Precipitating electrons and ions | F06?F09, F12?F18 |
-| `ssies()` | SSIES-3 thermal plasma | F16?F18 |
-| `ssm()` | Magnetic field | F15?F18 |
+| `ssj()` | Precipitating electrons and ions | F06-F09, F12-F18 |
+| `ssies()` | SSIES-3 thermal plasma | F16-F18 |
+| `ssm()` | Magnetic field | F15-F18 |
 
 Coverage depends on spacecraft and instrument. SSJ and SSM files are daily;
 SSIES files cover individual orbits. The archive currently has only SSUSI
