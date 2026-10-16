@@ -889,6 +889,19 @@
           "kind": "agents"
         },
         {
+          "path": "pyspedas/projects/dmsp/__init__.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/load.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/config.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/dmsp/README.md",
           "path": "pyspedas/projects/swfo/load.py",
           "kind": "file"
         },

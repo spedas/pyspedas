@@ -79,6 +79,7 @@ Some key points that apply to most or all of these load routines:
    cnofs
    csswe
    de2
+   dmsp
    dscovr
    elfin
    equator-s
