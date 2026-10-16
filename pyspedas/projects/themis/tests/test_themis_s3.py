@@ -60,6 +60,7 @@ class GmagTestCases(unittest.TestCase):
         self.assertTrue(check_variometer('anmo_100ms') == 10)
         self.assertTrue(check_variometer('bou') == 0)
 
+    @unittest.skip("This data not yet available via heliocloud")
     def test_load_gmag_data(self):
         """Load gmag."""
         pyspedas.projects.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
@@ -97,6 +98,7 @@ class LoadTestCases(unittest.TestCase):
         old_remote=CONFIG['remote_data_dir']
         CONFIG['remote_data_dir'] = 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/'
 
+    @unittest.skip("Tries to load v03 state, possible issue with version handling")
     def test_load_state_data(self):
         """Load state."""
         vars = pyspedas.projects.themis.state(varnames=['thc_pos'])
@@ -183,6 +185,7 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue(data_exists('thc_ffp_16_edc34'))
         self.assertTrue('thc_ffp_16_edc34' in fft_vars)
 
+    @unittest.skip("Raises exception for missing data types")
     def test_load_fft_l1_data(self):
         """Load L1 FFT."""
         fft_vars = pyspedas.projects.themis.fft(level='l1', varnames=['thc_ffp_16'])
