@@ -68,7 +68,7 @@ maintenance: |
 
 # Mission packages
 
-One package per mission (40). `__init__.py` imports all of them, so `import pyspedas`
+One package per mission. `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.
 
 ## Missions
@@ -136,7 +136,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
   Wrappers don't always pass all of them through.
 - Instrument wrappers are either one module per instrument calling `load(instrument=...)`, or
   `better_partial(load, instrument=...)` (`pyspedas/utilities/pyspedas_functools.py`) in
-  `__init__.py` (de2, dscovr, equator_s, fast, goes).
+  `__init__.py` (de2, dmsp, dscovr, equator_s, fast, goes, swfo).
 - `datasets()` wrappers call `find_datasets()` (`pyspedas/utilities/datasets.py`), which queries
   the CDAWeb CDAS web service. The loaders themselves download from SPDF directly, not through CDAS.
 
@@ -149,6 +149,14 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - Cluster: `cluster/load_csa.py` reads the ESA Cluster Science Archive in addition to SPDF.
 - GOES and POES L1b (`ncei_l1b_server=True`) read netCDF with `netcdf_to_tplot`
   (`pyspedas/tplot_tools/importers/netcdf_to_tplot.py`) from NCEI; GOES orbits come from SPDF CDFs.
+- SWFO: `swfo/load.py` lists NOAA's S3-compatible archive with pagination,
+  selects the latest processing timestamp per observation interval, and reads
+  netCDF (including gzip-compressed files) directly with netCDF4, using each
+  variable's own time coordinate. It does not use `cdf_to_tplot` or
+  `netcdf_to_tplot`. `time_clip=True` clips both tplot and `notplot` output.
+- DMSP follows the CDF pipeline, but `dmsp/load.py` retains every SSIES orbit
+  and selects file versions numerically. `time_clip=True` clips tplot output
+  only; it is ignored with `notplot=True`.
 - Kyoto, NOAA and SECS parse text or HTML files instead of CDF.
 - Galileo and Juno use the das2 helpers in `pyspedas/utilities/das2`; Swarm and KOMPSAT use
   HAPI servers (KOMPSAT gets an OAuth2 token in `kompsat/esa_hapi_data.py` and has no `config.py`).

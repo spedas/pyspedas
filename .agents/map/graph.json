@@ -902,6 +902,9 @@
         },
         {
           "path": "pyspedas/projects/dmsp/README.md",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/swfo/load.py",
           "kind": "file"
         },
