@@ -413,6 +413,8 @@ jobs:
               coverage run -a -m pyspedas.projects.elfin.tests.test_elfin
               echo Starting elfin epd calibration tests at `date`      
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+              echo Starting swfo tests at `date`
+              coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
               echo Starting noaa tests at `date`
               coverage run -a -m pyspedas.projects.noaa.tests.test_noaa
               echo "========================================================="        

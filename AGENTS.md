@@ -53,10 +53,9 @@ dependencies are in `pyproject.toml`.
 
 Each of these folders has its own AGENTS.md, and so do most mission packages.
 
-- `pyspedas/projects/<mission>/`: one package per mission (39). Most have a
-  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`
-  and one module per instrument; each has a README.md user guide and a `tests/`
-  folder.
+- `pyspedas/projects/<mission>/`: one package per mission (40). Each has a
+  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`,
+  one module per instrument, a README.md user guide and a `tests/` folder.
 - `pyspedas/tplot_tools/`: tplot variable storage and plotting. This is the former
   PyTplot package, now part of pySPEDAS; there is no external `pytplot` dependency.
 - `pyspedas/utilities/`: shared helpers, including downloading and file naming.

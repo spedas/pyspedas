@@ -37,3 +37,4 @@ from . import themis
 from . import twins
 from . import ulysses
 from . import wind
+from . import swfo
