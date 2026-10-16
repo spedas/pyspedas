@@ -450,6 +450,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     # We won't worry here about how many dimensions it's supposed to have.  We'll fix that below if needed.  For now, we just want to be
                     # sure it's not a scalar.
                     ydata = np.array(ydata)
+                if ydata.size == 0:
+                    logging.info("No data records for variable %s", var)
+                    continue
                 if "FILLVAL" in var_atts:
                     if new_cdflib:
                         thisvar_dtd = var_properties.Data_Type_Description
