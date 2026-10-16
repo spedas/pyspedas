@@ -287,6 +287,8 @@ Work in a separate branch and submit a pull request targeting the protected
 `master` branch for maintainer review. New features and bug fixes should include
 `unittest` tests and relevant documentation updates. Register new test modules in
 `full_coverage.yml`, and in `quick_tests.yml` when they run quickly and reliably.
+Any test module added to `quick_tests.yml` must also be added to
+`latest_dependency_tests.yml` so both workflows exercise the same tests.
 After a squash merge, start follow-up work in a fresh branch from updated `master`.
 
 

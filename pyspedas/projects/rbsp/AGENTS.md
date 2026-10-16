@@ -23,6 +23,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when load.py changes an instrument branch or its instrument-specific
   keywords, when the RBSPICE post-processing in rbspice.py or rbspice_lib/
@@ -92,3 +93,7 @@ names to its return list.
 
 `python -m pyspedas.projects.rbsp.tests.test_rbsp` (downloads data). CI runs it
 in `.github/workflows/quick_tests.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.
