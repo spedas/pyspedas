@@ -34,7 +34,7 @@ moments, 3D distributions, and quantities derived from them.
 - `mms_fpi_set_metadata.py`: plot options for the loaded variables.
 - `mms_fpi_make_errorflagbars.py`, `mms_fpi_make_compressionlossbars.py`: turn the
   `errorflags` and `compressionloss` variables into flag-bar variables for plots.
-- `mms_load_fpi_calc_pad.py`: summed and averaged omni pitch angle spectra from the
+- `mms_load_fpi_calc_pad.py`: averaged (and, for `ql`, summed) omni pitch angle spectra from the
   low/mid/high energy `pitchAngDist` variables (does nothing if they weren't loaded).
 - `mms_get_fpi_dist.py`: converts a loaded `mms<p>_d<s>s_dist_<rate>` variable into a list
   of 3D particle dicts, one per time sample, for the particle code.
@@ -66,12 +66,14 @@ moments, 3D distributions, and quantities derived from them.
   [energy, phi, theta] per sample. It converts the CDF's look directions to flow
   directions: theta from colatitude to latitude and negated, phi + 180 deg. Mass is in
   eV/(km/s)^2. `start_time` is the time tag and `end_time` adds the integration time
-  (4.5 s fast; 0.03 s DES, 0.15 s DIS burst), so it assumes uncentered time tags.
-- Users of `mms_get_fpi_dist()`: `pyspedas/projects/mms/particles/mms_part_products.py`,
-  `pyspedas/projects/mms/particles/mms_part_slice2d.py`, `mms_pad_fpi()` and `mms_fpi_ang_ang()`.
+  (4.5 s fast; 0.03 s DES, 0.15 s DIS for L2 burst), so it assumes uncentered time tags.
+- Callers of `mms_get_fpi_dist()`: `pyspedas/projects/mms/particles/mms_part_products.py`,
+  `pyspedas/projects/mms/particles/mms_part_slice2d.py` and `mms_fpi_ang_ang()`; `mms_pad_fpi()`
+  takes its output as `dists`.
 - `mms_pad_fpi()` borrows `slice2d` helpers from `pyspedas/particles/spd_slice2d/` and
   cleans data with `pyspedas/projects/mms/particles/moka_mms_clean_data.py`.
-- The DES photoelectron model used for electron moments is loaded by
+- The DES photoelectron model, used by `mms_part_products()` to correct DES distributions,
+  is loaded by
   `pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py`, not here.
 - `center_measurement=True` is passed to `cdf_to_tplot()` and moves time tags to the
   middle of each accumulation interval.

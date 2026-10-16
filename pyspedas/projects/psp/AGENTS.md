@@ -18,6 +18,7 @@ related_files:
   - pyspedas/utilities/download.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when load.py changes a path template, the server or credential logic,
   the version handling or the automatic prefixes, when a wrapper changes its
@@ -38,7 +39,7 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
   one wrapper per instrument, each calling `load()`.
 - `load.py`: `load()`, path templates, server choice and loading.
 - `rfs.py`: `rfs_variables_to_load()`, picks the `psp_fld_*` variables that hold
-  data out of the ~1500 in an RFS file.
+  data out of the more than 1500 in an RFS file.
 - `filter.py`: `filter_fields()`, quality-flag filtering of FIELDS MAG and RFS
   variables.
 - `config.py`, `tests/test_psp.py`, `README.md` (user guide; its examples use the
@@ -50,10 +51,10 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
    one of the unpublished upper-case names (`mag_RTN`, `mag_SC_1min`,
    `mag_RTN_4_Sa_per_Cyc`, `sqtn_rfs_V1V2`, ...).
 2. An instrument branch picks the template and the variable prefix. SPDF paths
-   start with `fields/<level>/<datatype>/%Y/psp_fld_...`, `sweap/spc/`,
+   start with `fields/<level>/`, `sweap/spc/`,
    `sweap/spe/`, `sweap/spi/`, `isois/epihi/`, `isois/epilo/` or
    `isois/merged/`. Full-resolution `mag_rtn`, `mag_sc` and the generic FIELDS
-   fallback are 6-hour files (`%Y%m%d%H`, `res=6*3600`); the rest are daily.
+   fallback are 6-hour files (`%Y%m%d%H`, `res=6*3600`); the rest use `res=24*3600`.
    `dfb_dc_spec`, `dfb_ac_spec` and their `xspec` forms call `load()` again for
    each spectrum type in the `spec_types` list that `fields()` supplies.
 3. Download. Without `username`: `CONFIG['remote_data_dir']` (SPDF). With
@@ -66,8 +67,8 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
      fallback.
    - SPC: the SWEAP server with `psp_swp_spc_` names, then `spp_swp_spc_`
      (pre-release) names for the remaining days, then SPDF.
-4. `cdf_to_tplot()` loads the files. For RFS datatypes with no `varformat` or
-   `varnames`, only `rfs_variables_to_load()` is loaded, with support data.
+4. `cdf_to_tplot()` loads the files. For datatypes whose name contains `rfs`
+   (QTN types included) with no `varformat` or `varnames`, only `rfs_variables_to_load()` is loaded, with support data.
 
 ## Things to know
 
@@ -80,7 +81,7 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
   SPC files). FIELDS gets none: most of its CDF names already start with
   `psp_fld_`, but QTN files use bare names such as `electron_density`.
 - Levels: `fields()` defaults `level` to `l3` for `rfs_hfr` and `rfs_lfr` and to
-  `l2` otherwise, and forces `l3` for `merged_scam_wf` and the QTN types. `spc()`
+  `l2` otherwise, and forces `l3` for `merged_scam_wf`, `sqtn_rfs_v1v2` and `sqtn_rfs_v3v4`. `spc()`
   sets the level from `l3i`/`l2i` (upper case `L3`/`L2` with credentials).
   `spi()` turns `sf00_l3_mom`-style datatypes into `spi_sf00_l3_mom` at `l3`.
 - Credentials come only from the `username` and `password` keywords of
@@ -90,12 +91,12 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
 - Quality flags: `fields()` also loads `psp_fld_<level>_quality_flags` when MAG
   or RFS variables are loaded and stores its name in each variable's `qf_root`
   attribute. `filter_fields(tvars, dqflag=...)` reads `qf_root` and writes
-  `<name>_<flags>` variables with flagged points removed (or kept, with
-  `keep=True`).
+  `<name>_<flags>` variables with flagged points set to NaN (or only flagged
+  points kept, with `keep=True`).
 - The local data folder is `PSP_DATA_DIR`, else `SPEDAS_DATA_DIR/psp`, else
   `psp_data/` (`config.py`, which first applies saved preferences from
   `pyspedas/preferences.py`); public and unpublished files share it. Setting
-  `PSP_NO_DOWNLOAD` turns downloads off.
+  `PSP_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads off.
 
 ## Tests
 
@@ -103,3 +104,7 @@ SPAN-i loaders first try the instrument teams' servers for unpublished data.
 pass dummy credentials (`username='hello'`) to route requests to the team
 servers and their SPDF fallback. CI runs the module in
 `.github/workflows/quick_tests.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.

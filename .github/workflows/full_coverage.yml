@@ -356,8 +356,8 @@ jobs:
               coverage run -a -m pyspedas.mth5.tests.test_mth5_import
               echo Starting MTH5 load_fdsn test at `date`
               coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-              #echo Starting akebono tests at `date`
-              #coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
+              echo Starting akebono tests at `date`
+              coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
               echo Starting VIRES client tests at `date`
               coverage run -a -m pyspedas.vires.tests.test_vires
               echo Starting secs tests at `date`
@@ -415,6 +415,8 @@ jobs:
               coverage run -a -m pyspedas.projects.elfin.tests.test_elfin
               echo Starting elfin epd calibration tests at `date`      
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+              echo Starting swfo tests at `date`
+              coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
               echo Starting noaa tests at `date`
               coverage run -a -m pyspedas.projects.noaa.tests.test_noaa
               echo "========================================================="        

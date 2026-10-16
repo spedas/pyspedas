@@ -63,7 +63,8 @@ MMS front ends to the generic particle code in `pyspedas/particles/`.
 2. Loads support data over `trange` plus 60 s on each side: MEC, FGM and EDP `scpot`.
 3. Default support names, overridable with `mag_name`, `pos_name`, `sc_pot_name`,
    `vel_name`: `mms<p>_fgm_b_gse_<rate>_l2_bvec`, `mms<p>_mec_r_gse`,
-   `mms<p>_edp_scpot_<rate>_l2`, `mms<p>_d<s>s_bulkv_gse_<rate>`. The support `<rate>` is
+   `mms<p>_edp_scpot_<rate>_l2`, `mms<p>_d<s>s_bulkv_gse_<rate>` (HPCA:
+   `mms<p>_hpca_<species>_ion_bulk_velocity`). The support `<rate>` is
    `brst` for burst data, else `srvy` (`fast` for EDP); `*_data_rate` keywords change it.
 4. `mms_part_products()` takes `mms<p>_d<s>s_dist_<rate>` or
    `mms<p>_hpca_<species>_phase_space_density`. It gets one dict per sample from
@@ -84,7 +85,7 @@ or `mms1_des_dist_brst_pa`; moments get names like `mms1_dis_dist_fast_density`.
   `fac_moments`. Setting `pitch` or `gyro` limits swaps `energy` and `moments` for their
   FAC versions. `fac_type` defaults to `mphigeo`.
 - Moments need `units='eflux'` (the default); nothing enforces it.
-- For DES with `moments` requested, photoelectron correction is on unless
+- In `mms_part_getspec()`, for DES with `moments` requested, photoelectron correction is on unless
   `disable_photoelectron_corrections=True`. The model file is chosen from the stepper ID
   (`Energy_table_name` global attribute) of the loaded FPI variable.
 - `sdc_units=True` reports the pressure tensor in nPa and heat flux in mW/m^2, like SDC files.

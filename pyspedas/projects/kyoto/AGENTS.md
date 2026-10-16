@@ -13,6 +13,7 @@ related_files:
   - pyspedas/projects/omni/load.py
   - pyspedas/utilities/download.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when the Kyoto page layout or server paths change (parse_dst_html,
   parse_ae_html, the provisional/realtime date limits in load_ae.py), or when
@@ -58,7 +59,8 @@ parses them and stores the result with `store_data()`. There is no `load.py`.
 ## Things to know
 
 - `dst()` and `load_ae()` keywords differ from the CDF loaders: `download_only`
-  instead of `downloadonly`, `no_download` instead of `no_update` (`None` means
+  instead of `downloadonly` (`load_ae()` accepts it but does not pass it to
+  `load_ae_worker()`), `no_download` instead of `no_update` (`None` means
   use `CONFIG['no_download']`), `local_data_dir` and `remote_data_dir`
   arguments, no `notplot` or `varnames`, and `time_clip` defaults to True (also
   in `load_geomagnetic_indices()`). `trange` is required.
@@ -70,7 +72,7 @@ parses them and stores the result with `store_data()`. There is no `load.py`.
 - Each call logs the WDC acknowledgement; the data are not for redistribution.
 - The local data folder is `SPEDAS_DATA_DIR/geom_indices/kyoto/`, else
   `pydata/geom_indices/kyoto/` (`config.py`); there is no `KYOTO_DATA_DIR`.
-  `KYOTO_NO_DOWNLOAD` turns downloads off. Local subfolders follow IDL SPEDAS:
+  `KYOTO_NO_DOWNLOAD` set to true turns downloads off. Local subfolders:
   `dst_<type>/<yyyymm>/`, `ae_provisional/<index>/<yyyymm>/`,
   `ae_realtime/data_dir/<index>/<yyyy>/<mm>/<dd>/`.
 
@@ -79,3 +81,7 @@ parses them and stores the result with `store_data()`. There is no `load.py`.
 `python -m pyspedas.projects.kyoto.tests.test_kyoto` (downloads data, including
 THEMIS, NOAA and OMNI for `load_geomagnetic_indices`). CI runs it in
 `.github/workflows/quick_tests.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.

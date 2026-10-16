@@ -1,0 +1,1 @@
+"""SWFO loader regression tests."""

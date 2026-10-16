@@ -28,6 +28,10 @@ related_files:
   - pyspedas/projects/dmsp/load.py
   - pyspedas/projects/dmsp/config.py
   - pyspedas/projects/dmsp/README.md
+  - pyspedas/projects/swfo/load.py
+  - pyspedas/projects/swfo/config.py
+  - pyspedas/projects/swfo/__init__.py
+  - pyspedas/projects/swfo/README.md
   - pyspedas/projects/__init__.py
   - pyspedas/projects/cnofs/load.py
   - pyspedas/projects/de2/__init__.py
@@ -106,6 +110,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - `solo/`: Solar Orbiter, SPDF. AGENTS.md: [solo/AGENTS.md](solo/AGENTS.md)
 - `st5/`: Space Technology 5, SPDF: `mag()` over `load()`.
 - `stereo/`: STEREO, Berkeley SPRG mirror. AGENTS.md: [stereo/AGENTS.md](stereo/AGENTS.md)
+- `swfo/`: SWFO / SOLAR-1, NOAA NCEI S3-compatible archive: `mag()`, `swips()`, `stis()` over `load()`. Reads compressed netCDF using each variable's time coordinate; env `SWFO_DATA_DIR`, `SWFO_NO_DOWNLOAD`.
 - `swarm/`: Swarm, VirES HAPI server: `mag()` over `load()` in `swarm/load.py`, which calls `hapi()` (`pyspedas/hapi_tools/hapi.py`).
 - `themis/`: THEMIS/ARTEMIS, Berkeley. AGENTS.md: [themis/AGENTS.md](themis/AGENTS.md)
 - `twins/`: TWINS, SPDF: `ephemeris()`, `lad()`, `imager()`.
@@ -133,7 +138,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
   `better_partial(load, instrument=...)` (`pyspedas/utilities/pyspedas_functools.py`) in
   `__init__.py` (de2, dscovr, equator_s, fast, goes).
 - `datasets()` wrappers call `find_datasets()` (`pyspedas/utilities/datasets.py`), which queries
-  the CDAWeb CDAS web service. The loaders themselves read SPDF directory listings, not CDAS.
+  the CDAWeb CDAS web service. The loaders themselves download from SPDF directly, not through CDAS.
 
 ## Missions that leave the shared pipeline
 
