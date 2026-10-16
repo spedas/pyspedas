@@ -33,8 +33,8 @@ maintenance: |
 
 # ELFIN
 
-Loaders for the ELFIN-A and ELFIN-B CubeSats: energetic particles (EPD),
-magnetometer (FGM), state (orbit and attitude), magnetoresistive magnetometers
+Loaders for the ELFIN-A and ELFIN-B spacecraft: energetic particles (EPD),
+magnetometer (FGM), state, magnetoresistive magnetometers
 (MRMa, MRMi) and engineering data. Daily CDF files come from UCLA
 (`https://data.elfin.ucla.edu/`).
 
@@ -87,7 +87,8 @@ else `fgs`.
   under `package-data`.
 - The local data folder is `ELFIN_DATA_DIR`, else `SPEDAS_DATA_DIR/elfin/`, else
   `elfin_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `ELFIN_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `ELFIN_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

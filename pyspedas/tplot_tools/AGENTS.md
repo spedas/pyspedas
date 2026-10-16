@@ -54,7 +54,7 @@ Most names are re-exported from `pyspedas` itself (`pyspedas/__init__.py`).
 
 - `__init__.py`: defines the globals `data_quants`, `tplot_opt_glob`, `lim_info`, then imports every public function.
 - `store_data.py`, `get_data.py`, `del_data.py`, `tplot_rename.py`, `tplot_copy.py`, `replace_data.py`: create, read, delete, rename, copy and overwrite variables.
-- `tnames.py`, `wildcard_routines.py`: name lookup; most functions expand names with `tplot_wildcard_expand()`.
+- `tnames.py`, `wildcard_routines.py`: name lookup; some functions expand names with `tplot_wildcard_expand()`, others with `tnames()`.
 - `options.py` (per variable), `tplot_options.py` (global), `xlim.py`, `ylim.py`, `zlim.py`, `tlimit.py`, `timespan.py`: plot settings.
 - `data_att_getters_setters.py`: `get_coords`/`set_coords`, `get_units`/`set_units`.
 - `time_double.py`, `time_string.py`: `time_double`/`time_float` and `time_string`/`time_datetime`, used package-wide.
@@ -70,7 +70,8 @@ Most names are re-exported from `pyspedas` itself (`pyspedas/__init__.py`).
   datetimes, datetime64 or strings) to `datetime64[ns]` and stores an `xarray.DataArray` with dims
   `time` plus `v_dim` or `v1_dim`, `v2_dim`, `v3_dim`. `v` (or `v2` when `v1`, `v2` are given) also
   becomes the `spec_bins` coordinate used by spectrograms. Optional `dy` holds error bars.
-- `attr_dict` becomes `.attrs`, and a fresh `.attrs['plot_options']` is added (`xaxis_opt`,
+- `attr_dict` becomes `.attrs`, and unless `attr_dict` already has `plot_options`, a fresh
+  `.attrs['plot_options']` is added (`xaxis_opt`,
   `yaxis_opt`, `zaxis_opt`, `line_opt`, `extras`, `overplots_mpl`, `time_bar`, `error`, ...).
   Calling `store_data` on an existing name replaces the variable and its options;
   `replace_data()` swaps in values of the same shape and keeps them.
@@ -82,7 +83,7 @@ Most names are re-exported from `pyspedas` itself (`pyspedas/__init__.py`).
   as float Unix seconds; `dt=True` gives datetime64, `xarray=True` the DataArray, and
   `metadata=True` the live `.attrs` dict. `pyspedas.get()` defaults to `dt=True, units=True`.
   A missing name returns `None` with only an info-level log.
-- Loaders fill `.attrs['CDF']` (`VATT`, `GATT`, `FILENAME`, `LABELS`) and `.attrs['data_att']`
+- `cdf_to_tplot()` fills `.attrs['CDF']` (`VATT`, `GATT`, `FILENAME`, `LABELS`) and `.attrs['data_att']`
   (`coord_sys`, `units`, `depend_1_units`, ...). cotrans and the geopack wrappers read
   `coord_sys` and `units` through `data_att_getters_setters.py`.
 

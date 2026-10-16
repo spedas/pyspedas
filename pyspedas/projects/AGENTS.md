@@ -133,7 +133,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
   `better_partial(load, instrument=...)` (`pyspedas/utilities/pyspedas_functools.py`) in
   `__init__.py` (de2, dscovr, equator_s, fast, goes).
 - `datasets()` wrappers call `find_datasets()` (`pyspedas/utilities/datasets.py`), which queries
-  the CDAWeb CDAS web service. The loaders themselves read SPDF directory listings, not CDAS.
+  the CDAWeb CDAS web service. The loaders themselves download from SPDF directly, not through CDAS.
 
 ## Missions that leave the shared pipeline
 

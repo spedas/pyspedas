@@ -26,6 +26,7 @@ related_files:
   - pyspedas/utilities/tests/test_utilities_plot.py
   - pyspedas/utilities/tests/test_utilities_tplotxy.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when tplot() changes its call path (pseudovariable recursion, spec/line
   dispatch, time range, saving), when a plot option is read from a new place, or
@@ -88,3 +89,7 @@ the other modules draw one panel type, orbit plots, or add interactive features.
 `test_grid_background_options`, see `.github/workflows/quick_tests.yml`). Most plotting tests
 are in `pyspedas/utilities/tests/test_utilities_plot.py` and
 `pyspedas/utilities/tests/test_utilities_tplotxy.py`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.

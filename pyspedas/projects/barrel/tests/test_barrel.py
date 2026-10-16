@@ -17,6 +17,13 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('brl1A_SSPC' in sspc_vars)
         self.assertTrue(data_exists('brl1A_SSPC'))
 
+    def test_sspc_no_trange(self):
+        del_data("*")
+        sspc_vars = pyspedas.projects.barrel.sspc(probe='1A', trange=None)
+        self.assertTrue(len(sspc_vars) > 0)
+        self.assertTrue('brl1A_SSPC' in sspc_vars)
+        self.assertTrue(data_exists('brl1A_SSPC'))
+
     def test_sspc_time_clip(self):
         del_data("*")
         trange = ['2013-01-29 09:00', '2013-01-29 12:00']
