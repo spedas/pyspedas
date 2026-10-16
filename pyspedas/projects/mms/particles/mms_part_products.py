@@ -374,7 +374,7 @@ are the scientific products that should be used for analysis."""
             startdelphi_I = int(np.floor(startdelphi.y[i]/16.0))
 
             if data_rate == 'brst':
-                parity_num = str(int(np.fix(parity.y[i])))
+                parity_num = str(int(np.trunc(parity.y[i])))
 
                 bg_dist = fpi_photoelectrons['bgdist_p'+parity_num]
                 n_value = fpi_photoelectrons['n_'+parity_num]
