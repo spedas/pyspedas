@@ -35,6 +35,7 @@ related_files:
   - pyspedas/tplot_tools/time_double.py
   - pyspedas/tplot_tools/time_string.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
   - .github/workflows/zenodo_draft.yml
 maintenance: |
   Update when download() or dailynames() change their matching, caching or
@@ -98,3 +99,7 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
 `tests/` runs in CI (most modules in `.github/workflows/quick_tests.yml`). Besides download and time tests it
 holds the tplot math, wildcard and plotting tests. `zenodo_draft.py` is run by
 `.github/workflows/zenodo_draft.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.

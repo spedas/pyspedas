@@ -212,7 +212,7 @@ tests that compare results between implementations.
 Choosing a CI workflow and shard
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-The two primary testing workflows are YAML files under ``.github/workflows/``.
+The testing workflows are YAML files under ``.github/workflows/``.
 They list test modules explicitly; creating a new module does not automatically
 include it in CI.
 
@@ -220,6 +220,9 @@ include it in CI.
   requests, and can also be triggered manually. It provides relatively quick,
   reliable feedback rather than complete coverage. Leave out tests requiring
   lengthy calculations, large downloads or slow or unreliable data servers.
+* ``latest_dependency_tests.yml`` runs the same selected modules with current
+  compatible stable dependencies subject to a seven-day release cooldown. Keep
+  its test-module list synchronized with ``quick_tests.yml``.
 * ``full_coverage.yml`` is triggered manually. It runs groups of tests in parallel
   jobs called shards, with related tests often grouped by data server or
   functionality. Examples include MMS, MAVEN and SPDF/THEMIS shards. This keeps
@@ -228,9 +231,11 @@ include it in CI.
 
 Always add a new test module to ``full_coverage.yml``, preferably in a shard that
 already tests the same server or related functionality. Include it in
-``quick_tests.yml`` only if it fits the runtime and reliability criteria. If you
-add tests to an existing module, check that the module is already listed in the
-intended workflows; no additional entry is needed for each test method.
+``quick_tests.yml`` only if it fits the runtime and reliability criteria. Every
+module added to ``quick_tests.yml`` must also be added to
+``latest_dependency_tests.yml``. If you add tests to an existing module, check
+that the module is already listed in the intended workflows; no additional
+entry is needed for each test method.
 
 When a shard fails because of a transient data server failure, manually rerun
 the failed jobs in the same workflow run. Successful shards need not be rerun.

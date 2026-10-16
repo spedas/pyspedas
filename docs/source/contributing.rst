@@ -77,7 +77,10 @@ New features and bug fixes should include tests using Python's ``unittest``
 framework. ``quick_tests.yml`` runs selected tests on pushes and pull requests;
 ``full_coverage.yml`` is run manually in parallel shards and uploads combined
 coverage to Coveralls after all shards succeed. Add new test modules explicitly
-to full coverage, and to quick tests when they run quickly and reliably.
+to full coverage, and to quick tests when they run quickly and reliably. Add
+any module included in ``quick_tests.yml`` to ``latest_dependency_tests.yml``
+as well; the latter runs the same tests with current compatible stable
+dependencies subject to a seven-day release cooldown.
 See the :doc:`developer guide <devguide>` for test placement, documentation
 updates and the pull request process.
 

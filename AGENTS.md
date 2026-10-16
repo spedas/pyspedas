@@ -26,7 +26,9 @@ related_files:
   - README.md
   - docs/source/devguide.rst
   - pyproject.toml
+  - pdm.lock
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
   - .github/workflows/full_coverage.yml
   - .github/workflows/agents_md.yml
   - .github/scripts/check_agents_md.py
@@ -141,19 +143,28 @@ via `get_data()`, `store_data()`, and similar utilities.
   `python -m pyspedas.projects.themis.tests.test_themis`.
 - `SPEDAS_DATA_DIR`, or a per-mission variable such as `THM_DATA_DIR`, sets where
   data is downloaded.
-- The two primary CI workflows are `.github/workflows/quick_tests.yml` and
+- CI workflows include `.github/workflows/quick_tests.yml`,
+  `.github/workflows/latest_dependency_tests.yml` and
   `.github/workflows/full_coverage.yml`. Always add new test suites to the
   `full_coverage` workflow, preferably in a test group ("shard") that exercises
   the same data server or is otherwise related to the test being added. New test
   suites may also be added to `quick_tests`, but only if they avoid lengthy
   computations, large amounts of downloaded data, or known unreliable data
-  providers.
+  providers. Every test module added to `quick_tests` must also be added to
+  `latest_dependency_tests`; keep their test-module lists synchronized. New test
+  methods in a module already listed in both need no additional workflow entry.
 - `quick_tests` runs automatically on pushes and pull requests, and can also be
   triggered manually (`workflow_dispatch`). `full_coverage` is triggered manually.
   If shards fail because of transient data server failures, manually rerun the
   failed jobs in the same workflow run; the workflow does not retry them
   automatically. Once all shards have succeeded, it combines their coverage data,
   generates a code coverage report, and uploads it to coveralls.io.
+- `latest_dependency_tests` mirrors the `quick_tests` test modules and its
+  `mth5` extra, but resolves dependencies with pip instead of `pdm.lock`. It runs
+  on pushes, pull requests and manual dispatch, using a fixed UTC cutoff seven
+  days before each job starts. It permits only final dependency releases from
+  PyPI and uploads dependency versions, install metadata and the cutoff for
+  diagnosis. Keep its test list aligned with `quick_tests`.
 - Docstrings are numpy style (`CONTRIBUTING.md`).
 
 ## Documentation

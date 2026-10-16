@@ -20,6 +20,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when load.py changes an instrument branch, its per-instrument server, or
   its keywords, or when __init__.py adds a loader.
@@ -78,3 +79,7 @@ loads all files with one `cdf_to_tplot()` call.
 
 `python -m pyspedas.projects.stereo.tests.test_stereo` (downloads data). CI runs
 it in `.github/workflows/quick_tests.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.
