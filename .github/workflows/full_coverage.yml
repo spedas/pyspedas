@@ -238,6 +238,8 @@ jobs:
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
               echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
+              echo "Starting HAPI TestData tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
 
           - shard: das2
             shard_script: |
