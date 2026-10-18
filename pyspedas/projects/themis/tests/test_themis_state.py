@@ -117,6 +117,7 @@ class Themis_StateDataTests(unittest.TestCase):
         CONFIG['remote_data_dir'] = save
         self.assertTrue(data_exists('tha_pos'))
 
+    @unittest.skip("Skipping due to issues with THEMIS data server at UCLA")
     def test_state_ucla(self):
         from pyspedas.projects.themis.config import CONFIG
         del_data('the*')
