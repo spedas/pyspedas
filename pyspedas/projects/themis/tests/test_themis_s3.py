@@ -98,6 +98,7 @@ class LoadTestCases(unittest.TestCase):
         old_remote=CONFIG['remote_data_dir']
         CONFIG['remote_data_dir'] = 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/'
 
+    @unittest.skip("heliocloud data file is corrupted")
     def test_load_state_data(self):
         """Load state."""
         vars = pyspedas.projects.themis.state(varnames=['thc_pos'])
