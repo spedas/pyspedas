@@ -751,6 +751,10 @@ def download(
                                 links = [protocol + "://" + link for link in fs.glob(url)]
 
                                 if len(links) > 0:
+                                    # If multiple matches were found, there must have been a wildcard.
+                                    # The last entry in the sorted list should be the one we want (highest version)
+                                    new_links = sorted(links)
+                                    links = [new_links[-1]]
                                     for link in links:
                                         logging.info("Using remote URI file: "+link)
                                         out.append(link)
