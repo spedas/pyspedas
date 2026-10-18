@@ -302,7 +302,11 @@ def download_file(
     if is_fsspec_uri(url):
         protocol, path = url.split("://")
         with _managed_filesystem(protocol, anon=s3_use_anon) as remote_fs:
-            remote_modtime = remote_fs.info(path)["LastModified"]
+            try:
+                remote_modtime = remote_fs.info(path)["LastModified"]
+            except FileNotFoundError:
+                logging.info(f"{url} was not found, continuing.")
+                return None
 
             if is_fsspec_uri(filename): # two URIs given
                 local_protocol, local_path = filename.split("://")
