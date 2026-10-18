@@ -183,3 +183,10 @@ thi"""
 
 [tool.pylint]
 disable = ["line-too-long", "too-many-arguments",]
+
+# Do not use very recently released packages when rebuilding lock files -- otherwise there is
+# a greater risk of supply chain attacks or other issues that might cause a release to be
+# yanked soon after release
+
+[tool.pdm.resolution]
+exclude-newer = "7d"
