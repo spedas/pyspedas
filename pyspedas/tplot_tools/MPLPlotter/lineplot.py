@@ -230,12 +230,7 @@ def lineplot(
             color = colors[line]
         else:
             color = None
-
-        #if markers is not None:
-        #    marker = markers[line]
-        #else:
-        #    marker = None
-
+        
         if markers is not None:
             line_options["marker"] = markers[line]
         else:
@@ -272,9 +267,7 @@ def lineplot(
             linestyle=this_line_style,
             linewidth=thick[line],
             **line_options,
-        ) #marker=marker,
-                    
-        
+        ) 
         if labels is not None:
             try:
                 if isinstance(this_line, list):
