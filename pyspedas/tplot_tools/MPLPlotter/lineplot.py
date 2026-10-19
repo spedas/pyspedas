@@ -171,16 +171,17 @@ def lineplot(
     if line_opts.get("fill_between") is not None:
         if line_opts["fill_between"]:
             fills = True
+            markers = None
     
     y_fill_lines = None
     if line_opts.get("y_fill_line") is not None:
-        fills = True
-        y_fill_lines = line_opts["y_fill_line"]
+        if fills:
+            y_fill_lines = line_opts["y_fill_line"]
+            y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
+    elif fills:
+        # fill_between defaults to 0, but y_fill_lines must be defined for the line_options to be cleaned up
+        y_fill_lines = 0
         y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
-    # default y2 should be 0 anyways:
-    #elif fills:
-    #    y_fill_lines = 0
-    #    y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
     
     # create the plot
     line_options = {"alpha": alpha}
@@ -230,10 +231,15 @@ def lineplot(
         else:
             color = None
 
+        #if markers is not None:
+        #    marker = markers[line]
+        #else:
+        #    marker = None
+
         if markers is not None:
-            marker = markers[line]
+            line_options["marker"] = markers[line]
         else:
-            marker = None
+            line_options["marker"] = None
 
         if marker_sizes is not None:
             # Note: scaling of marker sizes in scatter plots and line plots is different!
@@ -255,6 +261,8 @@ def lineplot(
             line_options["markevery"] = marker_every[line]
 
         if y_fill_lines is not None:
+            for key_to_remove in ("marker","markersize", "markevery", "s"):
+                line_options.pop(key_to_remove,None)
             line_options["y2"] = y_fill_lines[line]
 
         this_line = plotter(
@@ -263,9 +271,9 @@ def lineplot(
             color=color,
             linestyle=this_line_style,
             linewidth=thick[line],
-            marker=marker,
             **line_options,
-        )
+        ) #marker=marker,
+                    
         
         if labels is not None:
             try:
