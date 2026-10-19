@@ -166,6 +166,22 @@ def lineplot(
         if line_opts["symbols"]:
             symbols = True
 
+    # fill_between options:
+    fills = False
+    if line_opts.get("fill_between") is not None:
+        if line_opts["fill_between"]:
+            fills = True
+    
+    y_fill_lines = None
+    if line_opts.get("y_fill_line") is not None:
+        fills = True
+        y_fill_lines = line_opts["y_fill_line"]
+        y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
+    # default y2 should be 0 anyways:
+    #elif fills:
+    #    y_fill_lines = 0
+    #    y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
+    
     # create the plot
     line_options = {"alpha": alpha}
 
@@ -203,8 +219,12 @@ def lineplot(
         # 'symbols' option.  Instead, set the line_options metadata to 'None' (as a string).
         if symbols:
             plotter = this_axis.scatter
+        if fills:
+            plotter = this_axis.fill_between
 
+    # not using fill_between feature, plot data as normal:
     for line in range(0, num_lines):
+        
         if colors is not None:
             color = colors[line]
         else:
@@ -234,6 +254,9 @@ def lineplot(
         if marker_every is not None:
             line_options["markevery"] = marker_every[line]
 
+        if y_fill_lines is not None:
+            line_options["y2"] = y_fill_lines[line]
+
         this_line = plotter(
             var_times,
             var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line],
@@ -243,7 +266,7 @@ def lineplot(
             marker=marker,
             **line_options,
         )
-
+        
         if labels is not None:
             try:
                 if isinstance(this_line, list):
@@ -252,7 +275,7 @@ def lineplot(
                     this_line.set_label(labels[line])
             except IndexError:
                 continue
-
+    
     if labels is not None:
         legend = this_axis.legend(
             loc=legend_location,
