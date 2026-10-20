@@ -475,9 +475,7 @@ def tplot(variables,
                 if plot_extras.get('spec') is not None:
                     spec = True
 
-                if plot_extras.get('right_axis') is not None:
-                    if plot_extras.get('right_axis'):
-                        pseudo_right_axis = True
+                pseudo_right_axis = bool(plot_extras.get('right_axis')) # if right_axis is None, pseudo_right_axis will be False
 
                 if pseudo_right_axis: # if pseudo_right_axis:?
                     plot_extras = None
