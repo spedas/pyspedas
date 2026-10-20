@@ -1042,7 +1042,26 @@ class PlotTestCases(unittest.TestCase):
         tplot('pseudovar',display=global_display,save_png='component_var_timebar.png')
 
 
-
+    def test_right_axis_multiple_pseudovar(self):
+        start_time=(time_double('2007-03-23'))
+        time_list = np.arange(0,86400,1)
+        times = np.array(time_list)+start_time
+        data1 = np.zeros(86400)
+        data2 = np.zeros(86400)
+        data1[:] = 0.001
+        data2[:] = 100.5
+        store_data('data1',data={'x':times, 'y':data1})
+        store_data('data2',data={'x':times, 'y':data2})
+        options('data1','color','red')
+        options('data2','color','green')
+        options('data2','linestyle','dot')
+        options('data2','line_width',3)
+        ps1 = store_data('pv1',data=['data1','data2'])
+        ps2 = store_data('pv2',data=['data1','data2'])
+        options('pv1','right_axis',True)
+        tplot_options('title',"Right axis on first panel, not present on second panel")
+        tplot(['pv1','pv2'],display=global_display,save_png='multiple_pseudovar_right_axis_on.png')
+        tplot_options("title", "")
 
 if __name__ == "__main__":
     unittest.main()
