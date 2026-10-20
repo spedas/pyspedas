@@ -1,13 +1,9 @@
 """Testing tplot lineplot with the fill_between option"""
 import os
 import unittest
-
-from matplotlib.collections import PolyCollection
-import matplotlib.colors as mcolors
 import matplotlib.pyplot as plt
 import numpy as np
-
-from pyspedas import del_data, options, store_data, time_string, tplot
+from pyspedas import del_data, options, store_data, tplot
 from pyspedas.config import CONFIG
 
 # Whether to display plots during testing
@@ -54,7 +50,7 @@ class FillBetweenTestCases(unittest.TestCase):
             fig.canvas.draw()
 
     def test_basic_multi_y2(self):
-        # should fail
+        # Just accepts first y2
         var_name = "fill_between_test_var"
         del_data()
         store_data(var_name, data={"x":(np.arange(5)+1700000000),"y":np.array([1,2,-1,0,1])})
@@ -85,7 +81,6 @@ class FillBetweenTestCases(unittest.TestCase):
             fig.canvas.draw()
 
     def test_multicurve_multi_y2_not_enough(self):
-        # should fail
         var_name = "fill_between_test_var"
         del_data()
         store_data(var_name, data={"x":(np.arange(5)+1700000000),"y":np.array([[1,-1,2],[2,1,-1],[-1,2,0],[0,-2,2],[1,0,-1]])})
@@ -95,7 +90,6 @@ class FillBetweenTestCases(unittest.TestCase):
         if global_display:
             fig.canvas.draw()
 
-    # TODO: which order are they plotted? should y2=2 be first?
     def test_multicurve_multi_y2(self):
         var_name = "fill_between_test_var"
         del_data()
