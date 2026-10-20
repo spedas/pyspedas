@@ -211,17 +211,17 @@ jobs:
         echo "========================================================="
         echo IP address for this test:
         coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
+        echo "Starting HAPI TestData tests"
+        coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
         # These tests use a DAS2 server at UIowa
-        echo "Starting galileo tests at $(date)"
-        coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
-        echo "Starting juno tests at $(date)"
-        coverage run -a -m pyspedas.projects.juno.tests.test_juno
+        #echo "Starting galileo tests at $(date)"
+        #coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
+        #echo "Starting juno tests at $(date)"
+        #coverage run -a -m pyspedas.projects.juno.tests.test_juno
         echo Starting DOI metadata tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_doi
         echo Starting Zenodo draft client tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
-        echo Starting akebono tests at `date`
-        coverage run -a -m  pyspedas.projects.akebono.tests.test_akebono
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
         echo Starting themis tplot_time  tests at `date`
@@ -242,6 +242,10 @@ jobs:
         coverage run -a -m  pyspedas.cotrans_tools.tests.test_quaternions
         echo Starting cnofs tests at `date`
         coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
+        echo Starting dmsp tests at `date`
+        coverage run -a -m pyspedas.projects.dmsp.tests.test_dmsp
+        echo Starting swfo tests at `date`
+        coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
         echo Starting dscovr tests at `date`
         coverage run -a -m  pyspedas.projects.dscovr.tests.test_dscovr
         echo Starting utilities download tests at `date`

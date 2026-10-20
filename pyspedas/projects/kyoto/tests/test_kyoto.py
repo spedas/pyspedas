@@ -75,6 +75,31 @@ class LoadTestCases(unittest.TestCase):
         print(dtmin,dtmax)
         self.assertTrue(dtmin > 0.0)
 
+
+    def test_load_ae_propagates_no_download(self):
+        from importlib import import_module
+        from unittest.mock import patch
+
+        ae_module = import_module("pyspedas.projects.kyoto.load_ae")
+
+        for no_download in (True, False):
+            with self.subTest(no_download=no_download):
+                with patch.object(
+                    ae_module, "load_ae_worker", return_value=[]
+                ) as worker:
+                    ae_module.load_ae(
+                        trange=["2010-01-01", "2010-01-02"],
+                        datatypes=["ae"],
+                        no_download=no_download,
+                    )
+
+                worker.assert_called_once()
+                self.assertIn("no_download", worker.call_args.kwargs)
+                self.assertIs(
+                    worker.call_args.kwargs["no_download"],
+                    no_download,
+                )
+
     def test_kyoto_ae_may2024(self):
         # This tests a small range that has provisional AE data for a specific event, but only
         # realtime on each side.

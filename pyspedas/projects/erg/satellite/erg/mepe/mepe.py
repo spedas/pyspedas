@@ -23,6 +23,7 @@ def mepe(
     time_clip: bool = False,
     ror: bool = True,
     force_download: bool = False,
+    version: Optional[str] = None,
 ) -> List[str]:
     """
     This function loads data from the MEP-e experiment from the Arase mission
@@ -84,6 +85,10 @@ def mepe(
         passwd: str
             Password. Default: None
 
+        version: str
+            File version including the 'v' prefix, such as 'v01_02'.
+            Default: None (load the latest available version).
+
         force_download: bool
             Download file even if local version is more recent than server version
             Default: False
@@ -107,10 +112,11 @@ def mepe(
     if level == 'l3' and datatype not in ['3dflux', 'pa']:
         datatype = '3dflux'
 
+    file_version = 'v??_??' if version is None else version
     file_res = 3600. * 24
     prefix = 'erg_mepe_'+level + '_' + datatype + '_'
     pathformat = 'satellite/erg/mepe/'+level+'/'+datatype + \
-        '/%Y/%m/erg_mepe_'+level+'_'+datatype+'_%Y%m%d_v??_??.cdf'
+        '/%Y/%m/erg_mepe_'+level+'_'+datatype+'_%Y%m%d_' + file_version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)

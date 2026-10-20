@@ -59,7 +59,7 @@ and runs the usual `dailynames()`, `download()`, `cdf_to_tplot()` pipeline:
 - `time_clip` defaults to False; with a yearly COSTEP file, set it to get only
   the requested range.
 - The local data folder is `SOHO_DATA_DIR`, else `SPEDAS_DATA_DIR/soho`, else
-  `soho_data/` (`config.py`). Setting `SOHO_NO_DOWNLOAD` turns downloads off.
+  `soho_data/` (`config.py`). Setting `SOHO_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

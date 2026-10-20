@@ -22,6 +22,7 @@ def mepi_tof(
     time_clip: bool = False,
     ror: bool = True,
     force_download: bool = False,
+    version: Optional[str] = None,
 ) -> List[str]:
     """
     This function loads data from the MEP-i experiment from the Arase mission
@@ -85,6 +86,10 @@ def mepi_tof(
         passwd: str
             Password. Default: None
 
+        version: str
+            File version including the 'v' prefix, such as 'v01_02'.
+            Default: None (load the latest available version).
+
         force_download: bool
             Download file even if local version is more recent than server version
             Default: False
@@ -104,11 +109,12 @@ def mepi_tof(
     if notplot:
         initial_notplot_flag = True
 
+    file_version = 'v??_??' if version is None else version
     file_res = 3600. * 24
     prefix = 'erg_mepi_'+level+'_tof'+datatype+'_'
 
     pathformat = 'satellite/erg/mepi/'+level+'/tof/%Y/%m/erg_mepi_' + \
-        level+'_tof'+datatype+'_%Y%m%d_v??_??.cdf'
+        level+'_tof'+datatype+'_%Y%m%d_' + file_version + '.cdf'
 
     loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)

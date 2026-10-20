@@ -35,6 +35,7 @@ related_files:
   - pyspedas/tplot_tools/time_double.py
   - pyspedas/tplot_tools/time_string.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/latest_dependency_tests.yml
   - .github/workflows/zenodo_draft.yml
 maintenance: |
   Update when download() or dailynames() change their matching, caching or
@@ -77,7 +78,8 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
    then copies it into place; a bad download is retried once.
 4. If nothing was downloaded (including `no_download=True`), it walks `local_path` for files
    whose name matches the pattern. This is how `no_update` and offline use work.
-5. fsspec URIs (for example `s3://`) are streamed in place instead of downloaded;
+5. fsspec URIs (for example `s3://`) are streamed in place instead of downloaded, unless
+   `force_download=True` or a local copy is current;
    `CONFIG['s3']['use_anon_access']` (`pyspedas/config.py`) controls anonymous S3 access.
 
 ## Things to know
@@ -94,6 +96,10 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
 
 ## Tests
 
-`tests/` runs in CI (`.github/workflows/quick_tests.yml`). Besides download and time tests it
+`tests/` runs in CI (most modules in `.github/workflows/quick_tests.yml`). Besides download and time tests it
 holds the tplot math, wildcard and plotting tests. `zenodo_draft.py` is run by
 `.github/workflows/zenodo_draft.yml`.
+
+When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
+`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
+synchronized. New test methods in an already-listed module need no extra entry.

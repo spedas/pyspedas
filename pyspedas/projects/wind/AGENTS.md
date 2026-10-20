@@ -55,7 +55,7 @@ Two steps are specific to Wind:
   WAVES `tnr`, `qtnfit` and `qtnfit-filtered`.
 - Both downloads pass `last_version=True` to `download()`
   (`pyspedas/utilities/download.py`), so only the highest `v??` version of each
-  file is kept.
+  file is used.
 
 ## Things to know
 
@@ -69,7 +69,7 @@ Two steps are specific to Wind:
   `berkeley`.
 - `time_clip` defaults to False in all wrappers.
 - The local data folder is `WIND_DATA_DIR`, else `SPEDAS_DATA_DIR/wind`, else
-  `wind_data/` (`config.py`). Setting `WIND_NO_DOWNLOAD` turns downloads off.
+  `wind_data/` (`config.py`). Setting `WIND_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

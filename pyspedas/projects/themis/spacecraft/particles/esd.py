@@ -80,8 +80,8 @@ def esd(trange=['2021-03-23', '2021-03-24'],
             Default: False
 
         version: str, optional
-            CDF version to use in place of a version wildcard, e.g. "v01".
-            Default: None, which preserves the default file selection.
+            CDF version to request, e.g. "v01".
+            Default: None, which uses v01.
 
     Returns
     -------

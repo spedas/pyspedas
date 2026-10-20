@@ -107,6 +107,9 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
         warnings.filterwarnings('ignore', message='Unverified HTTPS request')
         data, hapi_metadata = load_hapi(server, dataset, parameters, trange[0], trange[1], **opts)
 
+    if len(data) == 0:
+        return []
+
     out_vars = []
 
     # loop through the parameters in this dataset
@@ -118,50 +121,25 @@ def hapi(trange=None, server=None, dataset=None, parameters='', suffix='',
     values_by_name = {}
     loaded_params = []
 
-    # First pass: collect data arrays and do fill value processing
+    # Keep the time dimension and all parameter dimensions from hapiclient.
+    # In particular, squeeze() would lose time for a one-record response.
     for param_idx, param in enumerate(params[1:]):
-        spec = False
         param_name = param.get('name')
-        param_type = param.get('type')
-        data_size = param.get('size')
+        param_type = param.get('type') or 'double'
+        data_out = np.array(data[data.dtype.names[param_idx + 1]], copy=True)
 
-        if param_type is None:
-            param_type = 'double'
-
-        if data_size is None:
-            single_line = True
-
-        try:
-            if param_type == 'double':
-                single_line = isinstance(data[0][param_idx+1], np.float64)
-            elif param_type == 'integer':
-                single_line = isinstance(data[0][param_idx+1], np.int32)
-        except IndexError:
-            continue
-
-        if single_line:
-            data_out = np.zeros((len(data)))
-        else:
-            try:
-                data_out = np.zeros((len(data), len(data[0][param_idx+1])))
-            except TypeError:
-                continue
-
-        for idx, datapoint in enumerate(data):
-            if param_type in ['double','integer']:
-                datapt = datapoint[param_idx+1]
+        if param_type in ('string', 'isotime'):
+            # Preserve textual parameters instead of silently replacing them
+            # with NaNs. Decode bytes so stored Unicode values remain readable.
+            if data_out.dtype.kind == 'S':
+                data_out = np.char.decode(data_out, 'utf-8')
             else:
-                datapt = None
-            if single_line:
-                data_out[idx] = datapt
-            else:
-                data_out[idx, :] = datapt
+                data_out = data_out.astype(str)
+        elif param_type == 'double':
+            data_out = data_out.astype(float)
 
-        data_out = data_out.squeeze()
-
-        # check for fill values
         fill_value = param.get('fill')
-        if fill_value is not None:
+        if fill_value is not None and param_type in ('double', 'integer'):
             replace_fillvals(data_out, fill_value, param_name, param_type)
 
         values_by_name[param_name] = data_out

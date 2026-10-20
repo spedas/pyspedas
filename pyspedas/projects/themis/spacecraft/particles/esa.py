@@ -79,8 +79,8 @@ def esa(trange=['2007-03-23', '2007-03-24'],
             If True, apply eclipse spin model corrections to L2 output variables as appropriate.
 
         version: str, optional
-            CDF version to use in place of a version wildcard, e.g. "v01".
-            Default: None, which preserves the default file selection.
+            CDF version to request, e.g. "v01".
+            Default: None, which uses v02 for L1 and v01 for L2.
 
     Returns
     -------

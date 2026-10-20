@@ -80,9 +80,9 @@ def scm(trange=['2007-03-23', '2007-03-24'],
             Default: False
 
         version: str, optional
-            CDF version to use in place of a version wildcard, e.g. "v01".
-            Default: None, which preserves the default file selection.
-            Paths with a fixed version retain that version.
+            CDF version to request, e.g. "v01".
+            Default: None, which uses v01.
+            L2 files always use v01; version overrides apply to L1 files.
 
     Returns
     -------

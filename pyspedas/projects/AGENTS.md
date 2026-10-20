@@ -24,6 +24,14 @@ related_files:
   - pyspedas/projects/themis/AGENTS.md
   - pyspedas/projects/ulysses/AGENTS.md
   - pyspedas/projects/wind/AGENTS.md
+  - pyspedas/projects/dmsp/__init__.py
+  - pyspedas/projects/dmsp/load.py
+  - pyspedas/projects/dmsp/config.py
+  - pyspedas/projects/dmsp/README.md
+  - pyspedas/projects/swfo/load.py
+  - pyspedas/projects/swfo/config.py
+  - pyspedas/projects/swfo/__init__.py
+  - pyspedas/projects/swfo/README.md
   - pyspedas/projects/__init__.py
   - pyspedas/projects/cnofs/load.py
   - pyspedas/projects/de2/__init__.py
@@ -60,7 +68,7 @@ maintenance: |
 
 # Mission packages
 
-One package per mission (39). `__init__.py` imports all of them, so `import pyspedas`
+One package per mission. `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.
 
 ## Missions
@@ -74,6 +82,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - `cnofs/`: C/NOFS, SPDF: `cindi()`, `plp()`, `vefi()` over `load()`.
 - `csswe/`: CSSWE, SPDF: `reptile()` over `load()`.
 - `de2/`: Dynamics Explorer 2, SPDF: `mag`, `nacs`, `rpa`, `fpi`, `idm`, `wats`, `vefi`, `lang`, all `better_partial(load, instrument=...)` in `de2/__init__.py`.
+- `dmsp/`: DMSP, SPDF CDF: `ssj()`, `ssies()`, `ssm()` over `load()`. SSIES files cover individual orbits; env `DMSP_DATA_DIR`, `DMSP_NO_DOWNLOAD`.
 - `dscovr/`: DSCOVR, SPDF: `mag`, `fc`, `orb`, `att`, `all` (partials of `load()`).
 - `elfin/`: ELFIN, UCLA server. AGENTS.md: [elfin/AGENTS.md](elfin/AGENTS.md)
 - `equator_s/`: Equator-S, SPDF: `mam`, `edi`, `epi`, `ici`, `pcd`, `sfd` (partials of `load()`).
@@ -101,6 +110,7 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - `solo/`: Solar Orbiter, SPDF. AGENTS.md: [solo/AGENTS.md](solo/AGENTS.md)
 - `st5/`: Space Technology 5, SPDF: `mag()` over `load()`.
 - `stereo/`: STEREO, Berkeley SPRG mirror. AGENTS.md: [stereo/AGENTS.md](stereo/AGENTS.md)
+- `swfo/`: SWFO / SOLAR-1, NOAA NCEI S3-compatible archive: `mag()`, `swips()`, `stis()` over `load()`. Reads compressed netCDF using each variable's time coordinate; env `SWFO_DATA_DIR`, `SWFO_NO_DOWNLOAD`.
 - `swarm/`: Swarm, VirES HAPI server: `mag()` over `load()` in `swarm/load.py`, which calls `hapi()` (`pyspedas/hapi_tools/hapi.py`).
 - `themis/`: THEMIS/ARTEMIS, Berkeley. AGENTS.md: [themis/AGENTS.md](themis/AGENTS.md)
 - `twins/`: TWINS, SPDF: `ephemeris()`, `lad()`, `imager()`.
@@ -126,9 +136,9 @@ Entries marked AGENTS.md have their own file; the others list their public loade
   Wrappers don't always pass all of them through.
 - Instrument wrappers are either one module per instrument calling `load(instrument=...)`, or
   `better_partial(load, instrument=...)` (`pyspedas/utilities/pyspedas_functools.py`) in
-  `__init__.py` (de2, dscovr, equator_s, fast, goes).
+  `__init__.py` (de2, dmsp, dscovr, equator_s, fast, goes, swfo).
 - `datasets()` wrappers call `find_datasets()` (`pyspedas/utilities/datasets.py`), which queries
-  the CDAWeb CDAS web service. The loaders themselves read SPDF directory listings, not CDAS.
+  the CDAWeb CDAS web service. The loaders themselves download from SPDF directly, not through CDAS.
 
 ## Missions that leave the shared pipeline
 
@@ -139,6 +149,14 @@ Entries marked AGENTS.md have their own file; the others list their public loade
 - Cluster: `cluster/load_csa.py` reads the ESA Cluster Science Archive in addition to SPDF.
 - GOES and POES L1b (`ncei_l1b_server=True`) read netCDF with `netcdf_to_tplot`
   (`pyspedas/tplot_tools/importers/netcdf_to_tplot.py`) from NCEI; GOES orbits come from SPDF CDFs.
+- SWFO: `swfo/load.py` lists NOAA's S3-compatible archive with pagination,
+  selects the latest processing timestamp per observation interval, and reads
+  netCDF (including gzip-compressed files) directly with netCDF4, using each
+  variable's own time coordinate. It does not use `cdf_to_tplot` or
+  `netcdf_to_tplot`. `time_clip=True` clips both tplot and `notplot` output.
+- DMSP follows the CDF pipeline, but `dmsp/load.py` retains every SSIES orbit
+  and selects file versions numerically. `time_clip=True` clips tplot output
+  only; it is ignored with `notplot=True`.
 - Kyoto, NOAA and SECS parse text or HTML files instead of CDF.
 - Galileo and Juno use the das2 helpers in `pyspedas/utilities/das2`; Swarm and KOMPSAT use
   HAPI servers (KOMPSAT gets an OAuth2 token in `kompsat/esa_hapi_data.py` and has no `config.py`).

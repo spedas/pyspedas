@@ -130,7 +130,7 @@ def csundir_vect(time_in):
     # Julian day and greenwich mean sideral time
     pisd = np.pi / 180.0
     fday = (ih * 3600.0 + im * 60.0 + isec) / 86400.0
-    jj = 365 * (iyear - 1900) + np.fix((iyear - 1901) / 4) + idoy
+    jj = 365 * (iyear - 1900) + np.trunc((iyear - 1901) / 4) + idoy
     dj = jj - 0.5 + fday
     gst = np.mod(279.690983 + 0.9856473354 * dj + 360.0 * fday + 180.0, 360.0) * pisd
 

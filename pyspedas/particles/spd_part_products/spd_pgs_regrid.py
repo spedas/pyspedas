@@ -37,7 +37,7 @@ def spd_pgs_regrid(data, regrid_dimen):
     phi_angles = (np.arange(n_bins_grid) % n_phi_grid)*d_phi_grid+d_phi_grid/2.0
     phi_grid = np.repeat(np.reshape(phi_angles, [n_bins_grid, 1]), n_energy, axis=1).T
 
-    theta_angles = np.fix(np.arange(n_bins_grid)/n_phi_grid)*d_theta_grid+d_theta_grid/2.0 - 90
+    theta_angles = np.trunc(np.arange(n_bins_grid)/n_phi_grid)*d_theta_grid+d_theta_grid/2.0 - 90
     theta_grid = np.repeat(np.reshape(theta_angles, [n_bins_grid, 1]), n_energy, axis=1).T
 
     d_phi_grid = np.zeros([n_energy, n_bins_grid]) + d_phi_grid

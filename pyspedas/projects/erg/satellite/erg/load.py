@@ -1,3 +1,6 @@
+import os
+from urllib.parse import urlparse
+
 import cdflib
 
 from pyspedas.tplot_tools import time_clip as tclip
@@ -6,6 +9,39 @@ from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import cdf_to_tplot
 
 from pyspedas.projects.erg.config import CONFIG
+
+def _spdf_path(pathformat):
+    """Translate an ERG-SC satellite template to SPDF's product layout."""
+    pathformat = pathformat.replace('/%Y/%m/', '/%Y/')
+    parts = pathformat.split('/')
+    filename = parts[-1]
+    tokens = filename.split('_')
+    if parts[0] == 'orb' and parts[1] != 'l3':
+        parts.insert(1, 'l2')
+    elif parts[0] == 'mgf' and parts[2] != '8sec':
+        parts[2] += '_' + tokens[4]
+    elif parts[:2] == ['pwe', 'efd']:
+        if parts[3] in ['E64Hz', 'E256Hz']:
+            parts[3] += '_' + tokens[5]
+        parts[3] = parts[3].lower()
+        for product in ['E64Hz', 'E256Hz', 'E_spin', 'pot8Hz']:
+            parts[-1] = parts[-1].replace(product, product.lower())
+    elif parts[:2] == ['pwe', 'hfa']:
+        if parts[2] == 'l2':
+            parts[3:5] = [parts[3] + '_' + parts[4]]
+        else:
+            parts.insert(3, '1min')
+    elif parts[:2] == ['pwe', 'wfc']:
+        component = 'elect' if tokens[4] == 'e' else 'mag'
+        datatype = 'wave' if tokens[5] == 'waveform' else 'spec'
+        mode = tokens[6]
+        if datatype == 'wave':
+            mode += '_' + tokens[7]
+        parts[3:4] = [component, datatype, mode]
+    elif parts[0] == 'mepi' and parts[2] == 'tof':
+        parts[2] = tokens[3]
+    return '/'.join(parts)
+
 
 def load(trange=['2017-03-27', '2017-03-28'],
          pathformat=None,
@@ -44,19 +80,55 @@ def load(trange=['2017-03-27', '2017-03-28'],
         pyspedas.projects.erg.xep()
     """
 
+    # Templates retain their ERG-SC prefixes so the existing cache is reusable.
+    # Only the remote names are relative to the configurable data-family URL.
+    if pathformat.startswith('satellite/erg/'):
+        path_prefix = 'satellite/erg/'
+        remote_path = CONFIG['satellite_remote_data_dir']
+    elif pathformat.startswith('ground/'):
+        path_prefix = 'ground/'
+        remote_path = CONFIG['ground_remote_data_dir']
+    else:
+        path_prefix = ''
+        remote_path = CONFIG['remote_data_dir']
+    local_path = os.path.join(CONFIG['local_data_dir'], path_prefix)
+    remote_format = pathformat[len(path_prefix):]
+    last_version = any(char in pathformat for char in '?*')
+
     # find the full remote path names using the trange
-    remote_names = dailynames(file_format=pathformat,
+    remote_names = dailynames(file_format=remote_format,
                               trange=trange, res=file_res)
 
     out_files = []
+    if path_prefix == 'satellite/erg/' and urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov':
+        spdf_names = dailynames(file_format=_spdf_path(remote_format),
+                               trange=trange, res=file_res)
+        # Keep each product in its original ERG-SC cache directory even though
+        # SPDF's remote directory layout is different. Group requests so hourly
+        # files share one directory listing per local directory.
+        groups = {}
+        for original, remote in zip(remote_names, spdf_names):
+            key = (os.path.dirname(original), os.path.dirname(remote))
+            names = groups.setdefault(key, [])
+            names.append(os.path.basename(remote))
+            # Older ERG-SC EFD cache files have mixed-case product names.
+            if (no_update or CONFIG["no_download"]) and os.path.basename(original) != os.path.basename(remote):
+                names.append(os.path.basename(original))
+        requests = [(names, remote_path.rstrip('/') + '/' + remote_dir + '/',
+                     os.path.join(local_path, local_dir))
+                    for (local_dir, remote_dir), names in groups.items()]
+    else:
+        requests = [(remote_names, remote_path.rstrip('/') + '/', local_path)]
 
-    files = download(remote_file=remote_names, remote_path=CONFIG['remote_data_dir'], local_path=CONFIG[
-                     'local_data_dir'], no_download=no_update or CONFIG["no_download"], last_version=True, username=uname, password=passwd, force_download=force_download)
-    if files is not None:
-        for file in files:
-            out_files.append(file)
+    for names, url, cache in requests:
+        files = download(remote_file=names, remote_path=url, local_path=cache,
+                         no_download=no_update or CONFIG["no_download"],
+                         last_version=last_version, username=uname, password=passwd,
+                         force_download=force_download)
+        if files is not None:
+            out_files.extend(files)
 
-    out_files = sorted(out_files)
+    out_files = sorted(set(out_files))
 
     if downloadonly:
         return out_files

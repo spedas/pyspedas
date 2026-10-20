@@ -22,7 +22,7 @@ maintenance: |
 
 # Akebono
 
-Loaders for the Akebono (EXOS-D) auroral satellite: plasma waves (PWS),
+Loaders for the Akebono satellite: plasma waves (PWS),
 radiation monitor (RDM) and orbit. Data come from JAXA's DARTS archive, not
 SPDF, and only PWS is in CDF.
 
@@ -64,10 +64,10 @@ A user `prefix` goes before `akb_`; `None` is treated as empty.
 - `pws()` accepts `datatype` and `level`, but the file path is fixed to the
   `ak_h1_pws` files.
 - The local data folder is `AKEBONO_DATA_DIR`, else `SPEDAS_DATA_DIR/akebono`,
-  else `akebono_data/` (`config.py`). Setting `AKEBONO_NO_DOWNLOAD` turns
-  downloads off.
+  else `akebono_data/` (`config.py`). Setting `AKEBONO_NO_DOWNLOAD` to true
+  turns downloads off.
 
 ## Tests
 
-`python -m pyspedas.projects.akebono.tests.test_akebono`. CI runs it in
-`.github/workflows/full_coverage.yml`.
+`python -m pyspedas.projects.akebono.tests.test_akebono`. Its lines in
+`.github/workflows/full_coverage.yml` are commented out, so CI does not run it.

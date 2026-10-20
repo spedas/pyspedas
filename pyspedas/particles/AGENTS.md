@@ -70,7 +70,7 @@ There is no generic part_products driver in this folder.
   `theta`, `dtheta`, `phi`, `dphi`, `bins` (1 = use the bin), `mass`, `charge` and `magf`;
   `moments_3d()` needs all of these. Angles are in degrees.
 - `moments_3d()` expects `data` in energy flux, with `mass` in eV/(km/s)^2 (proton 0.0104535),
-  and energies below 0.1 eV raised to 0.1. `sc_pot` shifts energies by `charge * sc_pot`.
+  and energies <= 0 set to 0.1 eV. `sc_pot` shifts energies by `charge * sc_pot`.
 - `slice2d()` takes a list of distributions, not tplot names; time selection is by
   `time` with `samples` or `window`, or by `trange`. Rotations such as 'BV' and 'perp' need
   the `mag_data` and/or `vel_data` tplot names.

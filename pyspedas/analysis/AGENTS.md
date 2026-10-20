@@ -49,14 +49,15 @@ neutral sheet models. `__init__.py` is empty; public names are re-exported from
 
 - Variable-in, variable-out: `avg_data.py`, `deriv_data.py`, `yclip.py`, `tinterpol.py`, `tvectot.py` (magnitude, optionally joined to the vector).
 - Array helpers: `interp_gap.py`, `rebin.py`, `reduce_tres.py`, `roundsig.py`, `time_domain_filter.py` (band-pass on arrays).
-- Waves: `twavpol.py` (polarization from a 3-component field), `wavelet.py` (PyWavelets on a variable), `wav_data.py` (port of IDL `wav_data`, built on `wavelet2.py`, `wavelet98.py` and `wave_signif.py`, the Torrence and Compo routines).
+- Waves: `twavpol.py` (polarization from a 3-component field), `wavelet.py` (PyWavelets on a variable), `wav_data.py` (port of IDL `wav_data`, built on `wavelet2.py`, which wraps `wavelet98.py`; `wavelet2.py`, `wavelet98.py` and `wave_signif.py` are the Torrence and Compo routines).
 - Multi-spacecraft: `lingradest.py` (gradients, curl, curvature from four probes, arrays in), `find_magnetic_nulls.py` (`find_magnetic_nulls_fote`, `classify_null_type`, tplot names in).
 - `neutral_sheet.py`: `neutral_sheet(time, pos, model=...)` dispatches to the `*_ns_model` functions ('sm', 'themis', 'aen', 'den', 'fairfield', 'den_fairfield', 'lopez', 'tag14').
 - `README.md`: usage notes. `tests/`: unittest modules.
 
 ## How to pick an entry point
 
-Most routines take tplot names (wildcards allowed) and write new variables. Start from the
+Many routines take tplot names (wildcards allowed in `avg_data`, `deriv_data`, `yclip`,
+`tinterpol`, `tvectot`) and write new variables. Start from the
 variable-level function (`twavpol`, `wav_data`, `wavelet`, `find_magnetic_nulls_fote`) and drop
 to the array functions (`wavpol`, `wavelet2`, `lingradest`) only for numpy input.
 

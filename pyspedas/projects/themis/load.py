@@ -51,15 +51,25 @@ def load(trange=['2013-11-5', '2013-11-6'],
     Parameters
     ----------
     version: str, optional
-        CDF version to use in place of a version wildcard, e.g. "v01".
+        CDF version to request, e.g. "v01".
         For state data, also replaces Berkeley's unversioned link with an
-        explicitly versioned filename. Paths with fixed versions are unchanged.
-        Default: None, which preserves the default file selection.
+        explicitly versioned filename. EFI, L2 SCM and SLP retain their
+        existing fixed v01 paths regardless of this argument.
+        Default: None, which uses v02 for L1 ESA and v01 for the other
+        probe instruments. State, ground and SSC file selection is unchanged.
 
     """
 
     if not isinstance(probe, list):
         probe = [probe]
+
+    # Probe instrument files have one published version. Avoid remote directory
+    # listings to resolve versions, especially on heavily loaded servers.
+    fixed_version = instrument in (
+        'fgm', 'fit', 'efi', 'scm', 'fft', 'fbk', 'esa', 'esd', 'sst',
+        'mom', 'gmom', 'slp')
+    file_version = version if version is not None else (
+        'v02' if instrument == 'esa' and level == 'l1' else 'v01')
 
     out_files = []
     file_resolution = 24*3600.0 # default to daily files
@@ -89,11 +99,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
         elif instrument == 'fgm':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'fit':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'efi':
             pathformat = ['th' + prb + '/' + level + '/' + dt
                     + '/%Y/th' + prb + '_' + level + '_' + dt
@@ -105,60 +115,60 @@ def load(trange=['2013-11-5', '2013-11-6'],
                               + '_%Y%m%d_v01.cdf')
             elif level == 'l1':
                 pathformat = [('th' + prb + '/' + level + '/scp/%Y/th' + prb
-                               + '_' + level + '_scp_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_scp_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/scf/%Y/th' + prb
-                               + '_' + level + '_scf_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_scf_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/scw/%Y/th' + prb
-                               + '_' + level + '_scw_%Y%m%d_v??.cdf')]
+                               + '_' + level + '_scw_%Y%m%d_' + file_version + '.cdf')]
         elif instrument == 'fft':
             if level == 'l2':
                 pathformat = ('th' + prb + '/' + level + '/' + instrument
                               + '/%Y/th' + prb + '_' + level + '_' + instrument
-                              + '_%Y%m%d_v??.cdf')
+                              + '_%Y%m%d_' + file_version + '.cdf')
             elif level == 'l1':
                 pathformat = [('th' + prb + '/' + level + '/fff_16/%Y/th' + prb
-                               + '_' + level + '_fff_16_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_fff_16_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/fff_32/%Y/th' + prb
-                               + '_' + level + '_fff_32_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_fff_32_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/fff_64/%Y/th' + prb
-                               + '_' + level + '_fff_64_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_fff_64_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffp_16/%Y/th' + prb
-                               + '_' + level + '_ffp_16_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_ffp_16_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffp_32/%Y/th' + prb
-                               + '_' + level + '_ffp_32_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_ffp_32_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffp_64/%Y/th' + prb
-                               + '_' + level + '_ffp_64_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_ffp_64_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffw_16/%Y/th' + prb
-                               + '_' + level + '_ffw_16_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_ffw_16_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffw_32/%Y/th' + prb
-                               + '_' + level + '_ffw_32_%Y%m%d_v??.cdf'),
+                               + '_' + level + '_ffw_32_%Y%m%d_' + file_version + '.cdf'),
                               ('th' + prb + '/' + level + '/ffw_64/%Y/th' + prb
-                               + '_' + level + '_ffw_64_%Y%m%d_v??.cdf')]
+                               + '_' + level + '_ffw_64_%Y%m%d_' + file_version + '.cdf')]
         elif instrument == 'fbk':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'esa':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'esd':
             level = 'l2' #For all ESD data
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_esa_' + datatype
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'sst':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'mom':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'gmom':
             pathformat = ('th' + prb + '/' + level + '/' + instrument
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
-                          + '_%Y%m%d_v??.cdf')
+                          + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'state':
             if version is not None or 'spdf' in remote_data_dir:
                 # Use a versioned path for explicit requests and for SPDF,
@@ -225,7 +235,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                              remote_path=remote_data_dir,
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update or CONFIG["no_download"],
-                             last_version=version is None,
+                             last_version=version is None and not fixed_version,
                              force_download=force_download,)
             if files is not None:
                 for file in files:

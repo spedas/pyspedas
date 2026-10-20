@@ -5,6 +5,7 @@ from . import cluster
 from . import cnofs
 from . import csswe
 from . import de2
+from . import dmsp
 from . import dscovr
 from . import elfin
 from . import equator_s
@@ -37,3 +38,4 @@ from . import themis
 from . import twins
 from . import ulysses
 from . import wind
+from . import swfo

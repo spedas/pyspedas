@@ -1016,6 +1016,52 @@ class PlotTestCases(unittest.TestCase):
         tplot_options("title", "")
         tplot_options("varlabel_style", None)
 
+    def test_tplot_numeric_trange(self):
+        del_data("*")
+        timespan(reset=True)
+        string_trange=['2007-03-23','2007-03-24']
+        numeric_trange=pyspedas.time_double(string_trange)
+        pyspedas.projects.themis.state(probe='a',trange=string_trange)
+        tplot('tha_pos',trange=numeric_trange, display=global_display, save_png="tplot_numeric_trange.png")
+
+    def test_timebar_pseudovarlabel(self):
+        del_data("*")
+        timespan(reset=True)
+        trange=['2007-03-23','2007-03-24']
+        vars=pyspedas.projects.themis.state(probe='a',trange=trange)
+        print(vars)
+        store_data('pseudovar',data=['tha_pos', 'tha_vel'])
+        pyspedas.timebar('2007-03-23/12:00:00','pseudovar',color='green')
+        pyspedas.databar('pseudovar', 10000.0,color='red')
+        # Timebar and databar on pseudovariable
+        tplot('pseudovar',display=global_display,save_png='pseudovar_timebar.png')
+        # Timebar and databar on component variable
+        pyspedas.timebar('2007-03-23/12:00:00','tha_pos',color='green')
+        pyspedas.databar('tha_pos',10000.0, color='red')
+        # Timebar and databar on one of the component variables
+        tplot('pseudovar',display=global_display,save_png='component_var_timebar.png')
+
+
+    def test_right_axis_multiple_pseudovar(self):
+        start_time=(time_double('2007-03-23'))
+        time_list = np.arange(0,86400,1)
+        times = np.array(time_list)+start_time
+        data1 = np.zeros(86400)
+        data2 = np.zeros(86400)
+        data1[:] = 0.001
+        data2[:] = 100.5
+        store_data('data1',data={'x':times, 'y':data1})
+        store_data('data2',data={'x':times, 'y':data2})
+        options('data1','color','red')
+        options('data2','color','green')
+        options('data2','linestyle','dot')
+        options('data2','line_width',3)
+        ps1 = store_data('pv1',data=['data1','data2'])
+        ps2 = store_data('pv2',data=['data1','data2'])
+        options('pv1','right_axis',True)
+        tplot_options('title',"Right axis on first panel, not present on second panel")
+        tplot(['pv1','pv2'],display=global_display,save_png='multiple_pseudovar_right_axis_on.png')
+        tplot_options("title", "")
 
 if __name__ == "__main__":
     unittest.main()

@@ -30,7 +30,7 @@ maintenance: |
 
 Loader and post-processing for the Fly's Eye Energetic Particle Sensor (FEEPS), which
 measures energetic electrons and ions on each MMS spacecraft. `mms_load_feeps()` loads the
-CDFs and always runs a fixed correction chain; the pitch angle and gyrophase routines work
+CDFs and runs a fixed correction chain; the pitch angle and gyrophase routines work
 on its output.
 
 ## Layout
@@ -52,7 +52,8 @@ on its output.
 ## How `mms_load_feeps()` works
 
 It calls `mms_load_data(instrument='feeps')` (`pyspedas/projects/mms/mms_load_data.py`), then:
-`mms_feeps_correct_energies()` and `mms_feeps_flat_field_corrections()` on all probes;
+`mms_feeps_correct_energies()` and (unless `no_flatfield_corrections=True`)
+`mms_feeps_flat_field_corrections()` on all probes;
 `mms_feeps_remove_bad_data()` per probe, level, rate and datatype; then per unit
 `mms_feeps_active_eyes()`, `mms_feeps_split_integral_ch()`, `mms_feeps_remove_sun()`,
 `mms_feeps_omni()` and `mms_feeps_spin_avg()`. Each step reads the previous step's
@@ -72,10 +73,12 @@ quaternions and survey FGM.
 
 - Sensor IDs 1-12 exist on a top and a bottom head; IDs 6-8 are ion eyes, the rest electron.
   Which eyes are active changed on 2017-08-16 for survey data, and SITL uses top eyes only.
-- With no version keyword, the loader sets `major_version=True` because the SDC mixes
-  incompatible major CDF versions. It also filters "record-varying" warnings from the
+- With no version keyword, the loader sets `major_version=True` because, per a code comment
+  dated 3 July 2023, the SDC has a mixture of incompatible v7.x.x and v6.x.x files. It
+  also filters "record-varying" warnings from the
   `pyspedas` logger (`filter_recvary_warnings`).
-- The sun mask CSV nearest in time to `trange[0]` is used for all four probes. A new mask
+- The sun mask date nearest in time to `trange[0]` is used for all four probes (one
+  CSV per probe). A new mask
   set needs both the CSV files in `sun/` and a new entry in the `dates` list of
   `mms_read_feeps_sector_masks_csv.py`.
 - `mms_feeps_pad()` refuses energies below 32 keV and uses an angular response of

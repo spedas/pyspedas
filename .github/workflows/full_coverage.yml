@@ -85,6 +85,10 @@ jobs:
               # This is good to have in case any tests access MMS data
               echo "Setting up credentials for MMS tests"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
+              echo Starting ERG SPDF satellite tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_spdf
+              echo Starting ERG loader routing tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_load
               echo Starting ace tests at `date`
               coverage run -a -m pyspedas.projects.ace.tests.test_ace
               echo Starting soho tests at `date`
@@ -101,6 +105,8 @@ jobs:
               coverage run -a -m pyspedas.projects.cnofs.tests.test_cnofs
               echo Starting kompsat tests at `date`
               coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
+              echo Starting dmsp tests at `date`
+              coverage run -a -m pyspedas.projects.dmsp.tests.test_dmsp
               echo Starting dscovr tests at `date`
               coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
               echo Starting utilities download tests at `date`
@@ -232,6 +238,8 @@ jobs:
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
               echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
+              echo "Starting HAPI TestData tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
 
           - shard: das2
             shard_script: |
@@ -409,6 +417,8 @@ jobs:
               coverage run -a -m pyspedas.projects.elfin.tests.test_elfin
               echo Starting elfin epd calibration tests at `date`      
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+              echo Starting swfo tests at `date`
+              coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
               echo Starting noaa tests at `date`
               coverage run -a -m pyspedas.projects.noaa.tests.test_noaa
               echo "========================================================="        

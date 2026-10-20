@@ -35,8 +35,8 @@ maintenance: |
 # Cluster
 
 Loaders for the four Cluster spacecraft. There are two routes: per-instrument
-wrappers that read CDAWeb CDFs from SPDF, and `load_csa()`, which requests any
-dataset from the ESA Cluster Science Archive (CSA).
+wrappers that read CDAWeb CDFs from SPDF, and `load_csa()`, which requests
+datasets from the ESA Cluster Science Archive (CSA).
 
 ## Layout
 
@@ -92,7 +92,7 @@ downloads again. `probes=['*']` means all four.
 - The local data folder is `CLUSTER_DATA_DIR`, else `SPEDAS_DATA_DIR/cluster`,
   else `cluster_data/` (`config.py`, which first applies saved preferences from
   `pyspedas/preferences.py`); it may be an S3 or other fsspec URI. Setting
-  `CLUSTER_NO_DOWNLOAD` turns downloads off for `load()`.
+  `CLUSTER_NO_DOWNLOAD` to true turns downloads off for `load()`.
 
 ## Tests
 

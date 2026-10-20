@@ -239,9 +239,11 @@ Additional examples of loading and plotting data can be found in the documentati
 
 
 ## Documentation
-For more information, please see our HTML documentation at:
 
-https://pyspedas.readthedocs.io/
+The definitive [PySPEDAS documentation](https://pyspedas.readthedocs.io/) includes
+mission load routines, analysis tools, utilities, examples and developer guides.
+It is built with Sphinx from the RST sources in `docs/source/`; updates to
+`master` trigger a rebuild on Read the Docs.
 
 
 ## Getting Help
@@ -276,7 +278,18 @@ Starting with PySPEDAS 2.0, these external packages are no longer required -- th
 included directly in PySPEDAS.
 
 ## Contributing
-We welcome contributions to PySPEDAS; to learn how you can contribute, please see our [Contributing Guide](https://github.com/spedas/pyspedas/blob/master/CONTRIBUTING.md)
+We welcome questions, bug reports, documentation improvements and code
+contributions. See [CONTRIBUTING.md](CONTRIBUTING.md) and the
+[developer guide](https://pyspedas.readthedocs.io/en/latest/devguide.html) for setup
+and the development process.
+
+Work in a separate branch and submit a pull request targeting the protected
+`master` branch for maintainer review. New features and bug fixes should include
+`unittest` tests and relevant documentation updates. Register new test modules in
+`full_coverage.yml`, and in `quick_tests.yml` when they run quickly and reliably.
+Any test module added to `quick_tests.yml` must also be added to
+`latest_dependency_tests.yml` so both workflows exercise the same tests.
+After a squash merge, start follow-up work in a fresh branch from updated `master`.
 
 
 ## Plug-in Development

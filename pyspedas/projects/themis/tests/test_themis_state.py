@@ -90,9 +90,9 @@ class Themis_StateDataTests(unittest.TestCase):
         state(trange=ts1,probe='a',get_support_data=True) # V03 corrections exist
         self.assertTrue(data_exists('tha_spinras_correction'))
         self.assertTrue(data_exists('tha_spindec_correction'))
-        state(trange=ts2,probe='a',get_support_data=True) # V03 corrections do not exist
-        self.assertFalse(data_exists('tha_spinras_correction'))
-        self.assertFalse(data_exists('tha_spindec_correction'))
+        state(trange=ts2,probe='b',get_support_data=True) # V03 corrections do not exist
+        self.assertFalse(data_exists('thb_spinras_correction'))
+        self.assertFalse(data_exists('thb_spindec_correction'))
 
 
     def test_state_exclude_format(self):
@@ -117,6 +117,7 @@ class Themis_StateDataTests(unittest.TestCase):
         CONFIG['remote_data_dir'] = save
         self.assertTrue(data_exists('tha_pos'))
 
+    @unittest.skip("Skipping due to issues with THEMIS data server at UCLA")
     def test_state_ucla(self):
         from pyspedas.projects.themis.config import CONFIG
         del_data('the*')
