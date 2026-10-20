@@ -125,6 +125,12 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         symbols                 bool         If True, display as a scatter plot (no lines)
         ======================  ===========  ===========================================================================================================================
 
+        ======================  ===========  ===========================================================================================================================
+        Fill Between Options    Value type   Notes
+        ======================  ===========  ===========================================================================================================================
+        fill_between            bool         If true, create a fill between the line and a y value (specified by y_fill_line).
+        y_fill_line             numeric      Y value to which the line will be filled. Defaults to x axis (y=0).
+        ======================  ===========  ===========================================================================================================================
 
         ======================  ===========  ===========================================================================================================================
         Z  / Specplot Options   Value type   Notes
@@ -194,6 +200,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         xwrap_width             x_wrap_width
         ywrap                   y_wrap
         ywrap_width             y_wrap_width
+        y_fill_line             y2
         ======================  ======================================================================================================================================
 
 
@@ -458,6 +465,12 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
             elif option in ['symbols', 'symbol']:
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['symbols'] = value
 
+            elif option in ['fill_between']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['fill_between'] = value
+
+            elif option in ['y_fill_line','y2']:
+                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['y_fill_line'] = value
+            
             elif option == 'xtick_length':
                 pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtick_length'] = value
 
