@@ -209,6 +209,8 @@ jobs:
         coverage run -a -m  pyspedas.utilities.tests.test_utilities_plot
         echo Starting wrap_label tests at `date`
         coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
+        echo Starting fill_between tests at `date`
+        coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_fill_between
         echo Starting grid and background plot option tests at `date`
         coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
         echo Starting orbit plot tests at `date`
