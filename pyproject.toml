@@ -102,9 +102,10 @@ dependencies = [
     "tomlkit>=0.13.0",
     "bottleneck>=1.3.7",
     "tomli>=2.4.1",
-    # certifi version 2026.10.18 removes emSign as a trusted provider.  This causes errors
-    # accessing the UCLA elfin site.
-    "certifi<2026.10.18",
+    # certifi version 2026.10.18 removed emSign as a trusted provider. Version 2026.10.19
+    # has a more nuanced response that doesn't disrupt PySPEDAS doewnloads from sites with
+    # still-secure emSign certificstes.
+    "certifi>=2026.10.19",
 ]
 
 [project.urls]
