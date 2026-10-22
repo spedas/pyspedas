@@ -103,8 +103,8 @@ dependencies = [
     "bottleneck>=1.3.7",
     "tomli>=2.4.1",
     # certifi version 2026.10.18 removed emSign as a trusted provider. Version 2026.10.19
-    # has a more nuanced response that doesn't disrupt PySPEDAS doewnloads from sites with
-    # still-secure emSign certificstes.
+    # has a more nuanced response that doesn't disrupt PySPEDAS downloads from sites with
+    # still-secure emSign certificates.
     "certifi>=2026.10.19",
 ]
 
