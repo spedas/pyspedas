@@ -29,8 +29,7 @@ class TestGetspecBulkv(unittest.TestCase):
                             local_path='testdata',
                             no_download=False)
         if not datafile:
-            # Skip tests
-            raise unittest.SkipTest("Cannot download data validation file")
+            raise FileNotFoundError("Cannot download data validation file")
 
         # Load validation variables from the test file
         filename = datafile[0]

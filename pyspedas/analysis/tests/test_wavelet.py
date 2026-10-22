@@ -78,9 +78,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wavelet_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            raise unittest.SkipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
@@ -442,9 +441,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wav_data_key2_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            self.skipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
@@ -501,9 +499,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wav_data_2d_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            self.skipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
@@ -557,9 +554,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wav_data_resample_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            self.skipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
@@ -600,9 +596,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wav_data_cross_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            self.skipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 
@@ -720,9 +715,8 @@ class TwaveletDataValidation(unittest.TestCase):
         filename = test_data_download_file(
             validation_dir, analysis_dir, "wavelet98_paul_dog_test.tplot", save_dir
         )
-        # If filename does not exist, skip the test
         if not os.path.exists(filename):
-            self.skipTest(
+            raise FileNotFoundError(
                 "Cannot find local IDL savefile for comparison. Filename: " + filename
             )
 

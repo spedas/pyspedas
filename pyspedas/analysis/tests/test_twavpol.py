@@ -40,8 +40,7 @@ class TwavpolDataValidation(unittest.TestCase):
             validation_dir, analysis_dir, "thc_twavpol_validate.tplot", save_dir
         )
         if not filename:
-            # Skip tests
-            raise unittest.SkipTest("Cannot download data validation file")
+            raise FileNotFoundError("Cannot download data validation file")
 
         # Load validation variables from the test file
         pyspedas.del_data("*")
