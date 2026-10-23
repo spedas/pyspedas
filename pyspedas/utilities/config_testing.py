@@ -61,7 +61,6 @@ def test_data_download_file(validation_dir, sub_dir, file_name, output_dir):
         datafile = [local_file]  # File already exists locally
 
     if not datafile:
-        # Skip tests
         logging.info("Cannot download data validation file. Filename: " + remote_file)
         return filename
 

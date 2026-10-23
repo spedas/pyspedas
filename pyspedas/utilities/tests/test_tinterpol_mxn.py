@@ -635,7 +635,7 @@ def _reference_cdf():
             CONFIG["testing"]["output_dir"],
         )
         if not filename:
-            raise unittest.SkipTest('Could not download tinterpol_mxn_validate.cdf')
+            raise FileNotFoundError('Could not download tinterpol_mxn_validate.cdf')
     return filename
 
 
