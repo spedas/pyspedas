@@ -574,7 +574,7 @@ def download_file(
 
 def download(
     remote_path="",
-    remote_file="",
+    remote_file: str | list[str] = "",
     local_path="",
     local_file="",
     headers={},

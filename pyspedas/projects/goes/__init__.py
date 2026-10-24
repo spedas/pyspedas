@@ -1,7 +1,9 @@
-from .load import load, loadr
-from .load_orbit import load_orbit
-from functools import partial, update_wrapper
+from functools import update_wrapper
+
 from pyspedas.utilities.pyspedas_functools import better_partial
+
+from .load import load
+from .load_orbit import load_orbit
 
 # Define alias to the load function
 orbit = load_orbit
@@ -16,9 +18,9 @@ update_wrapper(fgm, load)
 eps = better_partial(load, instrument="eps")
 update_wrapper(eps, load)
 epead = better_partial(load, instrument="epead")
-update_wrapper(epead,load)
+update_wrapper(epead, load)
 maged = better_partial(load, instrument="maged")
-update_wrapper(maged,load)
+update_wrapper(maged, load)
 magpd = better_partial(load, instrument="magpd")
 update_wrapper(magpd, load)
 hepad = better_partial(load, instrument="hepad")
