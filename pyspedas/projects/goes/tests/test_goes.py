@@ -1,10 +1,14 @@
+import logging
 import os
 import unittest
+
 import numpy as np
-import logging
+
 import pyspedas
-from pyspedas.tplot_tools import data_exists, del_data, get_data
 from pyspedas.projects.goes.config import CONFIG
+from pyspedas.tplot_tools import data_exists, del_data, get_data
+
+logger = logging.getLogger(__name__)
 
 global_display = False
 outputdir = os.path.join(CONFIG["local_data_dir"], "idltestfiles")
@@ -13,11 +17,95 @@ if os.path.exists(outputdir) is False:
 
 
 class LoadTestCases(unittest.TestCase):
-
     def test_downloadonly(self):
         del_data()
         mag_files = pyspedas.projects.goes.fgm(datatype="1min", downloadonly=True)
         self.assertTrue(os.path.exists(mag_files[0]))
+
+    def test_load_l1_xrs_simple(self):
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="xrs",
+            probe="16",
+            level="l1",
+            trange=["2020-07-01", "2020-07-02"],
+        )
+        self.assertTrue(len(gvars) < 20)
+        self.assertTrue("g16_xrs_irradiance_xrsa1" in gvars)
+        self.assertTrue(data_exists("g16_xrs_primary_xrsa"))
+
+    def test_load_l1_xrs(self):
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="xrs",
+            probe="16",
+            level="l1",
+            trange=["2020-07-01", "2020-07-02"],
+            time_clip=True,
+            get_support_data=True,
+        )
+        self.assertTrue(len(gvars) > 20)
+        self.assertTrue("g16_xrs_asic2_temperature" in gvars)
+        self.assertTrue(data_exists("g16_xrs_corrected_current_xrsb_2"))
+
+    def test_load_l1_mpsh(self):
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="mpsh",
+            probe="17",
+            level="l1",
+            trange=["2021-07-01", "2021-07-02"],
+            time_clip=True,
+            get_support_data=True,
+        )
+        self.assertTrue(len(gvars) > 20)
+        self.assertTrue("g17_mpsh_DiffProtonFluxes_1" in gvars)
+        self.assertTrue(data_exists("g17_mpsh_DiffElectronFluxes_2"))
+
+    def test_load_l1_euvs(self):
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="euvs",
+            probe="18",
+            level="l1",
+            trange=["2023-07-01", "2023-07-02"],
+            time_clip=True,
+            get_support_data=True,
+        )
+        self.assertTrue(len(gvars) > 20)
+        self.assertTrue("g18_euvs_euvsc1AvgTemp" in gvars)
+        self.assertTrue(data_exists("g18_euvs_ECEF_Y"))
+
+    def test_load_l1_sgps(self):
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="sgps",
+            probe="18",
+            level="l1",
+            trange=["2023-07-01", "2023-07-02"],
+            time_clip=True,
+            get_support_data=True,
+            prefix="goes18_",
+            suffix="_test",
+        )
+        self.assertTrue(len(gvars) > 20)
+        self.assertTrue("goes18_T1_DifferentialAlphaFluxes_1_test" in gvars)
+        self.assertTrue(data_exists("goes18_T3_DifferentialProtonFluxes_1_test"))
+
+    def test_load_l1_mag(self):
+        # This is slow because mag files are large.
+        del_data()
+        gvars = pyspedas.projects.goes.load(
+            instrument="mag",
+            probe="19",
+            level="l1",
+            trange=["2026-07-01", "2026-07-02"],
+            time_clip=True,
+            get_support_data=True,
+        )
+        self.assertTrue(len(gvars) > 20)
+        self.assertTrue("g19_mag_ECEF_Y" in gvars)
+        self.assertTrue(data_exists("g19_mag_IB_mag_ACRF"))
 
     def test_load_orbit_data(self):
         del_data()
@@ -27,7 +115,7 @@ class LoadTestCases(unittest.TestCase):
         orbit_vars = pyspedas.projects.goes.orbit(notplot=True, time_clip=False)
         # This should return a dict of tplot structures, but we're getting a list of names, which don't exist as tplot variables.
         self.assertTrue(isinstance(orbit_vars, dict))
-        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
+        self.assertIn("g15_orbit_XYZ_GSM", orbit_vars)
         orbit_vars = pyspedas.projects.goes.orbit(time_clip=True)
         self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars)
         self.assertTrue("g15_orbit_XYZ_GSE" in orbit_vars)
@@ -43,7 +131,7 @@ class LoadTestCases(unittest.TestCase):
         orbit_vars = pyspedas.projects.goes.orbit(time_clip=True, notplot=True)
         self.assertTrue(isinstance(orbit_vars, dict))
         self.assertFalse(data_exists("g15_orbit_XYZ_GSM"))
-        self.assertTrue("g15_orbit_XYZ_GSM" in orbit_vars.keys())
+        self.assertIn("g15_orbit_XYZ_GSM", orbit_vars)
 
     def test_load_1min_mag_data(self):
         del_data()
@@ -230,9 +318,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_data(self):
         del_data()
-        xrs_vars = pyspedas.projects.goes.xrs(
-            probe="10", datatype="full", trange=["2002-08-01", "2002-08-01"]
-        )
+        xrs_vars = pyspedas.projects.goes.xrs(probe="10", datatype="full", trange=["2002-08-01", "2002-08-01"])
         self.assertTrue("g10_xrs_xl" in xrs_vars)
         self.assertTrue(data_exists("g10_xrs_xl"))
 
@@ -295,9 +381,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_eps_1m_data(self):
         del_data()
-        eps_vars = pyspedas.projects.goes.eps(
-            trange=["2000-09-01", "2000-09-01"], probe="11", time_clip=True
-        )
+        eps_vars = pyspedas.projects.goes.eps(trange=["2000-09-01", "2000-09-01"], probe="11", time_clip=True)
         self.assertTrue("g11_eps_e1_flux_i" in eps_vars)
         self.assertTrue("g11_eps_e2_flux_i" in eps_vars)
         self.assertTrue("g11_eps_e3_flux_i" in eps_vars)
@@ -330,25 +414,19 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_xrs_data_16(self):
         del_data()
-        xrs_vars_16 = pyspedas.projects.goes.xrs(
-            probe="16", trange=["2022-09-01", "2022-09-02"]
-        )
+        xrs_vars_16 = pyspedas.projects.goes.xrs(probe="16", trange=["2022-09-01", "2022-09-02"])
         self.assertTrue("g16_xrs_xrsa_flux" in xrs_vars_16)
         self.assertTrue(data_exists("g16_xrs_xrsa_flux"))
 
     def test_load_xrs_data_17_hi(self):
         del_data()
-        xrs_vars_17 = pyspedas.projects.goes.xrs(
-            probe="17", trange=["2022-07-01", "2022-07-02"], datatype="hi"
-        )
+        xrs_vars_17 = pyspedas.projects.goes.xrs(probe="17", trange=["2022-07-01", "2022-07-02"], datatype="hi")
         self.assertTrue("g17_xrs_xrsb_flux" in xrs_vars_17)
         self.assertTrue(data_exists("g17_xrs_xrsb_flux"))
 
     def test_load_euvs_data_17(self):
         del_data()
-        euvs_vars_17 = pyspedas.projects.goes.euvs(
-            probe="17", trange=["2022-09-01", "2022-09-02"]
-        )
+        euvs_vars_17 = pyspedas.projects.goes.euvs(probe="17", trange=["2022-09-01", "2022-09-02"])
         self.assertTrue("g17_euvs_irr_256" in euvs_vars_17)
         self.assertTrue(data_exists("g17_euvs_irr_256"))
 
@@ -365,9 +443,7 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mag_data_16(self):
         del_data()
-        mag_vars_16 = pyspedas.projects.goes.mag(
-            probe="16", trange=["2023-01-30", "2023-01-31"], prefix="goes16_"
-        )
+        mag_vars_16 = pyspedas.projects.goes.mag(probe="16", trange=["2023-01-30", "2023-01-31"], prefix="goes16_")
         self.assertTrue("goes16_b_total" in mag_vars_16)
         self.assertTrue(data_exists("goes16_b_total"))
 
@@ -382,11 +458,10 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue("goes17_b_gse" in mag_vars_17)
         self.assertTrue(data_exists("goes17_b_gse"))
         # Check for duplicate timestamps
-        d=get_data('goes17_b_gse')
-        dt=d.times[1:] - d.times[0:-1]
+        d = get_data("goes17_b_gse")
+        dt = d.times[1:] - d.times[0:-1]
         # Time resolution for this variable should be about 0.1 sec
         self.assertTrue(np.min(dt) > 0.001)
-
 
     def test_load_mpsh_data_17(self):
         del_data()
@@ -413,17 +488,13 @@ class LoadTestCases(unittest.TestCase):
 
     def test_load_mpsh_data_16(self):
         del_data()
-        mpsh_vars_16 = pyspedas.projects.goes.mpsh(
-            probe="16", trange=["2022-10-01", "2022-10-02"], prefix="", datatype="hi"
-        )
+        mpsh_vars_16 = pyspedas.projects.goes.mpsh(probe="16", trange=["2022-10-01", "2022-10-02"], prefix="", datatype="hi")
         self.assertTrue("g16_mpsh_AvgDiffProtonFlux" in mpsh_vars_16)
         self.assertTrue(data_exists("g16_mpsh_AvgDiffProtonFlux"))
 
     def test_load_sgps_data_16(self):
         del_data()
-        sgps_vars_16 = pyspedas.projects.goes.sgps(
-            probe="16", trange=["2023-01-30", "2023-01-31"], prefix="probename"
-        )
+        sgps_vars_16 = pyspedas.projects.goes.sgps(probe="16", trange=["2023-01-30", "2023-01-31"], prefix="probename")
         self.assertTrue("g16_sgps_AvgDiffAlphaFlux" in sgps_vars_16)
         self.assertTrue(data_exists("g16_sgps_AvgDiffAlphaFlux"))
 
@@ -450,7 +521,7 @@ class LoadTestCases(unittest.TestCase):
             time_clip=True,
             goes_r=True,
         )
-        logging.info(mag_vars)
+        logger.info(mag_vars)
         self.assertTrue("g13_mag_b_gsm" in mag_vars)
         # tplot("g13_mag_b_gsm")
 
@@ -464,7 +535,7 @@ class LoadTestCases(unittest.TestCase):
             time_clip=True,
             goes_r=True,
         )
-        logging.info(xrs_vars)
+        logger.info(xrs_vars)
         self.assertTrue("g13_xrs_a_flux" in xrs_vars)
         self.assertTrue("g13_xrs_b_flux" in xrs_vars)
         # tplot(["g13_xrs_a_flux", "g13_xrs_b_flux"])
@@ -478,7 +549,7 @@ class LoadTestCases(unittest.TestCase):
             time_clip=True,
             goes_r=True,
         )
-        logging.info(xrs_vars2)
+        logger.info(xrs_vars2)
         self.assertTrue("g13_xrs_xrsa_flux" in xrs_vars2)
         self.assertTrue("g13_xrs_xrsb_flux" in xrs_vars2)
         # tplot(["g13_xrs_xrsa_flux", "g13_xrs_xrsb_flux"])

@@ -4,6 +4,7 @@ related_files:
   - pyspedas/projects/goes/__init__.py
   - pyspedas/projects/goes/config.py
   - pyspedas/projects/goes/load.py
+  - pyspedas/projects/goes/goes_l1.py
   - pyspedas/projects/goes/load_orbit.py
   - pyspedas/projects/goes/README.md
   - pyspedas/projects/goes/tests/test_goes.py
@@ -25,6 +26,8 @@ the GOES-R format. Unlike most missions the science files are NetCDF, not CDF.
 
 - `load.py`: `load()` (GOES 1-15, and the entry point for all probes) and
   `loadr()` (GOES-R format files).
+- `goes_l1.py`: L1b paths, explicit MAG/XRS clock mappings, support-data selection,
+  particle splitting and per-sensor SGPS timestamps; called only for `level="l1"`.
 - `load_orbit.py`: `load_orbit()`, SSC ephemeris CDFs from SPDF; exported as
   `orbit`.
 - `__init__.py`: defines the instrument loaders; there are no wrapper modules.
@@ -48,12 +51,13 @@ probe when `goes_r=True`, to `loadr()`; it loads the rest itself:
   `full/`. The time variable is `time_tag`.
 - `loadr()`: daily files from NGDC
   (`https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/goes<N>/l2/data/`)
-  or, for reprocessed GOES 8-15, from NCEI `.../access/science/`. Both URLs are
-  hard-coded in `loadr()`, not read from `CONFIG`. Reprocessed data exist only
+  or, for reprocessed GOES 8-15, from NCEI `.../access/science/`. The base URLs
+  come from `CONFIG['remote_goes_r']` and `CONFIG['remote_goes_r_reprocessed']`
+  in `config.py`, respectively. Reprocessed data exist only
   for `mag` (hires) and `xrs`; `euvs`, `mpsh` and `sgps` are skipped with a
   warning, and GOES 1-15 instrument names have no branch in `loadr()`.
 
-Each probe and instrument goes through `dailynames()`, `download()` and
+For L2, each probe and instrument goes through `dailynames()`, `download()` and
 `netcdf_to_tplot()` (`pyspedas/tplot_tools/importers/netcdf_to_tplot.py`). When
 `xrs` is requested, the `*_xrs_*_flux` variables get `ylog`.
 
@@ -67,8 +71,9 @@ Each probe and instrument goes through `dailynames()`, `download()` and
 - Names: an empty `prefix` or `'probename'` gives `g<probe>_<instrument>_`
   (`g15_fgm_BX_1`, `g13_mag_b_gsm`, `g15_orbit_XYZ_GSM`). Any other `prefix`
   replaces it entirely, so multi-probe loads then collide.
-- `load()` has no `varformat`, `varnames`, `get_support_data` or `notplot`;
-  `load_orbit()` has them. `time_clip` defaults to True in both.
+- `load()` and `loadr()` accept `level="l1"` for probes 16-19, with L2 as the
+  default. `get_support_data` selects L1 auxiliary data and has no effect on L2.
+  `load()` has no `varformat`, `varnames` or `notplot`; `load_orbit()` has them. `time_clip` defaults to True in both.
 - `load_orbit()` uses the hard-coded SPDF URL `https://spdf.gsfc.nasa.gov/pub/data/goes/`
   (yearly `goes<N>_ephemeris_ssc_%Y0101_v??.cdf` files).
 - All three servers share one local folder, each mirroring its server paths:
