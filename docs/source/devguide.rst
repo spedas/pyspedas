@@ -239,7 +239,12 @@ Quick-test dependency policies
 
 Pushes and pull requests always use ``locked``. To select another policy, open
 ``quick_tests`` in GitHub Actions, choose **Run workflow**, select the branch,
-and choose ``dependency_policy``:
+and choose ``dependency_policy`` and ``python_version``. Python choices are
+3.11, 3.12, 3.13, 3.14 and 3.15, with 3.14 as the default. Pushes and pull requests
+always use Python 3.14. Availability in this menu does not guarantee that every
+dependency supports that interpreter.
+
+The dependency policies are:
 
 * ``locked`` installs the lint, test and setup groups from ``pdm.lock``, then
   lets pip resolve runtime dependencies when installing the built wheel with
@@ -254,10 +259,11 @@ and choose ``dependency_policy``:
   also applies to this policy. Runtime pins remain constrained during wheel
   installation so development tools cannot silently upgrade them.
 
-All three policies use the same Python 3.14 matrix and test list. Oldest-version
-resolution respects that interpreter and package compatibility metadata; it may
-select versions above declared lower bounds, and old distributions that cannot
-build or run on Python 3.14 can still fail the job. Such failures should be
+All three policies use the selected Python version and the same test list.
+Oldest-version resolution respects that interpreter and package compatibility
+metadata; it may select versions above declared lower bounds, and old
+distributions that cannot build or run on the selected Python can still fail
+the job. Such failures should be
 investigated rather than bypassed by automatically switching to newer versions.
 
 The two unlocked policies compute one UTC cutoff per job for resolution,

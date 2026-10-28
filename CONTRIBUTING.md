@@ -114,9 +114,11 @@ The GitHub Actions workflows list the test modules to run explicitly:
   Manual runs offer `locked`, `latest`, or `oldest`. The latter two use a
   seven-day release cutoff; `oldest` minimizes direct runtime dependencies,
   including the `mth5` extra, while keeping transitive dependencies and test
-  tools current where compatible. Every policy uses Python 3.14 and the same
-  test-module list. These are compatible-version resolutions, not a promise
-  that every declared lower bound can be installed on Python 3.14.
+  tools current where compatible. Manual runs can also select Python 3.11
+  through 3.15 via `python_version`, defaulting to 3.14; pushes and PRs always
+  use 3.14. All policies and Python versions share the same test-module list.
+  These are compatible-version resolutions, not a promise that every declared
+  lower bound can be installed on the selected Python version.
 - `full_coverage.yml` is run manually. It groups tests into parallel shards,
   often by data server or related functionality. Failed shards do not cancel the
   others. For transient data server failures, manually rerun failed jobs in the

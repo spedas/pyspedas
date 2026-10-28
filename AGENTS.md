@@ -152,7 +152,8 @@ via `get_data()`, `store_data()`, and similar utilities.
   and known unreliable data providers. All quick-test dependency policies share
   one test list; register each module once.
 - `quick_tests` runs on pushes and pull requests with `dependency_policy=locked`.
-  Manual dispatch can choose `locked`, `latest` or `oldest`, all on Python 3.14.
+  Automatic runs use Python 3.14. Manual dispatch can choose `locked`, `latest`
+  or `oldest` and `python_version` from 3.11 through 3.15 (default 3.14).
   `locked` installs development groups from `pdm.lock` and lets pip resolve wheel
   runtime dependencies normally. `latest` eagerly selects compatible stable
   versions without the lockfile. `oldest` uses uv's `lowest-direct` for runtime
@@ -160,7 +161,7 @@ via `get_data()`, `store_data()`, and similar utilities.
   use newer compatible versions. Both unlocked policies apply a seven-day upload
   cutoff and fail if resolution or installation cannot succeed. Oldest versions
   are subject to the selected Python and package metadata, so they may exceed
-  declared lower bounds or fail to build on Python 3.14.
+  declared lower bounds or fail to build on the selected Python version.
 - `.github/scripts/install_quick_test_dependencies.py` handles policy-specific
   installation. `.github/scripts/tests/test_quick_test_dependencies.py` checks
   isolation, runtime constraints and failure handling; both testing workflows
