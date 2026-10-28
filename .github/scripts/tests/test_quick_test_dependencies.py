@@ -34,10 +34,10 @@ class DependencyPolicyTests(unittest.TestCase):
                                  runner=runner or self.record)
         self.assertEqual(self.lock.read_text(), 'sentinel: never rewrite the project lockfile\n')
 
-    def test_locked_keeps_runtime_pip_resolution_unconstrained(self):
+    def test_default_keeps_runtime_pip_resolution_unconstrained(self):
         with patch.dict(os.environ, {'PIP_UPLOADED_PRIOR_TO': '2000-01-01',
                                      'UV_EXCLUDE_NEWER': '2000-01-01'}):
-            self.install('locked')
+            self.install('default')
         runtime, env = next((a, e) for a, e in self.calls
                             if 'install' in a and any(v.endswith('.whl[mth5]') for v in a))
         self.assertNotIn('--constraint', runtime)

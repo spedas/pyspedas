@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Install quick-test dependencies without changing project dependency declarations.
 
-locked: locked development groups, followed by normal pip runtime resolution.
+default: locked development groups, followed by normal pip runtime resolution.
 latest: highest compatible stable versions, with a seven-day upload cutoff.
 oldest: lowest direct runtime versions for the selected Python; newer transitive
         dependencies and test tools, also subject to the seven-day cutoff.
@@ -18,7 +18,7 @@ import subprocess
 
 def install(policy, root, python, tools_python, output_dir, runner=subprocess.run):
     """Resolve, build and install, keeping resolver tools outside the test venv."""
-    if policy not in ('locked', 'latest', 'oldest'):
+    if policy not in ('default', 'latest', 'oldest'):
         raise ValueError(f'Unknown dependency policy: {policy}')
     root = Path(root).resolve()
     output_dir = Path(output_dir).resolve()
@@ -28,7 +28,7 @@ def install(policy, root, python, tools_python, output_dir, runner=subprocess.ru
     for key in ('PIP_UPLOADED_PRIOR_TO', 'UV_EXCLUDE_NEWER'):
         env.pop(key, None)
     cutoff = None
-    if policy != 'locked':
+    if policy != 'default':
         cutoff = (datetime.now(timezone.utc) - timedelta(days=7)).strftime('%Y-%m-%dT%H:%M:%SZ')
         env['PIP_UPLOADED_PRIOR_TO'] = cutoff
         env['UV_EXCLUDE_NEWER'] = cutoff
@@ -48,7 +48,7 @@ def install(policy, root, python, tools_python, output_dir, runner=subprocess.ru
 
     groups = ('--group', 'lint', '--group', 'test', '--group', 'setup')
     runtime = output_dir / 'oldest-runtime.txt'
-    if policy == 'locked':
+    if policy == 'default':
         # Only development groups come from pdm.lock. Runtime dependencies below
         # intentionally follow pip's normal already-satisfied/only-if-needed rules.
         env['PDM_USE_UV'] = 'false'
@@ -92,7 +92,7 @@ def install(policy, root, python, tools_python, output_dir, runner=subprocess.ru
 
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument('--policy', choices=('locked', 'latest', 'oldest'), required=True)
+    parser.add_argument('--policy', choices=('default', 'latest', 'oldest'), required=True)
     parser.add_argument('--python', required=True)
     parser.add_argument('--tools-python', required=True)
     parser.add_argument('--output-dir', required=True)

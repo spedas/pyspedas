@@ -109,9 +109,9 @@ The GitHub Actions workflows list the test modules to run explicitly:
 - `quick_tests.yml` runs a selected sequence of tests on pushes and pull requests,
   and can also be run manually. It provides relatively quick, reliable feedback;
   it does not cover the entire package.
-  Pushes and PRs use the `locked` policy: development groups come from
+  Pushes and PRs use the `default` policy: development groups come from
   `pdm.lock`, while pip resolves the wheel's runtime dependencies normally.
-  Manual runs offer `locked`, `latest`, or `oldest`. The latter two use a
+  Manual runs offer `default`, `latest`, or `oldest`. The latter two use a
   seven-day release cutoff; `oldest` minimizes direct runtime dependencies,
   including the `mth5` extra, while keeping transitive dependencies and test
   tools current where compatible. Manual runs can also select Python 3.11

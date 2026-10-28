@@ -79,8 +79,8 @@ framework. ``quick_tests.yml`` runs selected tests on pushes and pull requests;
 coverage to Coveralls after all shards succeed. Add new test modules explicitly
 to full coverage, and to quick tests when they run quickly and reliably.
 ``quick_tests.yml`` uses one module list for all dependency policies. Pushes and
-PRs use ``locked``: locked development groups followed by normal pip runtime
-resolution. Manual runs can choose ``locked``, ``latest`` or ``oldest``. The
+PRs use ``default``: locked development groups followed by normal pip runtime
+resolution. Manual runs can choose ``default``, ``latest`` or ``oldest``. The
 latter two ignore the lockfile and apply a seven-day release cutoff.
 See the :doc:`developer guide <devguide>` for test placement, documentation
 updates and the pull request process.

@@ -237,7 +237,7 @@ each test method.
 Quick-test dependency policies
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Pushes and pull requests always use ``locked``. To select another policy, open
+Pushes and pull requests always use ``default``. To select another policy, open
 ``quick_tests`` in GitHub Actions, choose **Run workflow**, select the branch,
 and choose ``dependency_policy`` and ``python_version``. Python choices are
 3.11, 3.12, 3.13, 3.14 and 3.15, with 3.14 as the default. Pushes and pull requests
@@ -246,7 +246,7 @@ dependency supports that interpreter.
 
 The dependency policies are:
 
-* ``locked`` installs the lint, test and setup groups from ``pdm.lock``, then
+* ``default`` installs the lint, test and setup groups from ``pdm.lock``, then
   lets pip resolve runtime dependencies when installing the built wheel with
   the ``mth5`` extra. This preserves normal pip installation behavior; runtime
   versions are not forced to match the lockfile.
@@ -266,7 +266,7 @@ distributions that cannot build or run on the selected Python can still fail
 the job. Such failures should be
 investigated rather than bypassed by automatically switching to newer versions.
 
-The two unlocked policies compute one UTC cutoff per job for resolution,
+The latest and oldest policies compute one UTC cutoff per job for resolution,
 installation and dependency builds. Resolver tools are installed separately
 from the test environment. The workflow uploads policy metadata, installation
 reports, installed versions and, for ``oldest``, resolved runtime pins even when
