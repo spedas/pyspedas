@@ -32,8 +32,8 @@ Before requesting review:
 2. If you create a new test module, add it to
    `.github/workflows/full_coverage.yml` in a suitable shard. Add it to
    `.github/workflows/quick_tests.yml` only if it runs quickly and reliably.
-   Add any module included in quick tests to
-   `.github/workflows/latest_dependency_tests.yml` as well.
+   All dependency policies use the same quick-test module list; register each
+   module only once in that workflow.
    Tests added to an existing module use its existing workflow entries; check
    that the module is included in the intended workflows.
 3. Update NumPy-style docstrings and the RST documentation for new user-facing
@@ -109,9 +109,14 @@ The GitHub Actions workflows list the test modules to run explicitly:
 - `quick_tests.yml` runs a selected sequence of tests on pushes and pull requests,
   and can also be run manually. It provides relatively quick, reliable feedback;
   it does not cover the entire package.
-- `latest_dependency_tests.yml` runs the same selected tests with current
-  compatible stable dependencies subject to a seven-day release cooldown. Keep
-  its test-module list synchronized with `quick_tests.yml`.
+  Pushes and PRs use the `locked` policy: development groups come from
+  `pdm.lock`, while pip resolves the wheel's runtime dependencies normally.
+  Manual runs offer `locked`, `latest`, or `oldest`. The latter two use a
+  seven-day release cutoff; `oldest` minimizes direct runtime dependencies,
+  including the `mth5` extra, while keeping transitive dependencies and test
+  tools current where compatible. Every policy uses Python 3.14 and the same
+  test-module list. These are compatible-version resolutions, not a promise
+  that every declared lower bound can be installed on Python 3.14.
 - `full_coverage.yml` is run manually. It groups tests into parallel shards,
   often by data server or related functionality. Failed shards do not cancel the
   others. For transient data server failures, manually rerun failed jobs in the
@@ -120,10 +125,9 @@ The GitHub Actions workflows list the test modules to run explicitly:
 
 Always register new test modules in full coverage. Include them in quick tests
 only when they avoid lengthy calculations, large downloads and unreliable data
-providers. Add every module included in `quick_tests.yml` to
-`latest_dependency_tests.yml` as well. Adding a test to an existing module does
-not require another workflow entry if that module is already listed in the
-intended workflows.
+providers. Register each module once in `quick_tests.yml`; all dependency
+policies share that entry. Adding a test to an existing module does not require
+another workflow entry if that module is already listed in the intended workflows.
 
 ## Add Cross-Validation Tests
 We also implement validation scripts, which load data and print/compare some subset of the test outputs with results from IDL SPEDAS or other relevant tools.

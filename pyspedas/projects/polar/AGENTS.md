@@ -22,7 +22,6 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
-  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when load.py adds an instrument branch or changes a file-name code, when
   a wrapper's instrument string changes, or when __init__.py adds a loader.
@@ -70,6 +69,6 @@ and runs the usual `dailynames()`, `download()`, `cdf_to_tplot()` pipeline, then
 `python -m pyspedas.projects.polar.tests.test_polar` (downloads data). CI runs it
 in `.github/workflows/quick_tests.yml`.
 
-When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
-`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
-synchronized. New test methods in an already-listed module need no extra entry.
+Register each quick-test module once in `.github/workflows/quick_tests.yml`;
+all dependency policies share the same test list. New methods in an already-listed
+module need no extra workflow entry.

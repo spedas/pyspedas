@@ -220,9 +220,6 @@ include it in CI.
   requests, and can also be triggered manually. It provides relatively quick,
   reliable feedback rather than complete coverage. Leave out tests requiring
   lengthy calculations, large downloads or slow or unreliable data servers.
-* ``latest_dependency_tests.yml`` runs the same selected modules with current
-  compatible stable dependencies subject to a seven-day release cooldown. Keep
-  its test-module list synchronized with ``quick_tests.yml``.
 * ``full_coverage.yml`` is triggered manually. It runs groups of tests in parallel
   jobs called shards, with related tests often grouped by data server or
   functionality. Examples include MMS, MAVEN and SPDF/THEMIS shards. This keeps
@@ -231,11 +228,44 @@ include it in CI.
 
 Always add a new test module to ``full_coverage.yml``, preferably in a shard that
 already tests the same server or related functionality. Include it in
-``quick_tests.yml`` only if it fits the runtime and reliability criteria. Every
-module added to ``quick_tests.yml`` must also be added to
-``latest_dependency_tests.yml``. If you add tests to an existing module, check
-that the module is already listed in the intended workflows; no additional
-entry is needed for each test method.
+``quick_tests.yml`` only if it fits the runtime and reliability criteria. All
+quick-test dependency policies share one module list, so register each module
+only once. If you add tests to an existing module, check that the module is
+already listed in the intended workflows; no additional entry is needed for
+each test method.
+
+Quick-test dependency policies
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Pushes and pull requests always use ``locked``. To select another policy, open
+``quick_tests`` in GitHub Actions, choose **Run workflow**, select the branch,
+and choose ``dependency_policy``:
+
+* ``locked`` installs the lint, test and setup groups from ``pdm.lock``, then
+  lets pip resolve runtime dependencies when installing the built wheel with
+  the ``mth5`` extra. This preserves normal pip installation behavior; runtime
+  versions are not forced to match the lockfile.
+* ``latest`` ignores the lockfile and eagerly upgrades direct and transitive
+  dependencies to their newest compatible stable releases, including test and
+  build tools, subject to a seven-day upload cutoff.
+* ``oldest`` ignores the lockfile and uses uv's ``lowest-direct`` resolution for
+  direct runtime dependencies and the ``mth5`` extra. Transitive dependencies
+  and test tools use newer compatible releases. The seven-day upload cutoff
+  also applies to this policy. Runtime pins remain constrained during wheel
+  installation so development tools cannot silently upgrade them.
+
+All three policies use the same Python 3.14 matrix and test list. Oldest-version
+resolution respects that interpreter and package compatibility metadata; it may
+select versions above declared lower bounds, and old distributions that cannot
+build or run on Python 3.14 can still fail the job. Such failures should be
+investigated rather than bypassed by automatically switching to newer versions.
+
+The two unlocked policies compute one UTC cutoff per job for resolution,
+installation and dependency builds. Resolver tools are installed separately
+from the test environment. The workflow uploads policy metadata, installation
+reports, installed versions and, for ``oldest``, resolved runtime pins even when
+tests fail. Dependency resolution must succeed; there is no fallback to the
+lockfile. The repository lockfile and dependency declarations are not rewritten.
 
 When a shard fails because of a transient data server failure, manually rerun
 the failed jobs in the same workflow run. Successful shards need not be rerun.

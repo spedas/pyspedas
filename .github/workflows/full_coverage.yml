@@ -14,6 +14,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test dependency policy handling
+        run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+
       - name: Install dependencies
         env:
           MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}

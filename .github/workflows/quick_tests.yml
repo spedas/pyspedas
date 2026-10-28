@@ -1,11 +1,37 @@
 name: quick_tests
 
-on: [push, pull_request, workflow_dispatch]
+run-name: quick_tests (${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'locked' }})
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      dependency_policy:
+        description: 'Dependency policy (locked pins development tools; pip resolves runtime deps)'
+        type: choice
+        required: true
+        default: locked
+        options:
+          - locked
+          - latest
+          - oldest
+
+permissions:
+  contents: read
 
 jobs:
   build:
     runs-on: ${{ matrix.os }}
-    # runs-on: macos-latest
+    defaults:
+      run:
+        shell: bash
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'locked' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
     strategy:
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
@@ -21,117 +47,32 @@ jobs:
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies (Linux)
+    - name: Test dependency policy handling
+      run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+    - name: Create test and resolver environments
       run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'ubuntu-latest'
-    - name: Install dependencies (Windows)
+        python -m venv ../.venv
+        python -m venv "$RUNNER_TEMP/quick-test-tools"
+        mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
+        # Keep resolver tooling separate so it cannot satisfy test dependencies.
+        cat > "$RUNNER_TEMP/pip-bootstrap.txt" <<'REQUIREMENTS'
+        pip==26.2.1 --hash=sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e
+        REQUIREMENTS
+        for interpreter in ../.venv/bin/python "$RUNNER_TEMP/quick-test-tools/bin/python"; do
+          "$interpreter" -m pip install --require-hashes --no-deps --only-binary=:all: \
+            -r "$RUNNER_TEMP/pip-bootstrap.txt"
+        done
+        cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
+        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
+          --uploaded-prior-to "$cutoff" --only-final=:all: pdm uv
+    - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
       run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'windows-latest'
-    - name: Install dependencies (macOS)
-      run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'macos-latest'
+        source ../.venv/bin/activate
+        python .github/scripts/install_quick_test_dependencies.py \
+          --policy "$DEPENDENCY_POLICY" \
+          --python "$VIRTUAL_ENV/bin/python" \
+          --tools-python "$RUNNER_TEMP/quick-test-tools/bin/python" \
+          --output-dir "$RUNNER_TEMP/quick-test-dependencies"
     - name: Lint with flake8
       run: |
         source ../.venv/bin/activate
@@ -146,22 +87,21 @@ jobs:
         # stop the build if there are Python syntax errors or undefined names
         ruff check .  --select=E9,F63,F7,F82 --statistics
         # exit-zero treats all errors as warnings. 
-        ruff check . --exit-zero --statistics --line-length=127 -- --max-complexity=10
+        ruff check . --exit-zero --statistics --line-length=127
     - name: Hide the repo copy so imports use site-packages
       run: |
+        source ../.venv/bin/activate
         # keep it around for debugging; delete instead if you want the space back
-        printenv
         pwd
         ls -a
         if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
         ls -a
-        ls $VIRTUAL_ENV
+        ls "$VIRTUAL_ENV"
 
     - name: Sanity check import location
       shell: bash
       run: |
         source ../.venv/bin/activate
-        printenv
         python - <<'PY'
         import pyspedas, pathlib, sys
         p = pathlib.Path(pyspedas.__file__).resolve()
@@ -357,3 +297,18 @@ jobs:
         echo "========================================================="        
 
         echo Done with tests at `date`
+    - name: Record installed dependencies
+      if: always()
+      run: |
+        if [ -x ../.venv/bin/python ]; then
+          mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
+          ../.venv/bin/python -m pip freeze --all > "$RUNNER_TEMP/quick-test-dependencies/freeze.txt"
+          ../.venv/bin/python -m pip inspect > "$RUNNER_TEMP/quick-test-dependencies/inspect.json"
+        fi
+    - name: Upload dependency diagnostics
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-dependencies-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}
+        path: ${{ runner.temp }}/quick-test-dependencies/
+        if-no-files-found: warn

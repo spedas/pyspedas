@@ -287,8 +287,10 @@ Work in a separate branch and submit a pull request targeting the protected
 `master` branch for maintainer review. New features and bug fixes should include
 `unittest` tests and relevant documentation updates. Register new test modules in
 `full_coverage.yml`, and in `quick_tests.yml` when they run quickly and reliably.
-Any test module added to `quick_tests.yml` must also be added to
-`latest_dependency_tests.yml` so both workflows exercise the same tests.
+`quick_tests.yml` has one test-module list for all dependency policies. Pushes
+and PRs use `locked` (locked development groups, normal pip runtime resolution);
+manual runs can select `latest` or `oldest` instead. See the developer guide for
+the seven-day release cutoff and minimum-version testing details.
 After a squash merge, start follow-up work in a fresh branch from updated `master`.
 
 
