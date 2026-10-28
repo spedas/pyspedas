@@ -106,8 +106,6 @@ jobs:
               coverage run -a -m pyspedas.cotrans_tools.tests.test_quaternions
               echo Starting cnofs tests at `date`
               coverage run -a -m pyspedas.projects.cnofs.tests.test_cnofs
-              echo Starting kompsat tests at `date`
-              coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
               echo Starting dmsp tests at `date`
               coverage run -a -m pyspedas.projects.dmsp.tests.test_dmsp
               echo Starting dscovr tests at `date`
@@ -218,6 +216,18 @@ jobs:
               # Show the free disk space on this filesystem      
               echo "Disk usage after cleanup:"
               df -h
+
+          - shard: kompsat
+            shard_script: |
+              # Isolate KOMPSAT so its data-server outages can be rerun independently.
+              echo Starting kompsat tests at `date`
+              coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
+
+          - shard: secs
+            shard_script: |
+              # Isolate SECS so its data-server outages can be rerun independently.
+              echo Starting secs tests at `date`
+              coverage run -a -m pyspedas.projects.secs.tests.test_secs
 
           - shard: mica
             shard_script: |
@@ -365,8 +375,6 @@ jobs:
               coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
               echo Starting VIRES client tests at `date`
               coverage run -a -m pyspedas.vires.tests.test_vires
-              echo Starting secs tests at `date`
-              coverage run -a -m pyspedas.projects.secs.tests.test_secs
               echo Starting particles tests at `date`
               coverage run -a -m pyspedas.particles.tests.test_particles
               echo "========================================================="
