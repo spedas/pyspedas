@@ -87,7 +87,7 @@ dependencies = [
     "geopack>=1.0.13",
     "scipy>=1.15.3; python_version < '3.14'",
     "scipy>=1.16.1; python_version >= '3.14'",
-    "cdflib>=1.0.0",
+    "cdflib>=1.3.12",
     "spacepy>=0.7.0",
     "cdasws>=1.8.18",
     "netCDF4>=1.7.3",
