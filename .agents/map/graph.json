@@ -129,7 +129,11 @@
           "kind": "file"
         },
         {
-          "path": ".github/workflows/latest_dependency_tests.yml",
+          "path": ".github/scripts/install_quick_test_dependencies.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/scripts/tests/test_quick_test_dependencies.py",
           "kind": "file"
         },
         {
@@ -1111,10 +1115,6 @@
         {
           "path": ".github/workflows/quick_tests.yml",
           "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
-          "kind": "file"
         }
       ]
     },
@@ -1912,6 +1912,10 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/goes/goes_l1.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/goes/load_orbit.py",
           "kind": "file"
         },
@@ -2065,10 +2069,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         }
       ]
@@ -2706,10 +2706,6 @@
         {
           "path": ".github/workflows/quick_tests.yml",
           "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
-          "kind": "file"
         }
       ]
     },
@@ -2789,10 +2785,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         }
       ]
@@ -2893,10 +2885,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         }
       ]
@@ -3165,10 +3153,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         }
       ]
@@ -3517,10 +3501,6 @@
         {
           "path": ".github/workflows/quick_tests.yml",
           "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
-          "kind": "file"
         }
       ]
     },
@@ -3868,10 +3848,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         }
       ]
@@ -4240,10 +4216,6 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
-          "kind": "file"
-        },
-        {
-          "path": ".github/workflows/latest_dependency_tests.yml",
           "kind": "file"
         },
         {

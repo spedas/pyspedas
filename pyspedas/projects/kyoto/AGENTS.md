@@ -13,7 +13,6 @@ related_files:
   - pyspedas/projects/omni/load.py
   - pyspedas/utilities/download.py
   - .github/workflows/quick_tests.yml
-  - .github/workflows/latest_dependency_tests.yml
 maintenance: |
   Update when the Kyoto page layout or server paths change (parse_dst_html,
   parse_ae_html, the provisional/realtime date limits in load_ae.py), or when
@@ -82,6 +81,6 @@ parses them and stores the result with `store_data()`. There is no `load.py`.
 THEMIS, NOAA and OMNI for `load_geomagnetic_indices`). CI runs it in
 `.github/workflows/quick_tests.yml`.
 
-When adding a test module to `.github/workflows/quick_tests.yml`, also add it to
-`.github/workflows/latest_dependency_tests.yml` so their test-module lists stay
-synchronized. New test methods in an already-listed module need no extra entry.
+Register each quick-test module once in `.github/workflows/quick_tests.yml`;
+all dependency policies share the same test list. New methods in an already-listed
+module need no extra workflow entry.
