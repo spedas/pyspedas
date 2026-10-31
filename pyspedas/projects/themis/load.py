@@ -13,8 +13,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
          level='l2',
          datatype=None, # ASK data, ESD (3d L2 ESA)
          stations=None,  # ground mag and ASK data
-         greenland=None,  # also for ground mag data
-         variometer=None, # variometer check and sampling rate
          prefix='',
          suffix='',
          get_support_data=False,
@@ -26,6 +24,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
          no_update=False,
          time_clip=False,
          force_download=False,
+         gmag_group=None,
          version=None,
          ):
     """
@@ -198,28 +197,22 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 return
             else:
                 pathformat = []
-                for site, in_greenland, s_variometer in zip(stations, greenland, variometer):
-                    if site == 'idx':
+                for ccode,g_group in zip(stations,gmag_group):
+                    if ccode == 'idx':
                         # THEMIS GMAG index files are only L1
                         pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
-                    elif s_variometer == 1:
-                        pathformat.append('thg/' + level + '/variometers/' + site
-                                          + '/%Y/thg_' + level + '_mag_' + site
+                    elif g_group == "variom":
+                        pathformat.append('thg/' + level + '/variometers/' + ccode
+                                          + '/%Y/thg_' + level + '_mag_' + ccode
                                           + '_%Y%m%d_v??.cdf')
-                    elif s_variometer == 10:
-                        if "_100ms" in site.lower():
-                            site=site.replace("_100ms","")
-                        pathformat.append('thg/' + level + '/variometers/' + site
-                                          + '/%Y/thg_' + level + '_mag_' + site
-                                          + '_100ms_%Y%m%d_v??.cdf')
-                    elif in_greenland:
+                    elif g_group == "greenland":
                         pathformat.append('thg/greenland_gmag/' + level
-                                          + '/' + site + '/%Y/thg_' + level
-                                          + '_mag_' + site + '_%Y%m%d_v??.cdf')
+                                          + '/' + ccode + '/%Y/thg_' + level
+                                          + '_mag_' + ccode + '_%Y%m%d_v??.cdf')
                     else:
-                        pathformat.append('thg/' + level + '/mag/' + site
-                                          + '/%Y/thg_' + level + '_mag_' + site
-                                          + '_%Y%m%d_v??.cdf')
+                        pathformat.append('thg/' + level + '/mag/' + ccode
+                                          + '/%Y/thg_' + level + '_mag_' + ccode
+                                          + '_%Y%m%d_v??.cdf')                        
 
         if not isinstance(pathformat, list):
             pathformat = [pathformat]
