@@ -1,5 +1,6 @@
 
 from .load import load
+import logging
 
 # This routine was originally in psp/__init__.py.  If you need to see the history of this routine before
 # it was moved to its own file, please check the history for __init__.py.
@@ -106,7 +107,7 @@ def spi(trange=['2018-11-5', '2018-11-6'],
     if datatype in ['sf00_l3_mom','sf0a_l3_mom','sf00_l3_mom_inst','sf0a_l3_mom_inst']:
         datatype = 'spi_' + datatype
         level = 'l3'
-        print("Using LEVEL=L3")
+        logging.info("Using LEVEL=L3")
 
     return load(instrument='spi', trange=trange, datatype=datatype, level=level, 
         suffix=suffix, prefix=prefix, get_support_data=get_support_data, varformat=varformat, varnames=varnames, 
