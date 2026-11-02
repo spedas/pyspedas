@@ -253,3 +253,6 @@ dmypy.json
 
 # PyCharm
 .idea
+
+# Retrieved data
+themis_data/

@@ -3,7 +3,6 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import cdf_to_tplot
-
 from .config import CONFIG
 
 
@@ -198,19 +197,22 @@ def load(trange=['2013-11-5', '2013-11-6'],
             else:
                 pathformat = []
                 for ccode,g_group in zip(stations,gmag_group):
+                    ccode_clean = ccode
+                    if "_" in ccode:
+                        ccode_clean = (ccode.split("_"))[0]
                     if ccode == 'idx':
                         # THEMIS GMAG index files are only L1
                         pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
                     elif g_group == "variom":
-                        pathformat.append('thg/' + level + '/variometers/' + ccode
+                        pathformat.append('thg/' + level + '/variometers/' + ccode_clean
                                           + '/%Y/thg_' + level + '_mag_' + ccode
                                           + '_%Y%m%d_v??.cdf')
                     elif g_group == "greenland":
                         pathformat.append('thg/greenland_gmag/' + level
-                                          + '/' + ccode + '/%Y/thg_' + level
+                                          + '/' + ccode_clean + '/%Y/thg_' + level
                                           + '_mag_' + ccode + '_%Y%m%d_v??.cdf')
                     else:
-                        pathformat.append('thg/' + level + '/mag/' + ccode
+                        pathformat.append('thg/' + level + '/mag/' + ccode_clean
                                           + '/%Y/thg_' + level + '_mag_' + ccode
                                           + '_%Y%m%d_v??.cdf')                        
 
