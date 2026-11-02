@@ -5,8 +5,8 @@ from pyspedas.utilities.download import download
 
 from pyspedas.projects.themis.config import CONFIG
 
-
-remote_data_dir = CONFIG['remote_data_dir']
+# Initialize global variable for gmag_info:
+gmag_info = None
 
 class GMAG_Info():
     """This object holds the table of gmag stations and their metadata"""
@@ -37,7 +37,7 @@ class GMAG_Info():
         file = None
         if not self.no_download:
             file = download(remote_file="thg/gmags_meta.csv",
-                            remote_path=remote_data_dir,
+                            remote_path=CONFIG['remote_data_dir'],
                             local_path=CONFIG['local_data_dir'],
                             no_download=CONFIG["no_download"])
         if file is not None:
@@ -81,9 +81,7 @@ class GMAG_Info():
         t_res_opts.sort()
         return t_res_opts
 
-gmag_info = GMAG_Info()
 
-# TODO: update description
 def gmag(
     trange=["2007-03-23", "2007-03-24"],
     stations:str | list[str] | None = None,
@@ -184,6 +182,8 @@ def gmag(
     >>>
     
     """
+    _init_gmag_info()
+    
     if stations is None:
         if group is not None:
             stations = get_gmag_stations_from_group(group)
@@ -232,17 +232,25 @@ def gmag(
         version=version,
     )
 
+def _init_gmag_info():
+    global gmag_info
+    if gmag_info is None:
+        gmag_info = GMAG_Info()
 def _split_station_code_time_res(station_code: str) -> list:
+    _init_gmag_info()
     code_split = station_code.split("_")
     if len(code_split) == 1:
         code_split.append("")
     return code_split
 def _get_clean_station_code(station_code: str) -> str:
+    _init_gmag_info()
     return _split_station_code_time_res(station_code)[0]
 def _get_time_res(station_code: str) -> str:
+    _init_gmag_info()
     return _split_station_code_time_res(station_code)[1]
 def _check_time_res(station_code: str) -> None:
     """Check if a station code contains a valid time resolution"""
+    _init_gmag_info()        
     code_split = _split_station_code_time_res(station_code)
     if code_split[1] != "" and is_gmag(code_split[0]):
         station_entry = get_station_entries(code_split[0])
@@ -257,6 +265,7 @@ def clean_gmag_station_codes(station_code: str | list[str]) -> list:
     Takes station code or list of station codes, removes time resolution 
     string (if present), and returns sorted list of cleaned station codes. 
     """
+    _init_gmag_info()
     if isinstance(station_code,str):
         station_code = [station_code]
     for scode in station_code:
@@ -267,6 +276,7 @@ def clean_gmag_station_codes(station_code: str | list[str]) -> list:
 
 
 def get_station_entries(station_code: str | list[str]) -> pd.DataFrame:
+    _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     station_idx = gmag_info.table["ccode"].isin(list(map(str.upper, station_codes)))
     if not any(station_idx):
@@ -295,6 +305,7 @@ def get_groups(station_code: str | list[str]) -> list:
     >>> print(atha_groups)
     ['ae', 'asi', 'carisma']
     """
+    _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     station_entries = get_station_entries(station_codes)
     # Only select entries which are group labels:
@@ -306,6 +317,7 @@ def get_groups(station_code: str | list[str]) -> list:
 
 def get_networks(station_code: str | list[str]) -> list:
     """Return a list of source networks corresponding to provided station code(s)"""
+    _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     station_entries = get_station_entries(station_codes)
     station_network_list = list(set(station_entries["network_code"]))
@@ -334,6 +346,7 @@ def get_gmag_stations_from_group(group_code:str | list[str] = "all") -> list:
     >>> print(epo_list)
     ['bmls', 'ccnv', 'drby', 'hots', 'loys', 'ptrs', 'ukia']
     """
+    _init_gmag_info()
     if isinstance(group_code,str):
         group_code = [group_code]
     
@@ -373,6 +386,7 @@ def get_gmag_groups() -> dict:
     >>> groups['epo']  # stations in the EPO group
     ['bmls', 'ccnv', 'drby', 'hots', 'loys', 'ptrs', 'ukia']
     """
+    _init_gmag_info()
     group_dict = {}
     for group in gmag_info.group_codes:
         group_dict[group] = get_gmag_stations_from_group(group)
@@ -386,6 +400,7 @@ def get_alt_time_resolution(
         station_code: str | list[str] | None = None, 
         network_code: str | list[str] | None = None) -> list:
     """Returns list of alternate time resolutions for GMAG data, if available"""
+    _init_gmag_info()
     if station_code is None and network_code is None:
         raise ValueError("station_code or network_code must be provided")
     station_codes = set([])
@@ -400,6 +415,7 @@ def get_alt_time_resolution(
 
 
 def in_gmag_group(station_code: str | list[str], group_code: str | list[str]) -> bool:
+    _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     return len(set(station_codes) - set(get_gmag_stations_from_group(group_code))) == 0
 
@@ -424,8 +440,6 @@ def is_gmag(station_code: str | list[str]) -> bool:
     >>> check_gmag("atha")
     1
     """
+    _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     return in_gmag_group(station_codes, group_code = "all")
-
-if __name__ == "__main__":
-    print(get_alt_time_resolution(["lrv","snkq"],"variom"))
