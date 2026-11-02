@@ -185,7 +185,7 @@ def load_fdsn(trange=None, network=None, station=None,
             os.rename(mth5_path, mth5_pathfile)
             mth5_path = mth5_pathfile
         except Exception as e:
-            # Hande mth5 object initialization error.
+            # Handle mth5 object initialization error.
             pyspedas.logger.error(f"Cannot initialize mth5 object:\n{e}")
 
             # # Check if file was the cache file was created
@@ -251,7 +251,7 @@ def load_fdsn(trange=None, network=None, station=None,
                 # Time clips according to original times
                 run_ts = run_data.to_runts(start=request_df.start[0], end=request_df.end[0])
 
-                # Determine is we have all components
+                # Determine if we have all components
                 # can channels_recorded_magnetic be missing from the dataset?
                 # TODO: What to do with the runs without 3 components - operate only with 3 components for now...
                 if 'channels_recorded_magnetic' in run_ts.dataset.attrs:

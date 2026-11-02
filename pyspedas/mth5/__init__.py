@@ -26,7 +26,7 @@ try:
     from pyspedas import logging_level
     from pyspedas.mth5.load_fdsn import _disable_loguru_warnings
 
-    # This is how to disable all together
+    # This is how to disable altogether
     # import warnings
     # warnings.filterwarnings('ignore')
 

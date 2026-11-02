@@ -62,12 +62,12 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     # Flag to check if there is any open instances of h5 files
     H5OPEN = False
 
-    # This flag result in false if basic test fails and will not run other tests
+    # This flag results in False if basic test fails and will not run other tests
     BASIC_TEST_FAILED = False
 
     @classmethod
     def setUpClass(cls):
-        # TODO: H5OPEN - is not evaluated correctly. The  @unittest.skipIf decorator evaluates the condition at import time
+        # TODO: H5OPEN - is not evaluated correctly. The @unittest.skipIf decorator evaluates the condition at import time
         # Test if there is any open instances of h5 files
         # This case may not work because tests are executed in a different console where h5 reference may not exist.
         o = h5py.h5f.get_obj_ids(types=h5py.h5f.OBJ_FILE)
@@ -151,7 +151,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
     def test03_load_fdsn_nodownload(self):
         """
-        If nodownload flag is specify the h5 file will be reused.
+        If nodownload flag is specified the h5 file will be reused.
         Testing if the function works faster. Skipping the test if the file was not created.
         """
 
@@ -172,23 +172,23 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def test04_load_fdsn_samedates(self):
         """
               If dates are the same, tplot variable should not be created.
-              load_fdsn should return none
+              load_fdsn should return None
         """
         # The server response has changed to '422: Unprocessable Entity' for this request
-        # because of the same start/end times.  So we need to catch the exception now.
+        # because of the same start/end times. So we need to catch the exception now.
         from obspy.clients.fdsn.header import FDSNException
 
         date_start = '2015-06-22T01:45:00'
         date_end = date_start
         tvar = None
-        # Identical or out of order start times should be caught by load_fsdn now.
+        # Identical or out of order start times should be caught by load_fdsn now.
         exception_occurred = False
 
         try:
             tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         except FDSNException as e:
             # If load_fdsn doesn't catch the problem with start/end times, the MTH5 library
-            # will throw an exception.  We consider that a failed test.
+            # will throw an exception. We consider that a failed test.
             exception_occurred = True
             pass
 
@@ -224,7 +224,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     def test06_load_fdsn_wrong_network_station(self):
         """
-            Test incorrect input. load_fdsn should return raise an error and the temporary files should not exist
+            Test incorrect input. load_fdsn should raise an error and the temporary files should not exist
         """
 
         def test_network_station_error(network, station):
@@ -253,7 +253,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         # incorrect station
         test_network_station_error(network="4P", station="REU49_")
 
-    # Mock FDSN and MTH so we do not make unnessesary calls
+    # Mock FDSN and MTH5 so we do not make unnecessary calls
     @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
     @patch('mth5.mth5.MTH5.__init__', return_value=None)
     def test07_print_request(self, mock_FDSN, mock_MTH5):
@@ -313,7 +313,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def test09_invalid_date_or_data(self):
         """Test the function with invalid date formats in trange."""
         invalid_date_start = '2015-06-22'
-        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should results in Exception
+        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should result in Exception
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
         exception_raised = False
@@ -391,7 +391,7 @@ class TestListOfChannels(unittest.TestCase):
 
 
 class TestDatasetsFunction(unittest.TestCase):
-    # Mock data of the responce
+    # Mock data of the response
     mock_data = """Network|Station|Location|Channel|Latitude|Longitude|Elevation|Depth|Azimuth|Dip|SensorDescription|Scale|ScaleFreq|ScaleUnits|SampleRate|StartTime|EndTime
 4P|ALW48||LFE|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
 4P|ALW48||LFN|0|0|0|0|0|0|NIMS|1|1|nT|1|2015-06-18T15:00:36.0000|2015-07-09T13:45:10.0000
