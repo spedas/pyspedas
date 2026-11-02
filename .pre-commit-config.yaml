@@ -74,7 +74,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
   - id: check-github-workflows
 
 - repo: https://github.com/abravalheri/validate-pyproject
-  rev: 'v0.27'
+  rev: v0.27
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
