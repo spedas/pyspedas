@@ -7,6 +7,7 @@ related_files:
   - pyspedas/geopack/AGENTS.md
   - pyspedas/particles/AGENTS.md
   - pyspedas/analysis/AGENTS.md
+  - pyspedas/mth5/AGENTS.md
   - pyspedas/__init__.py
   - pyspedas/projects/themis/spacecraft/fields/fgm.py
   - pyspedas/projects/themis/load.py
