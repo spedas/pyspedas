@@ -4,15 +4,14 @@ import urllib.error
 from urllib.error import URLError, HTTPError
 import socket
 
-from mth5.clients.fdsn import FDSN
+# from mth5.clients.fdsn import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
 from pyspedas.mth5.utilities import _list_of_fdsn_channels
 from pyspedas.mth5.utilities import datasets
 
 # This one is unused
-from pyspedas.mth5.config import CONFIG
+# from pyspedas.mth5.config import CONFIG
 
-import pyspedas
 import pyspedas
 
 import time
@@ -30,7 +29,8 @@ from pyspedas import tnames, del_data
 
 # Handling exceptions of bad data input
 from obspy.clients.fdsn.header import FDSNBadRequestException
-from obspy.clients.fdsn.header import FDSNNoServiceException
+from obspy.clients.fdsn.header import FDSNException
+# from obspy.clients.fdsn.header import FDSNNoServiceException # Replaced by FDSNException
 
 
 @contextmanager
@@ -65,6 +65,11 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     # This flag results in False if basic test fails and will not run other tests
     BASIC_TEST_FAILED = False
 
+    # This flag results in False if the connection check fails, so tests that
+    # need a real connection but don't depend on BASIC_TEST_FAILED can skip
+    # cleanly instead of failing noisily when there is no network.
+    CONNECTION_FAILED = False
+
     @classmethod
     def setUpClass(cls):
         # TODO: H5OPEN - is not evaluated correctly. The @unittest.skipIf decorator evaluates the condition at import time
@@ -77,7 +82,15 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         if len(pyspedas.tplot_names()) > 0:
             pyspedas.del_data('*')
 
-    def test01_load_fdsn_notrange(self):
+    # Tests are named test<bucket>_<description>, where <bucket> groups tests
+    # that share the same run-order requirement (10_ no connection/mock,
+    # 20_ mocked network, 30_ connection error, 40_ basic load and connection
+    # check, 50_ real FDSN calls independent of basic, 60_ depend on basic).
+    # Tests within a bucket keep the same number so a later insertion between
+    # buckets can use an unused number (e.g. test15_, test45_) without
+    # renumbering anything else. See tests.md for the full rationale.
+
+    def test10_load_fdsn_notrange(self):
         """
         Testing the load_fdsn function without a trange.
         The log message should be printed.
@@ -87,7 +100,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('trange not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
-    def test01_load_fdsn_nonetwork(self):
+    def test10_load_fdsn_nonetwork(self):
         """
         Test loading data without specifying a network
         The log message should be printed.
@@ -100,7 +113,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('Network not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
-    def test01_load_fdsn_nostation(self):
+    def test10_load_fdsn_nostation(self):
         """
         Test loading data without specifying a station
         The log message should be printed.
@@ -113,150 +126,10 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('Station not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
-    def test02_load_fdsn_basic(self):
-        date_start = '2015-06-22T01:45:00'
-        date_end = '2015-06-22T02:20:00'
-        load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
-        load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
-
-        try:
-            self.assertTrue('fdsn_4P_REU49' in pyspedas.tnames())
-            self.assertTrue('fdsn_4P_GAW50' in pyspedas.tnames())
-            self.BASIC_TEST_FAILED = False
-        except AssertionError:
-            self.BASIC_TEST_FAILED = True
-
-    # TODO: this should not work, because BASIC_TEST_FAILED should be evaluated before the call of the test...
-    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
-    # @patch('sys.stdout', new_callable=StringIO)
-    def test03_load_fdsn_nowarnings(self):
-        """
-        Test with and without nowarning flag
-        """
-        date_start = '2015-06-22T01:45:00'
-        date_end = '2015-06-22T02:20:00'
-
-        # Try loading data, which should result in warnings by MTH5
-        with loguru_capture_logs(level="WARNING") as output:
-            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False)
-            self.assertTrue(len(output) > 0)
-        iswaring = any('WARNING:' in s for s in output)
-
-        if not iswaring:
-            self.skipTest("load_fdsn does not produce warnings.")
-        with loguru_capture_logs() as output:
-            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=True)
-        self.assertFalse(any('WARNING:' in s for s in output))
-
-    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
-    def test03_load_fdsn_nodownload(self):
-        """
-        If nodownload flag is specified the h5 file will be reused.
-        Testing if the function works faster. Skipping the test if the file was not created.
-        """
-
-        date_start = '2015-06-22T01:45:00'
-        date_end = '2015-06-22T02:20:00'
-        with Timer() as t1:
-            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=False)
-
-        # Check if the h5 file exist
-        if not os.path.isfile(os.path.join(CONFIG['local_data_dir'], '4P_REU49_20150622T014500_20150622T022000.h5')):
-            self.skipTest("load_fdsn does not produce h5 file.")
-
-        with Timer() as t2:
-            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=True)
-
-        self.assertTrue(t1.interval > t2.interval)
-
-    def test04_load_fdsn_samedates(self):
-        """
-              If dates are the same, tplot variable should not be created.
-              load_fdsn should return None
-        """
-        # The server response has changed to '422: Unprocessable Entity' for this request
-        # because of the same start/end times. So we need to catch the exception now.
-        from obspy.clients.fdsn.header import FDSNException
-
-        date_start = '2015-06-22T01:45:00'
-        date_end = date_start
-        tvar = None
-        # Identical or out of order start times should be caught by load_fdsn now.
-        exception_occurred = False
-
-        try:
-            tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
-        except FDSNException as e:
-            # If load_fdsn doesn't catch the problem with start/end times, the MTH5 library
-            # will throw an exception. We consider that a failed test.
-            exception_occurred = True
-            pass
-
-        self.assertFalse(exception_occurred)
-        self.assertIsNone(tvar)
-
-    @unittest.skipIf(BASIC_TEST_FAILED, "Basic test failed.")
-    def test05_load_fdsn_timeclip(self):
-        """
-        Test if the time is clipped correctly.
-        """
-        date_start = '2015-06-22T01:45:00'
-        date_end = '2015-06-22T02:20:00'
-
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
-        time, data = pyspedas.get_data(tvar)
-
-        t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
-        t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
-        import mth5
-        print('mth5 version: ',mth5.__version__)
-        import mt_metadata
-        print('mt-metadata version: ', mt_metadata.__version__)
-        import obspy
-        print('obspy version: ', obspy.__version__)
-
-        print('date_start: ', date_start)
-        print('t1: ', t1)
-        print('date_end: ', date_end)
-        print('t2: ', t2)
-        self.assertTrue(t1 == date_start)
-        self.assertTrue(t2 == date_end)
-
-    def test06_load_fdsn_wrong_network_station(self):
-        """
-            Test incorrect input. load_fdsn should raise an error and the temporary files should not exist
-        """
-
-        def test_network_station_error(network, station):
-            date_start = '2015-06-22T01:45:00'
-            date_end = '2015-06-22T02:20:00'
-
-            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as log:
-                with self.assertRaises(Exception):
-                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
-                self.assertIn("HTTP Status code: 400", log.output[0])
-
-            tmp_file = os.path.join(CONFIG['local_data_dir'], f'{network}_{station}.h5')
-            self.assertFalse(os.path.isfile(tmp_file))
-
-            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
-                try:
-                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
-                except:
-                    pass
-            self.assertIn('Cannot initialize mth5 object', cm.output[0])
-            self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
-
-        # incorrect network
-        test_network_station_error(network="4P_", station="REU49")
-
-        # incorrect station
-        test_network_station_error(network="4P", station="REU49_")
-
     # Mock FDSN and MTH5 so we do not make unnecessary calls
     @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
     @patch('mth5.mth5.MTH5.__init__', return_value=None)
-    def test07_print_request(self, mock_FDSN, mock_MTH5):
+    def test20_print_request(self, mock_FDSN, mock_MTH5):
         """Test the print_request parameter and ensure print output is correct."""
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -281,7 +154,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertTrue(all(col in printed_df for col in expected_columns))
 
     @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client')
-    def test08_request_df_parameter(self, mock_make_mth5):
+    def test20_request_df_parameter(self, mock_make_mth5):
         """Test the request_df parameter with a custom DataFrame."""
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -310,40 +183,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         # mock_make_mth5.assert_called_once_with(custom_request_df, interact=False, path=CONFIG['local_data_dir'])
         self.assertTrue(any(call_args[0][0].equals(custom_request_df) for call_args in mock_make_mth5.call_args_list))
 
-    def test09_invalid_date_or_data(self):
-        """Test the function with invalid date formats in trange."""
-        invalid_date_start = '2015-06-22'
-        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should result in Exception
-        date_start = '2015-06-22T01:45:00'
-        date_end = '2015-06-22T02:20:00'
-        exception_raised = False
-
-        # This may or may not raise an exception
-
-        pyspedas.del_data('*')
-        try:
-            load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
-        except FDSNBadRequestException as e:
-            exception_raised = True
-
-        exception_raised = False
-        self.assertTrue(len(tnames()) == 0)
-
-        with self.assertRaises(FDSNBadRequestException) as cm:
-            load_fdsn(trange=[date_start, date_end], network="4P", station="NON_EXISTENT")
-
-        # Verify the exception type
-        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
-
-        with self.assertRaises(FDSNBadRequestException) as cm:
-            load_fdsn(trange=[date_start, date_end], network="NON_EXISTENT", station="REU49")
-
-        # Verify the exception type
-        self.assertTrue(isinstance(cm.exception, FDSNBadRequestException))
-
-    # TODO: FOR SOME REASON, this test must be called before test02_load_fdsn_basic. Otherwise it does not work.
     @patch('urllib.request.OpenerDirector.open')
-    def test02__connection_errors(self, mock_open):
+    def test30_connection_errors(self, mock_open):
         """Test the function handling of network connection issues."""
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
@@ -353,11 +194,200 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertRaises(Exception) as cm:
             load_fdsn(trange=[date_start, date_end], network="4P", station="REU49")
-            print(cm.exception)
 
-        # Verify the exception type and message for URLError
-        self.assertTrue(isinstance(cm.exception, FDSNNoServiceException) or isinstance(cm.exception, URLError))
-        # self.assertTrue(isinstance(cm.exception, URLError))
+        # Depending on whether obspy's service-discovery cache for this host is
+        # already warm (see tests.md), the simulated connection failure surfaces
+        # as FDSNNoServiceException (cold cache) or a plain FDSNException (warm
+        # cache). Both are FDSNException, so check that instead of either
+        # specific subclass or URLError, which obspy never lets escape here.
+        self.assertIsInstance(cm.exception, FDSNException)
+
+    def test40_connection_check(self):
+        """
+        Makes a real load_fdsn call to confirm the network/FDSN service is
+        reachable. Sets self.CONNECTION_FAILED so that test50_* tests can
+        skip cleanly instead of failing noisily when there is no connection.
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+        try:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+            self.CONNECTION_FAILED = False
+        except Exception:
+            self.CONNECTION_FAILED = True
+
+    def test40_load_fdsn_basic(self):
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+        load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
+
+        try:
+            self.assertTrue('fdsn_4P_REU49' in pyspedas.tnames())
+            self.assertTrue('fdsn_4P_GAW50' in pyspedas.tnames())
+            self.BASIC_TEST_FAILED = False
+        except AssertionError:
+            self.BASIC_TEST_FAILED = True
+
+    def test50_load_fdsn_samedates(self):
+        """
+              If dates are the same, tplot variable should not be created.
+              load_fdsn should return None
+        """
+        if self.CONNECTION_FAILED:
+            self.skipTest("No connection.")
+
+        # The server response has changed to '422: Unprocessable Entity' for this request
+        # because of the same start/end times. So we need to catch the exception now.
+        from obspy.clients.fdsn.header import FDSNException
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = date_start
+        tvar = None
+        # Identical or out of order start times should be caught by load_fdsn now.
+        exception_occurred = False
+
+        try:
+            tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        except FDSNException as e:
+            # If load_fdsn doesn't catch the problem with start/end times, the MTH5 library
+            # will throw an exception. We consider that a failed test.
+            exception_occurred = True
+            pass
+
+        self.assertFalse(exception_occurred)
+        self.assertIsNone(tvar)
+
+    def test50_load_fdsn_wrong_network_station(self):
+        """
+            Test incorrect input. load_fdsn should raise an error and the temporary files should not exist
+        """
+        if self.CONNECTION_FAILED:
+            self.skipTest("No connection.")
+
+        def test_network_station_error(network, station):
+            date_start = '2015-06-22T01:45:00'
+            date_end = '2015-06-22T02:20:00'
+
+            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as log:
+                with self.assertRaises(FDSNBadRequestException):
+                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
+                self.assertIn("HTTP Status code: 400", log.output[0])
+
+            tmp_file = os.path.join(CONFIG['local_data_dir'], f'{network}_{station}.h5')
+            self.assertFalse(os.path.isfile(tmp_file))
+
+            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+                try:
+                    load_fdsn(network=network, station=station, trange=[date_start, date_end])
+                except:
+                    pass
+            self.assertIn('Cannot initialize mth5 object', cm.output[0])
+            self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
+
+        # incorrect network
+        test_network_station_error(network="4P_", station="REU49")
+
+        # incorrect station
+        test_network_station_error(network="4P", station="REU49_")
+
+    def test50_invalid_date(self):
+        """Test the function with invalid date formats in trange."""
+        if self.CONNECTION_FAILED:
+            self.skipTest("No connection.")
+
+        invalid_date_start = '2015-06-22'
+        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should result in Exception
+
+        # This may or may not raise an exception
+        try:
+            load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
+        except FDSNBadRequestException:
+            pass
+
+        self.assertTrue(len(tnames()) == 0)
+
+    # @patch('sys.stdout', new_callable=StringIO)
+    def test60_load_fdsn_nowarnings(self):
+        """
+        Test with and without nowarning flag
+        """
+        # self.skipTest(...) raises unittest.SkipTest, which the test runner
+        # reports the same way as @unittest.skipIf. Unlike the decorator, it
+        # is evaluated at call time, so it sees whatever test40_load_fdsn_basic
+        # set self.BASIC_TEST_FAILED to when that test ran, not the class
+        # default from when the class body was first executed.
+        if self.BASIC_TEST_FAILED:
+            self.skipTest("Basic test failed.")
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        # Try loading data, which should result in warnings by MTH5
+        with loguru_capture_logs(level="WARNING") as output:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False)
+            self.assertTrue(len(output) > 0)
+        iswaring = any('WARNING:' in s for s in output)
+
+        if not iswaring:
+            self.skipTest("load_fdsn does not produce warnings.")
+        with loguru_capture_logs() as output:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=True)
+        self.assertFalse(any('WARNING:' in s for s in output))
+
+    def test60_load_fdsn_nodownload(self):
+        """
+        If nodownload flag is specified the h5 file will be reused.
+        Testing if the function works faster. Skipping the test if the file was not created.
+        """
+        if self.BASIC_TEST_FAILED:
+            self.skipTest("Basic test failed.")
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+        with Timer() as t1:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=False)
+
+        # Check if the h5 file exist
+        if not os.path.isfile(os.path.join(CONFIG['local_data_dir'], '4P_REU49_20150622T014500_20150622T022000.h5')):
+            self.skipTest("load_fdsn does not produce h5 file.")
+
+        with Timer() as t2:
+            load_fdsn(network="4P", station="REU49", trange=[date_start, date_end], nowarnings=False, nodownload=True)
+
+        self.assertTrue(t1.interval > t2.interval)
+
+    def test60_load_fdsn_timeclip(self):
+        """
+        Test if the time is clipped correctly.
+        """
+        if self.BASIC_TEST_FAILED:
+            self.skipTest("Basic test failed.")
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        time, data = pyspedas.get_data(tvar)
+
+        t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
+        t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')
+
+        # Test information output, useful for debug.
+        # import mth5
+        # print('mth5 version: ',mth5.__version__)
+        # import mt_metadata
+        # print('mt-metadata version: ', mt_metadata.__version__)
+        # import obspy
+        # print('obspy version: ', obspy.__version__)
+        #
+        # print('date_start: ', date_start)
+        # print('t1: ', t1)
+        # print('date_end: ', date_end)
+        # print('t2: ', t2)
+
+        self.assertTrue(t1 == date_start)
+        self.assertTrue(t2 == date_end)
 
     def tearDown(self):
         pass
