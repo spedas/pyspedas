@@ -159,29 +159,43 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
 
+        # Use different values so we can see that this DataFrame takes priority.
         custom_request_df = pd.DataFrame({
-            "network": ["4P"],
-            "station": ["REU49"],
+            "network": ["CUSTOM"],
+            "station": ["CUSTOM_STATION"],
             "location": ["--"],
             "channel": ["*F*"],
             "start": [date_start],
             "end": [date_end]
         })
+        original_request_df = custom_request_df.copy(deep=True)
 
-        def side_effect(*args, **kwargs):
-            raise SystemExit("make_mth5_from_fdsn_client called, exiting test.")
+        class RequestCaptured(Exception):
+            pass
 
-        mock_make_mth5.side_effect = side_effect
+        # Stop here once the request has been handed off.
+        mock_make_mth5.side_effect = RequestCaptured
 
-        with self.assertRaises(SystemExit) as cm:
-            load_fdsn(trange=[date_start, date_end], network="4P", station="REU49", request_df=custom_request_df)
+        # The loader should hand off the request before doing any real download.
+        with self.assertRaises(RequestCaptured):
+            load_fdsn(
+                trange=[date_start, date_end],
+                network="4P",
+                station="REU49",
+                request_df=custom_request_df,
+            )
 
-        # Verify that the reason for exit is the make_mth5_from_fdsn_client call
-        self.assertEqual(str(cm.exception), "make_mth5_from_fdsn_client called, exiting test.")
-
-        # Verify that make_mth5_from_fdsn_client was called with the custom DataFrame
-        # mock_make_mth5.assert_called_once_with(custom_request_df, interact=False, path=CONFIG['local_data_dir'])
-        self.assertTrue(any(call_args[0][0].equals(custom_request_df) for call_args in mock_make_mth5.call_args_list))
+        # The downloader should receive exactly the request we supplied.
+        mock_make_mth5.assert_called_once_with(
+            custom_request_df,
+            interact=False,
+            path=CONFIG['local_data_dir'],
+        )
+        # The custom station details should still be present after the call.
+        self.assertEqual(custom_request_df.loc[0, "network"], "CUSTOM")
+        self.assertEqual(custom_request_df.loc[0, "station"], "CUSTOM_STATION")
+        # Passing the request must not change the caller's DataFrame.
+        pd.testing.assert_frame_equal(custom_request_df, original_request_df)
 
     @patch('urllib.request.OpenerDirector.open')
     def test30_connection_errors(self, mock_open):
@@ -369,6 +383,15 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
         time, data = pyspedas.get_data(tvar)
+
+        # Validate the stored payload, not only its boundary timestamps.
+        self.assertEqual(tvar, "fdsn_4P_REU49")
+        self.assertIn(tvar, pyspedas.tnames())
+        self.assertGreater(len(time), 0)
+        self.assertEqual(data.ndim, 2)
+        self.assertEqual(data.shape, (len(time), 3))
+        self.assertTrue(all(time[index] <= time[index + 1] for index in range(len(time) - 1)))
+        self.assertTrue((data != 0).any())
 
         t1 = pyspedas.time_datetime(time[0]).strftime('%Y-%m-%dT%H:%M:%S')
         t2 = pyspedas.time_datetime(time[-1]).strftime('%Y-%m-%dT%H:%M:%S')

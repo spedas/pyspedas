@@ -10,7 +10,7 @@
 | `test10_load_fdsn_nonetwork` | No `network` given -> logs `'Network not specified'` ERROR |
 | `test10_load_fdsn_nostation` | No `station` given -> logs `'Station not specified'` ERROR |
 | `test20_print_request` | `print_request=True` prints a dataframe containing `network/station/start/end` columns (FDSN/MTH5 mocked to abort immediately after) |
-| `test20_request_df_parameter` | A custom `request_df` is passed straight through to `make_mth5_from_fdsn_client` unmodified |
+| `test20_request_df_parameter` | A custom `request_df` takes precedence, remains unchanged, and is passed with the expected download arguments |
 | `test30_connection_errors` | Simulated `URLError` (no internet) propagates as `FDSNException` (exact subclass depends on whether obspy's service-discovery cache is cold or warm; see below) |
 | `test40_connection_check` | Real load of a valid station; sets `CONNECTION_FAILED` meant to gate `test50_*` tests that need a reachable network but don't depend on `test40_load_fdsn_basic` |
 | `test40_load_fdsn_basic` | Real load of two valid stations; checks both tplot vars exist; also sets `BASIC_TEST_FAILED` meant to gate `test60_*` tests |
@@ -19,7 +19,7 @@
 | `test50_invalid_date` | Malformed/out-of-order date strings in `trange` either raise `FDSNBadRequestException` or are handled without creating a tplot variable |
 | `test60_load_fdsn_nowarnings` | Confirms `nowarnings=True` suppresses loguru WARNING output that `nowarnings=False` produces |
 | `test60_load_fdsn_nodownload` | Confirms `nodownload=True` reuses the cached `.h5` and is faster than the first (downloading) call |
-| `test60_load_fdsn_timeclip` | Confirms returned data's first/last timestamps exactly match the requested `trange` |
+| `test60_load_fdsn_timeclip` | Confirms returned timestamps are clipped and the tplot data is nonempty, ordered, and three-component with matching row count |
 
 Test names encode a bucket number (`test<bucket>_<description>`) that groups
 tests sharing the same run-order requirement; tests in the same bucket share
