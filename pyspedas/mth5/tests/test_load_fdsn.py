@@ -3,6 +3,7 @@ from unittest.mock import patch, MagicMock, mock_open
 import urllib.error
 from urllib.error import URLError, HTTPError
 import socket
+from types import SimpleNamespace
 
 # from mth5.clients.fdsn import FDSN
 from pyspedas.mth5.load_fdsn import load_fdsn
@@ -196,6 +197,58 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertEqual(custom_request_df.loc[0, "station"], "CUSTOM_STATION")
         # Passing the request must not change the caller's DataFrame.
         pd.testing.assert_frame_equal(custom_request_df, original_request_df)
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_station_data_undefined_unboundlocalerror(self, mock_MTH5, mock_isfile):
+        """
+        If no survey matches the station, station_data is never assigned,
+        so referencing it later raises UnboundLocalError. That must be
+        caught and logged as "station_data was not defined correctly",
+        the same as the AttributeError case below.
+        """
+        mock_mth5_instance = MagicMock()
+        mock_mth5_instance.__enter__.return_value.surveys_group.groups_list = []
+        mock_MTH5.return_value = mock_mth5_instance
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            result = load_fdsn(
+                network="4P", station="REU49", trange=[date_start, date_end],
+                nodownload=True, noexception=True,
+            )
+        self.assertIn('station_data was not defined correctly', cm.output[0])
+        self.assertIsNone(result)
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_station_data_missing_channels_attributeerror(self, mock_MTH5, mock_isfile):
+        """
+        If station_data.metadata has no channels_recorded attribute,
+        referencing it raises AttributeError. That must be caught and
+        logged as "station_data was not defined correctly", the same as
+        the UnboundLocalError case above.
+        """
+        station_metadata = SimpleNamespace(run_list=[])
+        station_data = SimpleNamespace(metadata=station_metadata)
+
+        mock_mth5_instance = MagicMock()
+        mock_mth5_instance.__enter__.return_value.surveys_group.groups_list = ['4P']
+        mock_mth5_instance.__enter__.return_value.get_station.return_value = station_data
+        mock_MTH5.return_value = mock_mth5_instance
+
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            result = load_fdsn(
+                network="4P", station="REU49", trange=[date_start, date_end],
+                nodownload=True, noexception=True,
+            )
+        self.assertIn('station_data was not defined correctly', cm.output[0])
+        self.assertIsNone(result)
 
     @patch('urllib.request.OpenerDirector.open')
     def test30_connection_errors(self, mock_open):

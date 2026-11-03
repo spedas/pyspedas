@@ -313,7 +313,7 @@ def load_fdsn(trange=None, network=None, station=None,
         legend_names = ['x', 'y', 'z']
         try:
             legend_names = station_data.metadata.channels_recorded
-        except AttributeError or UnboundLocalError:
+        except (AttributeError, UnboundLocalError):
             pyspedas.logger.error("station_data was not defined correctly")
             # Also raise this exception if noexception flag is set
             if not noexception:
