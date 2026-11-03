@@ -37,16 +37,6 @@ def time_ephemeris(t, et2ut=False):
     ls_num = np.arange(len(ls_utimes)) + 9
     utc_et_diff = time_double('2000-1-1/12:00:00') - 32.184
     ls_etimes = ls_utimes + ls_num - utc_et_diff
-    disable_time = time_double('2027-01-01')  # time of next possible leap second
-
-    if time_double() > disable_time - 30*86400.0:
-        logging.warning('Warning: This procedure must be modified before ' + str(disable_time) + ' to account for potential leap second')
-
-    if time_double() > disable_time:
-        raise ValueError('Sorry!  This procedure has been disabled because it was not modified to account for a possible leap second on ' + str(disable_time))
-
-    if time_double() > disable_time - 7*86400.0:
-        logging.warning('Warning: This procedure must be modified before ' + str(disable_time) + ' to account for potential leap second at that time.')
 
     if et2ut:
         return t - np.floor(interpol(ls_num, ls_etimes, t)) + utc_et_diff

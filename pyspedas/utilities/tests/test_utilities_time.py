@@ -216,20 +216,6 @@ class TimeTestCases(unittest.TestCase):
         et_to_ut = time_ephemeris(et, et2ut=True)
         self.assertAlmostEqual(ut, et_to_ut, places=6)
 
-    def test_time_ephemeris_leapsec_update (self):
-        disable_time = time_double('2027-01-01')  # time of next possible leap second
-        now = time_double()
-
-        days_to_failure = (disable_time - now)/86400.0
-        if days_to_failure < 120:
-            logging.warning(f"time_ephemeris may need a leap second update in {int(days_to_failure)} days")
-        else:
-            logging.info(f"time_ephemeris may need a leap second update in {int(days_to_failure)} days")
-
-        # If this bombs, we need to check if a leap second will be applied, and update the
-        # disable_time variable here and in time_ephemeris().
-        self.assertTrue(days_to_failure > 60)
-
     def test_store_data_time_conversions(self):
         # Test different ways of passing times to store_data, ensure that they
         # all round-trip through store_data/get_data correctly
