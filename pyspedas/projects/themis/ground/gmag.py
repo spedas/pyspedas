@@ -1,38 +1,91 @@
 import logging
-import requests
+import pandas as pd
 from pyspedas.projects.themis.load import load
+from pyspedas.utilities.download import download
 
+from pyspedas.projects.themis.config import CONFIG
 
-class Themis_gmag:
-    """This object holds the dictionary of gmag stations and their metadata"""
+# Initialize global variable for gmag_info:
+gmag_info = None
 
-    def __init__(self):
-        self.gmag_dict = {}
+class GMAG_Info():
+    """This object holds the table of gmag stations and their metadata"""
+    def __init__(self,no_download:bool=False):
+        # Initialize empty table:
+        self.table = pd.DataFrame()
+        self.no_download = no_download
+        # Load GMAG info:
+        self.table = self.get_gmag_info()
+        # Note: the final info column should always be "notes"
+        self._infocols = list(self.table.loc[:,:'notes'].columns)
+        # Prepare group list:
+        self.group_codes = self.get_group_opts()
+        # Prepare sources list:
+        self.network_codes = self.get_network_opts()
+        # Prepare station codes list:
+        self.station_codes = self.get_station_opts()
+        # Prepare alt time resolutions:
+        self.alt_time_resolution = self.get_alt_time_resolution_opts()
 
     def query_gmags(self):
-        """Fills a dictionary of gmag stations and all their metadata"""
+        """Fills a Pandas DataFrame of gmag stations and all their metadata"""
+        # url = "https://themis.ssl.berkeley.edu/gmag/gmags_meta.csv"
+        # resp = requests.get(url=url)
+        # resp.raise_for_status()
+        # # convert response into Pandas dataframe:
+        # self.table = pd.read_csv(BytesIO(resp.content))
+        file = None
+        if not self.no_download:
+            file = download(remote_file="thg/gmags_meta.csv",
+                            remote_path=CONFIG['remote_data_dir'],
+                            local_path=CONFIG['local_data_dir'],
+                            no_download=CONFIG["no_download"])
+        if file is not None:
+            # load from newly downloaded file:
+            self.table = pd.read_csv(file[0])
+        else:
+            # attempt to load local file:
+            self.table = pd.read_csv(CONFIG['local_data_dir'] + "thg/gmags_meta.csv")
 
-        url = "http://themis.ssl.berkeley.edu/gmag/gmag_json.php"
-
-        params = dict(station="", group="")
-        resp = requests.get(url=url, params=params)
-        data = resp.json()
-        self.gmag_dict = data
-
-    def get_gmag_list(self):
-        """returns the gmag dictionary, querying if necessary"""
-        if self.gmag_dict == {}:
+    def get_gmag_info(self) -> pd.DataFrame:
+        """returns the gmag table, querying if necessary"""
+        self.query_gmags()
+        return self.table
+    
+    def get_group_opts(self) -> list:
+        """returns possible groups which stations can be associated with"""
+        if self.table.empty: 
             self.query_gmags()
-        return self.gmag_dict
+        group_opts = list(set(self.table.columns) - set(self._infocols))
+        group_opts.sort()
+        return list(map(str.lower, group_opts))
+    
+    def get_network_opts(self) -> list:
+        if self.table.empty: 
+            self.query_gmags()
+        network_opts = list(set(self.table[self.table["network_code"].notnull()]["network_code"]))
+        network_opts.sort()
+        return list(map(str.lower, network_opts))
 
+    def get_station_opts(self) -> list:
+        if self.table.empty: 
+            self.query_gmags()
+        station_opts = list(set(self.table[self.table["network_code"].notnull()]["ccode"]))
+        station_opts.sort()
+        return list(map(str.lower, station_opts))
 
-themis_gmag_dict = Themis_gmag()
+    def get_alt_time_resolution_opts(self) -> list:
+        if self.table.empty: 
+            self.query_gmags()
+        t_res_opts = list(set(self.table[self.table["alt_period"].notnull()]["alt_period"]))
+        t_res_opts.sort()
+        return t_res_opts
 
 
 def gmag(
     trange=["2007-03-23", "2007-03-24"],
-    sites=None,
-    group=None,
+    sites:str | list[str] | None = None,
+    group:str | list[str] | None = None,
     level="l2",
     prefix="",
     suffix="",
@@ -44,7 +97,8 @@ def gmag(
     no_update=False,
     time_clip=False,
     force_download=False,
-    sampling_rate=1,
+    sampling_rate=None,
+    time_resolution:str="",
     version=None,
 ):
     """
@@ -56,11 +110,13 @@ def gmag(
         Time range of interest in the format ["start_date", "end_date"].
         Default is ["2007-03-23", "2007-03-24"].
     sites : list or str, optional
-        List of ground magnetometer sites to load data for. If None, data
-        for all available sites will be loaded. Default is None.
+        List of ground magnetometer stations to load. Time 
+        resolution can be specified in the station name (e.g. "anmo_100ms", "lrv_1min"), 
+        which will be parsed and loaded, if available. If None, all station data
+        from all provided groups will be loaded. Default is None.
     group : str, optional
         Name of a pre-defined group of sites to load data for. If specified,
-        the 'sites' parameter will be ignored. Default is None.
+        the 'stations' parameter will be ignored. Default is all groups.
     level : str, optional
         Data level to load. Default is "l2".
     prefix : str, optional
@@ -86,8 +142,13 @@ def gmag(
     force_download: bool, optional
         Download file even if local version is more recent than server version
         Default: False
-    sampling_rate: int, optional
-        Specify a sampling rate for loading variometer data. Accepts 1 (Hz) or 10 (Hz).
+    time_resolution: str, optional
+        Specify alternate time resolution when loading gmag data, and it will be 
+        loaded instead of the default time resolution, if available. Uses CDF
+        descriptor format (e.g. "100ms","1min", etc.).
+        Default: ""
+    sampling_rate (deprecated): int, optional
+        Specify variometer sampling rate, in Hz.
         Default: 1
     version: str, optional
         CDF version to use in place of a version wildcard, e.g. "v01".
@@ -114,7 +175,7 @@ def gmag(
     >>> tplot(['thg_mag_s61a-m', 'thg_mag_anmo-m'])
     >>>
     >>> # Load 10 Hz variometer data for specific sites and time range:
-    >>> gmag_vars = gmag(sites=['s61a','anmo'], sampling_rate=10, trange=['2026-02-24', '2026-02-25'])
+    >>> gmag_vars = gmag(sites=['s61a','anmo'], time_resolution="100ms", trange=['2026-02-24', '2026-02-25'])
     >>> subtract_median(['thg_mag_s61a_100ms', 'thg_mag_anmo_100ms']) 
     >>> tplot(['thg_mag_s61a_100ms-m', 'thg_mag_anmo_100ms-m'])
     >>>
@@ -125,266 +186,43 @@ def gmag(
     >>>
     
     """
+    _init_gmag_info()
 
+    if sampling_rate is not None:
+        logging.warning('The keyword argument "sampling_rate" is deprecated. Please use "time_resolution" (specified using a string) instead. The 1 Hz data for variometers is selected by default and does not require specification. The 10 Hz data can be selected by setting time_resolution="100ms".')
+
+        if sampling_rate == 10:
+            time_resolution = "100ms"
+    
     if sites is None:
-        thm_sites = (
-            "idx atha chbg ekat fsim fsmi fykn gbay glyn gill inuv kapu "
-            "kian kuuj mcgr nrsq pgeo pina rank snap snkq tpas whit "
-            "yknf".split(" ")
-        )
-        tgo_sites = [
-            "nal",
-            "lyr",
-            "hop",
-            "bjn",
-            "nor",
-            "sor",
-            "tro",
-            "and",
-            "don",
-            "rvk",
-            "sol",
-            "kar",
-            "jan",
-            "jck",
-            "dob",
-        ]
-        dtu_sites = [
-            "atu",
-            "dmh",
-            "svs",
-            "tdc",
-            "bfe",
-            "roe",
-            "thl",
-            "kuv",
-            "upn",
-            "umq",
-            "gdh",
-            "stf",
-            "skt",
-            "ghb",
-            "fhb",
-            "naq",
-            "amk",
-            "sco",
-            "tab",
-            "sum",
-            "hov",
-        ]
-        ua_sites = [
-            "arct",
-            "bett",
-            "cigo",
-            "eagl",
-            "fykn",
-            "gako",
-            "hlms",
-            "homr",
-            "kako",
-            "pokr",
-            "trap",
-        ]
-        maccs_sites = ["cdrt", "chbr", "crvr", "gjoa", "iglo", "nain", "pang", "rbay"]
-        usgs_sites = [
-            "bou",
-            "brw",
-            "bsl",
-            "cmo",
-            "ded",
-            "frd",
-            "frn",
-            "gua",
-            "hon",
-            "new",
-            "shu",
-            "sit",
-            "sjg",
-            "tuc",
-        ]
-        atha_sites = [
-            "roth",
-            "leth",
-            "redr",
-            "larg",
-            "vldr",
-            "salu",
-            "akul",
-            "puvr",
-            "inuk",
-            "kjpk",
-            "radi",
-            "stfl",
-            "sept",
-            "schf",
-        ]
-        epo_sites = [
-            "bmls",
-            "ccnv",
-            "drby",
-            "fyts",
-            "hots",
-            "loys",
-            "pgeo",
-            "pine",
-            "ptrs",
-            "rmus",
-            "swno",
-            "ukia",
-        ]
-        falcon_sites = ["hris", "kodk", "lrel", "pblo", "stfd", "wlps"]
-        mcmac_sites = ["amer", "benn", "glyn", "lyfd", "pcel", "rich", "satx", "wrth"]
-        nrcan_sites = ["blc", "cbb", "iqa", "mea", "ott", "stj", "vic"]
-        step_sites = ["fsj", "ftn", "hrp", "lcl", "lrg", "pks", "whs"]
-        fmi_sites = [
-            "han",
-            "iva",
-            "kev",
-            "kil",
-            "mas",
-            "mek",
-            "muo",
-            "nur",
-            "ouj",
-            "pel",
-            "ran",
-            "tar",
-        ]
-        aair_sites = ["amd", "bbg", "brn", "dik", "loz", "pbk", "tik", "viz"]
-        carisma_sites = [
-            "anna",
-            "back",
-            "cont",
-            "daws",
-            "eski",
-            "fchp",
-            "fchu",
-            "gull",
-            "isll",
-            "lgrr",
-            "mcmu",
-            "mstk",
-            "norm",
-            "osak",
-            "oxfo",
-            "pols",
-            "rabb",
-            "sach",
-            "talo",
-            "thrf",
-            "vulc",
-            "weyb",
-            "wgry",
-        ]
-        variometer_sites=[
-            "154a",
-            "352a",
-            "456a",
-            "anmo",
-            "bouv",
-            "casy",
-            "ccm",
-            "cola",
-            "cor",
-            "dgmt",
-            "dwpf",
-            "e46a",
-            "e62a",
-            "ecsd",
-            "eymn",
-            "goga",
-            "hrv",
-            "j47a",
-            "k30b",
-            "k50a",
-            "k62a",
-            "kbs",
-            "kevo",
-            "kono",
-            "ksu1",
-            "m63a",
-            "mbwa",
-            "midw",
-            "mstx",
-            "n51a",
-            "n53a",
-            "o20a",
-            "p57a",
-            "pab",
-            "qspa",
-            "r49a",
-            "rssd",
-            "s39b",
-            "s61a",
-            "sba",
-            "sfjd",
-            "spmn",
-            "sspa",
-            "t47a",
-            "t57a",
-            "u38b",
-            "wci",
-            "whtx",
-            "wvt",
-            "x48a",
-            "y49a"
-        ]
-        sites = (
-            thm_sites
-            + tgo_sites
-            + dtu_sites
-            + ua_sites
-            + maccs_sites
-            + usgs_sites
-            + atha_sites
-            + epo_sites
-            + falcon_sites
-            + mcmac_sites
-            + nrcan_sites
-            + step_sites
-            + fmi_sites
-            + aair_sites
-            + carisma_sites
-            + variometer_sites
-        )
-
-    if group is not None:
-        sites = eval(group + "_sites")
+        if group is not None:
+            sites = get_gmag_stations_from_group(group)
+        else:
+            sites = get_gmag_stations_from_group("all")
 
     if not isinstance(sites, list):
         sites = [sites]
 
-    # check for sites in Variometer group
-    variometer = []
-    for site in sites:
-        s_rate=check_variometer(site)
-        # if check_variometer determines site
-        # to be 1 Hz sampling rate, check if 
-        # sampling_rate argument has been set
-        if (s_rate == 1) and (sampling_rate is not None):
-            # if so, pass sampling_rate value
-            # (case where variometer base names
-            # are passed, but 10 Hz sampling rate
-            # data is to be loaded)
-            
-            # check if sampling_rate is valid:
-            if sampling_rate not in [1,10]:
-                # throw error
-                logging.error('sampling_rate must be either 1 or 10. Setting to default value of 1')
-                sampling_rate=1
-            
-            variometer.append(sampling_rate) 
-        else:
-            variometer.append(s_rate)
+    gmag_groups=[]
+    for i in range(len(sites)):
+        ccode_split = _split_station_code_time_res(sites[i])
+        ccode = clean_gmag_station_codes(ccode_split[0])
 
-    # check for sites in Greenland
-    greenland = []
-    for site in sites:
-        if check_greenland(site):
-            greenland.append(True)
+        if in_gmag_group(ccode,"variom"):
+            g_group = "variom"
+        elif in_gmag_group(ccode,"greenland"):
+            g_group = "greenland"
         else:
-            greenland.append(False)
+            g_group = ""
+        gmag_groups.append(g_group)
 
+        if time_resolution != "":
+            sites[i] = ccode[0] + "_" + time_resolution
+        elif ccode_split[1] != "":
+            sites[i] = ccode[0] + "_" + ccode_split[1]
+        else:
+            sites[i] = ccode[0]
+    
     return load(
         instrument="gmag",
         trange=trange,
@@ -397,28 +235,78 @@ def gmag(
         downloadonly=downloadonly,
         notplot=notplot,
         stations=sites,
-        greenland=greenland,
-        variometer=variometer,
         time_clip=time_clip,
         no_update=no_update,
         force_download=force_download,
+        gmag_group=gmag_groups,
         version=version,
     )
 
+def _init_gmag_info():
+    global gmag_info
+    if gmag_info is None:
+        gmag_info = GMAG_Info()
+def _split_station_code_time_res(station_code: str) -> list:
+    _init_gmag_info()
+    code_split = station_code.split("_")
+    if len(code_split) == 1:
+        code_split.append("")
+    return code_split
+def _get_clean_station_code(station_code: str) -> str:
+    _init_gmag_info()
+    return _split_station_code_time_res(station_code)[0]
+def _get_time_res(station_code: str) -> str:
+    _init_gmag_info()
+    return _split_station_code_time_res(station_code)[1]
+def _check_time_res(station_code: str) -> None:
+    """Check if a station code contains a valid time resolution"""
+    _init_gmag_info()        
+    code_split = _split_station_code_time_res(station_code)
+    if code_split[1] != "" and is_gmag(code_split[0]):
+        station_entry = get_station_entries(code_split[0])
+        alt_period = station_entry["alt_period"].values
+        if alt_period != code_split[1]:
+            raise ValueError(f"Time resolution {code_split[1]} does not match alternate time resolution options: {alt_period}")
+    return
 
-def get_group(station_name):
+
+def clean_gmag_station_codes(station_code: str | list[str]) -> list:
     """
-    Returns a list of groups a particular station belongs to.
+    Takes station code or list of station codes, removes time resolution 
+    string (if present), and returns sorted list of cleaned station codes. 
+    """
+    _init_gmag_info()
+    if isinstance(station_code,str):
+        station_code = [station_code]
+    for scode in station_code:
+        _check_time_res(scode)
+    codes = list(map(_get_clean_station_code,station_code))
+    codes.sort()
+    return codes
+
+
+def get_station_entries(station_code: str | list[str]) -> pd.DataFrame:
+    _init_gmag_info()
+    station_codes = clean_gmag_station_codes(station_code)
+    station_idx = gmag_info.table["ccode"].isin(list(map(str.upper, station_codes)))
+    if not any(station_idx):
+        raise ValueError(f"Station code(s) '{station_code}' not found!")
+    return gmag_info.table[station_idx]
+
+
+def get_groups(station_code: str | list[str]) -> list:
+    """
+    Return a list of groups corresponding to provided station code(s).
 
     Parameters
     ----------
-    station_name : str, required
-        The station name.
+    station_code : str, required
+        The station code.
 
     Returns
     -------
     list
-        A list of station groups.
+        A list of station groups associated with the provided station code.
 
     Examples
     --------
@@ -427,22 +315,27 @@ def get_group(station_name):
     >>> print(atha_groups)
     ['ae', 'asi', 'carisma']
     """
-
-    group_list = []
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-    station_name = station_name.lower()
-
-    for station in gmag_dict:
-        if station["ccode"].lower() == station_name:
-            for key, value in station.items():
-                if value == "Y":
-                    if station["ccode"].lower() not in group_list:
-                        group_list.append(key)
-
-    return group_list
+    _init_gmag_info()
+    station_codes = clean_gmag_station_codes(station_code)
+    station_entries = get_station_entries(station_codes)
+    # Only select entries which are group labels:
+    station_group_table = station_entries[gmag_info.group_codes]
+    station_group_list_matches = list(station_group_table.columns[station_group_table.isin(["Y","N"]).any()])
+    station_group_list_matches.sort()
+    return station_group_list_matches
 
 
-def gmag_list(group="all"):
+def get_networks(station_code: str | list[str]) -> list:
+    """Return a list of source networks corresponding to provided station code(s)"""
+    _init_gmag_info()
+    station_codes = clean_gmag_station_codes(station_code)
+    station_entries = get_station_entries(station_codes)
+    station_network_list = list(set(station_entries["network_code"]))
+    station_network_list.sort()
+    return station_network_list
+
+
+def get_gmag_stations_from_group(group_code:str | list[str] = "all") -> list:
     """
     Returns a list of ground magnetometer station names based on the specified group.
 
@@ -463,28 +356,28 @@ def gmag_list(group="all"):
     >>> print(epo_list)
     ['bmls', 'ccnv', 'drby', 'hots', 'loys', 'ptrs', 'ukia']
     """
+    _init_gmag_info()
+    if isinstance(group_code,str):
+        group_code = [group_code]
+    
+    # make sure each group code is lowercase:
+    group_list = list(map(str.lower, group_code))
 
-    station_list = []
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-    group = group.lower()
+    for wildcardstr in ["all","*",""]:
+        if wildcardstr in group_list:
+            group_list = gmag_info.group_codes
+    
+    outlier_groups = set(group_list) - set(gmag_info.group_codes)
+    if len(outlier_groups) > 0:
+        raise ValueError(f"Groups not found in GMAG table: {outlier_groups}")
 
-    for station in gmag_dict:
-        station_name = station["ccode"].lower()
-        station_group = get_group(station_name)
-        if group in ["all", "*", ""] or group in station_group:
-            station_list.append(station_name)
-            logging.info(
-                station_name
-                + ": from "
-                + station["day_first"]
-                + " to "
-                + station["day_last"]
-            )
-
-    return station_list
+    station_codes = list(gmag_info.table["ccode"][list(gmag_info.table[group_list].isin(["Y","N"]).any(axis=1))])
+    station_codes = list(map(str.lower, station_codes))
+    station_codes.sort()
+    return station_codes
 
 
-def gmag_groups():
+def get_gmag_groups() -> dict:
     """
     Returns a dictionary containing groups of stations and their station codes.
 
@@ -503,27 +396,41 @@ def gmag_groups():
     >>> groups['epo']  # stations in the EPO group
     ['bmls', 'ccnv', 'drby', 'hots', 'loys', 'ptrs', 'ukia']
     """
+    _init_gmag_info()
     group_dict = {}
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-
-    for station in gmag_dict:
-        for key, value in station.items():
-            if value == "Y" or value == "N":
-                if key in group_dict:
-                    if station["ccode"].lower() not in group_dict[key]:
-                        group_dict[key].append(station["ccode"].lower())
-                else:
-                    group_dict[key] = []
-                    group_dict[key].append(station["ccode"].lower())
-
+    for group in gmag_info.group_codes:
+        group_dict[group] = get_gmag_stations_from_group(group)
     # print the groups
     for g, s in group_dict.items():
         logging.info(g + ":" + ",'".join(s) + "'")
-
     return group_dict
 
 
-def check_gmag(station_name):
+def get_alt_time_resolution(
+        station_code: str | list[str] | None = None, 
+        network_code: str | list[str] | None = None) -> list:
+    """Returns list of alternate time resolutions for GMAG data, if available"""
+    _init_gmag_info()
+    if station_code is None and network_code is None:
+        raise ValueError("station_code or network_code must be provided")
+    station_codes = set([])
+    if station_code is not None:
+        station_codes = station_codes | set(clean_gmag_station_codes(station_code))
+    if network_code is not None:
+        station_codes = station_codes | set(get_gmag_stations_from_group(network_code))
+    station_codes = list(station_codes)
+    station_entries = get_station_entries(station_codes)
+    time_resolutions = list(set(station_entries["alt_period"].values))
+    return time_resolutions
+
+
+def in_gmag_group(station_code: str | list[str], group_code: str | list[str]) -> bool:
+    _init_gmag_info()
+    station_codes = clean_gmag_station_codes(station_code)
+    return len(set(station_codes) - set(get_gmag_stations_from_group(group_code))) == 0
+
+
+def is_gmag(station_code: str | list[str]) -> bool:
     """
     Check if a station name exists in the gmag dictionary.
 
@@ -543,95 +450,6 @@ def check_gmag(station_name):
     >>> check_gmag("atha")
     1
     """
-
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-
-    for station in gmag_dict:
-        if station["ccode"].lower() == station_name.lower():
-            return 1
-
-    return 0
-
-
-def check_greenland(station_name):
-    """
-    Check if a given station belongs to the Greenland group.
-
-    Parameters
-    ----------
-    station_name : str
-        The name of the station to check.
-
-    Returns
-    -------
-    int
-        Returns 1 if the station is in Greenland, otherwise returns 0.
-
-    Examples
-    --------
-    >>> from pyspedas.projects.themis.ground.gmag import check_greenland
-    >>> check_greenland("bfe")
-    1
-    """
-
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-
-    for station in gmag_dict:
-        if station["ccode"].lower() == station_name.lower():
-            if (
-                station["country"] is not None
-                and station["country"].lower() == "greenland"
-            ) or (
-                station["greenland"] is not None and station["greenland"].lower() == "y"
-            ):
-                return 1
-
-    return 0
-
-def check_variometer(station_name):
-    """
-    Check if a given station belongs to the Variometers group. 
-    If so, check if the given stationname is formatted to request 
-    data in the 10 Hz sampling rate.
-
-    Parameters
-    ----------
-    station_name : str
-        The name of the station to check.
-
-    Returns
-    -------
-    int
-        Returns sampling rate (1 or 10) if the station is in the variometers group, otherwise returns 0.
-
-    Examples
-    --------
-    >>> from pyspedas.projects.themis.ground.gmag import check_variometer
-    >>> check_variometer("s61a")
-    1
-    >>> check_variometer("s61a_100ms")
-    10
-    """
-
-    # check if station_name contains "_100ms". If it does,
-    # create copy of station name with the "_100ms" 
-    # substring removed
-    if "_100ms" in station_name.lower():
-        station_name_base=station_name.lower()
-        station_name_base=station_name_base.replace("_100ms","")
-    else:
-        station_name_base=station_name.lower()
-    
-    gmag_dict = themis_gmag_dict.get_gmag_list()
-    for station in gmag_dict:
-        # compare a copy of station name with any "_100ms" 
-        # substring removed with the station ccode
-        if station["ccode"].lower() == station_name_base:
-            if (
-                station["variom"] is not None and station["variom"].lower() == "y"
-            ):
-                if "_100ms" in station_name.lower():
-                    return 10
-                else:
-                    return 1
-    return 0
+    _init_gmag_info()
+    station_codes = clean_gmag_station_codes(station_code)
+    return in_gmag_group(station_codes, group_code = "all")

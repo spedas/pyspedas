@@ -48,8 +48,7 @@ class TestThemisVersions(unittest.TestCase):
         cases = [(name, {}, 1) for name in
                  ('ssc', 'ssc_pre')]
         cases += [('gmag', {'stations': ['idx', 'atha', 'gako', 'gako_100ms', 'upn'],
-                            'greenland': [False, False, False, False, True],
-                            'variometer': [0, 0, 1, 10, 0]}, 5)]
+                            'gmag_group': ['', '', 'variom', 'variom', 'greenland']}, 5)]
         for instrument, kwargs, count in cases:
             for version in (None, 'v01', 'v02'):
                 with self.subTest(instrument=instrument, kwargs=kwargs, version=version):
@@ -114,14 +113,15 @@ class TestThemisVersions(unittest.TestCase):
                         kwargs = {} if version is None else {'version': version}
                         if instrument == 'gmag':
                             kwargs['sites'] = ['idx']
-                            with patch.object(module, 'check_variometer', return_value=0), patch.object(
-                                    module, 'check_greenland', return_value=False):
-                                module.gmag(downloadonly=True, **kwargs)
+                            with patch.object(module, 'in_gmag_group', return_value=False):
+                                 module.gmag(downloadonly=True, **kwargs)
                         else:
                             getattr(module, instrument)(downloadonly=True, **kwargs)
                         master.assert_called_once()
                         self.assertEqual(master.call_args.kwargs['version'], version)
-
+                        if instrument == 'gmag':
+                            self.assertEqual(master.call_args.kwargs['stations'], ['idx'])
+                            self.assertEqual(master.call_args.kwargs['gmag_group'], [''])
 
 class TestDirectDownloads(unittest.TestCase):
     """Run each public loader through the real downloader without network I/O."""
