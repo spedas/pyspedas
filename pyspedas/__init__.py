@@ -150,6 +150,9 @@ from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
 from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
+from .cotrans_tools.geodetic_correction import geodetic_correction
+from .cotrans_tools.cartesian2geodeticpolar import cartesian2geodeticpolar
+
 
 from .geopack import get_tsy_params
 from .geopack.get_w_params import get_w
