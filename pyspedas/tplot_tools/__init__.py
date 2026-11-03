@@ -133,6 +133,8 @@ from .MPLPlotter.annotate import annotate
 from .MPLPlotter.tplot import tplot
 from .MPLPlotter.tplotxy import tplotxy
 from .MPLPlotter.tplotxy3 import tplotxy3, tplotxy3_add_mpause, tplotxy3_add_neutral_sheet
+# TODO: determine which methods need to be imported form tplot_map
+#from .MPLPlotter.tplot_map import 
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot
 from .exporters.tplot_ascii import tplot_ascii
