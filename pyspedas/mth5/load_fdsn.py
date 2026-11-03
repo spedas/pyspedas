@@ -150,13 +150,13 @@ def load_fdsn(trange=None, network=None, station=None,
     if print_request:
         print(request_df.to_string())
 
-    # Create time variables that correspond to the request time period
-    request_start = datetime.fromisoformat(request_df.start[0])
-    request_end = datetime.fromisoformat(request_df.end[0])
-
     # Validate time period
     _validate_date_format(request_df.start[0])
     _validate_date_format(request_df.end[0])
+
+    # Create time variables that correspond to the request time period
+    request_start = datetime.fromisoformat(request_df.start[0])
+    request_end = datetime.fromisoformat(request_df.end[0])
 
     if request_end <= request_start:
         pyspedas.logging.error(f'End time {request_end} earlier or equal to start time {request_start}')

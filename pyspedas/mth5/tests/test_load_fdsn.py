@@ -364,13 +364,31 @@ class TestMTH5LoadFDSN(unittest.TestCase):
             self.skipTest("No connection.")
 
         invalid_date_start = '2015-06-22'
-        invalid_date_end = '21-06-2015'  # Invalid format (should handle ok) but the date end before start should result in Exception
+        invalid_date_end = '21-06-2015'  # Day-first string; parses to a date earlier than invalid_date_start
 
-        # This may or may not raise an exception
-        try:
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             load_fdsn(trange=[invalid_date_start, invalid_date_end], network="4P", station="REU49")
-        except FDSNBadRequestException:
-            pass
+        # Test for Error message. The error now: "End time 2015-06-21 00:00:00 earlier or equal to start time 2015-06-22 00:00:00"
+        self.assertTrue(len(cm.output) > 0)
+
+        self.assertTrue(len(tnames()) == 0)
+
+    def test50_invalid_date_format(self):
+        """A date string that is not YYYY-MM-DDThh:mm:ss must raise ValueError."""
+        if self.CONNECTION_FAILED:
+            self.skipTest("No connection.")
+
+        custom_request_df = pd.DataFrame({
+            "network": ["4P"],
+            "station": ["REU49"],
+            "location": ["--"],
+            "channel": ["*F*"],
+            "start": ["not-a-date"],
+            "end": ["2015-06-22T02:20:00"],
+        })
+
+        with self.assertRaises(ValueError):
+            load_fdsn(trange=["x", "y"], network="4P", station="REU49", request_df=custom_request_df)
 
         self.assertTrue(len(tnames()) == 0)
 
