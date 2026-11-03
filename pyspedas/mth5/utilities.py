@@ -21,6 +21,7 @@ def _list_of_fdsn_channels():
         'MFZ,MFN,MFE,LFZ,LFN,LFE,VFZ,VFN,VFE,UFZ,UFN,UFE'
      """
 
+    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     channel_band = ['M', 'L', 'V', 'U']
     channel_orientation = ['Z', 'N', 'E']
     # channel_orientation = ['Z', 'N', 'E', '1', '2'] # Some of the data can be stored as '1', '2', which is not supported by this tool.

@@ -45,7 +45,6 @@ def _request_df_from_input(trange, network, station):
 
     # Get MTH5 file from the server
     # we use "*F*" channel instead of "*" to extract magnetic data
-    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     channel_list = _list_of_fdsn_channels()
     # channel_list = "*F*"
 
