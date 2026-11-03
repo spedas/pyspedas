@@ -112,7 +112,7 @@ class TestThemisVersions(unittest.TestCase):
                             module, 'load', return_value=[]) as master:
                         kwargs = {} if version is None else {'version': version}
                         if instrument == 'gmag':
-                            kwargs['stations'] = ['idx']
+                            kwargs['sites'] = ['idx']
                             with patch.object(module, 'in_gmag_group', return_value=False):
                                  module.gmag(downloadonly=True, **kwargs)
                         else:

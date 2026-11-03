@@ -50,24 +50,40 @@ class GmagTestCases(unittest.TestCase):
                 
     def test_load_gmag_data(self):
         """Load gmag."""
-        pyspedas.projects.themis.gmag(varnames=['thg_mag_amer'], stations='amer')
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
         self.assertTrue(data_exists('thg_mag_amer'))
 
     def test_load_gmag_variometer_1_hz_data(self):
         """Load gmag variometer 1 Hz data."""
-        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a'], stations='s61a',trange=['2026-02-24', '2026-02-25'])
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a'], sites='s61a',trange=['2026-02-24', '2026-02-25'])
         self.assertTrue(data_exists('thg_mag_s61a'))
     
     def test_load_gmag_variometer_10_hz_data_notag(self):
         """Load gmag variometer 10 Hz data using the time_resolution argument and not the time resolution tag."""
-        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], stations='s61a',time_resolution="100ms",trange=['2026-02-24', '2026-02-25'])
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a',time_resolution="100ms",trange=['2026-02-24', '2026-02-25'])
         self.assertTrue(data_exists('thg_mag_s61a_100ms'))
 
     def test_load_gmag_variometer_10_hz_data_tag(self):
         """Load gmag variometer 10 Hz data using the time resolution tag and not the time resolution argument."""
-        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], stations='s61a_100ms',trange=['2026-02-24', '2026-02-25'])
+        pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a_100ms',trange=['2026-02-24', '2026-02-25'])
         self.assertTrue(data_exists('thg_mag_s61a_100ms'))
-    
+
+    def test_load_gmag_variometer_10_hz_data_notag_deprecated_param(self):
+        """Load gmag variometer 10 Hz data using the deprecated sampling_rate argument and not the time_resolution argument."""
+        with self.assertLogs(level=logging.WARNING) as captured:
+            pyspedas.projects.themis.gmag(
+                varnames=['thg_mag_s61a_100ms'],
+                sites='s61a',
+                sampling_rate=10,
+                trange=['2026-02-24', '2026-02-25'],
+            )
+        self.assertTrue(any(
+            record.filename == 'gmag.py'
+            and 'The keyword argument "sampling_rate" is deprecated.'
+            in record.getMessage()
+            for record in captured.records
+        ))
+        self.assertTrue(data_exists('thg_mag_s61a_100ms'))
 
 
 class LoadTestCases(unittest.TestCase):

@@ -84,7 +84,7 @@ class GMAG_Info():
 
 def gmag(
     trange=["2007-03-23", "2007-03-24"],
-    stations:str | list[str] | None = None,
+    sites:str | list[str] | None = None,
     group:str | list[str] | None = None,
     level="l2",
     prefix="",
@@ -97,6 +97,7 @@ def gmag(
     no_update=False,
     time_clip=False,
     force_download=False,
+    sampling_rate=None,
     time_resolution:str="",
     version=None,
 ):
@@ -108,8 +109,8 @@ def gmag(
     trange : list, optional
         Time range of interest in the format ["start_date", "end_date"].
         Default is ["2007-03-23", "2007-03-24"].
-    stations : list or str, optional
-        List of ground magnetometer sites to load data for. Time 
+    sites : list or str, optional
+        List of ground magnetometer stations to load. Time 
         resolution can be specified in the station name (e.g. "anmo_100ms", "lrv_1min"), 
         which will be parsed and loaded, if available. If None, all station data
         from all provided groups will be loaded. Default is None.
@@ -146,6 +147,9 @@ def gmag(
         loaded instead of the default time resolution, if available. Uses CDF
         descriptor format (e.g. "100ms","1min", etc.).
         Default: ""
+    sampling_rate (deprecated): int, optional
+        Specify variometer sampling rate, in Hz.
+        Default: 1
     version: str, optional
         CDF version to use in place of a version wildcard, e.g. "v01".
         Default: None, which preserves the default file selection.
@@ -171,7 +175,7 @@ def gmag(
     >>> tplot(['thg_mag_s61a-m', 'thg_mag_anmo-m'])
     >>>
     >>> # Load 10 Hz variometer data for specific sites and time range:
-    >>> gmag_vars = gmag(sites=['s61a','anmo'], sampling_rate=10, trange=['2026-02-24', '2026-02-25'])
+    >>> gmag_vars = gmag(sites=['s61a','anmo'], time_resolution="100ms", trange=['2026-02-24', '2026-02-25'])
     >>> subtract_median(['thg_mag_s61a_100ms', 'thg_mag_anmo_100ms']) 
     >>> tplot(['thg_mag_s61a_100ms-m', 'thg_mag_anmo_100ms-m'])
     >>>
@@ -183,19 +187,25 @@ def gmag(
     
     """
     _init_gmag_info()
-    
-    if stations is None:
-        if group is not None:
-            stations = get_gmag_stations_from_group(group)
-        else:
-            stations = get_gmag_stations_from_group("all")
 
-    if not isinstance(stations, list):
-        stations = [stations]
+    if sampling_rate is not None:
+        logging.warning('The keyword argument "sampling_rate" is deprecated. Please use "time_resolution" (specified using a string) instead. The 1 Hz data for variometers is selected by default and does not require specification. The 10 Hz data can be selected by setting time_resolution="100ms".')
+
+        if sampling_rate == 10:
+            time_resolution = "100ms"
+    
+    if sites is None:
+        if group is not None:
+            sites = get_gmag_stations_from_group(group)
+        else:
+            sites = get_gmag_stations_from_group("all")
+
+    if not isinstance(sites, list):
+        sites = [sites]
 
     gmag_groups=[]
-    for i in range(len(stations)):
-        ccode_split = _split_station_code_time_res(stations[i])
+    for i in range(len(sites)):
+        ccode_split = _split_station_code_time_res(sites[i])
         ccode = clean_gmag_station_codes(ccode_split[0])
 
         if in_gmag_group(ccode,"variom"):
@@ -207,11 +217,11 @@ def gmag(
         gmag_groups.append(g_group)
 
         if time_resolution != "":
-            stations[i] = ccode[0] + "_" + time_resolution
+            sites[i] = ccode[0] + "_" + time_resolution
         elif ccode_split[1] != "":
-            stations[i] = ccode[0] + "_" + ccode_split[1]
+            sites[i] = ccode[0] + "_" + ccode_split[1]
         else:
-            stations[i] = ccode[0]
+            sites[i] = ccode[0]
     
     return load(
         instrument="gmag",
@@ -224,7 +234,7 @@ def gmag(
         varnames=varnames,
         downloadonly=downloadonly,
         notplot=notplot,
-        stations=stations,
+        stations=sites,
         time_clip=time_clip,
         no_update=no_update,
         force_download=force_download,
