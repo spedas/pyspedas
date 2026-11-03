@@ -154,6 +154,33 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         expected_columns = ['network', 'station', 'start', 'end']
         self.assertTrue(all(col in printed_df for col in expected_columns))
 
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    @patch('os.rename')
+    @patch('os.path.isfile', return_value=False)
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client', return_value='fake_downloaded.h5')
+    def test20_downloadonly_returns_path(self, mock_make_mth5, mock_isfile, mock_rename, mock_MTH5):
+        """
+        downloadonly=True must return the cached MTH5 path and skip tplot creation.
+
+        make_mth5_from_fdsn_client is mocked to return a fake download path.
+        os.path.isfile and os.rename are mocked because load_fdsn otherwise
+        touches the real filesystem to check for and rename the cache file.
+        The fake path is asserted below as the os.rename source argument.
+        """
+        date_start = '2015-06-22T01:45:00'
+        date_end = '2015-06-22T02:20:00'
+
+        result = load_fdsn(
+            trange=[date_start, date_end], network="TEST", station="TEST",
+            downloadonly=True,
+        )
+
+        self.assertTrue(result.endswith('.h5'))
+        mock_MTH5.assert_not_called()
+        # Confirms the fake download path actually reached load_fdsn's
+        # rename step, instead of being an unused mock return value.
+        mock_rename.assert_called_once_with('fake_downloaded.h5', result)
+
     @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client')
     def test20_request_df_parameter(self, mock_make_mth5):
         """Test the request_df parameter with a custom DataFrame."""

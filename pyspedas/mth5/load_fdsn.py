@@ -86,7 +86,7 @@ def _validate_date_format(date_string):
 
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
-              nowarnings=False, request_df=None):
+              nowarnings=False, request_df=None, downloadonly=False):
     """
     Load FDSN data using MTH5 interface.
 
@@ -116,11 +116,15 @@ def load_fdsn(trange=None, network=None, station=None,
         - The `start` and `end` date fields must contain a list of one string.
 
         See `pyspedas.mth5.load_fdsn._request_df_from_input` implementation for reference.
+    downloadonly : bool, default=False
+        If true, return the path to the downloaded/cached MTH5 file instead of loading
+        its data into a tplot variable.
 
     Returns
     -------
     tplot_variable : str or None
         Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
+        If `downloadonly` is true, the path to the downloaded/cached MTH5 file is returned instead.
     """
 
     # mth5.logger.remove()
@@ -203,6 +207,9 @@ def load_fdsn(trange=None, network=None, station=None,
             if os.path.isfile(mth5_file):
                 pyspedas.logger.info(f"Deleting mth5 temporary h5 file {mth5_tmp}")
                 os.remove(mth5_file)
+
+    if downloadonly:
+        return mth5_path
 
     # Using MTH5 as a context manager
     with MTH5() as mth5_object:
@@ -339,9 +346,5 @@ def load_fdsn(trange=None, network=None, station=None,
             }
 
             options(tplot_variable, opt_dict=tplot_options)
-
-            # TODO: For potential future implementation
-            #     filename : bool, default=False
-            #         If true, return filename as a second return parameter
 
             return tplot_variable

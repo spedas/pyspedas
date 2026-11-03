@@ -10,6 +10,7 @@
 | `test10_load_fdsn_nonetwork` | No `network` given -> logs `'Network not specified'` ERROR |
 | `test10_load_fdsn_nostation` | No `station` given -> logs `'Station not specified'` ERROR |
 | `test20_print_request` | `print_request=True` prints a dataframe containing `network/station/start/end` columns (FDSN/MTH5 mocked to abort immediately after) |
+| `test20_downloadonly_returns_path` | `downloadonly=True` returns the downloaded/cached MTH5 file path and never opens `MTH5` (skips tplot creation entirely) |
 | `test20_request_df_parameter` | A custom `request_df` (with different network/station than the positional args) takes precedence, is passed unmodified to `make_mth5_from_fdsn_client` with the expected keyword arguments, and is not mutated by the call |
 | `test20_station_data_undefined_unboundlocalerror` | No survey matches the station -> `station_data` is never assigned -> referencing it later raises `UnboundLocalError`, which must be caught and logged as `'station_data was not defined correctly'` |
 | `test20_station_data_missing_channels_attributeerror` | `station_data.metadata` has no `channels_recorded` -> `AttributeError`, caught and logged the same as the `UnboundLocalError` case above |
