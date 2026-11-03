@@ -10,13 +10,16 @@
 | `test10_load_fdsn_nonetwork` | No `network` given -> logs `'Network not specified'` ERROR |
 | `test10_load_fdsn_nostation` | No `station` given -> logs `'Station not specified'` ERROR |
 | `test20_print_request` | `print_request=True` prints a dataframe containing `network/station/start/end` columns (FDSN/MTH5 mocked to abort immediately after) |
-| `test20_request_df_parameter` | A custom `request_df` takes precedence, remains unchanged, and is passed with the expected download arguments |
+| `test20_request_df_parameter` | A custom `request_df` (with different network/station than the positional args) takes precedence, is passed unmodified to `make_mth5_from_fdsn_client` with the expected keyword arguments, and is not mutated by the call |
+| `test20_station_data_undefined_unboundlocalerror` | No survey matches the station -> `station_data` is never assigned -> referencing it later raises `UnboundLocalError`, which must be caught and logged as `'station_data was not defined correctly'` |
+| `test20_station_data_missing_channels_attributeerror` | `station_data.metadata` has no `channels_recorded` -> `AttributeError`, caught and logged the same as the `UnboundLocalError` case above |
 | `test30_connection_errors` | Simulated `URLError` (no internet) propagates as `FDSNException` (exact subclass depends on whether obspy's service-discovery cache is cold or warm; see below) |
 | `test40_connection_check` | Real load of a valid station; sets `CONNECTION_FAILED` meant to gate `test50_*` tests that need a reachable network but don't depend on `test40_load_fdsn_basic` |
 | `test40_load_fdsn_basic` | Real load of two valid stations; checks both tplot vars exist; also sets `BASIC_TEST_FAILED` meant to gate `test60_*` tests |
 | `test50_load_fdsn_samedates` | start == end date -> no exception bubbles up, function returns `None` |
 | `test50_load_fdsn_wrong_network_station` | Bad network and bad station each raise `FDSNBadRequestException`, log `'Cannot initialize mth5 object'`, and leave no temp/tplot artifacts |
-| `test50_invalid_date` | Malformed/out-of-order date strings in `trange` either raise `FDSNBadRequestException` or are handled without creating a tplot variable |
+| `test50_invalid_date` | A day-first date string (`'21-06-2015'`) resolves earlier than the start date -> `load_fdsn`'s end-before-start check logs an ERROR and returns `None` without creating a tplot variable |
+| `test50_invalid_date_format` | A `request_df` date string that cannot be parsed as `YYYY-MM-DDThh:mm:ss` (e.g. `'not-a-date'`) raises `ValueError` from date-format validation |
 | `test60_load_fdsn_nowarnings` | Confirms `nowarnings=True` suppresses loguru WARNING output that `nowarnings=False` produces |
 | `test60_load_fdsn_nodownload` | Confirms `nodownload=True` reuses the cached `.h5` and is faster than the first (downloading) call |
 | `test60_load_fdsn_timeclip` | Confirms returned timestamps are clipped and the tplot data is nonempty, ordered, and three-component with matching row count |
@@ -50,13 +53,15 @@ layer):
 - `test40_load_fdsn_basic`
 - `test50_load_fdsn_samedates`
 - `test50_load_fdsn_wrong_network_station`
-- `test50_invalid_date`
 - `test60_load_fdsn_nowarnings`
 - `test60_load_fdsn_nodownload` (first call)
 - `test60_load_fdsn_timeclip`
 
-`test10_*`, `test20_print_request`, and `test20_request_df_parameter` do not
-reach the real network.
+`test10_*`, `test20_*`, and `test50_invalid_date`/`test50_invalid_date_format`
+do not reach the real network: the `test20_*` tests mock `FDSN.__init__`,
+`MTH5.__init__`, `make_mth5_from_fdsn_client`, or `pyspedas.mth5.load_fdsn.MTH5`
+directly, and the two `test50_invalid_date*` tests fail validation or hit
+`load_fdsn`'s end-before-start early return before any network call.
 
 ### `TestListOfChannels` — pure unit tests, no I/O
 

@@ -37,7 +37,9 @@ with the pySPEDAS logging level.
 - `examples/`: example scripts and usage notes.
 - `tests/`: unit tests for FDSN loading, dataset discovery, and missing-
   dependency import handling. `tests/tests.md` documents each test's purpose
-  and the setup/teardown behavior for both test modules.
+  and the setup/teardown behavior for both test modules, and must be updated
+  in the same change whenever a test is added, renamed, or its behavior
+  changes — not just periodically.
 
 ## Data and dependencies
 
