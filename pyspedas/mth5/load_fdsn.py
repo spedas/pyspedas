@@ -143,8 +143,8 @@ def load_fdsn(trange=None, network=None, station=None,
     if request_df is None:
         request_df = _request_df_from_input(trange, network, station)
     else:
-        network = request_df.network
-        station = request_df.station
+        network = request_df.network[0]
+        station = request_df.station[0]
         trange = [request_df.start[0], request_df.end[0]]
 
     if print_request:
