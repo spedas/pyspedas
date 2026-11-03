@@ -39,7 +39,7 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
 #    args: [--autofix]
 
 - repo: https://github.com/sirosen/texthooks
-  rev: 0.7.1
+  rev: 1.0.0
   hooks:
 #  - id: fix-smartquotes
   - id: fix-spaces
@@ -69,12 +69,12 @@ repos:  # https://pre-commit.com/#adding-pre-commit-plugins-to-your-project
     # args: [--write-changes]
 
 - repo: https://github.com/python-jsonschema/check-jsonschema
-  rev: 0.38.2
+  rev: 0.39.0
   hooks:
   - id: check-github-workflows
 
 - repo: https://github.com/abravalheri/validate-pyproject
-  rev: '0.26'
+  rev: v0.27
   hooks:
   - id: validate-pyproject
     name: validate pyproject.toml
