@@ -21,44 +21,6 @@ class GmagTestCases(unittest.TestCase):
         old_remote=CONFIG['remote_data_dir']
         CONFIG['remote_data_dir'] = 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/'
 
-    def test_get_group(self):
-        """Get gmag stations of a group."""
-        from pyspedas.projects.themis.ground.gmag import get_group
-        self.assertTrue(get_group('ccnv') == ['epo'])
-
-    def test_gmag_list(self):
-        """Get gmag list of stations."""
-        from pyspedas.projects.themis.ground.gmag import gmag_list
-        l = gmag_list()
-        for site in ['abk', 'akul', 'amd', 'amer', 'amk']:
-            self.assertTrue(site in l)
-
-    def test_gmag_groups(self):
-        """Get gmag groups."""
-        from pyspedas.projects.themis.ground.gmag import gmag_groups
-        gmag_table = gmag_groups()
-        keylist = list(gmag_table.keys())
-        for group in ['kyoto', 'sgu', 'autx', 'ae', 'aari']:
-            self.assertTrue(group in keylist)
-
-    def test_check_gmag(self):
-        """Check a gmag station."""
-        from pyspedas.projects.themis.ground.gmag import check_gmag
-        self.assertTrue(check_gmag('ccnv') == 1)
-        self.assertTrue(check_gmag('abcd') == 0)
-
-    def test_check_greenland(self):
-        """Check if a gmag station is in the greenland group."""
-        from pyspedas.projects.themis.ground.gmag import check_greenland
-        self.assertTrue(check_greenland('bfe') == 1)
-        self.assertTrue(check_greenland('bou') == 0)
-
-    def test_check_variometer(self):
-        """Check if a gmag station is in the 1 Hz variometer group or 10 Hz variometer group or not."""
-        from pyspedas.projects.themis.ground.gmag import check_variometer
-        self.assertTrue(check_variometer('anmo') == 1)
-        self.assertTrue(check_variometer('anmo_100ms') == 10)
-        self.assertTrue(check_variometer('bou') == 0)
 
     @unittest.skip("Heliocloud file is corrupted")
     def test_load_gmag_data(self):

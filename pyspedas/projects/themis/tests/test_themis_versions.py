@@ -100,10 +100,12 @@ class TestThemisVersions(unittest.TestCase):
                         self.assertTrue(filename.endswith('_v01.cdf'))
 
     def test_wrappers_forward_version(self):
-        groups = {'spacecraft.fields': ('fgm', 'fit', 'efi', 'scm', 'fft', 'fbk'),
-                  'spacecraft.particles': ('esa', 'esd', 'sst', 'mom', 'gmom'),
-                  'state_tools': ('state', 'slp', 'ssc', 'ssc_pre'),
-                  'ground': ('ask', 'gmag')}
+        groups = {
+            "spacecraft.fields": ("fgm", "fit", "efi", "scm", "fft", "fbk"),
+            "spacecraft.particles": ("esa", "esd", "sst", "mom", "gmom"),
+            "state_tools": ("state", "slp", "ssc", "ssc_pre"),
+            'ground': ('ask', 'gmag')}
+            #"ground": ("ask","gmag")}
         for group, instruments in groups.items():
             for instrument in instruments:
                 module = importlib.import_module(f'pyspedas.projects.themis.{group}.{instrument}')
