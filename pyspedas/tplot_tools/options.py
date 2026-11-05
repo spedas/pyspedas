@@ -7,7 +7,7 @@ from pyspedas.tplot_tools import tplot_wildcard_expand
 
 
 def options(name, option=None, value=None, opt_dict=None, quiet=False):
-    """ Set a large variety of options for individual plots.
+    """Set a large variety of options for individual plots.
 
     Parameters
     ----------
@@ -49,7 +49,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         data_gap                numeric      If there is a gap in the data larger than this number in seconds, then insert
         (cont)                  (cont)       NaNs. This is similar to using the degap procedure on the variable, but is
         (cont)                  (cont)       applied at plot-time, and does not persist in the variable data.
-        annotations             dict         A dictionary or list of dictionaries of matplotlib text annotation parameters (see annotate() routine)
+        annotations             [dict]       Replaces annotations with a list of dictionaries in the format stored by annotate(); prefer annotate() for adding text.
         visible                 bool         If False, do not display lines for this variable.
         nodata                  bool         If True, do not display lines for this variable.
         grid                    bool         Turns grid lines on or off for this panel.
@@ -246,7 +246,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
     if opt_dict is None:
         opt_dict = {option: value}
     else:
-        if not isinstance(opt_dict,dict):
+        if not isinstance(opt_dict, dict):
             logging.error("dict must be a dictionary object.  Returning.")
             return
 
@@ -255,9 +255,7 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
 
     names = tplot_wildcard_expand(name)
     for i in names:
-
         for option, value in opt_dict.items():
-
             # Lower case option for consistency
             option = option.lower()
 
@@ -265,336 +263,350 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                 logging.info(str(i) + " is currently not in pyspedas.")
                 return
 
-            elif option in ['color', 'colors', 'col', 'cols', 'line_color', 'line_colors']:
+            elif option in ["color", "colors", "col", "cols", "line_color", "line_colors"]:
                 if isinstance(value, list):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['line_color'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["line_color"] = value
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['line_color'] = [value]
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["line_color"] = [value]
 
-            elif option == 'link':
+            elif option == "link":
                 if isinstance(value, list):
                     pyspedas.link(i, value[1], value[0])
 
-            elif option in ['annotation', 'annotations']:
+            elif option in ["annotation", "annotations"]:
                 # It is probably more convenient to use the annotations() wrapper function
                 # to manage annotations
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['annotations'] = value
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["annotations"] = value
 
-            elif option == 'colormap':
+            elif option == "colormap":
                 if isinstance(value, list):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['colormap'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["colormap"] = value
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['colormap'] = [value]
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["colormap"] = [value]
 
-            elif option == 'second_axis_size':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['second_axis_size'] = value
+            elif option == "second_axis_size":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["second_axis_size"] = value
 
-            elif option == 'spec':
+            elif option == "spec":
                 _reset_plots(i)
                 if value:
-                    if 'spec_bins' not in pyspedas.tplot_tools.data_quants[i].coords:
+                    if "spec_bins" not in pyspedas.tplot_tools.data_quants[i].coords:
                         logging.warning(f"{i} does not contain coordinates for spectrogram plotting.  Continuing...")
                         continue
                     else:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec'] = value
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.tplot_tools.data_quants[i])
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec"] = value
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_range"] = get_y_range(
+                            pyspedas.tplot_tools.data_quants[i]
+                        )
 
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec'] = value
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.tplot_tools.data_quants[i])
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec"] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_range"] = get_y_range(
+                        pyspedas.tplot_tools.data_quants[i]
+                    )
 
                 # Set the default dimension to plot by.  All others will be summed over.
-                if 'spec_dim_to_plot' not in pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']:
-                    if 'v' in pyspedas.tplot_tools.data_quants[i].coords:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v'
-                    elif 'v2' in pyspedas.tplot_tools.data_quants[i].coords:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v2'
+                if "spec_dim_to_plot" not in pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]:
+                    if "v" in pyspedas.tplot_tools.data_quants[i].coords:
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_dim_to_plot"] = "v"
+                    elif "v2" in pyspedas.tplot_tools.data_quants[i].coords:
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_dim_to_plot"] = "v2"
                     else:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = 'v1'
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_dim_to_plot"] = "v1"
 
-            elif option in ['legend_names', 'labels', 'legend_name', 'legend_label', 'legend_labels']:
+            elif option in ["legend_names", "labels", "legend_name", "legend_label", "legend_labels"]:
                 if isinstance(value, list):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_names"] = value
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_names'] = [value]
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_names"] = [value]
 
-            elif option in ['legend_location', 'labels_location', 'legends_location', 'label_location', 'labels_location']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_location'] = value
+            elif option in ["legend_location", "labels_location", "legends_location", "label_location", "labels_location"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_location"] = value
 
-            elif option in ['legend_size', 'labels_size', 'label_size']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_size'] = value
+            elif option in ["legend_size", "labels_size", "label_size"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_size"] = value
 
-            elif option in ['legend_shadow', 'labels_shadow', 'label_shadow']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_shadow'] = value
+            elif option in ["legend_shadow", "labels_shadow", "label_shadow"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_shadow"] = value
 
-            elif option in ['legend_title', 'label_title', 'labels_title']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_title'] = value
+            elif option in ["legend_title", "label_title", "labels_title"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_title"] = value
 
-            elif option in ['legend_titlesize', 'label_titlesize', 'labels_titlesize']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_titlesize'] = value
+            elif option in ["legend_titlesize", "label_titlesize", "labels_titlesize"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_titlesize"] = value
 
-            elif option in ['legend_color', 'legends_color','label_color','labels_color']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_color'] = value
+            elif option in ["legend_color", "legends_color", "label_color", "labels_color"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_color"] = value
 
-            elif option in ['legend_edgecolor', 'label_edgecolor', 'labels_edgecolor']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_edgecolor'] = value
+            elif option in ["legend_edgecolor", "label_edgecolor", "labels_edgecolor"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_edgecolor"] = value
 
-            elif option in ['legend_facecolor', 'label_facecolor', 'labels_facecolor']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_facecolor'] = value
+            elif option in ["legend_facecolor", "label_facecolor", "labels_facecolor"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_facecolor"] = value
 
-            elif option in ['legend_markerfirst', 'label_markerfirst', 'labels_markerfirst']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerfirst'] = value
+            elif option in ["legend_markerfirst", "label_markerfirst", "labels_markerfirst"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_markerfirst"] = value
 
-            elif option in ['legend_markerscale', 'label_markerscale', 'labels_markerscale']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_markerscale'] = value
+            elif option in ["legend_markerscale", "label_markerscale", "labels_markerscale"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_markerscale"] = value
 
-            elif option in ['legend_linewidth', 'label_linewidth', 'labels_linewidth']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_linewidth'] = value
+            elif option in ["legend_linewidth", "label_linewidth", "labels_linewidth"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_linewidth"] = value
 
-            elif option in ['legend_frameon', 'label_frameon', 'labels_frameon']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_frameon'] = value
+            elif option in ["legend_frameon", "label_frameon", "labels_frameon"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_frameon"] = value
 
-            elif option in ['legend_ncols', 'labels_ncols', 'label_ncols']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['legend_ncols'] = value
+            elif option in ["legend_ncols", "labels_ncols", "label_ncols"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["legend_ncols"] = value
 
-            elif option == 'xlog_slice':
+            elif option == "xlog_slice":
                 if value:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'log'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["slice_xaxis_opt"]["xi_axis_type"] = "log"
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['slice_xaxis_opt']['xi_axis_type'] = 'linear'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["slice_xaxis_opt"]["xi_axis_type"] = "linear"
 
-            elif option == 'ylog':
-                negflag = 0 # _ylog_check(data_quants, value, i)
+            elif option == "ylog":
+                negflag = 0  # _ylog_check(data_quants, value, i)
                 if negflag == 0 and value:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "log"
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "linear"
 
-            elif option == 'ylog_slice':
+            elif option == "ylog_slice":
                 if value:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'log'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["slice_yaxis_opt"]["yi_axis_type"] = "log"
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['slice_yaxis_opt']['yi_axis_type'] = 'linear'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["slice_yaxis_opt"]["yi_axis_type"] = "linear"
 
-            elif option == 'zlog':
+            elif option == "zlog":
                 # check for negative values and warn the user that they will be ignored
                 negflag = _zlog_check(pyspedas.tplot_tools.data_quants, value, i)
                 if negflag != 0 and value:
-                    logging.warning(str(i) + ' contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures.')
+                    logging.warning(
+                        str(i)
+                        + " contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures."
+                    )
 
                 if value:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["z_axis_type"] = "log"
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["z_axis_type"] = "linear"
 
-            elif option =='visible':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['visible'] = bool(value)
+            elif option == "visible":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["visible"] = bool(value)
 
-            elif option =='nodata':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['visible'] = not bool(value)
+            elif option == "nodata":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["visible"] = not bool(value)
 
             # Obsolete? (except for value='none'?) JWL 2024-03-21
             # These don't seem to be the correct format for matplotlib parameterized line styles.
-            elif option in ['line_style', 'linestyle', 'line_style_name']:
-                if value == 0 or value == 'solid_line':
+            elif option in ["line_style", "linestyle", "line_style_name"]:
+                if value == 0 or value == "solid_line":
                     to_be = []
-                elif value == 1 or value == 'dot':
+                elif value == 1 or value == "dot":
                     to_be = [2, 4]
-                elif value == 2 or value == 'dash':
+                elif value == 2 or value == "dash":
                     to_be = [6]
-                elif value == 3 or value == 'dash_dot':
+                elif value == 3 or value == "dash_dot":
                     to_be = [6, 4, 2, 4]
-                elif value == 4 or value == 'dash_dot_dot_dot':
+                elif value == 4 or value == "dash_dot_dot_dot":
                     to_be = [6, 4, 2, 4, 2, 4, 2, 4]
-                elif value == 5 or value == 'long_dash':
+                elif value == 5 or value == "long_dash":
                     to_be = [10]
                 else:
-                    to_be=value
+                    to_be = value
 
                 # This does not appear to be used by tplot. JWL 2024-03-21
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['line_style'] = to_be
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["line_style"] = to_be
 
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['line_style_name'] = _convert_to_matplotlib_linestyle(value)
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["line_style_name"] = (
+                    _convert_to_matplotlib_linestyle(value)
+                )
 
                 # unused?
-                if(value == 6 or value == 'none'):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['visible'] = False
+                if value == 6 or value == "none":
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["visible"] = False
 
-            elif option in ['char_size', 'charsize']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['char_size'] = value
+            elif option in ["char_size", "charsize"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["char_size"] = value
 
-            elif option in ['var_label_format', 'varlabel_format']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['var_label_format'] = value
+            elif option in ["var_label_format", "varlabel_format"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["var_label_format"] = value
 
-            elif option in ['name', 'title']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['title'] = value
+            elif option in ["name", "title"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["title"] = value
 
             elif option == "panel_size":
                 if value > 1 or value <= 0:
-                    logging.info("Invalid panel_size value (%f). Should be in (0, 1]",value)
+                    logging.info("Invalid panel_size value (%f). Should be in (0, 1]", value)
                     return
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['panel_size'] = value
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["panel_size"] = value
 
-            elif option == 'alpha':
+            elif option == "alpha":
                 if value > 1 or value < 0:
-                    logging.info("Invalid alpha value (%f). Should be [0, 1]",value)
+                    logging.info("Invalid alpha value (%f). Should be [0, 1]", value)
                     return
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['alpha'] = value
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["alpha"] = value
 
-            elif option in ['marker', 'markers']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['marker'] = value
+            elif option in ["marker", "markers"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["marker"] = value
 
-            elif option == 'errorevery':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['errorevery'] = value
+            elif option == "errorevery":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["errorevery"] = value
 
-            elif option == 'capsize':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['capsize'] = value
+            elif option == "capsize":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["capsize"] = value
 
-            elif option == 'ecolor':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['ecolor'] = value
+            elif option == "ecolor":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["ecolor"] = value
 
-            elif option == 'elinewidth':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['elinewidth'] = value
+            elif option == "elinewidth":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["elinewidth"] = value
 
-            elif option in ['marker_size', 'markersize']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['marker_size'] = value
+            elif option in ["marker_size", "markersize"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["marker_size"] = value
 
-            elif option in ['markevery', 'markerevery', 'mark_every', 'marker_every']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['markevery'] = value
+            elif option in ["markevery", "markerevery", "mark_every", "marker_every"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["markevery"] = value
 
-            elif option in ['symbols', 'symbol']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['symbols'] = value
+            elif option in ["symbols", "symbol"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["symbols"] = value
 
-            elif option in ['fill_between']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['fill_between'] = value
+            elif option in ["fill_between"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["fill_between"] = value
 
-            elif option in ['y_fill_line','y2']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['y_fill_line'] = value
-            
-            elif option == 'xtick_length':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtick_length'] = value
+            elif option in ["y_fill_line", "y2"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["y_fill_line"] = value
 
-            elif option == 'ytick_length':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['ytick_length'] = value
+            elif option == "xtick_length":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["xtick_length"] = value
 
-            elif option == 'xtick_width':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtick_width'] = value
+            elif option == "ytick_length":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["ytick_length"] = value
 
-            elif option == 'ytick_width':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['ytick_width'] = value
+            elif option == "xtick_width":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["xtick_width"] = value
 
-            elif option == 'xtick_color':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtickcolor'] = value
+            elif option == "ytick_width":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["ytick_width"] = value
 
-            elif option == 'ytick_color':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['ytickcolor'] = value
+            elif option == "xtick_color":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["xtickcolor"] = value
 
-            elif option == 'xtick_labelcolor':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtick_labelcolor'] = value
+            elif option == "ytick_color":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["ytickcolor"] = value
 
-            elif option == 'ytick_labelcolor':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['ytick_labelcolor'] = value
+            elif option == "xtick_labelcolor":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["xtick_labelcolor"] = value
 
-            elif option == 'xtick_direction':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['xtick_direction'] = value
+            elif option == "ytick_labelcolor":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["ytick_labelcolor"] = value
 
-            elif option == 'ytick_direction':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['ytick_direction'] = value
+            elif option == "xtick_direction":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["xtick_direction"] = value
 
-            elif option == 'right_axis':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['right_axis'] = value
+            elif option == "ytick_direction":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["ytick_direction"] = value
 
-            elif option in ['thick', 'line_width']:
+            elif option == "right_axis":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["right_axis"] = value
+
+            elif option in ["thick", "line_width"]:
                 if isinstance(value, list):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["line_width"] = value
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['line_opt']['line_width'] = [value]
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["line_opt"]["line_width"] = [value]
 
-            elif option in ['yrange', 'y_range']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = [value[0], value[1]]
+            elif option in ["yrange", "y_range"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_range"] = [value[0], value[1]]
                 # track whether the yrange option was set by the user
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range_user'] = True
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_range_user"] = True
                 # IDL SPEDAS supports a 3-argument form of yrange, where the third argument selects
                 # log or linear scaling
                 if len(value) == 3:
                     if value[2]:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'log'
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "log"
                     else:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_axis_type'] = 'linear'
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "linear"
 
-            elif option == 'y_major_ticks':
+            elif option == "y_major_ticks":
                 # check whether the value is 1D array-like
                 if isinstance(value, (list, np.ndarray)):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_major_ticks'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_major_ticks"] = value
                 else:
-                    logging.warning('y_major_ticks must be a 1D array-like object')
+                    logging.warning("y_major_ticks must be a 1D array-like object")
 
-            elif option == 'y_minor_tick_interval':
+            elif option == "y_minor_tick_interval":
                 # check whether the value is a number
                 if isinstance(value, (int, float)):
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_minor_tick_interval'] = value
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_minor_tick_interval"] = value
                 else:
-                    logging.warning('y_minor_tick_interval must be a number')
+                    logging.warning("y_minor_tick_interval must be a number")
 
-            elif option in ['zrange', 'z_range']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['z_range'] = [value[0], value[1]]
+            elif option in ["zrange", "z_range"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["z_range"] = [value[0], value[1]]
                 if len(value) == 3:
                     # IDL SPEDAS supports a 3-argument form of zrange, where the third element specifies linear vs. log scaling.
                     negflag = _zlog_check(pyspedas.tplot_tools.data_quants, value[2], i)
                     if negflag != 0 and value:
-                        logging.warning(str(i) + ' contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures.')
+                        logging.warning(
+                            str(i)
+                            + " contains negative values; setting the z-axis to log scale will cause the negative values to be ignored on figures."
+                        )
 
                     if value[2]:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'log'
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["z_axis_type"] = "log"
                     else:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['z_axis_type'] = 'linear'
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["z_axis_type"] = "linear"
 
-            elif option == 'xrange_slice':
-                plt_opts = pyspedas.tplot_tools.data_quants[i].attrs['plot_options']
-                if plt_opts.get('slice_xaxis_opt') is not None:
-                    plt_opts['slice_xaxis_opt']['xi_range'] = [value[0], value[1]]
+            elif option == "xrange_slice":
+                plt_opts = pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]
+                if plt_opts.get("slice_xaxis_opt") is not None:
+                    plt_opts["slice_xaxis_opt"]["xi_range"] = [value[0], value[1]]
 
-            elif option == 'yrange_slice':
-                plt_opts = pyspedas.tplot_tools.data_quants[i].attrs['plot_options']
-                if plt_opts.get('slice_yaxis_opt') is not None:
-                    plt_opts['slice_yaxis_opt']['yi_range'] = [value[0], value[1]]
+            elif option == "yrange_slice":
+                plt_opts = pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]
+                if plt_opts.get("slice_yaxis_opt") is not None:
+                    plt_opts["slice_yaxis_opt"]["yi_range"] = [value[0], value[1]]
 
-            elif option == 'xtitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_label'] = value
+            elif option == "xtitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["axis_label"] = value
 
-            elif option == 'ytitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_label'] = value
+            elif option == "ytitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["axis_label"] = value
 
-            elif option == 'ztitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_label'] = value
+            elif option == "ztitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["axis_label"] = value
 
-            elif option == 'xsubtitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_subtitle'] = value
+            elif option == "xsubtitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["axis_subtitle"] = value
 
-            elif option == 'ysubtitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_subtitle'] = value
+            elif option == "ysubtitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["axis_subtitle"] = value
 
-            elif option == 'zsubtitle':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_subtitle'] = value
+            elif option == "zsubtitle":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["axis_subtitle"] = value
 
-            elif option == 'xtitle_color':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['axis_color'] = value
+            elif option == "xtitle_color":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["axis_color"] = value
 
-            elif option == 'ytitle_color':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['axis_color'] = value
+            elif option == "ytitle_color":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["axis_color"] = value
 
-            elif option == 'ztitle_color':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['axis_color'] = value
+            elif option == "ztitle_color":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["axis_color"] = value
 
-            elif option in ['data_gap', 'datagap']: #jmm, 2023-06-20
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['data_gap'] = value
+            elif option in ["data_gap", "datagap"]:  # jmm, 2023-06-20
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["data_gap"] = value
 
             elif option in ["sort_spec_bins", "sort_spectrogram_bins"]:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['zaxis_opt']['sort_spec_bins'] = value
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["zaxis_opt"]["sort_spec_bins"] = value
 
-            elif option in ['spec_dim_to_plot', 'spec_plot_dim']:
+            elif option in ["spec_dim_to_plot", "spec_plot_dim"]:
                 if len(pyspedas.tplot_tools.data_quants[i].values.shape) <= 2:
-                    logging.warning(f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pyspedas.tplot_tools.data_quants[i].name}")
+                    logging.warning(
+                        f"Must have more than 2 coordinate dimensions to set spec_coord_to_plot for {pyspedas.tplot_tools.data_quants[i].name}"
+                    )
                     continue
 
                 # Set the 'spec_dim_to_plot' value to either 'v' or 'v1', 'v2', 'v3', etc.
@@ -609,20 +621,24 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                         else:
                             logging.warning(f"Dimension {value} not found in {pyspedas.tplot_tools.data_quants[i].name}")
                             continue
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = coord_to_plot
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_dim_to_plot"] = coord_to_plot
                 elif isinstance(value, str):
                     coord_to_plot = value
                     if coord_to_plot not in pyspedas.tplot_tools.data_quants[i].coords:
                         logging.warning(f"Dimension {value} not found in {pyspedas.tplot_tools.data_quants[i].name}")
                         continue
                     else:
-                        pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_dim_to_plot'] = value
+                        pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_dim_to_plot"] = value
 
                 # If we're plotting against different coordinates, we need to change what we consider the "spec_bins"
-                pyspedas.tplot_tools.data_quants[i].coords['spec_bins'] = pyspedas.tplot_tools.data_quants[i].coords[coord_to_plot]
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_range'] = get_y_range(pyspedas.tplot_tools.data_quants[i])
+                pyspedas.tplot_tools.data_quants[i].coords["spec_bins"] = pyspedas.tplot_tools.data_quants[i].coords[
+                    coord_to_plot
+                ]
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_range"] = get_y_range(
+                    pyspedas.tplot_tools.data_quants[i]
+                )
 
-            elif option == 'spec_slices_to_use':
+            elif option == "spec_slices_to_use":
                 if not isinstance(value, dict):
                     logging.error("Must be a dictionary object in the format {'v2':15, 'v3':7}")
                     return
@@ -632,54 +648,56 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                             logging.warning(f"Dimension {coord} not found in {pyspedas.tplot_tools.data_quants[i].name}")
                             continue
 
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['spec_slices_to_use'] = value
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["spec_slices_to_use"] = value
 
-            elif option == 'border':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['border'] = value
+            elif option == "border":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["border"] = value
 
-            elif option == 'grid':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['grid'] = value
+            elif option == "grid":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["grid"] = value
 
-            elif option == 'grid_properties':
+            elif option == "grid_properties":
                 if not isinstance(value, dict):
-                    logging.warning('grid_properties must be a dictionary')
-                elif 'visible' in value:
+                    logging.warning("grid_properties must be a dictionary")
+                elif "visible" in value:
                     logging.warning("Set grid visibility with the grid option, not grid_properties['visible']")
                 else:
-                    pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['extras']['grid_properties'] = copy.deepcopy(value)
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["extras"]["grid_properties"] = copy.deepcopy(
+                        value
+                    )
 
-            elif option == 'y_interp':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp'] = value
+            elif option == "y_interp":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_interp"] = value
 
-            elif option == 'y_interp_points':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_interp_points'] = value
+            elif option == "y_interp_points":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_interp_points"] = value
 
-            elif option == 'x_interp':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp'] = value
+            elif option == "x_interp":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["x_interp"] = value
 
-            elif option == 'x_interp_points':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['x_interp_points'] = value
-            elif option == 'y_no_resample':
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['y_no_resample'] = value
+            elif option == "x_interp_points":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["x_interp_points"] = value
+            elif option == "y_no_resample":
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_no_resample"] = value
 
-            elif option in ['xwrap', 'x_wrap']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['xwrap'] = value
+            elif option in ["xwrap", "x_wrap"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["xwrap"] = value
 
-            elif option in ['xwrap_width', 'x_wrap_width']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['xaxis_opt']['xwrap_width'] = value
+            elif option in ["xwrap_width", "x_wrap_width"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["xwrap_width"] = value
 
-            elif option in ['ywrap', 'y_wrap']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['ywrap'] = value
+            elif option in ["ywrap", "y_wrap"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["ywrap"] = value
 
-            elif option in ['ywrap_width', 'y_wrap_width']:
-                pyspedas.tplot_tools.data_quants[i].attrs['plot_options']['yaxis_opt']['ywrap_width'] = value
+            elif option in ["ywrap_width", "y_wrap_width"]:
+                pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["ywrap_width"] = value
 
             else:
                 # Apparently cdf_to_tplot is treating all variable attributes as potential plot
                 # options.  Adding this warning will end up spamming the logs unless cdf_to_tplot is changed.
                 if not quiet:
                     logging.warning(f"Unrecognized option {option}")
-                #pass
+                # pass
     return
 
 
@@ -689,20 +707,20 @@ def _ylog_check(data_quants, value, i):
     # check variable data
     # if negative numbers, don't allow log setting
     datasets = [namedata]
-    for oplot_name in namedata.attrs['plot_options']['overplots']:
+    for oplot_name in namedata.attrs["plot_options"]["overplots"]:
         datasets.append(data_quants[oplot_name])
 
     if value == 1:
         for dataset in datasets:
-            if 'spec' not in dataset.attrs['plot_options']['extras']:
+            if "spec" not in dataset.attrs["plot_options"]["extras"]:
                 if dataset.min(skipna=True) < 0:
-                    logging.warning('Negative data is incompatible with log plotting.')
+                    logging.warning("Negative data is incompatible with log plotting.")
                     negflag = 1
                     break
             else:
-                if dataset.attrs['plot_options']['extras']['spec'] == 1:
-                    if dataset.coords['spec_bins'].min(skipna=True) < 0:
-                        logging.warning('Negative data is incompatible with log plotting.')
+                if dataset.attrs["plot_options"]["extras"]["spec"] == 1:
+                    if dataset.coords["spec_bins"].min(skipna=True) < 0:
+                        logging.warning("Negative data is incompatible with log plotting.")
                         negflag = 1
                         break
     elif value != 1:
@@ -717,13 +735,13 @@ def _zlog_check(data_quants, value, i):
     # check variable data
     # if negative numbers, don't allow log setting
     datasets = [namedata]
-    for oplot_name in namedata.attrs['plot_options']['overplots']:
+    for oplot_name in namedata.attrs["plot_options"]["overplots"]:
         datasets.append(data_quants[oplot_name])
 
     for dataset in datasets:
         if value == 1:
-            if 'spec' in dataset.attrs['plot_options']['extras']:
-                if dataset.attrs['plot_options']['extras']['spec'] == 1:
+            if "spec" in dataset.attrs["plot_options"]["extras"]:
+                if dataset.attrs["plot_options"]["extras"]["spec"] == 1:
                     if dataset.min(skipna=True) < 0:
                         negflag = 1
                         break
@@ -736,25 +754,25 @@ def _zlog_check(data_quants, value, i):
 def _reset_plots(name):
     if isinstance(pyspedas.tplot_tools.data_quants[name], dict):  # non-record varying variable
         return
-    pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras']['spec'] = 0
-    pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras']['alt'] = 0
-    pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras']['map'] = 0
-    pyspedas.tplot_tools.data_quants[name].attrs['plot_options']['extras']['plotter'] = None
+    pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["extras"]["spec"] = 0
+    pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["extras"]["alt"] = 0
+    pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["extras"]["map"] = 0
+    pyspedas.tplot_tools.data_quants[name].attrs["plot_options"]["extras"]["plotter"] = None
+
 
 def _convert_to_matplotlib_linestyle(linestyle):
-    if not isinstance(linestyle,list):
+    if not isinstance(linestyle, list):
         linestyle = [linestyle]
     converted_linestyles = []
     for ls in linestyle:
-        if ls == 'solid_line':
-            converted_linestyles.append('solid')
-        elif ls == 'dot':
-            converted_linestyles.append('dotted')
-        elif ls == 'dash':
-            converted_linestyles.append('dashed')
-        elif ls == 'dash_dot':
-            converted_linestyles.append('dashdot')
+        if ls == "solid_line":
+            converted_linestyles.append("solid")
+        elif ls == "dot":
+            converted_linestyles.append("dotted")
+        elif ls == "dash":
+            converted_linestyles.append("dashed")
+        elif ls == "dash_dot":
+            converted_linestyles.append("dashdot")
         else:
             converted_linestyles.append(ls)
     return converted_linestyles
-
