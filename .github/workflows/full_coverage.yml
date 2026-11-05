@@ -26,7 +26,7 @@ jobs:
           python -m venv ../.venv
           source ../.venv/bin/activate
           python -m pip install --upgrade pip
-          pip install pdm uv
+          pip install "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv   
           pdm config use_uv true
           pdm install -dG lint -dG test -dG setup --no-default
 
@@ -500,7 +500,7 @@ jobs:
           python -m venv ../.venv
           source ../.venv/bin/activate
           python -m pip install --upgrade pip
-          pip install pdm uv
+          pip install "pdm==2.29.6" "hishel[httpx2]>=1.4,<2" uv
           pdm config use_uv true
           pdm install -dG lint -dG test -dG setup --no-default
           wheelbase=$(echo dist/*.whl)

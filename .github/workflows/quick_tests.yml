@@ -75,7 +75,8 @@ jobs:
         done
         cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
         "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
-          --uploaded-prior-to "$cutoff" --only-final=:all: pdm uv
+        --uploaded-prior-to "$cutoff" --only-final=:all: \
+        "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv
     - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
       run: |
         source ../.venv/bin/activate
