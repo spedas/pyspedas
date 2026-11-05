@@ -1,10 +1,12 @@
-
-from pyspedas.tplot_tools import timebar
-import pyspedas
 import logging
 
+import pyspedas
+from pyspedas.tplot_tools import timebar
 
-def databar(varname, y=0.0, delete=False, color="black", thick=1, dash=False):
+logger = logging.getLogger(__name__)
+
+
+def databar(varname, y: float | list[float] = 0.0, delete=False, color="black", thick=1, dash=False):
     """
     This function will add a horizontal bar at the given value to a plot of a tplot variable.
 
@@ -47,7 +49,7 @@ def databar(varname, y=0.0, delete=False, color="black", thick=1, dash=False):
     varname = pyspedas.tnames(varname)
 
     if len(varname) == 0:
-        logging.warning("No valid tplot variables specified")
+        logger.warning("No valid tplot variables specified")
         return
 
     return timebar(y, varname, databar=True, delete=delete, color=color, thick=thick, dash=dash)
