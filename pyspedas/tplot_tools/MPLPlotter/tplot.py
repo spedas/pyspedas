@@ -46,6 +46,7 @@ def _draw_annotations(axis, plot_options):
     for annotation in plot_options.get('extras', {}).get('annotations') or []:
         axis.annotate(annotation['text'], annotation['position'],
                       xycoords=annotation['xycoords'],
+                      annotation_clip=annotation.get('annotation_clip'),
                       fontsize=annotation['fontsize'],
                       alpha=annotation['alpha'],
                       fontfamily=annotation['fontfamily'],
