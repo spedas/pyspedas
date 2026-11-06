@@ -21,6 +21,7 @@ import io
 
 import h5py
 import pandas as pd
+import numpy as np
 
 from pyspedas.mth5.config import CONFIG
 
@@ -126,6 +127,154 @@ class TestMTH5LoadFDSN(unittest.TestCase):
             load_fdsn(network='4P', trange=[date_start, date_end])
         self.assertIn('Station not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
+
+    # Shared time range for the mocked run-splitting tests below.
+    SPLIT_DATE_START = '2015-06-22T01:45:00'
+    SPLIT_DATE_END = '2015-06-22T02:20:00'
+
+    @staticmethod
+    def _mocked_fdsn_station(coord_sys, units, measurement_type, times, values, missing_units_channel=None):
+        """
+        Build a mocked MTH5 station with one run of magnetic data.
+
+        Mimics just enough of the MTH5 object tree (station_data.metadata,
+        run_data.metadata.time_period, run_ts.dataset.hx/hy/hz) for
+        load_fdsn to process one run end-to-end. missing_units_channel, one
+        of 'hx'/'hy'/'hz', builds that channel without a units attribute,
+        simulating a sensor that didn't report its units.
+        """
+        def make_channel(channel_name):
+            if channel_name == missing_units_channel:
+                return SimpleNamespace(to_numpy=lambda: np.array(values), type=measurement_type)
+            return SimpleNamespace(to_numpy=lambda: np.array(values), units=units, type=measurement_type)
+
+        run_ts = SimpleNamespace(
+            dataset=SimpleNamespace(
+                attrs={'channels_recorded_magnetic': ['hx', 'hy', 'hz']},
+                channels_recorded_magnetic=['hx', 'hy', 'hz'],
+                time=SimpleNamespace(to_numpy=lambda: np.array(times)),
+                hx=make_channel('hx'), hy=make_channel('hy'), hz=make_channel('hz'),
+            ),
+            filters=[object()],
+        )
+        run_ts.calibrate = MagicMock(return_value=run_ts)
+        run = SimpleNamespace(
+            metadata=SimpleNamespace(
+                time_period=SimpleNamespace(
+                    start=TestMTH5LoadFDSN.SPLIT_DATE_START,
+                    end=TestMTH5LoadFDSN.SPLIT_DATE_END,
+                )
+            ),
+            to_runts=MagicMock(return_value=run_ts),
+        )
+        station_metadata = SimpleNamespace(
+            orientation=SimpleNamespace(reference_frame=SimpleNamespace(value=coord_sys)),
+            run_list=['run'],
+            channels_recorded=['hx', 'hy', 'hz'],
+        )
+        return SimpleNamespace(metadata=station_metadata, get_run=MagicMock(return_value=run))
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_splits_on_units(self, mock_MTH5, mock_isfile):
+        """Runs with different units (e.g. a sensor swap) split into separate tplot variables."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20]),
+            self._mocked_fdsn_station('geographic', 'mV', 'magnetic', [3], [30]),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1', 'survey2']
+        mock_mth5.get_station.side_effect = stations
+
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            result = load_fdsn(
+                network='TEST', station='TEST',
+                trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+                nodownload=True,
+            )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        self.assertTrue(any('inconsistent run metadata' in message for message in cm.output))
+        self.assertEqual(pyspedas.get_data('fdsn_TEST_TEST', metadata=True)['data_att']['units'], 'nT')
+        self.assertEqual(pyspedas.get_data('fdsn_TEST_TEST_1', metadata=True)['data_att']['units'], 'mV')
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_splits_on_measurement_type(self, mock_MTH5, mock_isfile):
+        """Runs with different measurement types split into separate tplot variables."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20]),
+            self._mocked_fdsn_station('geographic', 'nT', 'auxiliary', [3], [30]),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1', 'survey2']
+        mock_mth5.get_station.side_effect = stations
+
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            result = load_fdsn(
+                network='TEST', station='TEST',
+                trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+                nodownload=True,
+            )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        self.assertTrue(any('inconsistent run metadata' in message for message in cm.output))
+        self.assertEqual(
+            pyspedas.get_data('fdsn_TEST_TEST', metadata=True)['data_att']['measurements_type'], 'magnetic',
+        )
+        self.assertEqual(
+            pyspedas.get_data('fdsn_TEST_TEST_1', metadata=True)['data_att']['measurements_type'], 'auxiliary',
+        )
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_splits_on_coord_sys(self, mock_MTH5, mock_isfile):
+        """Runs with different coordinate systems split into separate tplot variables."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20]),
+            self._mocked_fdsn_station('geomagnetic', 'nT', 'magnetic', [3], [30]),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1', 'survey2']
+        mock_mth5.get_station.side_effect = stations
+
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            result = load_fdsn(
+                network='TEST', station='TEST',
+                trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+                nodownload=True,
+            )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        self.assertTrue(any('inconsistent run metadata' in message for message in cm.output))
+        self.assertEqual(pyspedas.get_coords('fdsn_TEST_TEST'), 'geographic')
+        self.assertEqual(pyspedas.get_coords('fdsn_TEST_TEST_1'), 'geomagnetic')
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_splits_on_missing_channel_units(self, mock_MTH5, mock_isfile):
+        """A run missing units on one channel (e.g. hy) gets its own signature instead of merging silently."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20]),
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [3], [30], missing_units_channel='hy'),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1', 'survey2']
+        mock_mth5.get_station.side_effect = stations
+
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            result = load_fdsn(
+                network='TEST', station='TEST',
+                trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+                nodownload=True,
+            )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        self.assertTrue(any('inconsistent run metadata' in message for message in cm.output))
+        self.assertEqual(pyspedas.get_data('fdsn_TEST_TEST', metadata=True)['data_att']['units'], 'nT')
+        self.assertEqual(
+            pyspedas.get_data('fdsn_TEST_TEST_1', metadata=True)['data_att']['units'], 'nT,None,nT',
+        )
 
     # Mock FDSN and MTH5 so we do not make unnecessary calls
     @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
