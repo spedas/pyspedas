@@ -113,7 +113,6 @@ from .tplot_tools import netcdf_to_tplot
 from .tplot_tools import tplot_ascii
 from .tplot_tools import tplot_map
 
-
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
 from .analysis.tvectot import tvectot
