@@ -263,13 +263,16 @@ def load_fdsn(trange=None, network=None, station=None,
                 # Time clips according to original times
                 run_ts = run_data.to_runts(start=request_df.start[0], end=request_df.end[0])
 
-                # Determine if we have all components
-                # can channels_recorded_magnetic be missing from the dataset?
-                # TODO: What to do with the runs without 3 components - operate only with 3 components for now...
+                # Determine if we have at least one component to work with.
+                # A run with fewer than 3 recorded channels is still processed;
+                # the missing channel(s) are filled with NaN below.
                 if 'channels_recorded_magnetic' in run_ts.dataset.attrs:
-                    if len(run_ts.dataset.channels_recorded_magnetic) != 3:
-                        pyspedas.logger.info("Run has less than 3 components")
+                    num_channels = len(run_ts.dataset.channels_recorded_magnetic)
+                    if num_channels == 0:
+                        pyspedas.logger.warning("Run has no magnetic components")
                         continue
+                    if num_channels < 3:
+                        pyspedas.logger.warning(f"Run has {num_channels} of 3 magnetic components; missing ones will be NaN-filled")
                 else:
                     pyspedas.logger.warning("Run dataset has no channels_recorded_magnetic attribute")
                     continue
@@ -282,17 +285,18 @@ def load_fdsn(trange=None, network=None, station=None,
                 # Convert counts to physical units
                 run_ts = run_ts.calibrate()
 
-                # Check if all required attributes are present
-                all_attributes_present = all(
+                # Check if at least one channel is present to build a run from.
+                any_attribute_present = any(
                     hasattr(run_ts.dataset, attr_h) or hasattr(run_ts.dataset, attr_b)
                     for attr_h, attr_b in attributes
                 )
-                if not all_attributes_present:
-                    pyspedas.logger.warning("Some of the attributes are not present in run_ts dataset")
+                if not any_attribute_present:
+                    pyspedas.logger.warning("None of the attributes are present in run_ts dataset")
                     continue
 
                 # Capture calibrated data and metadata without merging it yet.
                 # Copy numpy arrays to ensure that data is in memory after mth5 is closed
+                run_time = run_ts.dataset.time.to_numpy()
                 run_variables = {}
                 # Keep one unit and measurement type entry for each channel.
                 run_units = []
@@ -303,7 +307,12 @@ def load_fdsn(trange=None, network=None, station=None,
                     elif hasattr(run_ts.dataset, attr_b):
                         data = getattr(run_ts.dataset, attr_b)
                     else:
-                        pyspedas.logger.warning(f"Neither {attr_h} nor {attr_b} found in run dataset")
+                        # Missing channel: NaN-fill so the output stays a fixed
+                        # 3-column array; matplotlib skips NaN points natively.
+                        pyspedas.logger.warning(f"Neither {attr_h} nor {attr_b} found in run dataset; filling {var_name} with NaN")
+                        run_variables[var_name] = np.full(len(run_time), np.nan)
+                        run_units.append(None)
+                        run_measurements_type.append(None)
                         continue
 
                     run_variables[var_name] = data.to_numpy()
@@ -324,9 +333,6 @@ def load_fdsn(trange=None, network=None, station=None,
                         pyspedas.logger.warning(f"Problem with adding {attr_h}/{attr_b} dataset type")
                         run_measurements_type.append(None)
 
-                if len(run_variables) != 3:
-                    continue
-
                 # Preserve the run's coordinate, per-channel units, and measurement types as one signature.
                 run_signature = (
                     coord_sys,
@@ -335,7 +341,7 @@ def load_fdsn(trange=None, network=None, station=None,
                 )
                 # Store one complete run record for the post-processing merge.
                 run_records.append({
-                    "time": run_ts.dataset.time.to_numpy(),
+                    "time": run_time,
                     "variables": run_variables,
                     "metadata": station_data.metadata,
                     "coord_sys": coord_sys,

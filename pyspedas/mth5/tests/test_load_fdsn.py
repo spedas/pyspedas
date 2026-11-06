@@ -152,7 +152,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     SPLIT_DATE_END = '2015-06-22T02:20:00'
 
     @staticmethod
-    def _mocked_fdsn_station(coord_sys, units, measurement_type, times, values, missing_units_channel=None):
+    def _mocked_fdsn_station(coord_sys, units, measurement_type, times, values,
+                              missing_units_channel=None, missing_channel=None):
         """
         Build a mocked MTH5 station with one run of magnetic data.
 
@@ -160,19 +161,24 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         run_data.metadata.time_period, run_ts.dataset.hx/hy/hz) for
         load_fdsn to process one run end-to-end. missing_units_channel, one
         of 'hx'/'hy'/'hz', builds that channel without a units attribute,
-        simulating a sensor that didn't report its units.
+        simulating a sensor that didn't report its units. missing_channel,
+        also one of 'hx'/'hy'/'hz', leaves that channel out of the dataset
+        entirely, simulating a sensor that recorded no data at all.
         """
+        channel_names = [name for name in ('hx', 'hy', 'hz') if name != missing_channel]
+
         def make_channel(channel_name):
             if channel_name == missing_units_channel:
                 return SimpleNamespace(to_numpy=lambda: np.array(values), type=measurement_type)
             return SimpleNamespace(to_numpy=lambda: np.array(values), units=units, type=measurement_type)
 
+        dataset_kwargs = {name: make_channel(name) for name in channel_names}
         run_ts = SimpleNamespace(
             dataset=SimpleNamespace(
-                attrs={'channels_recorded_magnetic': ['hx', 'hy', 'hz']},
-                channels_recorded_magnetic=['hx', 'hy', 'hz'],
+                attrs={'channels_recorded_magnetic': channel_names},
+                channels_recorded_magnetic=channel_names,
                 time=SimpleNamespace(to_numpy=lambda: np.array(times)),
-                hx=make_channel('hx'), hy=make_channel('hy'), hz=make_channel('hz'),
+                **dataset_kwargs,
             ),
             filters=[object()],
         )
@@ -294,6 +300,30 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertEqual(
             pyspedas.get_data('fdsn_TEST_TEST_1', metadata=True)['data_att']['units'], 'nT,None,nT',
         )
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_fills_missing_channel_with_nan(self, mock_MTH5, mock_isfile):
+        """A run with only 2 of 3 magnetic components still loads, with the missing one NaN-filled."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20], missing_channel='hy'),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1']
+        mock_mth5.get_station.side_effect = stations
+
+        result = load_fdsn(
+            network='TEST', station='TEST',
+            trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+            nodownload=True,
+        )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        time, data = pyspedas.get_data(result)
+        self.assertEqual(data.shape, (2, 3))
+        self.assertTrue(np.array_equal(data[:, 0], [10, 20]))
+        self.assertTrue(np.all(np.isnan(data[:, 1])))
+        self.assertTrue(np.array_equal(data[:, 2], [10, 20]))
 
     # Mock FDSN and MTH5 so we do not make unnecessary calls
     @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
