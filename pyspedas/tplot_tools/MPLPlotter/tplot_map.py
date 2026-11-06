@@ -1,84 +1,78 @@
-# TODO: update documentation
 """
 Take a tplot variable containing positional data, 
 trace magnetic field lines to the north ionosphere, south ionosphere, or equator,
 then map those points to a basemap
 """
-from pyspedas import get_data, ttrace2endpoint, geodetic_correction, cartesian2geodeticpolar
+from pyspedas import cotrans, get_data, xyz_to_polar,ttrace2endpoint, tplotxy3
 from mpl_toolkits.basemap import Basemap
 import matplotlib.pyplot as plt
 import numpy as np
 import datetime as dt
 
-# TODO: need way to handle when argument of "None" is intentional and affects map.
-# TODO: what to do about multiple applications of a certain type of plot (e.g. add_markers, then add_markers)? How to save params?
-# TODO: add auroral oval plot
-class Tplot_Map():
+class Tplot_Map_Param_Set():
+    def __set_name__(self, owner, name):
+        self.name = name
+    def __get__(self, obj, type=None) -> object:
+        return obj.__dict__.get(self.name) or 0
+    def __set__(self, obj, value:dict) -> None:
+        new_val = obj.__dict__.get(self.name).copy()
+        for key,val in value.items():
+            new_val[key] = val
+        obj.__dict__[self.name] = new_val
+
+class Tplot_Map(Basemap):
     """
-    Object containing tplot_map information, with the
-    following attributes:
-    * map: Basemap object
-    * map_options: arguments for various types of plots
-        which can be applied to the map attribute. If
-        the value for a map_options key is set to 'None',
-        then that type of plot won't be made when the map
-        is built.
+    A Tplot_Map object which inherits from Basemap,
+    but with attributes containing plotting function 
+    parameters, initialized to defaults.
+
+    Each plotting function parameter (stored in the 
+    Tplot_Map_Param_Set object) is a dictionary which 
+    is expanded by the corresponding function as kwargs.
+
+    The Tplot_Map.build_map() function makes the function 
+    calls in-order to ensure that the base map is drawn 
+    correctly (but does re-plot any traces/markers 
+    added manually). 
+
+    Usage:
+    >> tmap = Tplot_Map()
+    >> tmap
+    <__main__.Tplot_Map object at 0x000002A3E931AF20>
+    >> tmap.params
+    <__main__.Tplot_Map_Param_Set object at 0x000002A3E9318400>
+    >> tmap.params.fillcontinents
+    {'color': 'palegreen', 'lake_color': 'lightskyblue'}
+    >> tmap.params.fillcontinents['color'] = 'red'
+    >> tmap.params.fillcontinents
+    {'color': 'red', 'lake_color': 'lightskyblue'}
+    >> tmap.params.fillcontinents = {'color':'green'}
+    >> tmap.params.fillcontinents
+    {'color':'green'}
+
     """
-    def __init__(self,view: str = "",map_options: dict | None = None):
-        """
-        view overwrites lat_0 and lon_0 in "basemap" map_options
-        """
-        self.date = dt.datetime.now()
-        self.map = Basemap()
-        # TODO: default params should be None for nightshade, linepath, add_marker, add_cap, drawmeridians, and drawparallels
-        # TODO: need magnetic meridians and parallels
-        # TODO: labels for geographic and magnetic meridians and parallels?
-        # TODO: we can't keep track of every additional plot being made; we can only provide default 
-        #       options for an initial map to be drawn
-        # TODO: include legend?
-            
-        self.map_options = {
-            "basemap"         : {"projection":"ortho","lat_0":0,"lon_0":0},
-            "drawmapboundary" : {"fill_color":"white"},
-            "fillcontinents"  : {"color":"white","lake_color":"white"},
-            "drawcoastlines"  : {"linewidth":0.25},
-            "drawmeridians"   : {"meridians":np.arange(0,360,10)},
-            "drawparallels"   : {"circles":np.arange(-90,90,10)},
-            "nightshade"      : None, # {"date":dt.datetime.now(),"alpha":0.5}
-            "add_linepath"    : None, # {}
-            "add_marker"      : None, # {"color":"r","linestyle":"","marker":"d"}
-            "add_cap"         : None, # {"color":"m"}
-        }
-        if map_options is not None:
-            self.map_options.update(map_options)
-        self.plot_order = self.map_options.keys()
-        if view != "":
-            self.modify_view(new_view=view)
+    def __init__(self):
+        self._params = Tplot_Map_Param_Set()
+        self._params.basemap         = {"projection":"ortho","lat_0":0,"lon_0":0}
+        self._params.drawmapboundary = {"fill_color":"white"} #{"fill_color":"lightskyblue"}
+        self._params.fillcontinents  = {"color":"white","lake_color":"white"} #{"color":"palegreen","lake_color":"lightskyblue"}
+        self._params.drawcoastlines  = {"linewidth":0.25}
+        self._params.nightshade      = {"date":dt.datetime.now(),"alpha":0.5}
+        self._params.add_linepath    = {}#{"color":"m"}
+        self._params.add_marker      = {"color":"r","linestyle":"","marker":"d"}
+        self._params.add_cap         = {"color":"m"}
+        
+        # TODO: make meridians into magnetic coordinates
+        self._params.drawmeridians   = {"meridians":np.arange(0,360,10)}
+        self._params.drawparallels   = {"circles":np.arange(-90,90,10)}
+        
+        #self._plot_list = []
         self.build_map()
 
     def build_map(self):
-        for plot_type in self.plot_order:
-            plot_opts = self.map_options.get(plot_type)
-            if plot_opts is not None:
-                if not isinstance(plot_opts,dict):
-                    # TODO test:
-                    raise TypeError(f"Value for {plot_type} map_option must be dict; instead, was {plot_opts.type}")
-                match plot_type:
-                    case "basemap": 
-                        self.map = Basemap(**plot_opts)
-                    case "drawmapboundary":
-                        self.map.drawmapboundary(**plot_opts)
-                    case "fillcontinents":
-                        self.map.fillcontinents(**plot_opts)
-                    case "drawcoastlines":
-                        self.map.drawcoastlines(**plot_opts)
-                    case "drawmeridians":
-                        self.map.drawmeridians(**plot_opts)
-                    case "drawparallels":
-                        self.map.drawparallels(**plot_opts)
-                    case "nightshade":
-                        self.map.nightshade(**plot_opts)
-        self.map = Basemap(**self.map_options["basemap"])
+        # TODO: auroral oval plot?
+        #plt.cla()
+        super().__init__(**self._params.basemap)
         return
     
     def show(self): 
@@ -86,159 +80,200 @@ class Tplot_Map():
         plt.show()
         return
 
-    def modify_view(self,new_view:str):
-        # TODO: update coordinates to reasonable values
-        if isinstance(self.map_options["basemap"],dict):
-            match new_view:
-                case "North America":
-                    self.map_options["basemap"].update({"lat_0":0,"lon_0":0})
-                case "Northern Europe":
-                    self.map_options["basemap"].update({"lat_0":0,"lon_0":0})
-                case "North Polar":
-                    self.map_options["basemap"].update({"lat_0":0,"lon_0":0})
-                case "South Polar":
-                    self.map_options["basemap"].update({"lat_0":0,"lon_0":0})
-        self.build_map()
+    @property
+    def params(self):
+        """The params property."""
+        return self._params
+    @params.setter
+    def params(self, value):
+        self._params = value
+    @params.deleter
+    def params(self):
+        del self._params
+
+    def add_map_boundary(self,**drawmapboundary_kwargs):
+        self._params.drawmapboundary.update(drawmapboundary_kwargs)
+        self.drawmapboundary(**self._params.drawmapboundary)
+        return
+
+    def add_fillcontinents(self,**fillcontinents_kwargs):
+        self._params.fillcontinents.update(fillcontinents_kwargs)
+        self.fillcontinents(**self._params.fillcontinents)
         return
     
-    def modify_plot_order(self,new_plot_order: list[str]):
-        self.plot_order = new_plot_order
+    def add_coastlines(self,**drawcoastlines_kwargs):
+        self._params.drawcoastlines.update(drawcoastlines_kwargs)
+        self.drawcoastlines(**self._params.drawcoastlines)
         return
 
-    # TODO: add is_lat, is_lon bools? Add checks
-    # TODO: check ranges of latitude and longitude values
-    # TODO: should this also accept lists where each element is a number (not str/ndarray)?
-    def _parse_input_coords(
-            self,coords: str | np.ndarray | list[str] | list[np.ndarray],
-            is_lat: bool = False, is_lon: bool = False) -> list[np.ndarray]:
-        if not isinstance(coords,list):
-            coords = [coords]
-        coord_data_list = []
-        for coord_obj in coords:
-            coord_data = coord_obj
-            if isinstance(coord_obj, str):
-                # load data from tplot:
-                coord_data = get_data(coord_obj)
-            # TODO: one of the dimensions MUST be 2; verify. UNLESS is_lat or is_lon is set; then one of the dimensions must be size 0 or 1
-            coord_data_list.append(coord_data)
-        return coord_data_list
+    def add_meridians(self,**drawmeridians_kwargs):
+        self._params.drawmeridians.update(drawmeridians_kwargs)
+        self.drawmeridians(**self._params.drawmeridians)
+        return
 
-    def _add_linepath(self, x, y,**plot_linepath_kwargs):
+    def add_parallels(self,**drawparallels_kwargs):
+        self._params.drawparallels.update(drawparallels_kwargs)
+        self.drawparallels(**self._params.drawparallels)
+        return
+
+    def add_nightshade(self,**nightshade_kwargs):
+        self._params.nightshade.update(nightshade_kwargs)
+        self.nightshade(**self._params.nightshade)
+        return
+
+    def add_linepath(self, x, y,**plot_linepath_kwargs):
         self._params.add_linepath.update(plot_linepath_kwargs)
         self.plot(x,y,**self._params.add_linepath)
         return
     
-    def _add_marker(self, x, y, **plot_marker__kwargs):
+    def add_marker(self, x, y, **plot_marker__kwargs):
         self._params.add_marker.update(plot_marker__kwargs)
         self.plot(x,y,**self._params.add_marker)
         return
 
-    def _make_circular_caps():
-        return
-
-    def _add_cap(self, x, y,**plot_cap_kwargs):
+    def add_cap(self, x, y,**plot_cap_kwargs):
         self._params.add_cap.update(plot_cap_kwargs)
         self.plot(x,y,**self._params.add_cap)
         return
 
-    # TODO: what if we want to draw multiple sets of meridians? With different options?
-    def add_meridians(
-            self,lon_vals: str | np.ndarray,
-            linestyle: str | None = None,
-            linecolor: str | None = None,
-            north_pole_loc:tuple=(90,0),
-            **drawmeridians_kwargs):
-        
-        lon_vals = self._parse_input_coords(coords = lon_vals, is_lon=True)
-        # TODO: verify args are valid drawmeridians options
-        if not isinstance(self.map_options.get("drawmeridians"),dict):
-            self.map_options["drawmeridians"] = dict()
-        self.map_options["drawmeridians"].update({
-            "linestyle":linestyle,
-            "linecolor":linecolor
-        })
-        self.map_options["drawmeridians"].update(drawmeridians_kwargs)
-        # TODO: if first element in north_pole_loc is not 90, rotate meridian values. Try rotpole? Or manually rotating the coordinates?
+def tplot_map(tmap:Tplot_Map | None = None, display:bool = False, **basemap_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    tmap._params.basemap.update(basemap_kwargs)
+    tmap.build_map()
+    if display:
+        tmap.show()
+    return tmap
 
-        self.build_map()
-        return
+def add_tracks(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **tracks_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    if not isinstance(coords,list):
+        if isinstance(coords,str):
+            tvar_data = get_data(coords)
+            coords = tvar_data.y
+        coords = [coords]
 
-    def add_parallels(
-            self,lat_vals: str | np.ndarray,
-            linestyle: str | None = None,
-            linecolor: str | None = None,
-            north_pole_loc:tuple=(90,0),
-            **drawparallels_kwargs):
-        return
+    for coord_set in coords:
+        # expects input coordinates in form of radius, longitude, latitude
+        x,y = tmap(coord_set[:,2],coord_set[:,1])
+        tmap.add_linepath(x,y,**tracks_plot_kwargs)
+    if display:
+        tmap.show()
+    return tmap
 
-    def add_track(self,coords,color,linestyle,**plot_kwargs):
-        for coord_set in coords:
-            # expects input coordinates in form of radius, longitude, latitude
-            x,y = tmap(coord_set[:,2],coord_set[:,1])
-            tmap.add_linepath(x,y,**tracks_plot_kwargs)
-        return
+def add_markers(coords: str | np.ndarray | list[np.ndarray], tmap:Tplot_Map | None = None, display:bool = False, **markers_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    if not isinstance(coords,list):
+        if isinstance(coords,str):
+            tvar_data = get_data(coords)
+            coords = tvar_data.y
+        coords = [coords]
 
-    def add_markers(self,coords,marker_symbol,marker_color,**scatter_kwargs):
-        for coord in coords:
-            # expects input coordinates in form of radius, longitude, latitude
-            x,y = tmap(coord[2],coord[1])
-            # TODO: do we need to use scatter or plot (with line options turned off?)
-            tmap.add_marker(x,y,**markers_plot_kwargs)
-        return
+    for coord in coords:
+        # expects input coordinates in form of radius, longitude, latitude
+        x,y = tmap(coord[2],coord[1])
+        # TODO: do we need to use scatter or plot (with line options turned off?)
+        tmap.add_marker(x,y,**markers_plot_kwargs)
+    if display:
+        tmap.show()
+    return tmap
 
-    def add_station_fov(self,coords,fov_angle = 80.0,fov_radius="",linestyle="",fill_color="",**station_fov_plot_kwargs):
-        # TODO: need to determine plot option for station FOV. 
-        azi = np.arange(0,361)
-        r_e = 6378.0 # Earth radius, in km
-        z = 120.0 # altitude of emission, in km
-        zeta = fov_angle # zenith angle (degrees?)
-        theta = np.rad2deg(np.arcsin((r_e/(r_e+z))*np.sin(np.deg2rad(zeta)))) # second angle of triangle
-        alpha = zeta - theta
-        surface_arclength = np.deg2rad(alpha)*r_e
+def add_station_fovs(coords: str | np.ndarray | list[np.ndarray], fov_angle = 80.0, tmap:Tplot_Map | None = None, display:bool = False, **station_fov_plot_kwargs) -> Tplot_Map:
+    if tmap is None:
+        tmap = Tplot_Map()
+    if not isinstance(coords,list):
+        if isinstance(coords,str):
+            tvar_data = get_data(coords)
+            coords = tvar_data.y
+        coords = [coords]
+
+    azi = np.arange(0,361)
+    r_e = 6378.0 # Earth radius, in km
+    z = 120.0 # altitude of emission, in km
+    zeta = fov_angle # zenith angle (degrees?)
+    theta = np.rad2deg(np.arcsin((r_e/(r_e+z))*np.sin(np.deg2rad(zeta)))) # second angle of triangle
+    alpha = zeta - theta
+    surface_arclength = np.deg2rad(alpha)*r_e
+
+    for coord in coords:
+        alat = 90.0 - np.rad2deg(surface_arclength/r_e)
+        alon = 180-azi
+        latp = coord[1]
+        lonp = 180.0
+        t0 = np.deg2rad(90.0-latp)
+        t1 = np.deg2rad(90.0-alat)
+        p0 = np.deg2rad(lonp)
+        p1 = np.deg2rad(alon)
+        zz = np.cos(t0)*np.cos(t1)+np.sin(t0)*np.sin(t1)*np.cos(p1-p0)
+        zz[zz < -1.0] = -1.0
+        zz[zz >  1.0] =  1.0
+        xx=np.sin(t1)*np.sin(p1-p0)
+        yy=np.sin(t0)*np.cos(t1)-np.cos(t0)*np.sin(t1)*np.cos(p1-p0)
+        alat = r_e * np.arccos(zz)
+        alon = alat
+        alon = np.rad2deg(np.arctan(xx/yy))
+        alat = 90.0 - np.rad2deg(alat/r_e)
+        alon=coord[2]-alon
+
+        x,y = tmap(alon,geodetic_correction(alat))
+        tmap.add_cap(x,y,**station_fov_plot_kwargs)
+    if display:
+        tmap.show()
+    return tmap
     
-        for coord in coords:
-            alat = 90.0 - np.rad2deg(surface_arclength/r_e)
-            alon = 180-azi
-            latp = coord[1]
-            lonp = 180.0
-            t0 = np.deg2rad(90.0-latp)
-            t1 = np.deg2rad(90.0-alat)
-            p0 = np.deg2rad(lonp)
-            p1 = np.deg2rad(alon)
-            zz = np.cos(t0)*np.cos(t1)+np.sin(t0)*np.sin(t1)*np.cos(p1-p0)
-            zz[zz < -1.0] = -1.0
-            zz[zz >  1.0] =  1.0
-            xx=np.sin(t1)*np.sin(p1-p0)
-            yy=np.sin(t0)*np.cos(t1)-np.cos(t0)*np.sin(t1)*np.cos(p1-p0)
-            alat = r_e * np.arccos(zz)
-            alon = alat
-            alon = np.rad2deg(np.arctan(xx/yy))
-            alat = 90.0 - np.rad2deg(alat/r_e)
-            alon=coord[2]-alon
-    
-            x,y = tmap(alon,geodetic_correction(alat))
-            tmap.add_cap(x,y,**station_fov_plot_kwargs)
+def geodetic_correction(lat_deg,f=(1/298.26)):
+        """
+        Convert geocentric latitude to geodetic latitude using squashing factor f
+        """
+        lat_rad = np.deg2rad(lat_deg)
+        lad_corrected_rad = np.arctan( (1-f)**2 * np.tan(lat_rad) )
+        lad_corrected_deg = np.rad2deg(lad_corrected_rad)
+        return lad_corrected_deg
+
+def cartesian2geodeticpolar(data: str | np.ndarray) -> np.ndarray:
+    """
+    Get positional data from tplot variable, then convert data coordinates to 
+    geodetic polar coordinates
+    """
+    from pyspedas.tplot_tools import store_data
+    make_tvars=False
+    if isinstance(data, str):
+        make_tvars = True
+        name_in = data
+        d = get_data(name_in)
+        data = d.y
+    data_polar = xyz_to_polar(data)
+    out = np.zeros(data.shape)
+    # radius from center:
+    out[:,0] = data_polar[:,0]
+    # latitude:
+    out[:,1] = geodetic_correction(data_polar[:,1])
+    # signed longitude
+    out[:,2] = data_polar[:,2]
+    if make_tvars:
+        store_data(name_in + '_radius', data={'x':d.times, 'y':out[:,0]})
+        store_data(name_in + '_geod_lat', data={'x': d.times, 'y': out[:, 1]})
+        store_data(name_in + '_signed_lon', data={'x': d.times, 'y': out[:, 2]})
         return
+    else:
+        return out
 
-    def trace_tvars_to_tmap(
-        tmap:Tplot_Map | None,
-        tvar:list[str] | str,
-        display:bool = False,
-        fig_fp:str="") -> Tplot_Map:
+def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
+    """
+    Take a tplot variable of arbitrary coordinate system and convert to geodetic 
+    polar
+    """
+    # TODO: should this return array or simply create new tplot variable? 
+    tvar_geo = tvar + "_geo"
+    cotrans(name_in=tvar,name_out=tvar_geo,coord_in=in_coord_str,coord_out="geo")
+    # convert Cartesian GEO/ECEF data to geodetic polar:
+    geo_data = get_data(tvar_geo)
+    data_geod_polar = cartesian2geodeticpolar(data=geo_data.y)
+    return data_geod_polar
 
-        tmap = tplot_map(tmap=tmap)
-        
-        for tvar_name in tvar:
-            # Compute traces:
-            computed_trace = _trace_tvars_to_foottracks(tvar_to_trace = tvar_name, model_str = "t89", endpoint = "ionosphere-north")
-            tmap = add_tracks(tmap=tmap, coords=computed_trace[0], label = tvar_name)
-        if display:
-            tmap.show()
-        if fig_fp != "":
-            plt.savefig(fig_fp)
-        return tmap
-
-def _trace_tvars_to_foottracks(tvar_to_trace:list[str] | str, **ttrace2endpoint_kwargs) -> list:
+def tvar_to_foottracks(tvar_to_trace:list[str] | str, in_coord_str:str='gsm', **ttrace2endpoint_kwargs) -> list: 
     """
     Take one or more tplot variable names, trace to an endpoint, and compute 
     geodetic polar foottracks from tplot variable positional data
@@ -279,71 +314,57 @@ def _trace_tvars_to_foottracks(tvar_to_trace:list[str] | str, **ttrace2endpoint_
         # compute geodetic polar foottracks from tplot variable positional data
         geo_data = get_data(footname_str)
         data_geod_polar = cartesian2geodeticpolar(data=geo_data.y)
+        #data_geod_polar = tvar_to_geodeticpolar(tvar=footname_str, in_coord_str=in_coord_str)
         foot_name_list.append(data_geod_polar)
     return foot_name_list
 
-# TODO: Basemap can accept axes object; tplot_map can accept existing axes object, or create one if axes object does not already exist.
-def tplot_map(
-        projection:   str | None = None,
-        center:     tuple | None = None,
-        range:      tuple | None = None,
-        land_color:   str | None = None,
-        ocean_color:  str | None = None,
-        view = "",
+def tplot_trace_tvars_to_tmap(
+        tmap:Tplot_Map | None,
+        tvar:list[str] | str,
         display:bool = False,
-        map_options: dict | None = None, 
-        **basemap_kwargs) -> Tplot_Map:
-    """
-    Creates a tplot map object
+        fig_fp:str="") -> Tplot_Map:
+    tmap = tplot_map(tmap=tmap)
     
-    Display a map, specifying the projection, lat_long ranges, map dimensions, colors, etc
-
-    map_options is a dict containing options for every intended plot type (including initial Basemap), and supercedes input options. 
-    """
-    if map_options is None:
-        # TODO: verify args are valid basemap options
-        map_options = {
-            "basemap":{    
-                "projection"  : projection,
-                "center"      : center,
-                "range"       : range,
-                "land_color"  : land_color,
-                "ocean_color" : ocean_color}}
-        if isinstance(map_options["basemap"],dict):
-            map_options["basemap"].update(basemap_kwargs)
-            if all(map_options["basemap"].values()) == None:
-                map_options = None
-    tmap = Tplot_Map(view=view,map_options=map_options)
+    for tvar_name in tvar:
+        # Compute traces:
+        computed_trace = tvar_to_foottracks(tvar_to_trace = tvar_name, model_str = "t89", endpoint = "ionosphere-north")
+        tmap = add_tracks(tmap=tmap, coords=computed_trace[0], label = tvar_name)
     if display:
         tmap.show()
+    if fig_fp != "":
+        plt.savefig(fig_fp)
     return tmap
 
-# TODO: remove
 if __name__ == "__main__":
-    """
-    # Display a map, specifying the projection, lat_long ranges, map dimensions, colors, etc
-    map_obj = tplot_map(projection='Mercator', center=something, range=something_else, land_color=land_color, ocean_color=ocean_color)
+    from pyspedas.projects.themis import state
+    from pyspedas.projects.themis.ground import gmag
 
-    # Plot the meridians, with options for line styles, colors, which values to plot)
-    tplot_map_add_meridians(map_obj, lat_values=list_of_lats, long_values=list_of_longitudes, linestyle, linecolor)
-
-    # Add the day/night boundary
-    tplot_map_add_terminator(map_obj, alpha=alpha, ....).  # I don't recall exactly how this works in basemap but the feature exists
-
-    # Add ground tracks
-    tplot_map_add_track(map_obj, themis_a_long_lat, color=themis_a_color, linestyle=linestyle)
-    tplot_map_add_track(map_obj, themis_d_long_lat, color=themis_d_color, linestyle=linestyle)
-
+    date_str = '2026-02-03'
+    state(trange=[date_str,date_str], probe='a')
+    state(trange=[date_str,date_str], probe='d')
+    
+    # Initialize map:
+    tmap = tplot_map(lat_0=50,lon_0=-100)
+    #tmap._params.drawmapboundary = {"fill_color":"lightskyblue"}
+    #tmap._params.fillcontinents = {"color":"palegreen","lake_color":"lightskyblue"}
+    
+    # Add ground tracks:
+    tmap = tplot_trace_tvars_to_tmap(tmap=tmap,tvar=['tha_pos_gsm','thd_pos_gsm'])
+    
     # Add ground station markers
-    tplot_map_add_markers(map_obj, marker_latitude_list, marker_longitude_list, marker_symbol, marker_color)
+    #tplot_map_add_markers(map_obj, marker_latitude_list, marker_longitude_list, marker_symbol, marker_color)
+    themis_gmag_dict = gmag.Themis_gmag()
+    for station_dict in themis_gmag_dict.get_gmag_list():
+        if station_dict['variom'] == 'Y':
+            tmap = add_markers(coords=np.array([0,float(station_dict['lat']),float(station_dict['lng'])]),tmap=tmap,label=station_dict['ccode'],ms=3)
 
     # Add field of view circles for each ground station
-    # Hopefully there are convenience features to plot the circles projected appropriately without generating our own long-lat traces for each FOV
-    tplot_map_add_station_fov(map_obj, marker_latitude_list, marker_longitud_list, fov_radius, linestyle)
+    tmap = add_station_fovs(coords=[np.array([0,48,-128]),np.array([0,30,-110])], tmap=tmap)
 
-    # Display the map after adding all the elements
-    map_obj.show()
-    """
-    map_obj = tplot_map()
-    map_obj.show()
-    print("Done!")
+    tmap.add_map_boundary()
+    tmap.add_fillcontinents()
+    tmap.add_coastlines(linewidth=0.25)
+    tmap.add_nightshade(date=dt.datetime.strptime(date_str+" 15:00:00",'%Y-%m-%d %H:%M:%S'))
+    
+    tmap.show()
+    print("done")
