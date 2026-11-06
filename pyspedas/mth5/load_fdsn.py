@@ -134,6 +134,10 @@ def load_fdsn(trange=None, network=None, station=None,
         pyspedas.logging.error("trange not specified")
         return
 
+    if len(trange) != 2:
+        pyspedas.logging.error("trange must have exactly 2 elements")
+        return
+
     if not network:
         pyspedas.logging.error("Network not specified")
         return

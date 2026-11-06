@@ -7,6 +7,7 @@
 | Test | Purpose |
 |---|---|
 | `test10_load_fdsn_notrange` | No `trange` given -> logs `'trange not specified'` ERROR, no tplot var created |
+| `test10_load_fdsn_trange_wrong_length` | A `trange` with 1 or 3+ elements -> logs `'trange must have exactly 2 elements'` ERROR, no tplot var created |
 | `test10_load_fdsn_nonetwork` | No `network` given -> logs `'Network not specified'` ERROR |
 | `test10_load_fdsn_nostation` | No `station` given -> logs `'Station not specified'` ERROR |
 | `test20_print_request` | `print_request=True` prints a dataframe containing `network/station/start/end` columns (FDSN/MTH5 mocked to abort immediately after) |

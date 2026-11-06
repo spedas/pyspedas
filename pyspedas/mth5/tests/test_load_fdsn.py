@@ -102,6 +102,25 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertIn('trange not specified', cm.output[0])
         self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
 
+    def test10_load_fdsn_trange_wrong_length(self):
+        """
+        A trange that is not exactly 2 elements must log an ERROR and
+        return without creating a tplot variable, instead of raising a
+        raw IndexError or silently ignoring extra elements.
+        """
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            load_fdsn(network="4P", station="REU49", trange=['2015-06-22T01:45:00'])
+        self.assertIn('trange must have exactly 2 elements', cm.output[0])
+        self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
+
+        with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+            load_fdsn(
+                network="4P", station="REU49",
+                trange=['2015-06-22T01:45:00', '2015-06-22T02:20:00', '2015-06-22T03:00:00'],
+            )
+        self.assertIn('trange must have exactly 2 elements', cm.output[0])
+        self.assertFalse('fdsn_4P_REU49' in pyspedas.tnames())
+
     def test10_load_fdsn_nonetwork(self):
         """
         Test loading data without specifying a network
