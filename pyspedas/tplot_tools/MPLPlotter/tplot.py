@@ -40,6 +40,24 @@ def _draw_bars(axis, plot_options):
             axis.axhline(y=bar['location'], **line_options)
 
 
+def _draw_annotations(axis, plot_options):
+    """Draw the text annotations attached to a variable."""
+    foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+    for annotation in plot_options.get('extras', {}).get('annotations') or []:
+        axis.annotate(annotation['text'], annotation['position'],
+                      xycoords=annotation['xycoords'],
+                      annotation_clip=annotation.get('annotation_clip'),
+                      fontsize=annotation['fontsize'],
+                      alpha=annotation['alpha'],
+                      fontfamily=annotation['fontfamily'],
+                      fontvariant=annotation['fontvariant'],
+                      fontstyle=annotation['fontstyle'],
+                      fontstretch=annotation['fontstretch'],
+                      fontweight=annotation['fontweight'],
+                      rotation=annotation['rotation'],
+                      color=annotation.get('color') or foreground or 'black')
+
+
 def pseudovar_component_props(varname: str):
     """ Return or calculate the plot properties for a single normal tplot variable
 
@@ -598,7 +616,7 @@ def tplot(variables,
                 traces_processed += trace_count_thisvar
 
             _draw_bars(this_axis, var_quants.attrs['plot_options'])
-            
+            _draw_annotations(this_axis, var_quants.attrs['plot_options'])
 
             continue
 
@@ -883,21 +901,7 @@ def tplot(variables,
                                   mdates.date2num(datetime.fromtimestamp(highlight_interval['location'][1], timezone.utc)),
                                   **hightlight_opts)
 
-        # add annotations
-        if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['extras'].get('annotations') is not None:
-            annotations = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['extras']['annotations']
-            for annotation in annotations:
-                this_axis.annotate(annotation['text'], annotation['position'],
-                                   xycoords=annotation['xycoords'],
-                                   fontsize=annotation['fontsize'],
-                                   alpha=annotation['alpha'],
-                                   fontfamily=annotation['fontfamily'],
-                                   fontvariant=annotation['fontvariant'],
-                                   fontstyle=annotation['fontstyle'],
-                                   fontstretch=annotation['fontstretch'],
-                                   fontweight=annotation['fontweight'],
-                                   rotation=annotation['rotation'],
-                                   color=annotation.get('color') or foreground or 'black')
+        _draw_annotations(this_axis, var_quants.attrs['plot_options'])
 
     # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:
