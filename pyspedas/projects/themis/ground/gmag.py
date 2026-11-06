@@ -5,6 +5,9 @@ from pyspedas.utilities.download import download
 
 from pyspedas.projects.themis.config import CONFIG
 
+
+import requests
+
 # Initialize global variable for gmag_info:
 gmag_info = None
 
@@ -80,6 +83,22 @@ class GMAG_Info():
         t_res_opts = list(set(self.table[self.table["alt_period"].notnull()]["alt_period"]))
         t_res_opts.sort()
         return t_res_opts
+
+
+class Themis_gmag():
+    """Deprecated: This object holds the dictionary of gmag stations and their metadata"""
+    def __init__(self):
+        self.gmag_dict = []
+    def query_gmags(self):
+        """Fills a dictionary of gmag stations and all their metadata"""
+        _init_gmag_info()
+        self.gmag_dict = [{col:(gmag_info.table[col])[i] for col in gmag_info.table.columns} for i in gmag_info.table.index]
+    def get_gmag_list(self):
+        """returns the gmag dictionary, querying if necessary"""
+        if self.gmag_dict == []:
+            self.query_gmags()
+        return self.gmag_dict
+
 
 
 def gmag(
@@ -453,3 +472,4 @@ def is_gmag(station_code: str | list[str]) -> bool:
     _init_gmag_info()
     station_codes = clean_gmag_station_codes(station_code)
     return in_gmag_group(station_codes, group_code = "all")
+
