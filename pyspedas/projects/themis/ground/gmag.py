@@ -6,8 +6,6 @@ from pyspedas.utilities.download import download
 from pyspedas.projects.themis.config import CONFIG
 
 
-import requests
-
 # Initialize global variable for gmag_info:
 gmag_info = None
 
