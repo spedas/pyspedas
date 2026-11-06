@@ -738,6 +738,17 @@ class TestListOfChannels(unittest.TestCase):
             # Assuming the format is always one character for band, 'F' for instrument, and one character for orientation
             self.assertTrue(channel[1] == 'F')
 
+    def test04_list_of_channels_contains_numeric_orientations(self):
+        """
+        Some stations use numeric orientations ('1', '2', '3') instead of
+        ('Z', 'N', 'E'); both must be requested so those stations aren't
+        silently skipped.
+        """
+        result = _list_of_fdsn_channels()
+        channel_list = result.split(',')
+        orientations = {channel[2] for channel in channel_list}
+        self.assertEqual(orientations, {'Z', 'N', 'E', '1', '2', '3'})
+
 
 class TestDatasetsFunction(unittest.TestCase):
     # Mock data of the response

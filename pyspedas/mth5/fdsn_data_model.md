@@ -62,6 +62,10 @@ be downloaded first.
 | `?FE`, `?FN`, `?FZ`, `?F1`, `?F2`, `?F3` | `hx`, `hy`, `hz` | Magnetic |
 | `?QE`, `?QN`, `?QZ`, `?Q1`, `?Q2`, `?Q3` (e.g. `LQE`, `LQN`) | `ex`, `ey` | Electric |
 
+Both orientation conventions (`E`/`N`/`Z` and `1`/`2`/`3`) end up under the
+same `hx`/`hy`/`hz` (or `ex`/`ey`) component names — MTH5 handles that
+translation internally.
+
 MTH5 components are accessed per run as `run.get_channel(<component>)`,
 returning a `ChannelTS` object; a full run's components together form a
 `RunTS`. Both expose the same calibration API regardless of field type.

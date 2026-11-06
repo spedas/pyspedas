@@ -18,13 +18,15 @@ def _list_of_fdsn_channels():
         Examples
         --------
         >>> _list_of_fdsn_channels()
-        'MFZ,MFN,MFE,LFZ,LFN,LFE,VFZ,VFN,VFE,UFZ,UFN,UFE'
+        'MFZ,MFN,MFE,MF1,MF2,MF3,LFZ,LFN,LFE,LF1,LF2,LF3,VFZ,VFN,VFE,VF1,VF2,VF3,UFZ,UFN,UFE,UF1,UF2,UF3'
      """
 
     # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     channel_band = ['M', 'L', 'V', 'U']
-    channel_orientation = ['Z', 'N', 'E']
-    # channel_orientation = ['Z', 'N', 'E', '1', '2'] # Some of the data can be stored as '1', '2', which is not supported by this tool.
+    # 'Z', 'N', 'E' (vertical, north, east) and '1', '2', '3' (numeric
+    # orientations some stations use instead) both map to MTH5's
+    # hx/hy/hz components for instrument code F. See fdsn_data_model.md.
+    channel_orientation = ['Z', 'N', 'E', '1', '2', '3']
     channel_instrument = 'F'
     # Create list of all combinations of channel_band, channel_instrument and channel_orientation
     channel_list = ",".join(
