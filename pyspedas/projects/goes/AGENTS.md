@@ -5,15 +5,18 @@ related_files:
   - pyspedas/projects/goes/config.py
   - pyspedas/projects/goes/load.py
   - pyspedas/projects/goes/goes_l1.py
+  - pyspedas/projects/goes/add_goes_xray_annotations.py
   - pyspedas/projects/goes/load_orbit.py
   - pyspedas/projects/goes/README.md
   - pyspedas/projects/goes/tests/test_goes.py
   - pyspedas/utilities/pyspedas_functools.py
   - pyspedas/tplot_tools/importers/netcdf_to_tplot.py
+  - pyspedas/tplot_tools/MPLPlotter/annotate.py
   - .github/workflows/full_coverage.yml
 maintenance: |
   Update when load() or loadr() gains an instrument, datatype branch or keyword,
-  when a NOAA or SPDF server URL changes, or when __init__.py adds a loader.
+  when a NOAA or SPDF server URL changes, or when __init__.py adds a loader or
+  plotting helper.
 ---
 
 # GOES
@@ -28,6 +31,11 @@ the GOES-R format. Unlike most missions the science files are NetCDF, not CDF.
   `loadr()` (GOES-R format files).
 - `goes_l1.py`: L1b paths, explicit MAG/XRS clock mappings, support-data selection,
   particle splitting and per-sensor SGPS timestamps; called only for `level="l1"`.
+- `add_goes_xray_annotations.py`: exported helper for A/B/C/M/X labels and
+  horizontal boundaries on explicitly selected flux panels in W/m^2. It enables
+  log scaling, preserves y limits unless `yrange` is supplied, and replaces only
+  its own tagged decorations on repeated calls. Mixed-coordinate labels use the
+  optional `annotation_clip` argument in `pyspedas/tplot_tools/MPLPlotter/annotate.py`.
 - `load_orbit.py`: `load_orbit()`, SSC ephemeris CDFs from SPDF; exported as
   `orbit`.
 - `__init__.py`: defines the instrument loaders; there are no wrapper modules.

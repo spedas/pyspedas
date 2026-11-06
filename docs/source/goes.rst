@@ -67,3 +67,13 @@ SGPS
 
 .. autofunction:: pyspedas.projects.goes.sgps
 
+X-ray Sensor (XRS)
+----------------------------------------------------------
+
+.. autofunction:: pyspedas.projects.goes.xrs
+
+X-ray flare class annotations
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.projects.goes.add_goes_xray_annotations
+
