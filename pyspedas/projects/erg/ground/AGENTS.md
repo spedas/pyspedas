@@ -17,12 +17,17 @@ related_files:
   - pyspedas/projects/erg/satellite/erg/load.py
   - pyspedas/projects/erg/satellite/erg/get_gatt_ror.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
+  - RULES.md
 maintenance: |
   Update when a ground loader is added or renamed, when a loader's hard-coded site list or
   output naming changes, or when the ground loaders stop sharing the satellite load().
 ---
 
 # ERG-SC ground-based data
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for ground networks whose data the ERG Science Center serves: magnetometers,
 all-sky imagers, SuperDARN radars, riometers and VLF receivers. There is no ground-specific

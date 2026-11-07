@@ -17,6 +17,7 @@ related_files:
   - pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py
   - pyspedas/particles/spd_slice2d
   - pyspedas/projects/mms/tests/test_mms_fpi.py
+  - RULES.md
 maintenance: |
   Update when mms_load_fpi() changes its datatype defaults or the errorflags renaming, or
   when mms_get_fpi_dist() changes the layout, units or angle convention of the
@@ -24,6 +25,10 @@ maintenance: |
 ---
 
 # MMS FPI tools
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loader and helpers for the Fast Plasma Investigation: DES (electrons) and DIS (ions)
 moments, 3D distributions, and quantities derived from them.

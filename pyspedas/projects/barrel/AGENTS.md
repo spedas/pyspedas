@@ -14,12 +14,17 @@ related_files:
   - pyspedas/projects/barrel/README.md
   - pyspedas/projects/barrel/tests/test_barrel.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes its path template, variable prefix or keywords,
   when a wrapper is added, or when balloon flights are added to CONFIG['defaults'].
 ---
 
 # BARREL
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for BARREL (Balloon Array for Radiation belt Relativistic Electron
 Losses) balloon campaigns (spectra, rate counters, magnetometer, ephemeris and

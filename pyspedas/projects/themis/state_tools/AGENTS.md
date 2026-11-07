@@ -24,6 +24,7 @@ related_files:
   - pyspedas/projects/themis/tests/test_themis_spinmodel.py
   - pyspedas/projects/themis/tests/test_themis_autoload_support.py
   - pyspedas/projects/themis/tests/test_themis_lunar_cotrans.py
+  - RULES.md
 maintenance: |
   Update when state() changes what it builds from the support variables, when the spin
   model registry or its correction levels change, or when autoload_support() gains a
@@ -31,6 +32,10 @@ maintenance: |
 ---
 
 # THEMIS state and support data
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Orbit, attitude and ephemeris loaders for THEMIS/ARTEMIS, and the support machinery the
 coordinate transforms and eclipse corrections depend on: the spin model, spin axis

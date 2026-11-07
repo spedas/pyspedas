@@ -26,6 +26,7 @@ related_files:
   - pyspedas/utilities/tests/test_utilities_plot.py
   - pyspedas/utilities/tests/test_utilities_tplotxy.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when tplot() changes its call path (pseudovariable recursion, spec/line
   dispatch, time range, saving), when a plot option is read from a new place, or
@@ -33,6 +34,10 @@ maintenance: |
 ---
 
 # MPLPlotter
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Matplotlib rendering of tplot variables. `tplot()` draws stacked time-series panels;
 the other modules draw one panel type, orbit plots, or add interactive features.

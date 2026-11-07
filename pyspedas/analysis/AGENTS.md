@@ -32,6 +32,7 @@ related_files:
   - pyspedas/utilities/time_interpolate.py
   - pyspedas/utilities/config_testing.py
   - pyspedas/config.py
+  - RULES.md
 maintenance: |
   Update when a routine is added here or re-exported from pyspedas/__init__.py,
   when output naming (suffix defaults, fixed output names) changes, or when a
@@ -39,6 +40,10 @@ maintenance: |
 ---
 
 # analysis
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 General analysis routines ported from IDL SPEDAS: averaging, derivatives,
 interpolation, filtering, wave polarization, wavelets, four-spacecraft gradients and

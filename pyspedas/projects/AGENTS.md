@@ -60,6 +60,7 @@ related_files:
   - pyspedas/tplot_tools/importers/netcdf_to_tplot.py
   - pyspedas/tplot_tools/importers/sts_to_tplot.py
   - pyspedas/tplot_tools/tplot_math/time_clip.py
+  - RULES.md
 maintenance: |
   Update when a mission package is added, removed or renamed (also in __init__.py),
   when a mission gets or loses its own AGENTS.md, or when a mission changes data
@@ -67,6 +68,10 @@ maintenance: |
 ---
 
 # Mission packages
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 One package per mission. `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.

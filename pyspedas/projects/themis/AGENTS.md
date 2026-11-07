@@ -13,12 +13,17 @@ related_files:
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/download.py
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
+  - RULES.md
 maintenance: |
   Update when load.py's instrument chain or keywords change, when __init__.py
   adds or renames a loader, or when a subfolder gets its own AGENTS.md.
 ---
 
 # THEMIS / ARTEMIS
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 ## Layout
 

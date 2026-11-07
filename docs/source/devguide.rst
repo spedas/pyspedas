@@ -279,6 +279,27 @@ The workflow does not retry failures automatically. Investigate code or assertio
 failures rather than treating them as server outages. Once all shards succeed,
 the workflow combines their coverage data and uploads the report to Coveralls.
 
+Breaking changes and deprecations
+---------------------------------
+
+Many people run PySPEDAS from scripts, notebooks and processing software that
+the developers never see.  A change that can break existing, previously correct
+code must be phased in.  This covers removing or renaming a user-facing routine,
+configuration parameter or parameter; removing a previously valid parameter
+value; changing how a parameter is interpreted, or a routine's logic, in a way
+that is inconsistent with the old behavior; and dependency changes that prevent
+installation on a supported platform or Python version.  Internal helpers and
+fixes for clearly undesirable behavior are not covered.
+
+During a transition period of at least several months, the old construct keeps
+working, logs a warning (``logging.warning``) containing "deprecated" that names
+the replacement, is exercised by CI tests that check the warning, and is marked
+deprecated in its docstring.  It can be removed only in a major release, for
+example PySPEDAS 2.x to 3.0.  The complete rules, with a worked example, are in
+`RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__ at the
+repository root.  If you are not sure whether a change is covered, ask the
+developer team before proceeding.
+
 Submitting a pull request
 -------------------------
 
@@ -294,6 +315,10 @@ Before requesting review:
 #. Register new test modules in the appropriate CI workflows and shards.
 #. Update docstrings and RST pages for new or changed user-facing functionality,
    build the HTML and inspect the affected pages.
+#. If the change renames, removes or changes the behavior of a user-facing
+   routine, parameter, configuration setting or dependency, follow the rules in
+   `RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__ and list
+   each deprecation in the pull request description.
 #. Review ``git status`` and the diff. Stage intended new source files, tests,
    documentation pages and images with ``git add``. This includes files created
    by a coding assistant; untracked files will not be included in a commit unless

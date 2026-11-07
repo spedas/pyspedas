@@ -36,6 +36,7 @@ related_files:
   - pyspedas/tplot_tools/time_string.py
   - .github/workflows/quick_tests.yml
   - .github/workflows/zenodo_draft.yml
+  - RULES.md
 maintenance: |
   Update when download() or dailynames() change their matching, caching or
   fallback behavior, when a helper is added here or re-exported from
@@ -43,6 +44,10 @@ maintenance: |
 ---
 
 # utilities
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Shared helpers: downloading and file-name generation for the mission loaders,
 interpolation, time-scale conversions, magnetopause and bow shock models, and

@@ -18,6 +18,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py adds or changes an instrument branch or path template, when
   a wrapper's instrument code or default datatype changes, or when __init__.py
@@ -25,6 +26,10 @@ maintenance: |
 ---
 
 # ACE
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for the Advanced Composition Explorer: magnetic field, solar wind
 plasma, energetic particles and composition. All data are daily CDF files from

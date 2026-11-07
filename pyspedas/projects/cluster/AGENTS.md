@@ -26,6 +26,7 @@ related_files:
   - pyspedas/utilities/download.py
   - pyspedas/preferences.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch or the CIS distribution paths,
   when load_csa.py changes its CSA query or keywords, or when __init__.py adds a
@@ -33,6 +34,10 @@ maintenance: |
 ---
 
 # Cluster
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for the four Cluster spacecraft. There are two routes: per-instrument
 wrappers that read CDAWeb CDFs from SPDF, and `load_csa()`, which requests
