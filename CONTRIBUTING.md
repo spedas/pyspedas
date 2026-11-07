@@ -39,10 +39,15 @@ Before requesting review:
 3. Update NumPy-style docstrings and the RST documentation for new user-facing
    routines or changed parameters, data types, return values, or behavior. Build
    the HTML locally and inspect the affected pages.
-4. Check `git status` and the diff. Stage intended new source files, tests, RST
+4. If the change renames, removes or changes the behavior of a user-facing
+   routine, parameter, configuration setting or dependency, follow the rules
+   for breaking changes in [RULES.md](RULES.md): keep the old form working with
+   a deprecation warning, tests and documentation until the next major release,
+   and list each deprecation in the pull request description.
+5. Check `git status` and the diff. Stage intended new source files, tests, RST
    pages and images with `git add`, including files created by a coding assistant.
    Keep downloaded data, local environments and scratch files out of the commit.
-5. Commit and push the branch, then open a pull request targeting `master`.
+6. Commit and push the branch, then open a pull request targeting `master`.
    Describe the change, tests and documentation updates. To close an issue on
    merge, use a closing keyword such as `Fixes #123` in the PR description when
    the change fully resolves that issue; merely mentioning an issue is not enough.

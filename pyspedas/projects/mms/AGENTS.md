@@ -28,6 +28,7 @@ related_files:
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/download.py
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
+  - RULES.md
 maintenance: |
   Update when mms_load_data.py or mms_load_data_spdf.py change how files are found or
   grouped, when mms_login_lasp.py changes credential handling, or when __init__.py adds,
@@ -35,6 +36,10 @@ maintenance: |
 ---
 
 # MMS
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders and analysis tools for the four Magnetospheric Multiscale spacecraft. All CDF
 instrument loaders go through `mms_load_data.py`, which asks the LASP Science Data

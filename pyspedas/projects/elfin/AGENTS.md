@@ -25,6 +25,7 @@ related_files:
   - pyspedas/preferences.py
   - pyproject.toml
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template, when the EPD L1 or L2
   post-processing or its keywords change, when a calibration data file is added,
@@ -32,6 +33,10 @@ maintenance: |
 ---
 
 # ELFIN
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for the ELFIN-A and ELFIN-B spacecraft: energetic particles (EPD),
 magnetometer (FGM), state, magnetoresistive magnetometers

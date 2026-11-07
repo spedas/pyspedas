@@ -20,6 +20,7 @@ related_files:
   - pyspedas/projects/mms/feeps_tools/sun
   - pyspedas/projects/mms/mms_load_data.py
   - pyspedas/projects/mms/tests/test_mms_feeps.py
+  - RULES.md
 maintenance: |
   Update when the correction chain in feeps.py changes order or gains a step, when a
   helper changes the variable-name suffix it writes, or when new sun-contamination CSV
@@ -27,6 +28,10 @@ maintenance: |
 ---
 
 # MMS FEEPS tools
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loader and post-processing for the Fly's Eye Energetic Particle Sensor (FEEPS), which
 measures energetic electrons and ions on each MMS spacecraft. `mms_load_feeps()` loads the

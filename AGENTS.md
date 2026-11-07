@@ -37,10 +37,14 @@ related_files:
   - .agents/skills/agents-map/SKILL.md
   - .agents/map/MAP.md
   - .agents/map/graph.json
+  - RULES.md
+  - .agents/skills/deprecation-scan/SKILL.md
+  - .github/scripts/scan_deprecations.py
 maintenance: |
   Update when the package layout, the loader pipeline, tplot storage or the test
   setup, branching policy or documentation workflow changes, and list any new
-  AGENTS.md whose nearest parent is this file.
+  AGENTS.md whose nearest parent is this file. If RULES.md moves or is renamed,
+  update the pointer under the title of every AGENTS.md.
 ---
 
 # PySPEDAS
@@ -49,6 +53,16 @@ Python Space Physics Environment Data Analysis Software. Mission loaders downloa
 data files (mostly CDF) and store them as tplot variables; the rest of the package
 analyzes, transforms and plots those variables. Package code is in `pyspedas/`;
 dependencies are in `pyproject.toml`.
+
+## Repository rules
+
+`RULES.md` holds the rules that every change follows, whether a person or an
+agent makes it. Read it before you rename, remove or change the behavior of a
+user-facing routine, parameter, configuration setting or dependency: such a
+change is phased in with a deprecation warning, tests and documentation, and
+the old form is removed only in a major release. If you can't tell whether a
+change is covered, ask the human before making it. To find deprecated code that
+doesn't follow these rules yet, use `.agents/skills/deprecation-scan/SKILL.md`.
 
 ## Layout
 
@@ -201,6 +215,9 @@ header with exactly two fields:
   describes and every related AGENTS.md (the nearest parent, the children, and
   any other it points to), as repo-relative paths.
 - `maintenance`: when and how to update that AGENTS.md.
+
+Under its title, every AGENTS.md points to `RULES.md` and lists it in
+`related_files`. Give a new AGENTS.md the same pointer.
 
 Write only what the code or its comments show. Every statement about what a
 routine does, its keywords and defaults, or the science or instrument behind it

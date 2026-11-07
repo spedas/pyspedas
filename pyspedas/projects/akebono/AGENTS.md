@@ -15,12 +15,17 @@ related_files:
   - pyspedas/projects/akebono/tests/test_akebono.py
   - pyspedas/cotrans_tools/xyz_to_polar.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template or the JAXA server, or when the
   RDM or orbit text parsing in *_postprocessing.py changes its variable names.
 ---
 
 # Akebono
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for the Akebono satellite: plasma waves (PWS),
 radiation monitor (RDM) and orbit. Data come from JAXA's DARTS archive, not

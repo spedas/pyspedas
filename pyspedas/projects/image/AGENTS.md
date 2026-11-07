@@ -16,12 +16,17 @@ related_files:
   - pyspedas/projects/image/tests/test_image.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument branch or keyword, or when
   a wrapper is added to __init__.py.
 ---
 
 # IMAGE
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for the IMAGE mission (neutral atom imagers, radio plasma
 imaging, EUV and FUV imagers) and its orbit files. All data are CDF files

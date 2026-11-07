@@ -13,12 +13,17 @@ related_files:
   - pyspedas/projects/solo/tests/test_solo.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template, the level handling or the file
   naming for an instrument, or when __init__.py adds a loader.
 ---
 
 # Solar Orbiter
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for Solar Orbiter in-situ instruments: MAG, RPW, SWA and EPD. All data
 are CDF files from SPDF.

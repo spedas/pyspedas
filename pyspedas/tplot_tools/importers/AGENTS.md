@@ -12,6 +12,7 @@ related_files:
   - pyspedas/projects/goes/load.py
   - pyspedas/projects/poes/load.py
   - pyspedas/projects/maven/maven_load.py
+  - RULES.md
 maintenance: |
   Update when cdf_to_tplot changes which CDF attributes it reads or how it fills
   .attrs and plot options, when a reader gains or loses a keyword, or when a new
@@ -19,6 +20,10 @@ maintenance: |
 ---
 
 # importers
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Readers that turn data files into tplot variables. Mission loaders call the file readers
 (not `tplot_restore()`) after downloading; all four are re-exported from `pyspedas`.

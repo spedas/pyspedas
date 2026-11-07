@@ -18,6 +18,7 @@ related_files:
   - pyspedas/utilities/download.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template, the server or credential logic,
   the version handling or the automatic prefixes, when a wrapper changes its
@@ -26,6 +27,10 @@ maintenance: |
 ---
 
 # Parker Solar Probe
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Loaders for PSP: FIELDS (magnetometer, RFS radio, DFB spectra, QTN, SCaM),
 SWEAP (SPC, SPAN-e, SPAN-i) and ISOIS (EPI-Hi, EPI-Lo, merged EPI). Public data

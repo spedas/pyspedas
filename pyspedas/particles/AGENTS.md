@@ -31,6 +31,7 @@ related_files:
   - pyspedas/projects/erg/satellite/erg/particle/erg_lep_part_products.py
   - pyspedas/cotrans_tools/quaternions.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when the particle distribution dict gains or changes required keys,
   when a mission starts or stops using these routines, or when a routine moves
@@ -38,6 +39,10 @@ maintenance: |
 ---
 
 # particles
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you rename, remove or change the behavior of a user-facing routine,
+parameter, configuration setting or dependency.
 
 Mission-independent pieces for 3-D particle distributions, ported from IDL SPEDAS:
 moments, spectrogram and FAC helpers for "part_products", and 2-D slices. The README
