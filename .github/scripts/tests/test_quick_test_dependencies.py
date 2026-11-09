@@ -28,10 +28,10 @@ class DependencyPolicyTests(unittest.TestCase):
     def record(self, args, **kwargs):
         self.calls.append((args, dict(kwargs['env'])))
 
-    def install(self, policy, runner=None):
+    def install(self, policy, runner=None, **kwargs):
         policy_installer.install(policy, self.root, '/test/bin/python',
                                  '/tools/bin/python', self.root / 'diagnostics',
-                                 runner=runner or self.record)
+                                 runner=runner or self.record, **kwargs)
         self.assertEqual(self.lock.read_text(), 'sentinel: never rewrite the project lockfile\n')
 
     def test_default_keeps_runtime_pip_resolution_unconstrained(self):
@@ -80,6 +80,17 @@ class DependencyPolicyTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.install('arbitrary')
         self.assertFalse(self.calls)
+
+    def test_prepared_wheel_skips_build_and_lint_group(self):
+        # Verify matrix jobs can reuse prepare's wheel without lint dependencies.
+        wheel = self.root / 'prepared.whl'
+        wheel.touch()
+        self.install('default', skip_lint=True, wheel_path=wheel)
+        sync = next(a for a, _ in self.calls if 'sync' in a)
+        self.assertNotIn('lint', sync)
+        self.assertFalse(any('build' in a for a, _ in self.calls))
+        final = next(a for a, _ in self.calls if any(v.endswith('.whl[mth5]') for v in a))
+        self.assertIn(f'{wheel}[mth5]', final)
 
 
 if __name__ == '__main__':

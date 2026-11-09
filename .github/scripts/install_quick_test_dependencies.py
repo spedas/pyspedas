@@ -16,8 +16,9 @@ import shlex
 import subprocess
 
 
-def install(policy, root, python, tools_python, output_dir, runner=subprocess.run):
-    """Resolve, build and install, keeping resolver tools outside the test venv."""
+def install(policy, root, python, tools_python, output_dir, runner=subprocess.run,
+            skip_lint=False, wheel_path=None):
+    """Resolve and install, keeping resolver tools outside the test venv."""
     if policy not in ('default', 'latest', 'oldest'):
         raise ValueError(f'Unknown dependency policy: {policy}')
     root = Path(root).resolve()
@@ -46,15 +47,19 @@ def install(policy, root, python, tools_python, output_dir, runner=subprocess.ru
     def pip(*args):
         run(python, '-m', 'pip', *args)
 
-    groups = ('--group', 'lint', '--group', 'test', '--group', 'setup')
+    # Matrix test jobs do not need lint tools because quality runs separately.
+    groups = ('--group', 'test', '--group', 'setup') if skip_lint else (
+        '--group', 'lint', '--group', 'test', '--group', 'setup')
     runtime = output_dir / 'oldest-runtime.txt'
     if policy == 'default':
         # Only development groups come from pdm.lock. Runtime dependencies below
         # intentionally follow pip's normal already-satisfied/only-if-needed rules.
         env['PDM_USE_UV'] = 'false'
         run(tools_python, '-m', 'pdm', 'use', '--first', python)
-        run(tools_python, '-m', 'pdm', 'sync', '-dG', 'lint', '-dG', 'test',
-            '-dG', 'setup', '--no-default', '--no-self')
+        sync_groups = ('-dG', 'test', '-dG', 'setup') if skip_lint else (
+            '-dG', 'lint', '-dG', 'test', '-dG', 'setup')
+        run(tools_python, '-m', 'pdm', 'sync', *sync_groups, '--no-default',
+            '--no-self')
         pip('install', 'coverage')
     elif policy == 'latest':
         pip('install', '--upgrade', '--upgrade-strategy', 'eager', '--group', 'setup')
@@ -71,11 +76,18 @@ def install(policy, root, python, tools_python, output_dir, runner=subprocess.ru
 
     # Build with policy-selected setup tools, without fetching unrelated tools in
     # a separate build environment. pip's dependency builds inherit the cutoff.
-    run(python, '-m', 'build', '--no-isolation')
-    wheels = sorted((root / 'dist').glob('*.whl'))
-    if len(wheels) != 1:
-        raise RuntimeError(f'Expected one built wheel in dist/, found {len(wheels)}')
-    wheel = str(wheels[0]) + '[mth5]'
+    # Reuse the wheel built by prepare when one is provided.
+    if wheel_path is None:
+        run(python, '-m', 'build', '--no-isolation')
+        wheels = sorted((root / 'dist').glob('*.whl'))
+        if len(wheels) != 1:
+            raise RuntimeError(f'Expected one built wheel in dist/, found {len(wheels)}')
+        wheel_path = wheels[0]
+    else:
+        wheel_path = Path(wheel_path).resolve()
+        if not wheel_path.is_file():
+            raise RuntimeError(f'Wheel file does not exist: {wheel_path}')
+    wheel = str(wheel_path) + '[mth5]'
     report = output_dir / 'runtime-install.json'
     if policy == 'latest':
         pip('install', '--upgrade', '--upgrade-strategy', 'eager', *groups,
@@ -96,9 +108,12 @@ def main():
     parser.add_argument('--python', required=True)
     parser.add_argument('--tools-python', required=True)
     parser.add_argument('--output-dir', required=True)
+    parser.add_argument('--skip-lint', action='store_true')
+    parser.add_argument('--wheel-path')
     args = parser.parse_args()
     install(args.policy, Path(__file__).resolve().parents[2], args.python,
-            args.tools_python, args.output_dir)
+            args.tools_python, args.output_dir, skip_lint=args.skip_lint,
+            wheel_path=args.wheel_path)
 
 
 if __name__ == '__main__':

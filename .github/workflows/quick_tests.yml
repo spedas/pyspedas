@@ -32,7 +32,85 @@ permissions:
   contents: read
 
 jobs:
+  # Build the shared source bundle and wheel once for downstream jobs.
+  prepare:
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PYTHON_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Build shared artifacts
+      run: |
+        python -m venv ../.venv
+        source ../.venv/bin/activate
+        python -m pip install --group setup
+        python -m build --no-isolation
+        tar --exclude='./.git' --exclude='./dist' --exclude='./build' \
+          --exclude='*/__pycache__' -czf "$RUNNER_TEMP/pyspedas-source.tar.gz" .
+    - name: Upload prepared source
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: ${{ runner.temp }}/pyspedas-source.tar.gz
+    - name: Upload prepared wheel
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: dist/*.whl
+
+  # Run quality checks once using the artifacts prepared above.
+  quality:
+    needs: prepare
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PYTHON_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    # Reuse the prepared source instead of checking out the repository again.
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: source-bundle
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Create quality environment
+      run: |
+        python -m venv ../.venv
+        source ../.venv/bin/activate
+        python -m pip install --group lint
+    - name: Test dependency policy handling
+      run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+    - name: Lint with flake8
+      run: |
+        source ../.venv/bin/activate
+        flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
+        flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+    - name: Lint with ruff
+      run: |
+        source ../.venv/bin/activate
+        ruff check . --select=E9,F63,F7,F82 --statistics
+        ruff check . --exit-zero --statistics --line-length=127
+
   build:
+    needs: prepare
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -63,13 +141,23 @@ jobs:
           - missions-non-spdf
 
     steps:
-    - uses: actions/checkout@v5
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Test dependency policy handling
-      run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+    # Each parallel test job downloads the shared inputs but keeps its own environment.
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: source-bundle
+    - name: Download prepared wheel
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: quick-test-wheel
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
     - name: Create test and resolver environments
       run: |
         python -m venv ../.venv
@@ -90,26 +178,16 @@ jobs:
     - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
       run: |
         source ../.venv/bin/activate
+        # Use the wheel from prepare and omit lint tools already checked by quality.
+        wheel_path=$(find quick-test-wheel -type f -name '*.whl' -print -quit)
+        test -n "$wheel_path"
         python .github/scripts/install_quick_test_dependencies.py \
           --policy "$DEPENDENCY_POLICY" \
           --python "$VIRTUAL_ENV/bin/python" \
           --tools-python "$RUNNER_TEMP/quick-test-tools/bin/python" \
-          --output-dir "$RUNNER_TEMP/quick-test-dependencies"
-    - name: Lint with flake8
-      run: |
-        source ../.venv/bin/activate
-        #pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
-        # exit-zero treats all errors as warnings. 
-        flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
-    - name: Lint with ruff
-      run: |
-        source ../.venv/bin/activate
-        # stop the build if there are Python syntax errors or undefined names
-        ruff check .  --select=E9,F63,F7,F82 --statistics
-        # exit-zero treats all errors as warnings. 
-        ruff check . --exit-zero --statistics --line-length=127
+          --output-dir "$RUNNER_TEMP/quick-test-dependencies" \
+          --skip-lint \
+          --wheel-path "$wheel_path"
     - name: Hide the repo copy so imports use site-packages
       run: |
         source ../.venv/bin/activate
