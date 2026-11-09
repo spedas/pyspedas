@@ -89,9 +89,9 @@ class Tplot_Map(Basemap):
         self._params.basemap.update(basemap_kwargs)
         self._params.basemap["ax"]=ax
 
+        self.view = view
         # TODO: need to update position values to suitable locations
-        if view is not None:
-            self.view = view
+        if self.view is not None:
             match self.view:
                 case "North America":
                     option_dict["basemap"].update({"lat_0":0,"lon_0":0})
@@ -101,7 +101,7 @@ class Tplot_Map(Basemap):
                     option_dict["basemap"].update({"lat_0":0,"lon_0":0})
                 case "South Polar":
                     option_dict["basemap"].update({"lat_0":0,"lon_0":0})
-
+        
         if option_dict is not None:
             for map_plottype,plot_options in option_dict.items():
                 match map_plottype:
