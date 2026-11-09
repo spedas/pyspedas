@@ -28,6 +28,18 @@ stale credentials file causes confusing errors, delete ``~/mms_auth_info.pkl``
 ``always_prompt=True`` to enter fresh credentials.
 
 
+Cleaning the local MMS cache
+----------------------------
+
+``mms_remove_old_files`` checks local CDF filenames against the MMS Science
+Data Center (SDC). Files no longer listed by the SDC are candidates for removal.
+The default is a dry run: review the returned paths and size before calling it
+with ``dry_run=False``. Both calls require internet access and use the configured
+MMS local data directory; the read-only mirror is excluded.
+
+.. autofunction:: pyspedas.projects.mms.mms_remove_old_files
+
+
 MMS Fast Survey and Burst Time Intervals
 -----------------------------------------
 
