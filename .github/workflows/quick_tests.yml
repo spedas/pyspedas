@@ -135,155 +135,88 @@ jobs:
             test-command: |
               # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
               echo IP address for this test:
-              coverage run -a -m pyspedas.utilities.tests.test_find_ip_address
-              echo Starting DOI metadata tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_doi
-              echo Starting Zenodo draft client tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
-              echo Starting utilities download tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_download
-              echo Starting utilities misc tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
-              echo Starting user preferences tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_preferences
-              echo Starting utilities URI tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_download_uri
-              echo Starting utilities xdegap tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_xdegap
-              echo Starting utilities tplot_math tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_math
-              echo Starting utilities interp_nan tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_interp_nan
-              echo Starting utilities time_tests tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_time
-              echo Starting utilities libs_tests tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_libs
-              echo Starting tinterpol_mxn tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_tinterpol_mxn
-              echo Starting interpolate_rotation tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_interpolate_rotation
+              run_test "utilities find_ip_address" pyspedas.utilities.tests.test_find_ip_address
+              run_test "DOI metadata" pyspedas.utilities.tests.test_doi
+              run_test "Zenodo draft client" pyspedas.utilities.tests.test_zenodo_draft
+              run_test "utilities download" pyspedas.utilities.tests.test_utilities_download
+              run_test "utilities misc" pyspedas.utilities.tests.test_utilities_misc
+              run_test "user preferences" pyspedas.utilities.tests.test_preferences
+              run_test "utilities URI" pyspedas.utilities.tests.test_utilities_download_uri
+              run_test "utilities xdegap" pyspedas.utilities.tests.test_xdegap
+              run_test "utilities tplot_math" pyspedas.utilities.tests.test_math
+              run_test "utilities interp_nan" pyspedas.utilities.tests.test_interp_nan
+              run_test "utilities time_tests" pyspedas.utilities.tests.test_utilities_time
+              run_test "utilities libs_tests" pyspedas.utilities.tests.test_utilities_libs
+              run_test "tinterpol_mxn" pyspedas.utilities.tests.test_tinterpol_mxn
+              run_test "interpolate_rotation" pyspedas.utilities.tests.test_interpolate_rotation
           - test-group: tplot
             test-command: |
-              echo Starting tplot wildcard tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_tplot_wildcard
-              echo Starting plotting tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_plot
-              echo Starting wrap_label tests at `date`
-              coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
-              echo Starting fill_between tests at `date`
-              coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_fill_between
-              echo Starting grid and background plot option tests at `date`
-              coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
-              echo Starting orbit plot tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
-              echo Starting orbit plot range tests at `date`
-              coverage run -a -m pyspedas.utilities.tests.test_tplotxy_ranges
+              run_test "tplot wildcard" pyspedas.utilities.tests.test_utilities_tplot_wildcard
+              run_test "plotting" pyspedas.utilities.tests.test_utilities_plot
+              run_test "wrap_label" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
+              run_test "fill_between" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_fill_between
+              run_test "grid and background plot options" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
+              run_test "orbit plot" pyspedas.utilities.tests.test_utilities_tplotxy
+              run_test "orbit plot ranges" pyspedas.utilities.tests.test_tplotxy_ranges
           - test-group: cotrans
             test-command: |
-              echo Starting cotrans quaternion tests at `date`
-              coverage run -a -m pyspedas.cotrans_tools.tests.test_quaternions
-              echo Starting cotrans tests at `date`
-              coverage run -a -m pyspedas.cotrans_tools.tests.test_cotrans
-              echo Starting cotrans minvar tests at `date`
-              coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
-              echo Starting cotrans fac tests at `date`
-              coverage run -a -m pyspedas.cotrans_tools.tests.test_fac
-              echo Starting cotrans lmn tests at `date`
-              coverage run -a -m pyspedas.cotrans_tools.tests.test_lmn
+              run_test "cotrans quaternion" pyspedas.cotrans_tools.tests.test_quaternions
+              run_test "cotrans" pyspedas.cotrans_tools.tests.test_cotrans
+              run_test "cotrans minvar" pyspedas.cotrans_tools.tests.test_minvar
+              run_test "cotrans fac" pyspedas.cotrans_tools.tests.test_fac
+              run_test "cotrans lmn" pyspedas.cotrans_tools.tests.test_lmn
           - test-group: analysis
             test-command: |
-              echo Starting analysis tests at `date`
-              coverage run -a -m pyspedas.analysis.tests.test_analysis
-              echo Starting analysis wavpol tests at `date`
-              coverage run -a -m pyspedas.analysis.tests.test_twavpol
-              echo Starting analysis wavelet tests at `date`
-              coverage run -a -m pyspedas.analysis.tests.test_wavelet
+              run_test "analysis" pyspedas.analysis.tests.test_analysis
+              run_test "analysis wavpol" pyspedas.analysis.tests.test_twavpol
+              run_test "analysis wavelet" pyspedas.analysis.tests.test_wavelet
           - test-group: hapi
             test-command: |
-              echo "Starting HAPI TestData tests"
-              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
+              run_test "HAPI TestData" pyspedas.hapi_tools.tests.test_hapi_testdata
           - test-group: themis
             test-command: |
-              echo Starting themis tplot_time  tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_tplot_time
-              echo Starting themis version tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_versions
-              echo Starting themis tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis
-              echo Starting themis S3 tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_s3
-              echo Starting themis_check_args tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_check_args
-              echo Starting themis autoload support tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_autoload_support
-              echo Starting themis cal_fit tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_cal_fit
-              echo Starting themis dsl_cotrans tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_dsl_cotrans
-              echo Starting themis lunar_cotrans tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_lunar_cotrans
-              echo Starting themis spinmodel tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_spinmodel
-              echo Starting themis state tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_state
-              echo Starting themis scpot2dens tests at `date`
-              coverage run -a -m pyspedas.projects.themis.tests.test_themis_scpot2dens
+              run_test "themis tplot_time" pyspedas.projects.themis.tests.test_themis_tplot_time
+              run_test "themis version" pyspedas.projects.themis.tests.test_themis_versions
+              run_test "themis" pyspedas.projects.themis.tests.test_themis
+              run_test "themis S3" pyspedas.projects.themis.tests.test_themis_s3
+              run_test "themis_check_args" pyspedas.projects.themis.tests.test_themis_check_args
+              run_test "themis autoload support" pyspedas.projects.themis.tests.test_themis_autoload_support
+              run_test "themis cal_fit" pyspedas.projects.themis.tests.test_themis_cal_fit
+              run_test "themis dsl_cotrans" pyspedas.projects.themis.tests.test_themis_dsl_cotrans
+              run_test "themis lunar_cotrans" pyspedas.projects.themis.tests.test_themis_lunar_cotrans
+              run_test "themis spinmodel" pyspedas.projects.themis.tests.test_themis_spinmodel
+              run_test "themis state" pyspedas.projects.themis.tests.test_themis_state
+              run_test "themis scpot2dens" pyspedas.projects.themis.tests.test_themis_scpot2dens
           - test-group: missions-spdf
             test-command: |
-              echo Starting ace tests at `date`
-              coverage run -a -m pyspedas.projects.ace.tests.test_ace
-              echo Starting barrel tests at `date`
-              coverage run -a -m pyspedas.projects.barrel.tests.test_barrel
-              echo Starting soho tests at `date`
-              coverage run -a -m pyspedas.projects.soho.tests.test_soho
-              echo Starting de2 tests at `date`
-              coverage run -a -m pyspedas.projects.de2.tests.test_de2
-              echo Starting st5 tests at `date`
-              coverage run -a -m pyspedas.projects.st5.tests.test_st5
-              echo Starting lanl tests at `date`
-              coverage run -a -m pyspedas.projects.lanl.tests.test_lanl
-              echo Starting cnofs tests at `date`
-              coverage run -a -m pyspedas.projects.cnofs.tests.test_cnofs
-              echo Starting dmsp tests at `date`
-              coverage run -a -m pyspedas.projects.dmsp.tests.test_dmsp
-              echo Starting dscovr tests at `date`
-              coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
-              echo Starting csswe tests at `date`
-              coverage run -a -m pyspedas.projects.csswe.tests.test_csswe
-              echo Starting equator_s tests at `date`
-              coverage run -a -m pyspedas.projects.equator_s.tests.test_equator_s
-              echo Starting image tests at `date`
-              coverage run -a -m pyspedas.projects.image.tests.test_image
-              echo Starting psp tests at `date`
-              coverage run -a -m pyspedas.projects.psp.tests.test_psp
-              echo Starting rbsp tests at `date`
-              coverage run -a -m pyspedas.projects.rbsp.tests.test_rbsp
-              echo Starting twins tests at `date`
-              coverage run -a -m pyspedas.projects.twins.tests.test_twins
-              echo Starting wind tests at `date`
-              coverage run -a -m pyspedas.projects.wind.tests.test_wind
-              echo Starting polar tests at `date`
-              coverage run -a -m pyspedas.projects.polar.tests.test_polar
-              echo Starting geotail tests at `date`
-              coverage run -a -m pyspedas.projects.geotail.tests.test_geotail
-              echo Starting fast tests at `date`
-              coverage run -a -m pyspedas.projects.fast.tests.test_fast
-              echo Starting omni tests at `date`
-              coverage run -a -m pyspedas.projects.omni.tests.test_omni
-              echo Starting ulysses tests at `date`
-              coverage run -a -m pyspedas.projects.ulysses.tests.test_ulysses
-              echo Starting solo tests at `date`
-              coverage run -a -m pyspedas.projects.solo.tests.test_solo
+              run_test "ace" pyspedas.projects.ace.tests.test_ace
+              run_test "barrel" pyspedas.projects.barrel.tests.test_barrel
+              run_test "soho" pyspedas.projects.soho.tests.test_soho
+              run_test "de2" pyspedas.projects.de2.tests.test_de2
+              run_test "st5" pyspedas.projects.st5.tests.test_st5
+              run_test "lanl" pyspedas.projects.lanl.tests.test_lanl
+              run_test "cnofs" pyspedas.projects.cnofs.tests.test_cnofs
+              run_test "dmsp" pyspedas.projects.dmsp.tests.test_dmsp
+              run_test "dscovr" pyspedas.projects.dscovr.tests.test_dscovr
+              run_test "csswe" pyspedas.projects.csswe.tests.test_csswe
+              run_test "equator_s" pyspedas.projects.equator_s.tests.test_equator_s
+              run_test "image" pyspedas.projects.image.tests.test_image
+              run_test "psp" pyspedas.projects.psp.tests.test_psp
+              run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
+              run_test "twins" pyspedas.projects.twins.tests.test_twins
+              run_test "wind" pyspedas.projects.wind.tests.test_wind
+              run_test "polar" pyspedas.projects.polar.tests.test_polar
+              run_test "geotail" pyspedas.projects.geotail.tests.test_geotail
+              run_test "fast" pyspedas.projects.fast.tests.test_fast
+              run_test "omni" pyspedas.projects.omni.tests.test_omni
+              run_test "ulysses" pyspedas.projects.ulysses.tests.test_ulysses
+              run_test "solo" pyspedas.projects.solo.tests.test_solo
           - test-group: missions-non-spdf
             test-command: |
-              echo Starting swfo tests at `date`
-              coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
-              echo Starting stereo tests at `date`
-              coverage run -a -m pyspedas.projects.stereo.tests.test_stereo
-              echo Starting kyoto tests at `date`
-              coverage run -a -m pyspedas.projects.kyoto.tests.test_kyoto
-              echo Starting swarm tests at `date`
-              coverage run -a -m pyspedas.projects.swarm.tests.test_swarm
+              run_test "swfo" pyspedas.projects.swfo.tests.test_swfo
+              run_test "stereo" pyspedas.projects.stereo.tests.test_stereo
+              run_test "kyoto" pyspedas.projects.kyoto.tests.test_kyoto
+              run_test "swarm" pyspedas.projects.swarm.tests.test_swarm
               # These tests use a DAS2 server at UIowa.
               #echo "Starting galileo tests at $(date)"
               #coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
@@ -393,6 +326,23 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         source ../.venv/bin/activate
+        # Group each test and annotate failures without duplicating shell logic.
+        run_test() {
+          local name="$1"
+          local module="$2"
+          local status
+
+          echo "::group::$name"
+          echo "Starting $name tests at `date`"
+          if coverage run -a -m "$module"; then
+            status=0
+          else
+            status=$?
+            echo "::error title=Quick test failed::$name"
+          fi
+          echo "::endgroup::"
+          return "$status"
+        }
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
@@ -421,6 +371,7 @@ jobs:
       with:
         name: quick-test-coverage-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.test-group }}
         path: ${{ runner.temp }}/quick-test-coverage/
+        include-hidden-files: true
         if-no-files-found: warn
     - name: Record installed dependencies
       if: always()
