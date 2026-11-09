@@ -25,8 +25,7 @@ maintenance: |
 # Wind
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the Wind solar wind mission: magnetic field, plasma, composition,
 3DP particles, WAVES radio and orbit/attitude. All data are CDF files, from SPDF

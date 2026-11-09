@@ -44,10 +44,12 @@ Before requesting review:
    for breaking changes in [RULES.md](RULES.md): keep the old form working with
    a deprecation warning, tests and documentation until the next major release,
    and list each deprecation in the pull request description.
-5. Check `git status` and the diff. Stage intended new source files, tests, RST
+5. If the change ports a feature from IDL SPEDAS or adds a dependency, follow
+   the matching section of [RULES.md](RULES.md).
+6. Check `git status` and the diff. Stage intended new source files, tests, RST
    pages and images with `git add`, including files created by a coding assistant.
    Keep downloaded data, local environments and scratch files out of the commit.
-6. Commit and push the branch, then open a pull request targeting `master`.
+7. Commit and push the branch, then open a pull request targeting `master`.
    Describe the change, tests and documentation updates. To close an issue on
    merge, use a closing keyword such as `Fixes #123` in the PR description when
    the change fully resolves that issue; merely mentioning an issue is not enough.

@@ -70,8 +70,7 @@ maintenance: |
 # Mission packages
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 One package per mission. `__init__.py` imports all of them, so `import pyspedas`
 loads every mission, and `pyspedas.projects.<mission>.<instrument>()` is the entry point.

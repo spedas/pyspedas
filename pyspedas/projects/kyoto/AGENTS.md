@@ -23,8 +23,7 @@ maintenance: |
 # Kyoto geomagnetic indices
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the Dst and AE-family indices from the World Data Center for
 Geomagnetism, Kyoto. The data are HTML and text pages, not CDF; the code here

@@ -34,8 +34,7 @@ maintenance: |
 # MMS particle distribution tools
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Spectrograms, moments and 2D slices from MMS FPI and HPCA 3D distributions. These are the
 MMS front ends to the generic particle code in `pyspedas/particles/`.

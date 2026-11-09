@@ -36,8 +36,7 @@ maintenance: |
 # MPLPlotter
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Matplotlib rendering of tplot variables. `tplot()` draws stacked time-series panels;
 the other modules draw one panel type, orbit plots, or add interactive features.

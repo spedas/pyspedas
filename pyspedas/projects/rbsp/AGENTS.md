@@ -33,8 +33,7 @@ maintenance: |
 # RBSP (Van Allen Probes)
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the two Van Allen Probes, `a` and `b`: EMFISIS, EFW, RBSPICE, the
 ECT suite (MagEIS, HOPE, REPT), the RPS proton spectrometer and the ECT magnetic

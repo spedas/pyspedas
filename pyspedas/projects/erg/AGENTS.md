@@ -28,8 +28,7 @@ maintenance: |
 # Arase (ERG)
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the Arase (ERG) satellite and for the ground-based networks served by the ERG
 Science Center (ERG-SC, ISEE, Nagoya University), plus Arase coordinate transforms and

@@ -21,8 +21,7 @@ maintenance: |
 # SECS / EICS
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loader and map plots for the spherical elementary current systems (SECS) and
 equivalent ionospheric currents (EICS) over North America and Greenland. The

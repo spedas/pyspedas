@@ -27,8 +27,7 @@ maintenance: |
 # MMS FPI tools
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loader and helpers for the Fast Plasma Investigation: DES (electrons) and DIS (ions)
 moments, 3D distributions, and quantities derived from them.

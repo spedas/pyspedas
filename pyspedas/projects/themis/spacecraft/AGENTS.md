@@ -33,8 +33,7 @@ maintenance: |
 # THEMIS spacecraft loaders
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Wrappers for the on-board THEMIS/ARTEMIS instruments: fields in `fields/`, particles in
 `particles/`. Each wrapper calls `load()` in `pyspedas/projects/themis/load.py` (see the

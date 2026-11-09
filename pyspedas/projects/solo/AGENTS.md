@@ -22,8 +22,7 @@ maintenance: |
 # Solar Orbiter
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for Solar Orbiter in-situ instruments: MAG, RPW, SWA and EPD. All data
 are CDF files from SPDF.

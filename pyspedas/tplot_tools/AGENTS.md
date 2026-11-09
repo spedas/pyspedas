@@ -48,8 +48,7 @@ maintenance: |
 # tplot_tools
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Storage, lookup, options, time helpers and plotting for tplot variables. This is the
 former PyTplot package, vendored into pySPEDAS; file headers still credit PyTplot.

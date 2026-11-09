@@ -29,8 +29,7 @@ maintenance: |
 # PySPEDAS documentation
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 The definitive documentation is at
 [pyspedas.readthedocs.io](https://pyspedas.readthedocs.io/). Pushing to `master`

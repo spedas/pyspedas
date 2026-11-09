@@ -57,12 +57,14 @@ dependencies are in `pyproject.toml`.
 ## Repository rules
 
 `RULES.md` holds the rules that every change follows, whether a person or an
-agent makes it. Read it before you rename, remove or change the behavior of a
-user-facing routine, parameter, configuration setting or dependency: such a
-change is phased in with a deprecation warning, tests and documentation, and
-the old form is removed only in a major release. If you can't tell whether a
-change is covered, ask the human before making it. To find deprecated code that
-doesn't follow these rules yet, use `.agents/skills/deprecation-scan/SKILL.md`.
+agent makes it. Read it before you change code. It covers breaking changes,
+porting features from IDL SPEDAS, keeping code clear and simple, and adding
+dependencies. A change that renames, removes or changes the behavior of a
+user-facing routine, parameter, configuration setting or dependency is phased
+in with a deprecation warning, tests and documentation, and the old form is
+removed only in a major release. If you can't tell whether a change is covered,
+ask the human before making it. To find deprecated code that doesn't follow
+these rules yet, use `.agents/skills/deprecation-scan/SKILL.md`.
 
 ## Layout
 

@@ -26,8 +26,7 @@ maintenance: |
 # ERG-SC ground-based data
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for ground networks whose data the ERG Science Center serves: magnetometers,
 all-sky imagers, SuperDARN radars, riometers and VLF receivers. There is no ground-specific

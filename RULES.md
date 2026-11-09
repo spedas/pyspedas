@@ -60,7 +60,8 @@ transition period:
 
 Also:
 
-- When you rename something, prefer the name used by the matching IDL SPEDAS
+- When you rename something, follow established PySPEDAS naming conventions
+  where they apply; otherwise use the name from the matching IDL SPEDAS
   routine, if there is one, so that IDL workflows convert easily to Python.
 - List every breaking change and deprecation in the pull request description.
 - Reviewers, people and agents alike, check every pull request against
@@ -109,6 +110,75 @@ docstring or code mentions a deprecation, with its warnings, tests and
 internal callers, and flags what is missing. Its matching is heuristic;
 `.agents/skills/deprecation-scan/SKILL.md` says how to check and report the
 results.
+
+## Porting IDL SPEDAS code
+
+When a feature being added to PySPEDAS has a counterpart in IDL SPEDAS:
+
+- **Interface.** Give the PySPEDAS version an interface similar to the IDL
+  version. Parameter and keyword names follow established PySPEDAS naming
+  conventions where they apply; otherwise use the IDL SPEDAS names. If in
+  doubt, consult a PySPEDAS maintainer. A coding agent asks the human it works
+  for.
+- **Documentation.** Name the IDL SPEDAS equivalent and clearly call out any
+  differences in its API or function, for IDL SPEDAS users converting their
+  workflows to Python.
+- **Tests.** A new tool ported from IDL SPEDAS has tests that compare its
+  results with those of the IDL version.
+
+A common way to write those tests:
+
+1. Write IDL SPEDAS code that performs the computation, and save its input and
+   output variables in a CDF or tplot save file.
+2. Commit that file to the
+   [spedas/test_data](https://github.com/spedas/test_data) repository.
+3. In a PySPEDAS test, download the file, run the equivalent PySPEDAS
+   computation on the saved input, and compare the results with the saved IDL
+   output.
+
+IDL and Python differ in their library implementations and floating-point
+behavior, so the results may not be bit-for-bit identical. It is up to the
+developer to set reasonable tolerances for the comparison. For examples, see
+`pyspedas/geopack/tests/test_geopack_idl_validation.py` and
+`pyspedas/utilities/tests/test_tinterpol_mxn.py`.
+
+## Clarity and simplicity
+
+For all but the most processing-intensive tasks, prefer clarity and simplicity
+to efficiency. The code should be straightforward and understandable to our
+users, who may not have extensive computer science backgrounds or detailed
+knowledge of Python libraries.
+
+For example, NumPy's `einsum()` may be the most numerically efficient way to
+do a computation, but a user who hasn't seen it before may find its notation
+cryptic. It is almost always better to write an explicit outer loop that calls
+more familiar NumPy routines on smaller chunks.
+
+If the most concise solution uses algorithms or data structures that an
+experienced heliophysics researcher might not know, consider pointing to
+reference material in the documentation.
+
+If an existing PySPEDAS routine meets most, but not all, of the requirements
+for a new task, consider extending it instead of writing a new tool, if that
+can be done without making it excessively complicated. Any change to how the
+routine already behaves follows the breaking-change rules above.
+
+## Dependencies
+
+If an external package gives a clean solution to a problem but is not already
+a direct or indirect PySPEDAS dependency, consider using it, but weigh the
+convenience against the risks of adding a dependency:
+
+- Is the package actively maintained?
+- Does it support the same platforms and Python versions as PySPEDAS?
+- Can it be installed easily with pip?
+
+If only a small subset of users is likely to need the package, consider making
+it an optional extra rather than a required dependency, like the `maps` and
+`vires` extras under `[project.optional-dependencies]` in `pyproject.toml`.
+
+A dependency change that prevents installation on a supported platform or
+Python version is a breaking change and follows the rules above.
 
 ## Changing these rules
 

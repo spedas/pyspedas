@@ -300,6 +300,28 @@ example PySPEDAS 2.x to 3.0.  The complete rules, with a worked example, are in
 repository root.  If you are not sure whether a change is covered, ask the
 developer team before proceeding.
 
+Porting, clarity and dependencies
+---------------------------------
+
+When a feature has a counterpart in IDL SPEDAS, give the PySPEDAS version a
+similar interface, and have its documentation name the IDL equivalent and call
+out any differences.  Parameter names follow established PySPEDAS conventions
+where they apply, and the IDL names otherwise.  New tools ported from IDL SPEDAS
+have tests that compare their results, within reasonable tolerances, with IDL
+output stored in the `spedas/test_data <https://github.com/spedas/test_data>`__
+repository.
+
+For all but the most processing-intensive tasks, prefer clarity and simplicity
+to efficiency: the code should be understandable to users who may not have
+extensive computer science backgrounds.  Consider extending an existing routine
+instead of writing a new tool, if that does not make it excessively complicated.
+
+Before adding a dependency, check that it is actively maintained, supports the
+same platforms and Python versions as PySPEDAS, and is easily installed with
+pip.  If only a small subset of users is likely to need it, consider making it
+an optional extra.  The full guidance is in
+`RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__.
+
 Submitting a pull request
 -------------------------
 
@@ -319,6 +341,9 @@ Before requesting review:
    routine, parameter, configuration setting or dependency, follow the rules in
    `RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__ and list
    each deprecation in the pull request description.
+#. If the change ports a feature from IDL SPEDAS or adds a dependency, follow the
+   matching section of
+   `RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__.
 #. Review ``git status`` and the diff. Stage intended new source files, tests,
    documentation pages and images with ``git add``. This includes files created
    by a coding assistant; untracked files will not be included in a commit unless

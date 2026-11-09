@@ -40,8 +40,7 @@ maintenance: |
 # cotrans_tools
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Geophysical coordinate transforms and rotation-matrix tools, ported from IDL SPEDAS.
 `cotrans()` converts vectors between GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE

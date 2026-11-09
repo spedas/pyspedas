@@ -36,8 +36,7 @@ maintenance: |
 # Cluster
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the four Cluster spacecraft. There are two routes: per-instrument
 wrappers that read CDAWeb CDFs from SPDF, and `load_csa()`, which requests

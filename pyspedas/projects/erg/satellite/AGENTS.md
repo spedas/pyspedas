@@ -44,8 +44,7 @@ maintenance: |
 # Arase satellite
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders, coordinate transforms and particle products for the Arase (ERG) spacecraft. All
 code is under `erg/`; this folder level only holds that package.

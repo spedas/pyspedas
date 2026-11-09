@@ -29,8 +29,7 @@ maintenance: |
 # Parker Solar Probe
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for PSP: FIELDS (magnetometer, RFS radio, DFB spectra, QTN, SCaM),
 SWEAP (SPC, SPAN-e, SPAN-i) and ISOIS (EPI-Hi, EPI-Lo, merged EPI). Public data

@@ -23,8 +23,7 @@ maintenance: |
 # GOES
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the GOES geostationary satellites: GOES 1-15 in the original NOAA
 NetCDF format, GOES-R (GOES-16 and later), and GOES 8-15 data reprocessed into

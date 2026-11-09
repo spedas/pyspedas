@@ -35,8 +35,7 @@ maintenance: |
 # ELFIN
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Loaders for the ELFIN-A and ELFIN-B spacecraft: energetic particles (EPD),
 magnetometer (FGM), state, magnetoresistive magnetometers

@@ -38,8 +38,7 @@ maintenance: |
 # geopack
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 tplot wrappers around the external `geopack` package (Sheng Tian's Python port of
 Tsyganenko's GEOPACK, a dependency in `pyproject.toml`): model field along a position

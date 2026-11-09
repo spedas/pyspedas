@@ -48,8 +48,7 @@ maintenance: |
 # tplot_math
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Operations on tplot variables: arithmetic, interpolation, clipping, gap and flag
 handling, smoothing and power spectra. Each module holds one public function (`tsmooth.py`

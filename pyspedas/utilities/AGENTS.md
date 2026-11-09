@@ -46,8 +46,7 @@ maintenance: |
 # utilities
 
 Every change here follows `RULES.md` at the repository root. Read it before
-you rename, remove or change the behavior of a user-facing routine,
-parameter, configuration setting or dependency.
+you change code here.
 
 Shared helpers: downloading and file-name generation for the mission loaders,
 interpolation, time-scale conversions, magnetopause and bow shock models, and
