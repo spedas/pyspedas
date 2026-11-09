@@ -341,6 +341,22 @@ jobs:
         echo "========================================================="        
 
         echo Done with tests at `date`
+    - name: Save coverage data
+      if: always()
+      run: |
+        mkdir -p "$RUNNER_TEMP/quick-test-coverage"
+        if [ -f .coverage ]; then
+          cp .coverage "$RUNNER_TEMP/quick-test-coverage/.coverage.${{ matrix.test-group }}"
+        else
+          echo "No coverage data was produced for ${{ matrix.test-group }}" > "$RUNNER_TEMP/quick-test-coverage/README.txt"
+        fi
+    - name: Upload coverage data
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-coverage-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.test-group }}
+        path: ${{ runner.temp }}/quick-test-coverage/
+        if-no-files-found: warn
     - name: Record installed dependencies
       if: always()
       run: |
@@ -356,3 +372,38 @@ jobs:
         name: quick-test-dependencies-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.test-group }}
         path: ${{ runner.temp }}/quick-test-dependencies/
         if-no-files-found: warn
+
+  coverage:
+    if: always()
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+    - name: Download coverage data
+      uses: actions/download-artifact@v6
+      with:
+        pattern: quick-test-coverage-*
+        path: coverage-data
+        merge-multiple: true
+    - name: Combine coverage data
+      run: |
+        python -m pip install coverage
+        if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
+          python -m coverage combine coverage-data
+          python -m coverage report
+          python -m coverage xml -o coverage.xml
+          python -m coverage html -d htmlcov
+        else
+          echo "No coverage data was uploaded by the test groups."
+          exit 1
+        fi
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-coverage-report
+        path: |
+          coverage.xml
+          htmlcov/
