@@ -455,6 +455,11 @@ jobs:
         if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
           python -m coverage combine coverage-data
           python -m coverage report
+          {
+            echo "## Coverage"
+            echo
+            python -m coverage report --format=markdown
+          } >> "$GITHUB_STEP_SUMMARY"
           python -m coverage xml -o coverage.xml
           python -m coverage html -d htmlcov
         else
