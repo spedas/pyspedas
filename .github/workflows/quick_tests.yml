@@ -340,18 +340,32 @@ jobs:
           local name="$1"
           local module="$2"
           local status
+          local result
+          local start_time
+          local duration
 
+          start_time=$(date +%s)
           echo "::group::$name"
           echo "Starting $name tests at `date`"
           if coverage run -a -m "$module"; then
             status=0
+            result="PASS"
           else
             status=$?
+            result="FAIL"
             echo "::error title=Quick test failed::$name"
           fi
+          duration=$(($(date +%s) - start_time))
+          printf '| %s | %s | `%s` | %ss |\n' "$result" "$name" "$module" "$duration" >> "$GITHUB_STEP_SUMMARY"
           echo "::endgroup::"
           return "$status"
         }
+        {
+          echo "## Quick-test results: ${{ matrix.test-group }}"
+          echo
+          echo "| Status | Test | Module | Duration |"
+          echo "|---|---|---|---:|"
+        } >> "$GITHUB_STEP_SUMMARY"
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
