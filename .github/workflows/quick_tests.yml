@@ -137,6 +137,9 @@ jobs:
           - analysis
           - hapi
           - themis
+          - themis-s3
+          - psp
+          - rbsp
           - missions-spdf
           - missions-non-spdf
         include:
@@ -187,7 +190,6 @@ jobs:
               run_test "themis tplot_time" pyspedas.projects.themis.tests.test_themis_tplot_time
               run_test "themis version" pyspedas.projects.themis.tests.test_themis_versions
               run_test "themis" pyspedas.projects.themis.tests.test_themis
-              run_test "themis S3" pyspedas.projects.themis.tests.test_themis_s3
               run_test "themis_check_args" pyspedas.projects.themis.tests.test_themis_check_args
               run_test "themis autoload support" pyspedas.projects.themis.tests.test_themis_autoload_support
               run_test "themis cal_fit" pyspedas.projects.themis.tests.test_themis_cal_fit
@@ -196,6 +198,15 @@ jobs:
               run_test "themis spinmodel" pyspedas.projects.themis.tests.test_themis_spinmodel
               run_test "themis state" pyspedas.projects.themis.tests.test_themis_state
               run_test "themis scpot2dens" pyspedas.projects.themis.tests.test_themis_scpot2dens
+          - test-group: themis-s3
+            test-command: |
+              run_test "themis S3" pyspedas.projects.themis.tests.test_themis_s3
+          - test-group: psp
+            test-command: |
+              run_test "psp" pyspedas.projects.psp.tests.test_psp
+          - test-group: rbsp
+            test-command: |
+              run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
           - test-group: missions-spdf
             test-command: |
               run_test "ace" pyspedas.projects.ace.tests.test_ace
@@ -210,8 +221,6 @@ jobs:
               run_test "csswe" pyspedas.projects.csswe.tests.test_csswe
               run_test "equator_s" pyspedas.projects.equator_s.tests.test_equator_s
               run_test "image" pyspedas.projects.image.tests.test_image
-              run_test "psp" pyspedas.projects.psp.tests.test_psp
-              run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
               run_test "twins" pyspedas.projects.twins.tests.test_twins
               run_test "wind" pyspedas.projects.wind.tests.test_wind
               run_test "polar" pyspedas.projects.polar.tests.test_polar
