@@ -22,6 +22,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.14'
+          cache: pip
       - name: Install MTH5 dependencies
         run: python -m pip install -e ".[mth5]"
       - name: Run MTH5 tests
