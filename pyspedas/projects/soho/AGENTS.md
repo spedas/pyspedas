@@ -15,12 +15,16 @@ related_files:
   - pyspedas/projects/soho/README.md
   - pyspedas/projects/soho/tests/test_soho.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument branch or file resolution,
   or when a *_postprocessing.py module starts doing real work.
 ---
 
 # SOHO
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for SOHO in-situ data: CELIAS solar wind, COSTEP/EPHIN and ERNE
 energetic particles, and orbit/attitude. All data are CDF files from SPDF.

@@ -19,6 +19,7 @@ related_files:
   - docs/source/analysis.rst
   - docs/source/akebono.rst
   - docs/source/_static
+  - RULES.md
 maintenance: |
   Update when documentation layout, Sphinx configuration, build dependencies,
   publishing workflow or conventions for documenting new tools change. Keep the
@@ -26,6 +27,9 @@ maintenance: |
 ---
 
 # PySPEDAS documentation
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 The definitive documentation is at
 [pyspedas.readthedocs.io](https://pyspedas.readthedocs.io/). Pushing to `master`

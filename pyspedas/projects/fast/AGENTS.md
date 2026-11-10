@@ -9,12 +9,16 @@ related_files:
   - pyspedas/utilities/pyspedas_functools.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument, level or datatype branch,
   or when __init__.py adds a loader or edits the per-loader docstrings.
 ---
 
 # FAST
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the FAST auroral satellite: DC and AC fields, electrostatic
 analyzers (ESA), and the TEAMS mass spectrograph. All data are CDF files from SPDF.

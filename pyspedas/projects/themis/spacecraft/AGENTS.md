@@ -23,6 +23,7 @@ related_files:
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
   - pyspedas/projects/themis/tests/test_themis.py
   - pyspedas/projects/themis/tests/test_themis_cal_fit.py
+  - RULES.md
 maintenance: |
   Update when a loader here is added or renamed, when the eclipse-correction rules
   (which variables get vector, tensor or no correction) change, or when a wrapper starts
@@ -30,6 +31,9 @@ maintenance: |
 ---
 
 # THEMIS spacecraft loaders
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Wrappers for the on-board THEMIS/ARTEMIS instruments: fields in `fields/`, particles in
 `particles/`. Each wrapper calls `load()` in `pyspedas/projects/themis/load.py` (see the

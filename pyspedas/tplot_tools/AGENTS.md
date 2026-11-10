@@ -38,6 +38,7 @@ related_files:
   - pyspedas/utilities/tests/test_utilities_plot.py
   - pyspedas/utilities/tests/test_utilities_tplot_wildcard.py
   - pyspedas/utilities/tests/test_utilities_time.py
+  - RULES.md
 maintenance: |
   Update when the layout of a stored variable changes (store_data, plot_options,
   data_att), when a module-level global is added or rebound, or when a function
@@ -45,6 +46,9 @@ maintenance: |
 ---
 
 # tplot_tools
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Storage, lookup, options, time helpers and plotting for tplot variables. This is the
 former PyTplot package, vendored into pySPEDAS; file headers still credit PyTplot.

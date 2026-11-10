@@ -24,6 +24,7 @@ related_files:
   - pyspedas/projects/mms/tests/test_mms_part_getspec.py
   - pyspedas/projects/mms/tests/test_mms_getspec_bulkv.py
   - pyspedas/projects/mms/tests/test_mms_slice2d.py
+  - RULES.md
 maintenance: |
   Update when mms_part_getspec() changes which support data it loads or their default
   variable names, when mms_part_products() gains or renames an output, or when the
@@ -31,6 +32,9 @@ maintenance: |
 ---
 
 # MMS particle distribution tools
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Spectrograms, moments and 2D slices from MMS FPI and HPCA 3D distributions. These are the
 MMS front ends to the generic particle code in `pyspedas/particles/`.

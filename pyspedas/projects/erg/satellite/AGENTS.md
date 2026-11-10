@@ -34,6 +34,7 @@ related_files:
   - pyspedas/particles/spd_part_products/spd_pgs_regrid.py
   - pyspedas/cotrans_tools/cotrans.py
   - pyspedas/projects/erg/tests/test_erg_mepe.py
+  - RULES.md
 maintenance: |
   Update when an instrument wrapper is added or renamed, when a wrapper changes how it
   handles versions, notplot or builds its own variables, or when the cotrans chain or the support
@@ -41,6 +42,9 @@ maintenance: |
 ---
 
 # Arase satellite
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders, coordinate transforms and particle products for the Arase (ERG) spacecraft. All
 code is under `erg/`; this folder level only holds that package.

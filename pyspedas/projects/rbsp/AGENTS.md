@@ -23,6 +23,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch or its instrument-specific
   keywords, when the RBSPICE post-processing in rbspice.py or rbspice_lib/
@@ -30,6 +31,9 @@ maintenance: |
 ---
 
 # RBSP (Van Allen Probes)
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the two Van Allen Probes, `a` and `b`: EMFISIS, EFW, RBSPICE, the
 ECT suite (MagEIS, HOPE, REPT), the RPS proton spectrometer and the ECT magnetic

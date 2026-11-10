@@ -13,6 +13,7 @@ related_files:
   - pyspedas/tplot_tools/importers/netcdf_to_tplot.py
   - pyspedas/tplot_tools/MPLPlotter/annotate.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load() or loadr() gains an instrument, datatype branch or keyword,
   when a NOAA or SPDF server URL changes, or when __init__.py adds a loader or
@@ -20,6 +21,9 @@ maintenance: |
 ---
 
 # GOES
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the GOES geostationary satellites: GOES 1-15 in the original NOAA
 NetCDF format, GOES-R (GOES-16 and later), and GOES 8-15 data reprocessed into

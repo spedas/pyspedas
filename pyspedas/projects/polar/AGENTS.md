@@ -22,12 +22,16 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py adds an instrument branch or changes a file-name code, when
   a wrapper's instrument string changes, or when __init__.py adds a loader.
 ---
 
 # Polar
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Polar magnetospheric mission. All data are daily `k0` CDF
 files from SPDF (`https://spdf.gsfc.nasa.gov/pub/data/polar/`).

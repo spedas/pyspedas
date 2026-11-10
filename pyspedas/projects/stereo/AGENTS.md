@@ -20,12 +20,16 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch, its per-instrument server, or
   its keywords, or when __init__.py adds a loader.
 ---
 
 # STEREO
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the twin STEREO-A ("ahead") and STEREO-B ("behind") spacecraft:
 IMPACT (MAG, SWEA, STE, SEPT, SIT, LET, HET, beacon), PLASTIC and WAVES. All data are daily
