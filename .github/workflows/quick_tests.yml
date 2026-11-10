@@ -109,8 +109,89 @@ jobs:
         ruff check . --select=E9,F63,F7,F82 --statistics
         ruff check . --exit-zero --statistics --line-length=127
 
-  test:
+  # Build the test venv once per Python version, so the parallel test-group
+  # jobs below restore it instead of each resolving and installing it themselves.
+  build-venv:
     needs: prepare
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    strategy:
+      matrix:
+        python-version: ["${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}"]
+    steps:
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: source-bundle
+    - name: Download prepared wheel
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: quick-test-wheel
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Create test venv
+      run: |
+        python -m venv ../.venv
+        cat > "$RUNNER_TEMP/pip-bootstrap.txt" <<'REQUIREMENTS'
+        pip==26.2.1 --hash=sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e
+        REQUIREMENTS
+        ../.venv/bin/python -m pip install --require-hashes --no-deps --only-binary=:all: \
+          -r "$RUNNER_TEMP/pip-bootstrap.txt"
+    - name: Create resolver tools venv
+      run: |
+        # Keep resolver tooling separate so it cannot satisfy test dependencies.
+        python -m venv "$RUNNER_TEMP/quick-test-tools"
+        mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
+        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install --require-hashes --no-deps --only-binary=:all: \
+          -r "$RUNNER_TEMP/pip-bootstrap.txt"
+        cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
+        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
+        --uploaded-prior-to "$cutoff" --only-final=:all: \
+        "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv
+    - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
+      run: |
+        source ../.venv/bin/activate
+        # Use the wheel from prepare and omit lint tools already checked by quality.
+        wheel_path=$(find quick-test-wheel -type f -name '*.whl' -print -quit)
+        test -n "$wheel_path"
+        python .github/scripts/install_quick_test_dependencies.py \
+          --policy "$DEPENDENCY_POLICY" \
+          --python "$VIRTUAL_ENV/bin/python" \
+          --tools-python "$RUNNER_TEMP/quick-test-tools/bin/python" \
+          --output-dir "$RUNNER_TEMP/quick-test-dependencies" \
+          --skip-lint \
+          --wheel-path "$wheel_path"
+    - name: Record installed dependencies
+      run: |
+        ../.venv/bin/python -m pip freeze --all > "$RUNNER_TEMP/quick-test-dependencies/freeze.txt"
+        ../.venv/bin/python -m pip inspect > "$RUNNER_TEMP/quick-test-dependencies/inspect.json"
+    - name: Upload dependency diagnostics
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-dependencies-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: ${{ runner.temp }}/quick-test-dependencies/
+        if-no-files-found: warn
+    - name: Package prepared venv
+      run: tar -czf "$RUNNER_TEMP/quick-test-venv.tar.gz" -C .. .venv
+    - name: Upload prepared venv
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-venv-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: ${{ runner.temp }}/quick-test-venv.tar.gz
+
+  test:
+    needs: build-venv
     runs-on: ${{ matrix.os }}
     defaults:
       run:
@@ -242,63 +323,19 @@ jobs:
               #coverage run -a -m pyspedas.projects.juno.tests.test_juno
 
     steps:
+    # Each parallel test job only downloads the prepared venv; no source checkout
+    # or unpack happens here, so there is nothing to shadow the installed package.
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
-    # Each parallel test job downloads the shared inputs but keeps its own environment.
-    - name: Download prepared source
+    - name: Download prepared venv
       uses: actions/download-artifact@v6
       with:
-        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
-        path: source-bundle
-    - name: Download prepared wheel
-      uses: actions/download-artifact@v6
-      with:
-        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
-        path: quick-test-wheel
-    - name: Unpack prepared source
-      run: tar -xzf source-bundle/pyspedas-source.tar.gz
-    - name: Create test and resolver environments
-      run: |
-        python -m venv ../.venv
-        python -m venv "$RUNNER_TEMP/quick-test-tools"
-        mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
-        # Keep resolver tooling separate so it cannot satisfy test dependencies.
-        cat > "$RUNNER_TEMP/pip-bootstrap.txt" <<'REQUIREMENTS'
-        pip==26.2.1 --hash=sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e
-        REQUIREMENTS
-        for interpreter in ../.venv/bin/python "$RUNNER_TEMP/quick-test-tools/bin/python"; do
-          "$interpreter" -m pip install --require-hashes --no-deps --only-binary=:all: \
-            -r "$RUNNER_TEMP/pip-bootstrap.txt"
-        done
-        cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
-        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
-        --uploaded-prior-to "$cutoff" --only-final=:all: \
-        "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv
-    - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
-      run: |
-        source ../.venv/bin/activate
-        # Use the wheel from prepare and omit lint tools already checked by quality.
-        wheel_path=$(find quick-test-wheel -type f -name '*.whl' -print -quit)
-        test -n "$wheel_path"
-        python .github/scripts/install_quick_test_dependencies.py \
-          --policy "$DEPENDENCY_POLICY" \
-          --python "$VIRTUAL_ENV/bin/python" \
-          --tools-python "$RUNNER_TEMP/quick-test-tools/bin/python" \
-          --output-dir "$RUNNER_TEMP/quick-test-dependencies" \
-          --skip-lint \
-          --wheel-path "$wheel_path"
-    - name: Hide the repo copy so imports use site-packages
-      run: |
-        source ../.venv/bin/activate
-        # keep it around for debugging; delete instead if you want the space back
-        pwd
-        ls -a
-        if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
-        ls -a
-        ls "$VIRTUAL_ENV"
-
+        name: quick-test-venv-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: quick-test-venv
+    - name: Restore prepared venv
+      run: tar -xzf quick-test-venv/quick-test-venv.tar.gz -C ..
     - name: Sanity check import location
       shell: bash
       run: |
@@ -311,8 +348,30 @@ jobs:
         print("sys.path[0]:", sys.path[0])
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
         PY
+    - name: Create coverage config
+      run: |
+        # Scope coverage to modules actually imported by the test that ran, instead of
+        # the whole pyspedas tree (.coveragerc's source_pkgs would report 0% for every
+        # file untouched by this job's small test subset).
+        cat > "$RUNNER_TEMP/quick_tests_coveragerc" <<'COVERAGERC'
+        [run]
+        include =
+          pyspedas/*
+          */site-packages/pyspedas/*
+          */dist-packages/pyspedas/*
+        relative_files = True
+        omit =
+          */tests/*
+
+        [paths]
+        pyspedas =
+          pyspedas
+          **/site-packages/pyspedas
+          **/dist-packages/pyspedas
+        COVERAGERC
     - name: Test with unittest
       env:
+        COVERAGE_RCFILE: ${{ runner.temp }}/quick_tests_coveragerc
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
         BARREL_DATA_DIR: barrel_data/
@@ -407,21 +466,6 @@ jobs:
         path: ${{ runner.temp }}/quick-test-coverage/
         include-hidden-files: true
         if-no-files-found: warn
-    - name: Record installed dependencies
-      if: always()
-      run: |
-        if [ -x ../.venv/bin/python ]; then
-          mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
-          ../.venv/bin/python -m pip freeze --all > "$RUNNER_TEMP/quick-test-dependencies/freeze.txt"
-          ../.venv/bin/python -m pip inspect > "$RUNNER_TEMP/quick-test-dependencies/inspect.json"
-        fi
-    - name: Upload dependency diagnostics
-      if: always()
-      uses: actions/upload-artifact@v6
-      with:
-        name: quick-test-dependencies-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.test-group }}
-        path: ${{ runner.temp }}/quick-test-dependencies/
-        if-no-files-found: warn
 
   coverage:
     if: always()
@@ -448,22 +492,16 @@ jobs:
     - name: Combine coverage data
       run: |
         python -m pip install coverage
-        cat > .coveragerc <<'EOF'
-        [paths]
-        source =
-            pyspedas
-            */.venv/lib/python*/site-packages/pyspedas
-        EOF
         if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
           python -m coverage combine coverage-data
-          python -m coverage report
+          python -m coverage report --omit='*/tests/*'
           {
             echo "## Coverage"
             echo
-            python -m coverage report --format=markdown
+            python -m coverage report --omit='*/tests/*' --format=markdown
           } >> "$GITHUB_STEP_SUMMARY"
-          python -m coverage xml -o coverage.xml
-          python -m coverage html -d htmlcov
+          python -m coverage xml --omit='*/tests/*' -o coverage.xml
+          python -m coverage html --omit='*/tests/*' -d htmlcov
         else
           echo "No coverage data was uploaded by the test groups."
           exit 1
