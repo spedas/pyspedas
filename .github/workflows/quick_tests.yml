@@ -109,7 +109,7 @@ jobs:
         ruff check . --select=E9,F63,F7,F82 --statistics
         ruff check . --exit-zero --statistics --line-length=127
 
-  build:
+  test:
     needs: prepare
     runs-on: ${{ matrix.os }}
     defaults:
@@ -362,11 +362,13 @@ jobs:
           else
             status=$?
             result="FAIL"
-            echo "::error title=Quick test failed::$name"
           fi
           duration=$(($(date +%s) - start_time))
           printf '| %s | %s | `%s` | %ss |\n' "$result" "$name" "$module" "$duration" >> "$GITHUB_STEP_SUMMARY"
           echo "::endgroup::"
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Test $name failed"
+          fi
           return "$status"
         }
         {
@@ -423,7 +425,7 @@ jobs:
 
   coverage:
     if: always()
-    needs: build
+    needs: test
     runs-on: ubuntu-latest
     steps:
     - name: Set up Python
