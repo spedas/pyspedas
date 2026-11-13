@@ -176,6 +176,8 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
         echo Starting MMS cache cleanup tests at `date`
         coverage run -a -m pyspedas.projects.mms.tests.test_mms_remove_old_files
+        echo Starting MMS perigee tests at `date`
+        coverage run -a -m pyspedas.projects.mms.tests.test_mms_perigee
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
         echo Starting themis tplot_time  tests at `date`

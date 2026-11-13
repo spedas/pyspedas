@@ -37,6 +37,7 @@ from pyspedas.projects.mms.databar_tools.mms_load_burst_intervals import mms_loa
 from pyspedas.projects.mms.databar_tools.make_data_rate_bars import make_data_rate_bars
 from .mms_events import mms_brst_events
 from .mms_remove_old_files import mms_remove_old_files
+from .mms_find_perigee_times import mms_find_perigee_times
 
 '''
     the following wrappers allow users to import the load routines using 

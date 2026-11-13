@@ -299,6 +299,11 @@ MEC Example
    :align: center
    :class: imgborder
 
+Finding perigee times
+^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.projects.mms.mms_find_perigee_times
+
 Attitude and Ephemeris (STATE)
 -------------------------------
 Short name: pyspedas.projects.mms.state
