@@ -232,6 +232,8 @@ def tplot(variables,
           var_label=None,
           xsize=None,
           ysize=None,
+          xmargin=None,
+          ymargin=None,
           save_png='',
           save_eps='',
           save_svg='',
@@ -268,6 +270,10 @@ def tplot(variables,
             Plot size in the horizontal direction (in inches)
         ysize: float, optional
             Plot size in the vertical direction (in inches)
+        xmargin : list of float, optional
+            Width of the left and right margins of the plot (in inches, or fraction of figure if < 1.0)
+        ymargin : list of float, optional
+            Height of the top and bottom margins of the plot (in inches, or fraction of figure if < 1.0)
         dpi: float, optional
             The resolution of the plot in dots per inch
         save_png : str, optional
@@ -389,6 +395,12 @@ def tplot(variables,
                 default_y_sizes = [5, 5, 6, 7, 8]
                 ysize = default_y_sizes[num_panels]
 
+    if xmargin is None:
+        xmargin = pyspedas.tplot_tools.tplot_opt_glob.get('xmargin')
+
+    if ymargin is None:
+        ymargin = pyspedas.tplot_tools.tplot_opt_glob.get('ymargin')
+
     # The logic here for handling the 'right_axis' option is pretty convoluted, and makes a number of assumptions
     # that may not be warranted: mainly that right_axis will only be set on pseudovariables, and that if
     # set, the first sub-variable gets the left axis and all other sub-variables get a newly twinx-ed right axis.
@@ -401,7 +413,8 @@ def tplot(variables,
     # (for example, an energy spectrum plus spacecraft potential).  JWL 2024-03-26
 
     if fig is None and axis is None:
-        fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes}, layout='constrained')
+        layout = None if (xmargin is not None or ymargin is not None) else 'constrained'
+        fig, axes = plt.subplots(nrows=num_panels, sharex=True, gridspec_kw={'height_ratios': panel_sizes}, layout=layout)
         fig.set_size_inches(xsize, ysize)
         plot_title = pyspedas.tplot_tools.tplot_opt_glob['title_text']
         fig.suptitle(plot_title)
@@ -424,6 +437,65 @@ def tplot(variables,
                 panel_axis.set_facecolor(background)
         if foreground is not None and fig._suptitle is not None:
             fig._suptitle.set_color(foreground)
+
+        # Apply xmargin and ymargin if specified (#1569)
+        if xmargin is not None or ymargin is not None:
+            if fig.get_layout_engine() is not None:
+                fig.set_layout_engine(None)
+            adjust_kwargs = {}
+            if xmargin is not None:
+                try:
+                    left = float(xmargin[0])
+                    right_margin = float(xmargin[1])
+                    # If xsize is known and margin is in inches, convert to fraction of figure
+                    if xsize is not None and xsize > 0:
+                        left = left / xsize
+                        right = 1.0 - (right_margin / xsize)
+                    else:
+                        right = 1.0 - right_margin
+
+                    if 0.0 <= left < right <= 1.0:
+                        adjust_kwargs['left'] = left
+                        adjust_kwargs['right'] = right
+                    else:
+                        logging.warning(
+                            "xmargin values [%s, %s] out of valid range (resulting left=%s, right=%s), ignoring",
+                            xmargin[0],
+                            xmargin[1],
+                            left,
+                            right,
+                        )
+                except (IndexError, TypeError, ValueError):
+                    logging.warning("Invalid xmargin specification: %s", xmargin)
+
+            if ymargin is not None:
+                try:
+                    top_margin = float(ymargin[0])
+                    bottom_margin = float(ymargin[1])
+                    # If ysize is known and margin is in inches, convert to fraction of figure
+                    if ysize is not None and ysize > 0:
+                        top = 1.0 - (top_margin / ysize)
+                        bottom = bottom_margin / ysize
+                    else:
+                        top = 1.0 - top_margin
+                        bottom = bottom_margin
+
+                    if 0.0 <= bottom < top <= 1.0:
+                        adjust_kwargs['top'] = top
+                        adjust_kwargs['bottom'] = bottom
+                    else:
+                        logging.warning(
+                            "ymargin values [%s, %s] out of valid range (resulting bottom=%s, top=%s), ignoring",
+                            ymargin[0],
+                            ymargin[1],
+                            bottom,
+                            top,
+                        )
+                except (IndexError, TypeError, ValueError):
+                    logging.warning("Invalid ymargin specification: %s", ymargin)
+
+            if adjust_kwargs:
+                fig.subplots_adjust(**adjust_kwargs)
     else:
         # fig and axis have been passed as parameters, most likely a recursive tplot call to render
         # a pseudovariable
