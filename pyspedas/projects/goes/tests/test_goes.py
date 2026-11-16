@@ -56,6 +56,17 @@ class LoadTestCases(unittest.TestCase):
             trange=["2026-07-01", "2026-07-02"],
         )
         pyspedas.projects.goes.add_goes_xray_annotations("g19_xrs_xrsb_flux", fontsize=10)
+        pyspedas.options(
+            "g19_xrs_xrsb_flux",
+            opt_dict={
+                "x_major_ticks": [
+                    "2026-07-01 00:00:00",
+                    "2026-07-01 08:00:00",
+                    "2026-07-01 16:00:00",
+                ],
+                "x_minor_tick_interval": 3600,
+            },
+        )
         self.assertTrue(len(gvars) > 20)
         self.assertTrue(data_exists("g19_xrs_xrsb_flux"))
 
