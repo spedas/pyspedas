@@ -506,6 +506,11 @@ def tplot(variables,
             line_opts = None
             plot_extras = None
             if pseudo_var:
+                xaxis_options = {}
+                for option in ('x_major_ticks', 'x_minor_tick_interval'):
+                    value = var_quants.attrs['plot_options']['xaxis_opt'].get(option)
+                    if value is not None:
+                        xaxis_options[option] = value
                 plot_extras = var_quants.attrs['plot_options']['extras']
                 if plot_extras.get('spec') is not None:
                     spec = True
@@ -883,6 +888,19 @@ def tplot(variables,
             plot_created = lineplot(var_data, var_times, this_axis, line_opts, yaxis_options, plot_extras, running_trace_count=running_trace_count, time_idxs=time_idxs, style=style, var_metadata=var_metadata)
             if not plot_created:
                 continue
+
+        xmajor_ticks = xaxis_options.get('x_major_ticks')
+        if xmajor_ticks is not None:
+            # FixedLocator preserves the time range and the automatic date formatter.
+            tick_dates = pyspedas.time_datetime(xmajor_ticks)
+            this_axis.xaxis.set_major_locator(mpl.ticker.FixedLocator(mdates.date2num(tick_dates)))
+            if len(xmajor_ticks) == 0:
+                this_axis.xaxis.set_major_formatter(mpl.ticker.NullFormatter())
+
+        xminor_tick_interval = xaxis_options.get('x_minor_tick_interval')
+        if xminor_tick_interval is not None:
+            # Matplotlib date coordinates are in days; the option is in seconds.
+            this_axis.xaxis.set_minor_locator(plt.MultipleLocator(xminor_tick_interval / 86400.0))
 
         # apply any vertical/horizontal bars
         _draw_bars(this_axis, var_quants.attrs['plot_options'])
