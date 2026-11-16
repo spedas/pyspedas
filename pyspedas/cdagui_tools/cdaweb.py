@@ -36,6 +36,8 @@ class CDAWeb:
         observatories = self.cdas.get_observatory_groups()
         onames = []
         for mission in observatories:
+            if mission["Name"] is None:
+                continue
             mission_name = mission["Name"].strip()
             if len(mission_name) > 1 and mission_name != "(null)":
                 onames.append(mission_name)
@@ -95,6 +97,8 @@ class CDAWeb:
         datasets = self.cdas.get_datasets(**thisdict)
         dnames = []
         for dataset in datasets:
+            if dataset["Id"] is None:
+                continue
             data_item = dataset["Id"].strip()
             if len(data_item) > 0 and data_item != "(null)":
                 tinterval = dataset["TimeInterval"]

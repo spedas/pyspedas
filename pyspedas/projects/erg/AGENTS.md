@@ -19,12 +19,16 @@ related_files:
   - pyspedas/projects/erg/tests/test_erg.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
   - pyspedas/projects/erg/tests/test_erg_cotrans.py
+  - RULES.md
 maintenance: |
   Update when satellite/erg/load.py changes, when config.py changes the data server or
   environment variables, or when __init__.py adds or renames a loader or tool.
 ---
 
 # Arase (ERG)
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Arase (ERG) satellite and for the ground-based networks served by the ERG
 Science Center (ERG-SC, ISEE, Nagoya University), plus Arase coordinate transforms and

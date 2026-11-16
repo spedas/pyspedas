@@ -75,7 +75,8 @@ jobs:
         done
         cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
         "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
-          --uploaded-prior-to "$cutoff" --only-final=:all: pdm uv
+        --uploaded-prior-to "$cutoff" --only-final=:all: \
+        "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv
     - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
       run: |
         source ../.venv/bin/activate
@@ -173,6 +174,10 @@ jobs:
         coverage run -a -m pyspedas.utilities.tests.test_doi
         echo Starting Zenodo draft client tests at `date`
         coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
+        echo Starting MMS cache cleanup tests at `date`
+        coverage run -a -m pyspedas.projects.mms.tests.test_mms_remove_old_files
+        echo Starting MMS perigee tests at `date`
+        coverage run -a -m pyspedas.projects.mms.tests.test_mms_perigee
         echo Starting ace tests at `date`
         coverage run -a -m  pyspedas.projects.ace.tests.test_ace
         echo Starting themis tplot_time  tests at `date`

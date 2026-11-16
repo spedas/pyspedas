@@ -30,6 +30,7 @@ related_files:
   - pyspedas/projects/erg/satellite/erg/common/cotrans/erg_cotrans.py
   - pyspedas/particles/spd_slice2d/quaternions.py
   - pyspedas/geopack/igrf.py
+  - RULES.md
 maintenance: |
   Update when a coordinate system or a sub<a>2<b> transform is added to
   cotrans_lib.py (and its path table), when cotrans() changes its metadata
@@ -37,6 +38,9 @@ maintenance: |
 ---
 
 # cotrans_tools
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Geophysical coordinate transforms and rotation-matrix tools, ported from IDL SPEDAS.
 `cotrans()` converts vectors between GSE, GSEQ, GSM, SM, GEI, GEO, MAG, J2000, HEE, HAE

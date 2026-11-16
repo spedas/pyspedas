@@ -13,17 +13,20 @@ def _list_of_fdsn_channels():
         Returns
         -------
         str
-            A string containing channel names, each separated by a comma. T
+            A string containing channel names, each separated by a comma.
 
         Examples
         --------
         >>> _list_of_fdsn_channels()
-        'MFZ,MFN,MFE,LFZ,LFN,LFE,VFZ,VFN,VFE,UFZ,UFN,UFE'
+        'MFZ,MFN,MFE,MF1,MF2,MF3,LFZ,LFN,LFE,LF1,LF2,LF3,VFZ,VFN,VFE,VF1,VF2,VF3,UFZ,UFN,UFE,UF1,UF2,UF3'
      """
 
+    # TODO: modify according to SEED manual appendix A: https://www.fdsn.org/pdf/SEEDManual_V2.4_Appendix-A.pdf
     channel_band = ['M', 'L', 'V', 'U']
-    channel_orientation = ['Z', 'N', 'E']
-    # channel_orientation = ['Z', 'N', 'E', '1', '2'] # Some of the data can be stored as '1', '2', which is not supported byt this tool.
+    # 'Z', 'N', 'E' (vertical, north, east) and '1', '2', '3' (numeric
+    # orientations some stations use instead) both map to MTH5's
+    # hx/hy/hz components for instrument code F. See fdsn_data_model.md.
+    channel_orientation = ['Z', 'N', 'E', '1', '2', '3']
     channel_instrument = 'F'
     # Create list of all combinations of channel_band, channel_instrument and channel_orientation
     channel_list = ",".join(
@@ -33,10 +36,10 @@ def _list_of_fdsn_channels():
 
 def mth5_time_str(time):
     """
-        Return pyspedas time format as  YYYY-MM-DDThh:mm:ss
+        Return pyspedas time format as YYYY-MM-DDThh:mm:ss
 
         Parameters:
-            time :  str
+            time : str
                 Time in pyspedas format
 
         Returns:
@@ -48,11 +51,11 @@ def mth5_time_str(time):
 
 def datasets(trange=None, network=None, station=None, USAarea=False):
     """
-    Fetches datasets availablity based on time range, network, and station.
+    Fetches datasets availability based on time range, network, and station.
 
     The function queries an FDSN (Federation of Digital Seismograph Networks) web service for station
     data within a specified time range and geographical bounds limited to the USA. It filters the resulting channels
-    based on selection of 3 chanles of the same band and diffrent orienation, e.g., 'LFE', 'LFN', 'LFZ'. If the dataset has
+    based on selection of 3 channels of the same band and different orientation, e.g., 'LFE', 'LFN', 'LFZ'. If the dataset has
     less than 3 channels with the same band, it is excluded. The resulting dataset is organized by network, station, and time
     range, including only the channels that meet the specified criteria.
 
