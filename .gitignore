@@ -253,3 +253,5 @@ dmypy.json
 
 # PyCharm
 .idea
+tplot_map_basic.png
+tplot_map_full.png

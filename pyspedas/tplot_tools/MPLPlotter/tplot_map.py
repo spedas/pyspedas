@@ -10,8 +10,6 @@ from matplotlib.axes import Axes
 import numpy as np
 import datetime as dt
 
-# TODO: do we need to have lon first, then lat, to mirror basemap?
-
 class Tplot_Map_Param_Set():
     def __set_name__(self, owner, name):
         self.name = name
@@ -61,6 +59,9 @@ class Tplot_Map(Basemap):
             option_dict: dict | None = None, 
             **basemap_kwargs):
 
+        # Define projection options, construct 
+        # projection options dict from basemap
+        # projection params
         self.projection_params = projection_params
         self._corners_latlon = ["llcrnrlon","llcrnrlat","urcrnrlon","urcrnrlat"]
         self._corners_xy = ["llcrnrx","llcrnry","urcrnrx","urcrnry"]
@@ -69,87 +70,115 @@ class Tplot_Map(Basemap):
         self._center_2 = ["lon_2","lat_2"]
         self._invalid_projection_params = dict()
         self._convert_projection_params()
-        
-        self._params = Tplot_Map_Param_Set()
-        self._params.basemap         = {"projection":"ortho","lat_0":0,"lon_0":0}
-        self._params.drawmapboundary = {"fill_color":"white"} #{"fill_color":"lightskyblue"}
-        self._params.fillcontinents  = {"color":"white","lake_color":"white"} #{"color":"palegreen","lake_color":"lightskyblue"}
-        self._params.drawcoastlines  = {"linewidth":0.25}
-        self._params.nightshade      = {"date":dt.datetime.now(),"alpha":0.5}
-        self._params.add_linepath    = dict()#{"color":"m"}
-        self._params.add_marker      = {"color":"r","linestyle":"","marker":"d"}
-        self._params.add_cap         = {"color":"m"}
-        # TODO: make meridians into magnetic coordinates
-        self._params.drawmeridians   = {"meridians":np.arange(0,360,10)}
-        self._params.drawparallels   = {"circles":np.arange(-90,90,10)}
 
+        self.ax = None
+        self.fig = None
+        if ax is not None:
+            self.ax = ax
+            self.fig = self.ax.figure
+
+        # TODO: provide meridians in magnetic coordinates as well
+        # Define default options for map methods:
         self.default_map_options = {
-            "basemap":self._params.basemap,
-            "drawmapboundary":self._params.drawmapboundary,
-            "fillcontinents":self._params.fillcontinents,
-            "drawcoastlines":self._params.drawcoastlines,
-            "nightshade":self._params.nightshade,
-            "add_linepath":self._params.add_linepath,
-            "add_marker":self._params.add_marker,
-            "add_cap":self._params.add_cap,
+            "basemap": {"projection":"ortho","lat_0":0,"lon_0":0},
+            "drawmapboundary":{"fill_color":"white"},
+            "fillcontinents":{"color":"white","lake_color":"white"},
+            "drawcoastlines":{"linewidth":0.25},
+            "drawmeridians":{"meridians":np.arange(0,360,10)},
+            "drawparallels":{"circles":np.arange(-90,90,10)},
+            "drawcountries":{"linewidth":0.25},
+            "nightshade":{}, #"date":dt.datetime.now(),"alpha":0.5
+            "add_linepath":{},
+            "add_marker":{},
+            "add_cap":{},
         }
 
-        self._params.basemap.update(basemap_kwargs)
-        self._params.basemap["ax"]=ax
+        # Create copy of default_map_options to 
+        # store options of existing plots:
+        self.map_options = self.default_map_options.copy()
 
+        # If view is set, override basemap kwargs for centering position
         self.view = view
-        # TODO: view must not conflict with projection setting
         if self.view is not None:
             match self.view:
                 case "North America":
-                    option_dict["basemap"].update({"lat_0":50,"lon_0":260})
+                    basemap_kwargs["lat_0"] = 50
+                    basemap_kwargs["lon_0"] = 260
                 case "Northern Europe":
-                    option_dict["basemap"].update({"lat_0":65,"lon_0":20})
+                    basemap_kwargs["lat_0"] = 65
+                    basemap_kwargs["lon_0"] = 20
                 case "North Polar":
-                    option_dict["basemap"].update({"lat_0":90,"lon_0":0})
+                    basemap_kwargs["lat_0"] = 90
+                    basemap_kwargs["lon_0"] = 0
                 case "South Polar":
-                    option_dict["basemap"].update({"lat_0":-90,"lon_0":0})
-        
-        if option_dict is not None:
-            for map_plottype,plot_options in option_dict.items():
-                match map_plottype:
-                    case "basemap":
-                        self._params.basemap.update(plot_options)
-                        self.default_map_options["basemap"].update(plot_options)
-                    case "drawmapboundary":
-                        self._params.drawmapboundary.update(plot_options)
-                        self.default_map_options["drawmapboundary"].update(plot_options)
-                    case "fillcontinents":
-                        self._params.fillcontinents.update(plot_options)
-                        self.default_map_options["fillcontinents"].update(plot_options)
-                    case "drawcoastlines":
-                        self._params.drawcoastlines.update(plot_options)
-                        self.default_map_options["drawcoastlines"].update(plot_options)
-                    case "nightshade":
-                        self._params.nightshade.update(plot_options)
-                        self.default_map_options["nightshade"].update(plot_options)
-                    case "add_linepath":
-                        self._params.add_linepath.update(plot_options)
-                        self.default_map_options["add_linepath"].update(plot_options)
-                    case "add_marker":
-                        self._params.add_marker.update(plot_options)
-                        self.default_map_options["add_marker"].update(plot_options)
-                    case "add_cap":
-                        self._params.add_cap.update(plot_options)
-                        self.default_map_options["add_cap"].update(plot_options)
+                    basemap_kwargs["lat_0"] = -90
+                    basemap_kwargs["lon_0"] = 0
 
+        # Handle basemap_kwargs, if any:
+        self.map_options["basemap"].update(basemap_kwargs)
+        if option_dict is None:
+            option_dict = {}
+        self.map_options.update(option_dict)
+
+        # Validate basemap inputs, and provide warnings if inputs are not valid:
         self._validate_basemap_params()
 
-        #self._plot_list = []
-        super().__init__(**self._params.basemap)
-        self.fig = self.ax.figure
+        # Deprecated; retained for compatibility: 
+        self._params = Tplot_Map_Param_Set()
+        
+        # Use map_options to update self._params, and make initial plots:
+        for map_plottype in self.map_options.keys():
+            # If plot_options are defined, create plot from
+            # corresponding map_plottype:
+            if self.map_options.get(map_plottype) is not None and self.map_options.get(map_plottype) != {}:
+                if self.ax is not None:
+                    self.map_options[map_plottype]["ax"] = self.ax
+                if map_plottype in ["basemap","drawmapboundary","fillcontinents","drawcoastlines","drawcountries","drawmeridians","drawparallels","nightshade"]:
+                    match map_plottype:
+                        case "basemap":
+                            super().__init__(**self.map_options[map_plottype])
+                        case "drawmapboundary":
+                            self.add_map_boundary()
+                        case "fillcontinents":
+                            self.add_fillcontinents()
+                        case "drawcoastlines":
+                            self.add_coastlines()
+                        case "drawcountries":
+                            self.add_countries()
+                        case "drawmeridians":
+                            self.add_meridians()
+                        case "drawparallels":
+                            self.add_parallels()
+                        case "nightshade":
+                            self.add_nightshade()
+            self._overwrite_params(map_plottype)
 
-        self.add_map_boundary()
-        self.add_fillcontinents()
-        self.add_coastlines()
-        self.add_meridians()
-        self.add_parallels()
-        self.add_nightshade()
+    def _overwrite_params(self,map_plottype:str):
+        param_opts = self.map_options.get(map_plottype)
+        match map_plottype:
+            case "basemap":
+                self._params.basemap = param_opts
+            case "drawmapboundary":
+                self._params.drawmapboundary = param_opts
+            case "fillcontinents":
+                self._params.fillcontinents = param_opts
+            case "drawcountries":
+                self._params.add_countries = param_opts
+            case "drawcoastlines":
+                self._params.drawcoastlines = param_opts
+            case "nightshade":
+                self._params.nightshade = param_opts
+            case "drawmeridians":
+                self._params.drawmeridians = param_opts
+            case "drawparallels":
+                self._params.drawparallels = param_opts
+            case "add_linepath":
+                self._params.add_linepath = param_opts
+            case "add_marker":
+                self._params.add_marker = param_opts
+            case "add_cap":
+                self._params.add_cap = param_opts
+        return
 
     def _convert_projection_params(self):
         updated_proj_params = dict()
@@ -157,7 +186,6 @@ class Tplot_Map(Basemap):
         for proj_key, proj_params in self.projection_params.items():
             match proj_params:
                 case 'corners only (no width/height)':
-                    # TODO: can this also contain corners_xy???
                     updated_proj_params[proj_key] = self._corners_latlon + self._corners_xy
                     invalid_projection_params[proj_key] = ["width","height"]
                 case 'corners plus lat_ts (no width/height)':
@@ -207,7 +235,7 @@ class Tplot_Map(Basemap):
         return
 
     def _validate_basemap_params(self):
-        this_projection = self._params.basemap.get("projection")
+        this_projection = self.map_options.get("projection")
         if this_projection is not None:
             if this_projection not in _projnames.keys():
                 # check inverse projection
@@ -215,34 +243,33 @@ class Tplot_Map(Basemap):
                 if this_projection not in _projnames_inverse.keys():
                     raise ValueError(f"Option 'projection' must be one of: {_projnames.keys()} or {_projnames_inverse.keys()}")
                 else:
-                    self._params.basemap["projection"] = _projnames_inverse[this_projection]
-                    this_projection = self._params.basemap["projection"]
+                    self.map_options["basemap"]["projection"] = _projnames_inverse[this_projection]
+                    this_projection = self.map_options.get("projection")
 
             # check arguments:
             this_projection_param_set = set(self.projection_params[this_projection])
-            projection_param_diff = this_projection_param_set - set(self._params.basemap.keys())
+            projection_param_diff = this_projection_param_set - set(self.map_options["basemap"].keys())
             projection_includes_corners_latlon = len(set(self._corners_latlon) - this_projection_param_set) == 0
             projection_includes_corners_xy = len(set(self._corners_xy) - this_projection_param_set) == 0
             projection_includes_all_corners = projection_includes_corners_latlon and projection_includes_corners_xy
-            args_include_corners_latlon = len(set(self._corners_latlon) - set(self._params.basemap.keys())) == 0
-            args_include_corners_xy = len(set(self._corners_xy) - set(self._params.basemap.keys())) == 0
+            args_include_corners_latlon = len(set(self._corners_latlon) - set(self.map_options["basemap"].keys())) == 0
+            args_include_corners_xy = len(set(self._corners_xy) - set(self.map_options["basemap"].keys())) == 0
             args_include_some_corners = args_include_corners_latlon or args_include_corners_xy
-            args_include_invalid_params = len(set(self._invalid_projection_params[this_projection]) - self._params.basemap.keys()) < len(set(self._invalid_projection_params[this_projection]))
+            args_include_invalid_params = len(set(self._invalid_projection_params[this_projection]) - self.map_options["basemap"].keys()) < len(set(self._invalid_projection_params[this_projection]))
             
             if len(projection_param_diff) > 0:
                 if projection_includes_all_corners and not args_include_some_corners:
                     logging.warning("Basemap init is missing some corners arguments; visual may differ from expected.")
                 else:
-                    logging.warning(f"The following required arguments are missing: {this_projection_param_set - set(self._params.basemap.keys())}")
+                    logging.warning(f"Required arguments are missing: {this_projection_param_set - set(self.map_options['basemap'].keys())}" )
             if args_include_invalid_params:
-                logging.warning(f"Basemap init contains invalid arguments: {set(self._invalid_projection_params[this_projection]) - self._params.basemap.keys()}")
+                logging.warning(f"Basemap init contains invalid arguments: {set(self._invalid_projection_params[this_projection]) - self.map_options['basemap'].keys()}")
         return
     
     def show(self): 
         plt.show()
         return
 
-    # TODO: update to also update params dict
     @property
     def params(self):
         """The params property."""
@@ -266,66 +293,74 @@ class Tplot_Map(Basemap):
             if isinstance(coord_obj, str):
                 # load data from tplot:
                 coord_data = get_data(coord_obj)
-            # TODO: one of the dimensions MUST be 2; verify. 
+            # TODO: check if one of the dimensions is 2? 
             # UNLESS is_lat or is_lon is set; then one of the
             # dimensions must be size 0 or 1
             coord_data_list.append(coord_data)
         return coord_data_list
 
     def add_map_boundary(self,**drawmapboundary_kwargs):
-        if self._params.drawmapboundary is not None:    
-            self._params.drawmapboundary.update(drawmapboundary_kwargs)
-            self.drawmapboundary(**self._params.drawmapboundary)
+        self.map_options["drawcountries"].update(drawmapboundary_kwargs)
+        self._overwrite_params("drawcountries")
+        self.drawmapboundary(**self.map_options.get("drawcountries"))
         return
 
     def add_fillcontinents(self,**fillcontinents_kwargs):
-        if self._params.fillcontinents is not None:
-            self._params.fillcontinents.update(fillcontinents_kwargs)
-            self.fillcontinents(**self._params.fillcontinents)
+        self.map_options["fillcontinents"].update(fillcontinents_kwargs)
+        self._overwrite_params("fillcontinents")
+        self.fillcontinents(**self.map_options.get("fillcontinents"))
         return
     
     def add_coastlines(self,**drawcoastlines_kwargs):
-        if self._params.drawcoastlines is not None: 
-            self._params.drawcoastlines.update(drawcoastlines_kwargs)
-            self.drawcoastlines(**self._params.drawcoastlines)
+        self.map_options["drawcoastlines"].update(drawcoastlines_kwargs)
+        self._overwrite_params("drawcoastlines")
+        self.drawcoastlines(**self.map_options.get("drawcoastlines"))
+        return
+
+    def add_countries(self,**drawcountries_kwargs):
+        self.map_options["drawcountries"].update(drawcountries_kwargs)
+        self._overwrite_params("drawcountries")
+        self.drawcountries(**self.map_options.get("drawcountries"))
         return
 
     def add_meridians(self,**drawmeridians_kwargs):
-        if self._params.drawmeridians is not None:
-            self._params.drawmeridians.update(drawmeridians_kwargs)
-            self.drawmeridians(**self._params.drawmeridians)
+        self.map_options["drawmeridians"].update(drawmeridians_kwargs)
+        self._overwrite_params("drawmeridians")
+        self.drawmeridians(**self.map_options.get("drawmeridians"))
         return
 
     def add_parallels(self,**drawparallels_kwargs):
-        if self._params.drawparallels is not None:
-            self._params.drawparallels.update(drawparallels_kwargs)
-            self.drawparallels(**self._params.drawparallels)
+        self.map_options["drawparallels"].update(drawparallels_kwargs)
+        self._overwrite_params("drawparallels")
+        self.drawparallels(**self.map_options.get("drawparallels"))
         return
 
     def add_nightshade(self,**nightshade_kwargs):
-        if self._params.nightshade is not None:
-            self._params.nightshade.update(nightshade_kwargs)
-            self.nightshade(**self._params.nightshade)
+        self.map_options["nightshade"].update(nightshade_kwargs)
+        self._overwrite_params("nightshade")
+        self.nightshade(**self.map_options.get("nightshade"))
         return
 
     def add_linepath(self, x, y,**plot_linepath_kwargs):
-        self._params.add_linepath.update(plot_linepath_kwargs)
-        self.plot(x,y,**self._params.add_linepath)
+        self.map_options["add_linepath"].update(plot_linepath_kwargs)
+        self._overwrite_params("add_linepath")
+        self.plot(x,y,**self.map_options.get("add_linepath"))
         return
     
-    def add_marker(self, x, y, **plot_marker__kwargs):
-        self._params.add_marker.update(plot_marker__kwargs)
-        self.plot(x,y,**self._params.add_marker)
+    def add_marker(self, x, y, **plot_marker_kwargs):
+        self.map_options["add_marker"].update(plot_marker_kwargs)
+        self._overwrite_params("add_marker")
+        self.plot(x,y,**self.map_options.get("add_marker"))
         return
 
     def add_cap(self, x, y,**plot_cap_kwargs):
-        self._params.add_cap.update(plot_cap_kwargs)
-        self.plot(x,y,**self._params.add_cap)
+        self.map_options["add_cap"].update(plot_cap_kwargs)
+        self._overwrite_params("add_cap")
+        self.plot(x,y,**self.map_options.get("add_cap"))
         return
 
     def add_tracks(self,coords: str | np.ndarray, **tracks_plot_kwargs):
         coords = self._parse_input_coords(coords=coords)
-        
         for coord_set in coords:
             # expects input coordinates in form of radius, longitude, latitude
             x,y = self(coord_set[:,2],coord_set[:,1])
@@ -337,7 +372,6 @@ class Tplot_Map(Basemap):
         for coord in coords:
             # expects input coordinates in form of radius, longitude, latitude
             x,y = self(coord[2],coord[1])
-            # TODO: do we need to use scatter or plot (with line options turned off?)
             self.add_marker(x,y,**markers_plot_kwargs)
         return
 
@@ -383,7 +417,6 @@ class Tplot_Map(Basemap):
             computed_trace = tvar_to_foottracks(tvar_to_trace = tvar_name, model_str = "t89", endpoint = "ionosphere-north")
             self.add_tracks(coords=computed_trace[0], label = tvar_name)
         return
-
 
 
 def tvar_to_foottracks(tvar_to_trace:list[str] | str, in_coord_str:str='gsm', **ttrace2endpoint_kwargs) -> list: 
@@ -571,7 +604,6 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     """
     from pyspedas import cotrans, get_data
     from pyspedas import cartesian2geodeticpolar as cotrans_cartesian2geodeticpolar
-    # TODO: should this return array or simply create new tplot variable? 
     tvar_geo = tvar + "_geo"
     cotrans(name_in=tvar,name_out=tvar_geo,coord_in=in_coord_str,coord_out="geo")
     # convert Cartesian GEO/ECEF data to geodetic polar:
@@ -595,6 +627,3 @@ def tplot_trace_tvars_to_tmap(
         plt.savefig(fig_fp)
     return tmap
 
-if __name__ == "__main__":
-    map_obj = tplot_map(projection="merc",center=(65,20),display=True)
-    print("Done!")
