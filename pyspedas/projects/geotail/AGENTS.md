@@ -15,12 +15,16 @@ related_files:
   - pyspedas/projects/geotail/tests/test_geotail.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument or datatype branch, or when
   a wrapper is added to __init__.py.
 ---
 
 # Geotail
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Geotail mission: magnetic field, electric field,
 plasma, energetic particles and plasma waves. All data are CDF files from SPDF.

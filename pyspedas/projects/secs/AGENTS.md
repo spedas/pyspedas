@@ -11,6 +11,7 @@ related_files:
   - pyspedas/preferences.py
   - pyproject.toml
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes its servers, file layout or return types, when
   read_data_files.py changes the output formats, or when make_plots() changes
@@ -18,6 +19,9 @@ maintenance: |
 ---
 
 # SECS / EICS
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loader and map plots for the spherical elementary current systems (SECS) and
 equivalent ionospheric currents (EICS) over North America and Greenland. The

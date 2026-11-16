@@ -221,6 +221,7 @@ jobs:
           - themis-s3
           - psp
           - rbsp
+          - mms
           - missions-spdf
           - missions-non-spdf
         include:
@@ -288,6 +289,10 @@ jobs:
           - test-group: rbsp
             test-command: |
               run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
+          - test-group: mms
+            test-command: |
+              run_test "mms cache cleanup" pyspedas.projects.mms.tests.test_mms_remove_old_files
+              run_test "mms perigee tests" pyspedas.projects.mms.tests.test_mms_perigee    
           - test-group: missions-spdf
             test-command: |
               run_test "ace" pyspedas.projects.ace.tests.test_ace

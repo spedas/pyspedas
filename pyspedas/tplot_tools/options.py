@@ -84,6 +84,8 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
         xtick_color             str          The color of the x tick marks
         xtick_labelcolor        str          The color of the x tick marks
         xtick_direction         str          The direction of the x tick marks (in, out, inout)
+        x_major_ticks           list         Time-axis major tick positions as UTC strings or Unix timestamps. None restores automatic spacing; [] hides major ticks. For combined panels, set on the combined variable. Stacked panels share the time axis.
+        x_minor_tick_interval   numeric      Time-axis minor tick spacing in seconds (positive and finite). None restores the default. For combined panels, set on the combined variable.
         xwrap                   bool         If True, wrap the x-axis title to fit within ``xwrap_width`` characters. Alias: x_wrap
         xwrap_width             int          Character width to wrap the x-axis title at when ``xwrap`` is True. Default: 40. Alias: x_wrap_width
         ======================  ===========  ===========================================================================================================================
@@ -528,6 +530,30 @@ def options(name, option=None, value=None, opt_dict=None, quiet=False):
                         pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "log"
                     else:
                         pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["yaxis_opt"]["y_axis_type"] = "linear"
+
+            elif option == "x_major_ticks":
+                if value is None:
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["x_major_ticks"] = None
+                elif isinstance(value, (list, tuple, np.ndarray)) and np.ndim(value) == 1:
+                    try:
+                        ticks = pyspedas.time_double(value)
+                        if not np.all(np.isfinite(ticks)):
+                            raise ValueError("tick positions must be finite")
+                    except (TypeError, ValueError, OverflowError):
+                        logging.warning("x_major_ticks must contain UTC strings or finite Unix timestamps")
+                        continue
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["x_major_ticks"] = ticks
+                else:
+                    logging.warning("x_major_ticks must be a 1D array-like object or None")
+
+            elif option == "x_minor_tick_interval":
+                if value is None or (
+                    isinstance(value, (int, float, np.integer, np.floating))
+                    and np.isfinite(value) and value > 0
+                ):
+                    pyspedas.tplot_tools.data_quants[i].attrs["plot_options"]["xaxis_opt"]["x_minor_tick_interval"] = value
+                else:
+                    logging.warning("x_minor_tick_interval must be a positive finite number of seconds or None")
 
             elif option == "y_major_ticks":
                 # check whether the value is 1D array-like
