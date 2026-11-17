@@ -60,7 +60,7 @@ with `ground/` (see `ground/geomag/gmag_isee_fluxgate.py`). `load()`:
 2. selects the ground or satellite URL, strips the corresponding template prefix for
    remote names, translates SPDF product directories and EFD filename case when the
    satellite URL is SPDF, and
-   retains the original ERG-SC directories in the local cache path; `download()` selects
+   uses those URL-relative paths directly beneath `local_data_dir`; `download()` selects
    the last version only for wildcard paths and passes `uname`/`passwd` as credentials;
 3. loads the files with `cdf_to_tplot()`, using the caller's `prefix` and `suffix`;
 4. with `notplot=True`, adds the last file's CDF attributes to the returned dicts under
