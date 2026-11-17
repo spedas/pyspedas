@@ -37,7 +37,7 @@ class TestELFStateValidation(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not calfile:
-            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+            raise FileNotFoundError(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pos_gei = get_data(f"el{cls.probe}_pos_gei")

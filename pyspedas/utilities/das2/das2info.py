@@ -15,10 +15,12 @@ def das2info(
         DAS2 URL.
     server : str, optional
         DAS2 "server" parameter.
-        Possible values:
+        Possible values::
+
             "list" (list available datasets),
             "peers" (list available peers),
             "dsdf" (also needs dataset, return the Data Source Definition File for a dataset)
+
     dataset : str, optional
         DAS2 dataset identifier to request information for.
 

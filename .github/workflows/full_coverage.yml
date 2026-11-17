@@ -14,6 +14,9 @@ jobs:
         with:
           python-version: "3.12"
 
+      - name: Test dependency policy handling
+        run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+
       - name: Install dependencies
         env:
           MMS_AUTH_U: ${{ secrets.MMS_AUTH_U }}
@@ -23,7 +26,7 @@ jobs:
           python -m venv ../.venv
           source ../.venv/bin/activate
           python -m pip install --upgrade pip
-          pip install pdm uv
+          pip install "pdm<2.30" "hishel[httpx2]>=1.4,<2" uv   
           pdm config use_uv true
           pdm install -dG lint -dG test -dG setup --no-default
 
@@ -103,8 +106,8 @@ jobs:
               coverage run -a -m pyspedas.cotrans_tools.tests.test_quaternions
               echo Starting cnofs tests at `date`
               coverage run -a -m pyspedas.projects.cnofs.tests.test_cnofs
-              echo Starting kompsat tests at `date`
-              coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
+              echo Starting dmsp tests at `date`
+              coverage run -a -m pyspedas.projects.dmsp.tests.test_dmsp
               echo Starting dscovr tests at `date`
               coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
               echo Starting utilities download tests at `date`
@@ -214,6 +217,18 @@ jobs:
               echo "Disk usage after cleanup:"
               df -h
 
+          - shard: kompsat
+            shard_script: |
+              # Isolate KOMPSAT so its data-server outages can be rerun independently.
+              echo Starting kompsat tests at `date`
+              coverage run -a -m pyspedas.projects.kompsat.tests.test_kompsat
+
+          - shard: secs
+            shard_script: |
+              # Isolate SECS so its data-server outages can be rerun independently.
+              echo Starting secs tests at `date`
+              coverage run -a -m pyspedas.projects.secs.tests.test_secs
+
           - shard: mica
             shard_script: |
               # MICA's data server can experience independent outages, so keep
@@ -236,6 +251,8 @@ jobs:
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi
               echo "Starting spdf/cdaweb/hapi supermag tests at $(date)"
               coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_supermag
+              echo "Starting HAPI TestData tests at $(date)"
+              coverage run -a -m pyspedas.hapi_tools.tests.test_hapi_testdata
 
           - shard: das2
             shard_script: |
@@ -291,6 +308,10 @@ jobs:
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_fpi
               echo Starting mms file_filter tests at `date`
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_file_filter
+              echo Starting mms cache cleanup tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_remove_old_files
+              echo Starting MMS perigee tests at `date`
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_perigee
               echo Starting mms curlometer tests at `date`
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_curlometer
               echo Starting mms wavpol tests at `date`
@@ -354,12 +375,10 @@ jobs:
               coverage run -a -m pyspedas.mth5.tests.test_mth5_import
               echo Starting MTH5 load_fdsn test at `date`
               coverage run -a -m pyspedas.mth5.tests.test_load_fdsn
-              #echo Starting akebono tests at `date`
-              #coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
+              echo Starting akebono tests at `date`
+              coverage run -a -m pyspedas.projects.akebono.tests.test_akebono
               echo Starting VIRES client tests at `date`
               coverage run -a -m pyspedas.vires.tests.test_vires
-              echo Starting secs tests at `date`
-              coverage run -a -m pyspedas.projects.secs.tests.test_secs
               echo Starting particles tests at `date`
               coverage run -a -m pyspedas.particles.tests.test_particles
               echo "========================================================="
@@ -413,6 +432,8 @@ jobs:
               coverage run -a -m pyspedas.projects.elfin.tests.test_elfin
               echo Starting elfin epd calibration tests at `date`      
               coverage run -a -m pyspedas.projects.elfin.tests.test_epd_calibration
+              echo Starting swfo tests at `date`
+              coverage run -a -m pyspedas.projects.swfo.tests.test_swfo
               echo Starting noaa tests at `date`
               coverage run -a -m pyspedas.projects.noaa.tests.test_noaa
               echo "========================================================="        

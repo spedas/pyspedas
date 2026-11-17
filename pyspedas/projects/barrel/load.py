@@ -38,7 +38,9 @@ def load(trange=None,
         probe = [probe]
     
     if trange is None:
-        trange = CONFIG['defaults'][probe[0]]
+        # The defaults dictionary uses lowercased probe IDs as keys.
+        # The 'trange' key is used for the default time ranges, as lists.
+        trange = CONFIG['defaults'][probe[0].lower()]['trange']
 
     if prefix is None:
         prefix = ''
@@ -47,6 +49,7 @@ def load(trange=None,
 
     out_files = []
     for prb in probe:
+        # Probe is not converted to lower case here, but the remote_path containing it is lowercased.
         if str(datatype) == 'ephm':
             # SPDF has 'ephem' instead of 'ephm' for this data type
             remote_path = (str(level) + '/' + str(prb) + '/' + 'ephem' +

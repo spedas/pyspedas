@@ -1,6 +1,7 @@
 
 from .load import load
 from pyspedas.tplot_tools import options, data_quants
+import logging
 
 # This routine was originally in psp/__init__.py.  If you need to see the history of this routine before
 # it was moved to its own file, please check the history for __init__.py.
@@ -144,7 +145,7 @@ def fields(trange=['2018-11-5', '2018-11-6'],
     # SCaM and QTN data are Level 3
     if datatype.lower() in ['merged_scam_wf', 'sqtn_rfs_v1v2', 'sqtn_rfs_v3v4']:
         level = 'l3'
-        print("Using LEVEL=L3")
+        logging.info("Using LEVEL=L3")
 
     spec_types = None
     if datatype in ['dfb_dc_spec', 'dfb_ac_spec', 'dfb_dc_xspec', 'dfb_ac_xspec']:

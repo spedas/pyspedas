@@ -33,8 +33,7 @@ class DSLCotransDataValidation(unittest.TestCase):
                             local_path=CONFIG['local_data_dir'],
                             no_download=False)
         if not datafile:
-            # Skip tests
-            raise unittest.SkipTest("Cannot download data validation file")
+            raise FileNotFoundError("Cannot download data validation file")
 
         # Load validation variables from the test file
         del_data('*')

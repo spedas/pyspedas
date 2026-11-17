@@ -14,6 +14,7 @@ related_files:
   - pyspedas/projects/barrel/README.md
   - pyspedas/projects/barrel/tests/test_barrel.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes its path template, variable prefix or keywords,
   when a wrapper is added, or when balloon flights are added to CONFIG['defaults'].
@@ -21,8 +22,11 @@ maintenance: |
 
 # BARREL
 
-Loaders for BARREL, the balloon campaigns measuring precipitating relativistic
-electrons (X-ray spectra, rate counters, magnetometer, ephemeris and
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loaders for BARREL (Balloon Array for Radiation belt Relativistic Electron
+Losses) balloon campaigns (spectra, rate counters, magnetometer, ephemeris and
 housekeeping). Data are L2 CDF files from SPDF.
 
 ## Layout
@@ -47,7 +51,7 @@ lower-cases the file names from `dailynames()`, and downloads them. For
 
 `load()` then reads the files with `cdf_to_tplot()`, adding the prefix
 `brl<FLIGHT>_` taken from the file name, with the flight ID upper-cased
-(`brl1A_SSPC`, `brl1D_FSPC1`). A user `prefix` goes before it.
+(`brl1A_SSPC`, `brl1A_FSPC1`). A user `prefix` goes before it.
 
 ## Things to know
 
@@ -56,10 +60,12 @@ lower-cases the file names from `dailynames()`, and downloads them. For
   `notplot` exist only on `load()`, and there is no `varformat` or `varnames`.
 - Each wrapper's default `trange` is a day in late January 2013, inside flight
   `1A`. `CONFIG['defaults']` lists every flight's time range, keyed by
-  lower-case flight ID; `load()` reads it only when `trange=None`.
+  lower-case flight ID; `load()` reads it only when `trange=None`, looking up
+  `probe` as passed (not lower-cased).
 - `load()` returns None when no variables were created.
 - The local data folder is `BARREL_DATA_DIR`, else `SPEDAS_DATA_DIR/barrel`, else
-  `barrel_data/` (`config.py`). Setting `BARREL_NO_DOWNLOAD` turns downloads off.
+  `barrel_data/` (`config.py`). Setting `BARREL_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

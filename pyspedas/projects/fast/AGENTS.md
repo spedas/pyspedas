@@ -9,6 +9,7 @@ related_files:
   - pyspedas/utilities/pyspedas_functools.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument, level or datatype branch,
   or when __init__.py adds a loader or edits the per-loader docstrings.
@@ -16,8 +17,11 @@ maintenance: |
 
 # FAST
 
-Loaders for the FAST auroral satellite: DC and AC fields, ESA electron and ion
-spectrometers, and TEAMS ion composition. All data are CDF files from SPDF.
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loaders for the FAST auroral satellite: DC and AC fields, electrostatic
+analyzers (ESA), and the TEAMS mass spectrograph. All data are CDF files from SPDF.
 
 ## Layout
 
@@ -55,7 +59,8 @@ Files go through `download()` and `cdf_to_tplot()` one instrument at a time.
   instrument only.
 - `time_clip` defaults to False; when set, variables are clipped in place.
 - The local data folder is `FAST_DATA_DIR`, else `SPEDAS_DATA_DIR/fast`, else
-  `fast_data/` (`config.py`). Setting `FAST_NO_DOWNLOAD` turns downloads off.
+  `fast_data/` (`config.py`). Setting `FAST_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

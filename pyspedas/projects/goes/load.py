@@ -1,19 +1,22 @@
 import logging
+
 from pyspedas import (
-    wildcard_expand,
-    options,
     dailynames,
     download,
     netcdf_to_tplot,
-    time_clip as tclip,
+    options,
+    wildcard_expand,
 )
-from .config import CONFIG
+from pyspedas import time_clip as tclip
+from pyspedas.projects.goes.config import CONFIG
+
+logger = logging.getLogger(__name__)
 
 
 def loadr(
-    trange=["2023-01-01", "2023-01-02 11:59:59"],
-    probe="18",
-    instrument="mag",
+    trange=None,
+    probe: str | int | list[str | int] | tuple[str | int, ...] = "18",
+    instrument: str | list[str] = "mag",
     datatype="1min",
     prefix="",
     suffix="",
@@ -21,9 +24,11 @@ def loadr(
     no_update=False,
     time_clip=True,
     force_download=False,
+    level="l2",
+    get_support_data=False,
 ):
     """
-    Loads GOES-R L2 data (GOES-16 and later) for specified instruments and data types.
+    Loads GOES-R L1 or L2 data (GOES-16 and later) for specified instruments and data types.
 
     Also loads reprocessed GOES 8-15 data (hires mag and xrs) in GOES-R file format.
 
@@ -47,6 +52,12 @@ def loadr(
         If True, only loads data from the local cache. Default is False.
     time_clip : bool, optional
         If True (the default), clips the variables to exactly the range specified in the trange keyword.
+    level : str, optional
+        "l2" (default) or "l1". L1 supports mag, xrs, euvs, mpsh and sgps
+        for probes 16-19; datatype does not select a resolution for L1.
+    get_support_data : bool, optional
+        Load L1 auxiliary variables as well as science data (probes 16+). Default False.
+        Has no effect on L2 (probes 16+) or reprocessed data (probes 8-15) or original netCDF data (probe 15 or older).
     force_download : bool, optional
         If True, downloads the file even if a newer version exists locally. Default is False.
 
@@ -71,14 +82,26 @@ def loadr(
     'g16_mag_num_points', 'g16_mag_orbit_llr_geo']
     """
 
-    goes16_path_dir = (
-        # Data for GOES-R (16 and later)
-        "https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/"
-    )
-    goes8_path_dir = (
-        # Reprocessed data for GOES 8-15 in GOES-R format
-        "https://www.ncei.noaa.gov/data/goes-space-environment-monitor/access/science/"
-    )
+    if trange is None:
+        trange = ["2023-01-01", "2023-01-02 11:59:59"]
+
+    level = level.lower()
+    if level not in ("l1", "l2"):
+        raise ValueError("level must be l1 or l2")
+    if level == "l1":
+        # For l1 use the dedicated L1 loading function from goes_l1 module
+        from .goes_l1 import _load_l1
+
+        return _load_l1(
+            trange, probe, instrument, prefix, suffix, downloadonly, no_update, time_clip, force_download, get_support_data
+        )
+
+    # From now on, we handle L2 data loading for GOES satellites.
+    # Remote path for GOES-R satellites (16 and later)
+    goes16_path_dir = CONFIG["remote_goes_r"]
+
+    # Reprocessed data for GOES 8-15 in GOES-R format
+    goes8_path_dir = CONFIG["remote_goes_r_reprocessed"]
 
     time_var = "time"  # name of the time variable in the netcdf files
     out_files = []
@@ -106,24 +129,16 @@ def loadr(
             if instr == "euvs":
                 if int(prb) <= 15:
                     # GOES 8-15
-                    logging.warning(
-                        "EUVS reprocessed data is not available in reprocessed format for GOES 8-15."
-                    )
+                    logger.warning("EUVS reprocessed data is not available in reprocessed format for GOES 8-15.")
                     continue
 
                 if datatype in ["full", "hi", "1min", "avg1m"]:  # high resolution 1 min
                     pathformat = [
-                        remote_path
-                        + "euvs-l2-avg1m_science/%Y/%m/sci_euvs-l2-avg1m_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
+                        remote_path + "euvs-l2-avg1m_science/%Y/%m/sci_euvs-l2-avg1m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                     ]
                 else:  # low resolution 1 day, smaller files
                     pathformat = [
-                        remote_path
-                        + "euvs-l2-avg1d_science/%Y/%m/sci_euvs-l2-avg1d_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
+                        remote_path + "euvs-l2-avg1d_science/%Y/%m/sci_euvs-l2-avg1d_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                     ]
             elif instr == "xrs":
                 if datatype in ["full", "hi", "1sec", "flx1s"]:  # high resolution 1 sec
@@ -139,10 +154,7 @@ def loadr(
                         ]
                     else:
                         pathformat = [
-                            remote_path
-                            + "xrsf-l2-flx1s_science/%Y/%m/sci_xrsf-l2-flx1s_g"
-                            + str(prb)
-                            + "_d%Y%m%d_v?-?-?.nc"
+                            remote_path + "xrsf-l2-flx1s_science/%Y/%m/sci_xrsf-l2-flx1s_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                         ]
                 else:  # low resolution 1 min, smaller files
                     if int(prb) <= 15:
@@ -156,17 +168,12 @@ def loadr(
                         ]
                     else:
                         pathformat = [
-                            remote_path
-                            + "xrsf-l2-avg1m_science/%Y/%m/sci_xrsf-l2-avg1m_g"
-                            + str(prb)
-                            + "_d%Y%m%d_v?-?-?.nc"
+                            remote_path + "xrsf-l2-avg1m_science/%Y/%m/sci_xrsf-l2-avg1m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                         ]
             elif instr == "mag":
                 if int(prb) <= 15:
                     # GOES 8-15
-                    logging.warning(
-                        "Only hires mag data is available in reprocessed format for GOES 8-15."
-                    )
+                    logger.warning("Only hires mag data is available in reprocessed format for GOES 8-15.")
                     pathformat = [
                         remote_path
                         + "mag/goes"
@@ -182,25 +189,13 @@ def loadr(
                         "0.1sec",
                         "hires",
                     ]:  # high resolution 0.1 sec
-                        pathformat = [
-                            remote_path
-                            + "magn-l2-hires/%Y/%m/dn_magn-l2-hires_g"
-                            + str(prb)
-                            + "_d%Y%m%d_v?-?-?.nc"
-                        ]
+                        pathformat = [remote_path + "magn-l2-hires/%Y/%m/dn_magn-l2-hires_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"]
                     else:  # low resolution 1 min, smaller files
-                        pathformat = [
-                            remote_path
-                            + "magn-l2-avg1m/%Y/%m/dn_magn-l2-avg1m_g"
-                            + str(prb)
-                            + "_d%Y%m%d_v?-?-?.nc"
-                        ]
+                        pathformat = [remote_path + "magn-l2-avg1m/%Y/%m/dn_magn-l2-avg1m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"]
             elif instr == "mpsh":
                 if int(prb) <= 15:
                     # GOES 8-15
-                    logging.warning(
-                        "MPSH reprocessed data is not available in reprocessed format for GOES 8-15."
-                    )
+                    logger.warning("MPSH reprocessed data is not available in reprocessed format for GOES 8-15.")
                     continue
                 time_var = "L2_SciData_TimeStamp"
                 if datatype in [
@@ -211,24 +206,16 @@ def loadr(
                     "1m",
                 ]:  # high resolution 1 min
                     pathformat = [
-                        remote_path
-                        + "mpsh-l2-avg1m_science/%Y/%m/sci_mpsh-l2-avg1m_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
+                        remote_path + "mpsh-l2-avg1m_science/%Y/%m/sci_mpsh-l2-avg1m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                     ]
                 else:  # low resolution 5 min, smaller files
                     pathformat = [
-                        remote_path
-                        + "mpsh-l2-avg5m_science/%Y/%m/sci_mpsh-l2-avg5m_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
+                        remote_path + "mpsh-l2-avg5m_science/%Y/%m/sci_mpsh-l2-avg5m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"
                     ]
             elif instr == "sgps":
                 if int(prb) <= 15:
                     # GOES 8-15
-                    logging.warning(
-                        "SGPS reprocessed data is not available in reprocessed format for GOES 8-15."
-                    )
+                    logger.warning("SGPS reprocessed data is not available in reprocessed format for GOES 8-15.")
                     continue
                 if datatype in [
                     "full",
@@ -237,19 +224,9 @@ def loadr(
                     "avg1m",
                     "1m",
                 ]:  # high resolution 1 min
-                    pathformat = [
-                        remote_path
-                        + "sgps-l2-avg1m/%Y/%m/sci_sgps-l2-avg1m_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
-                    ]
+                    pathformat = [remote_path + "sgps-l2-avg1m/%Y/%m/sci_sgps-l2-avg1m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"]
                 else:  # low resolution 5 min, smaller files
-                    pathformat = [
-                        remote_path
-                        + "sgps-l2-avg5m/%Y/%m/sci_sgps-l2-avg5m_g"
-                        + str(prb)
-                        + "_d%Y%m%d_v?-?-?.nc"
-                    ]
+                    pathformat = [remote_path + "sgps-l2-avg5m/%Y/%m/sci_sgps-l2-avg5m_g" + str(prb) + "_d%Y%m%d_v?-?-?.nc"]
 
             # find the full remote path names using the trange
             if not isinstance(pathformat, list):
@@ -257,7 +234,7 @@ def loadr(
 
             remote_names = []
             for path in pathformat:
-                remote_names.extend(dailynames(file_format=path, trange=trange))
+                remote_names.extend(dailynames(file_format=path, trange=trange) or [])
 
             # For each probe and instrument, download the files
             files = download(
@@ -268,7 +245,7 @@ def loadr(
                 force_download=force_download,
             )
 
-            files = sorted(set(files))
+            files = sorted(set(files or []))
             out_files.extend(files)
 
             if len(files) > 0 and not downloadonly:
@@ -279,9 +256,7 @@ def loadr(
                     prefix_local = prefix
 
                 # Load all files from the same probe and instrument, merging them
-                tvars_local = netcdf_to_tplot(
-                    files, prefix=prefix_local, suffix=suffix, time=time_var
-                )
+                tvars_local = netcdf_to_tplot(files, prefix=prefix_local, suffix=suffix, time=time_var)
                 if len(tvars_local) > 0:
                     tvars.extend(tvars_local)
 
@@ -296,9 +271,9 @@ def loadr(
 
 
 def load(
-    trange=["2013-11-05", "2013-11-06 12:00:00"],
-    probe="15",
-    instrument="fgm",
+    trange=None,
+    probe: str | int | list[str | int] | tuple[str | int, ...] = "15",
+    instrument: str | list[str] = "fgm",
     datatype="1min",
     prefix="",
     suffix="",
@@ -307,9 +282,11 @@ def load(
     time_clip=True,
     force_download=False,
     goes_r=False,
+    level="l2",
+    get_support_data=False,
 ):
     """
-    Load GOES L2 data.
+    Load GOES data (L2 by default; L1 for GOES-16 to 19).
 
     Parameters
     ----------
@@ -336,6 +313,12 @@ def load(
         If True, only loads data from the local cache. Default is False.
     time_clip : bool, optional
         If True (the default), clips the variables to exactly the range specified in the trange keyword.
+    level : str, optional
+        "l2" (default) or "l1". L1 supports mag, xrs, euvs, mpsh and sgps
+        for probes 16-19; datatype does not select a resolution for L1.
+    get_support_data : bool, optional
+        Load L1 auxiliary variables as well as science data. Default False.
+        Has no effect on L2.
     force_download : bool, optional
         If True, downloads the file even if a newer version exists locally. Default is False.
     goes_r : bool, optional
@@ -371,6 +354,25 @@ def load(
     ['g15_fgm_BX_1_QUAL_FLAG', 'g15_fgm_BX_1_NUM_PTS', 'g15_fgm_BX_1', ...]
     (the result is a list of 66 variables)
     """
+
+    if trange is None:
+        trange = ["2013-11-05", "2013-11-06 12:00:00"]
+
+    if level.lower() != "l2":
+        return loadr(
+            trange=trange,
+            probe=probe,
+            instrument=instrument,
+            datatype=datatype,
+            prefix=prefix,
+            suffix=suffix,
+            downloadonly=downloadonly,
+            no_update=no_update,
+            time_clip=time_clip,
+            force_download=force_download,
+            level=level,
+            get_support_data=get_support_data,
+        )
 
     if isinstance(probe, tuple):
         probe = list(probe)
@@ -469,13 +471,7 @@ def load(
                     resolution = ["2", "2", "4", "16", "32"]
                     pathformat = []
                     for idx, channel in enumerate(channels):
-                        pathformat.append(
-                            "_maged_19"
-                            + channel
-                            + "_"
-                            + resolution[idx]
-                            + "s_%Y%m%d_%Y%m%d.nc"
-                        )
+                        pathformat.append("_maged_19" + channel + "_" + resolution[idx] + "s_%Y%m%d_%Y%m%d.nc")
                     pathformat = [full_path + s for s in pathformat]
             elif instr == "magpd":
                 # magnetospheric proton detector -- only valid on GOES 13, 14, 15
@@ -486,13 +482,7 @@ def load(
                     resolution = ["16", "16", "16", "32", "32"]
                     pathformat = []
                     for idx, channel in enumerate(channels):
-                        pathformat.append(
-                            "_magpd_19"
-                            + channel
-                            + "_"
-                            + resolution[idx]
-                            + "s_%Y%m%d_%Y%m%d.nc"
-                        )
+                        pathformat.append("_magpd_19" + channel + "_" + resolution[idx] + "s_%Y%m%d_%Y%m%d.nc")
                     pathformat = [full_path + s for s in pathformat]
             elif instr == "hepad":
                 # high energy proton and alpha detector -- valid for GOES 08-15
@@ -533,7 +523,7 @@ def load(
 
             remote_names = []
             for path in pathformat:
-                remote_names.extend(dailynames(file_format=path, trange=trange))
+                remote_names.extend(dailynames(file_format=path, trange=trange) or [])
 
             files = download(
                 remote_file=remote_names,
@@ -543,10 +533,11 @@ def load(
                 force_download=force_download,
             )
 
-            if files is not None:
-                if not isinstance(files, list):
-                    files = [files]
-                out_files.extend(files)
+            if files is None:
+                files = []
+            elif not isinstance(files, list):
+                files = [files]
+            out_files.extend(files)
 
             tvars_local = []
             if len(files) > 0 and downloadonly is False:
@@ -556,9 +547,7 @@ def load(
                 else:
                     prefix_local = prefix
 
-                tvars_local = netcdf_to_tplot(
-                    files, prefix=prefix_local, suffix=suffix, time="time_tag"
-                )
+                tvars_local = netcdf_to_tplot(files, prefix=prefix_local, suffix=suffix, time="time_tag")
 
                 if len(tvars_local) > 0:
                     tvars.extend(tvars_local)

@@ -13,12 +13,16 @@ related_files:
   - pyspedas/projects/solo/tests/test_solo.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template, the level handling or the file
   naming for an instrument, or when __init__.py adds a loader.
 ---
 
 # Solar Orbiter
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for Solar Orbiter in-situ instruments: MAG, RPW, SWA and EPD. All data
 are CDF files from SPDF.
@@ -47,8 +51,8 @@ Variations:
 - `epd` adds a `mode` keyword (default `'hcad'`): `.../<datatype>/<mode>/...`
   and `solo_<level>_epd-<datatype>-<mode>_...`.
 - SWA: every L2 product except `pas-eflux`, `pas-grnd-mom` and `pas-vdf`, and
-  every L1 product except five listed PAS/HIS ones, is named by start and end
-  time and matched with the `%Y%m%dt??????-*` wildcard.
+  every L1 product except five listed PAS/HIS ones, is matched with the
+  `%Y%m%dt??????-*` wildcard.
 
 The wildcards are resolved by `download()` from the remote directory listing.
 
@@ -61,7 +65,7 @@ The wildcards are resolved by `download()` from the remote directory listing.
 - `time_clip` defaults to False.
 - The local data folder is `SOLO_DATA_DIR`, else `SPEDAS_DATA_DIR/solar-orbiter`
   (hyphen), else `solar_orbiter_data/` (underscore) (`config.py`). Setting
-  `SOLO_NO_DOWNLOAD` turns downloads off.
+  `SOLO_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

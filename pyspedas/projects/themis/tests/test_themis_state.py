@@ -28,8 +28,7 @@ class Themis_StateDataTests(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not datafile:
-            # Skip tests
-            raise unittest.SkipTest("Cannot download data validation file")
+            raise FileNotFoundError("Cannot download data validation file")
 
         # Load validation variables from the test file
         del_data('*')
@@ -117,6 +116,7 @@ class Themis_StateDataTests(unittest.TestCase):
         CONFIG['remote_data_dir'] = save
         self.assertTrue(data_exists('tha_pos'))
 
+    @unittest.skip("Skipping due to issues with THEMIS data server at UCLA")
     def test_state_ucla(self):
         from pyspedas.projects.themis.config import CONFIG
         del_data('the*')

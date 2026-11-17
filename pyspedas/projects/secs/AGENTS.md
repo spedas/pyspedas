@@ -11,6 +11,7 @@ related_files:
   - pyspedas/preferences.py
   - pyproject.toml
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes its servers, file layout or return types, when
   read_data_files.py changes the output formats, or when make_plots() changes
@@ -19,10 +20,13 @@ maintenance: |
 
 # SECS / EICS
 
-Loader and map plots for the spherical elementary currents (SECS) and
-equivalent ionospheric currents (EICS) derived from ground magnetometers over
-North America and Greenland. Unlike the other missions, the loader returns
-arrays, not tplot variables.
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loader and map plots for the spherical elementary current systems (SECS) and
+equivalent ionospheric currents (EICS) over North America and Greenland. The
+loader does not return tplot variables, but the data itself (numpy array,
+pandas DataFrame or dict).
 
 ## Layout
 
@@ -67,7 +71,7 @@ to `CONFIG['plots_dir']`.
   else `secs_data/`; plots go to `PLOTS_SECS_DIR`, else
   `SPEDAS_DATA_DIR/secs_plots`, else `secs_plots/` (`config.py`, which first
   applies saved preferences from `pyspedas/preferences.py`). Setting
-  `SECS_NO_DOWNLOAD` turns downloads off. `config.py` also sets `PROJ_LIB` from
+  `SECS_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads off. `config.py` also sets `PROJ_LIB` from
   `CONDA_PREFIX` when that is defined.
 
 ## Tests

@@ -526,7 +526,7 @@ class TinterpolMxnTests(unittest.TestCase):
         assert_array_equal(get_data('mxn_test_a').y, [10, 30])
 
     def test_invalid_times_and_missing_target(self):
-        for times in [[np.datetime64('NaT')], [[0, 1]], [np.inf]]:
+        for times in [[np.datetime64('NaT', 'ns')], [[0, 1]], [np.inf]]:
             with self.subTest(times=times), self.assertRaises(ValueError):
                 time_interpolate({'x': [0, 1], 'y': [0, 1]}, times)
         with self.assertRaises(ValueError):
@@ -635,7 +635,7 @@ def _reference_cdf():
             CONFIG["testing"]["output_dir"],
         )
         if not filename:
-            raise unittest.SkipTest('Could not download tinterpol_mxn_validate.cdf')
+            raise FileNotFoundError('Could not download tinterpol_mxn_validate.cdf')
     return filename
 
 

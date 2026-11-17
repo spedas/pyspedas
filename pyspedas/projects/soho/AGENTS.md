@@ -15,12 +15,16 @@ related_files:
   - pyspedas/projects/soho/README.md
   - pyspedas/projects/soho/tests/test_soho.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument branch or file resolution,
   or when a *_postprocessing.py module starts doing real work.
 ---
 
 # SOHO
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for SOHO in-situ data: CELIAS solar wind, COSTEP/EPHIN and ERNE
 energetic particles, and orbit/attitude. All data are CDF files from SPDF.
@@ -59,7 +63,7 @@ and runs the usual `dailynames()`, `download()`, `cdf_to_tplot()` pipeline:
 - `time_clip` defaults to False; with a yearly COSTEP file, set it to get only
   the requested range.
 - The local data folder is `SOHO_DATA_DIR`, else `SPEDAS_DATA_DIR/soho`, else
-  `soho_data/` (`config.py`). Setting `SOHO_NO_DOWNLOAD` turns downloads off.
+  `soho_data/` (`config.py`). Setting `SOHO_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

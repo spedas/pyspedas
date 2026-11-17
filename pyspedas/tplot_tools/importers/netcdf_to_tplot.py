@@ -2,6 +2,8 @@ import os
 import copy
 import calendar
 import logging
+import warnings
+from decimal import Decimal, InvalidOperation
 import numpy as np
 import xarray as xr
 import pyspedas
@@ -37,6 +39,96 @@ def change_time_to_unix_time(time_var):
         unix_time = calendar.timegm(date.timetuple()) + date.microsecond/1e6
         unix_times.append(unix_time)
     return unix_times
+
+
+def _read_netcdf_variable(variable, attributes):
+    """Read once, preserving native masks and validating extra fill metadata."""
+    fill_names = {"fillval", "_fillval", "_fillvalue", "fillvalue",
+                  "missing_data", "missing_value"}
+    dtype = np.dtype(variable.dtype)
+    fills = []
+    valid_missing = False
+    invalid_missing = False
+    if dtype.kind in "fiu":
+        for name, value in attributes.items():
+            if name.lower() not in fill_names:
+                continue
+            try:
+                converted = []
+                for item in np.asarray(value).reshape(-1):
+                    if dtype.kind in "iu":
+                        # Check before casting: never wrap or truncate integer fills.
+                        exact = Decimal(str(item))
+                        integer = int(exact)
+                        if integer != exact:
+                            raise ValueError("nonintegral fill")
+                        limits = np.iinfo(dtype)
+                        if not limits.min <= integer <= limits.max:
+                            raise ValueError("integer fill out of range")
+                        converted.append(dtype.type(integer))
+                    else:
+                        with np.errstate(over="raise", invalid="raise"):
+                            number = dtype.type(item)
+                        if np.isinf(number):
+                            raise ValueError("infinite fill")
+                        if number == 0 and Decimal(str(item)) != 0:
+                            raise ValueError("fill underflows to zero")
+                        converted.append(number)
+                fills.extend(converted)
+                if name == "missing_value":
+                    valid_missing = True
+            except (ValueError, TypeError, OverflowError, FloatingPointError, InvalidOperation):
+                if name == "missing_value":
+                    invalid_missing = True
+                logging.warning("Ignoring invalid %s=%r for netCDF variable %s (%s)",
+                                name, value, variable.name, dtype)
+
+    with warnings.catch_warnings():
+        if valid_missing:
+            # Only suppress this netCDF4 warning after checking its sentinel.
+            warnings.filterwarnings(
+                "ignore", message=r"WARNING: missing_value not used since it\s+cannot be safely cast to variable data type",
+                category=UserWarning,
+            )
+        if invalid_missing:
+            # Some netCDF4 versions raise on out-of-range missing_value metadata.
+            # Disable masking only for this read, retaining automatic scaling.
+            auto_mask = variable.mask
+            variable.set_auto_mask(False)
+            try:
+                data = variable[:]
+            finally:
+                variable.set_auto_mask(auto_mask)
+            default_fill = variable.get_fill_value()
+            if default_fill is not None:
+                fills.append(default_fill)
+        else:
+            data = variable[:]
+
+    values = np.ma.getdata(data)
+    if values.dtype.kind != "f":
+        # Keep integer flags and nonnumeric variables in their native dtype.
+        return values
+    mask = np.ma.getmaskarray(data).copy()
+    if invalid_missing:
+        # Reproduce valid-range masking when native masking had to be disabled.
+        limits = attributes.get("valid_range")
+        low = limits[0] if limits is not None else attributes.get("valid_min")
+        high = limits[1] if limits is not None else attributes.get("valid_max")
+        scale, offset = attributes.get("scale_factor", 1), attributes.get("add_offset", 0)
+        unpacked = (values - offset) / scale if scale != 0 else values
+        if low is not None:
+            mask |= unpacked < low
+        if high is not None:
+            mask |= unpacked > high
+    for fill in fills:
+        # netCDF4 has already unpacked scale_factor/add_offset on read.
+        fill = fill * attributes.get("scale_factor", 1) + attributes.get("add_offset", 0)
+        if np.isnan(fill):
+            mask |= np.isnan(values)
+        else:
+            mask |= values == fill
+    return np.ma.array(values, mask=mask).filled(np.nan)
 
 
 def netcdf_to_tplot(
@@ -124,44 +216,11 @@ def netcdf_to_tplot(
             for attrname in variable.ncattrs():
                 vars_and_atts[name][attrname] = getattr(variable, attrname)
 
-        # Fill in missing values for each variable with np.nan (if values are not already nan)
-        # and save the masked variables to a new dictionary.
-        masked_vars = {}  # Dictionary containing properly masked variables
-        for var in vars_and_atts.keys():
-            reg_var = vfile.variables[var]
-            # Check for some attributes that might be used to flag fill values
-            atts_dict = vars_and_atts[var]
-            fillval_atts_lc = ["fillval", "_fillval", "_fillvalue", "fillvalue", "missing_data"]
-            var_fill_value = None
-            for key in atts_dict.keys():
-                if key.lower() in fillval_atts_lc:
-                    # If multiple matching keys are found, the one that appears latest in the above list
-                    # will take precedence
-                    var_fill_value = atts_dict[key]
-            
-            if hasattr(reg_var[:],"get_fill_value"):
-                var_fill_value=reg_var[:].get_fill_value()
-
-            # If var_fill_value is None, or already NaN, there's nothing to do here.
-            # Integer arrays can't be NaN-filled, so if var_fill_value is any kind of integer, skip those too.
-            # Some missions have strings defined as fill values.  (ICON)
-            if var_fill_value is not None and not isinstance(var_fill_value, np.integer) and not isinstance(var_fill_value, str) and not np.isnan(var_fill_value):
-                # We want to force missing values to be nan so that plots don't look strange
-                if hasattr(reg_var[:],"data"):
-                        var_mask = np.ma.masked_where(
-                            reg_var[:].data == np.float32(var_fill_value), reg_var[:].data
-                        )
-                        var_filled = np.ma.filled(var_mask, np.nan)
-                        masked_vars[var] = var_filled
-                else:    
-                    var_mask = np.ma.masked_where(
-                        reg_var == np.float32(var_fill_value), reg_var
-                    )
-                    var_filled = np.ma.filled(var_mask, np.nan)
-                    masked_vars[var] = var_filled
-            else:
-                var_filled = reg_var
-                masked_vars[var] = var_filled
+        # Read each variable once; retain native masks and normalize float fills.
+        masked_vars = {
+            name: _read_netcdf_variable(vfile.variables[name], attributes)
+            for name, attributes in vars_and_atts.items()
+        }
 
         # A dictionary with the time variables in this file.
         times_dict = {}

@@ -20,6 +20,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch, its per-instrument server, or
   its keywords, or when __init__.py adds a loader.
@@ -27,8 +28,11 @@ maintenance: |
 
 # STEREO
 
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
 Loaders for the twin STEREO-A ("ahead") and STEREO-B ("behind") spacecraft:
-IMPACT (MAG, SWEA, SEP suite, beacon), PLASTIC and WAVES. All data are daily
+IMPACT (MAG, SWEA, STE, SEPT, SIT, LET, HET, beacon), PLASTIC and WAVES. All data are daily
 CDF files, from three different servers.
 
 ## Layout
@@ -53,8 +57,8 @@ loads all files with one `cdf_to_tplot()` call.
   `impact/level1/<dir>/mag/RTN/%Y/%m/ST<A|B>_L1_MAG[B]_RTN_%Y%m%d_V??.cdf`.
   `datatype='32hz'` selects the burst files (`MAGB`); anything else gives 8 Hz.
 - `plastic`: STEREO Science Center,
-  `http://stereo-ssc.nascom.nasa.gov/data/ins_data/`, Level 2 proton
-  1D-Maxwellian moments only.
+  `http://stereo-ssc.nascom.nasa.gov/data/ins_data/`, Level 2 proton data
+  `Derived_from_1D_Maxwellian` only.
 - `swea`, `ste`, `sept`, `sit`, `let`, `het`, `waves`, `beacon`: SPDF,
   `https://spdf.gsfc.nasa.gov/pub/data/stereo/`, under
   `<dir>/<level>/impact/...`, `<dir>/<level>/waves/...` or `<dir>/beacon/...`.
@@ -72,9 +76,13 @@ loads all files with one `cdf_to_tplot()` call.
   `l2` for `plastic`; `l3` for `waves` (`datatype` `'hfr'` or `'lfr'`).
 - The local data folder is `STEREO_DATA_DIR`, else `SPEDAS_DATA_DIR/stereo`,
   else `stereo_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `STEREO_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `STEREO_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 
 `python -m pyspedas.projects.stereo.tests.test_stereo` (downloads data). CI runs
 it in `.github/workflows/quick_tests.yml`.
+
+Register each quick-test module once in `.github/workflows/quick_tests.yml`;
+all dependency policies share the same test list. New methods in an already-listed
+module need no extra workflow entry.

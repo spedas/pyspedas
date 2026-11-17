@@ -1,21 +1,19 @@
-import pyspedas
-
+from pyspedas.tplot_tools import cdf_to_tplot
+from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
-from pyspedas.tplot_tools import time_clip as tclip
-from pyspedas.tplot_tools import cdf_to_tplot
 
 from .config import CONFIG
 
 
 def load_orbit(
-    trange=["2013-11-5", "2013-11-6"],
+    trange=None,
     probe="15",
     prefix="",
     suffix="",
     get_support_data=False,
     varformat=None,
-    varnames=[],
+    varnames=None,
     downloadonly=False,
     notplot=False,
     no_update=False,
@@ -56,6 +54,11 @@ def load_orbit(
     list of str
         List of tplot variables created or list of filenames downloaded.
     """
+    if trange is None:
+        trange = ["2013-11-5", "2013-11-6"]
+    if varnames is None:
+        varnames = []
+
     remote_data_dir = "https://spdf.gsfc.nasa.gov/pub/data/goes/"
     out_files = []  # list of local files downloaded
     if notplot:
@@ -68,16 +71,10 @@ def load_orbit(
 
     for prb in probe:
         # yearly files
-        pathformat = (
-            "goes"
-            + str(prb)
-            + "/orbit/%Y/goes"
-            + str(prb)
-            + "_ephemeris_ssc_%Y0101_v??.cdf"
-        )
+        pathformat = "goes" + str(prb) + "/orbit/%Y/goes" + str(prb) + "_ephemeris_ssc_%Y0101_v??.cdf"
 
         # find the full remote path names using the trange
-        remote_names = dailynames(file_format=pathformat, trange=trange)
+        remote_names = dailynames(file_format=pathformat, trange=trange) or []
 
         files = download(
             remote_file=remote_names,
@@ -87,11 +84,7 @@ def load_orbit(
             force_download=force_download,
         )
 
-        out_files_local = []
-
-        if files is not None:
-            for file in files:
-                out_files_local.append(file)
+        out_files_local = list(files) if files is not None else []
 
         out_files.extend(out_files_local)
 
@@ -114,7 +107,7 @@ def load_orbit(
             )
 
             # if notplot, we're merging dictionaries, otherwise we're extending lists
-            if notplot:
+            if isinstance(tvars, dict):
                 tvars.update(tvars_local)
             else:
                 tvars.extend(tvars_local)

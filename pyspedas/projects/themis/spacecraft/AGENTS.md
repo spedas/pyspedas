@@ -23,6 +23,7 @@ related_files:
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
   - pyspedas/projects/themis/tests/test_themis.py
   - pyspedas/projects/themis/tests/test_themis_cal_fit.py
+  - RULES.md
 maintenance: |
   Update when a loader here is added or renamed, when the eclipse-correction rules
   (which variables get vector, tensor or no correction) change, or when a wrapper starts
@@ -30,6 +31,9 @@ maintenance: |
 ---
 
 # THEMIS spacecraft loaders
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Wrappers for the on-board THEMIS/ARTEMIS instruments: fields in `fields/`, particles in
 `particles/`. Each wrapper calls `load()` in `pyspedas/projects/themis/load.py` (see the
@@ -46,7 +50,7 @@ parent AGENTS.md) and some post-process the result.
   vbp vbw` (default omits `vb*`), L2 `efi efp efw` (default `efi`).
 - `fields/scm.py`, `fields/fft.py`, `fields/fbk.py`: search coil, FFT spectra and filter
   bank. At L1, `scm` loads the `scp`/`scf`/`scw` files and `fft` nine `ff?_<n>` files.
-- `particles/esa.py`: ESA L2 moments and energy spectra (full, reduced and burst modes).
+- `particles/esa.py`: Electrostatic Analyzer (ESA) data, level `l1` or `l2`.
 - `particles/esd.py`: L2 3D ESA distributions, one file per `datatype` (`peif`, `peef`, ...).
 - `particles/sst.py`, `particles/mom.py`, `particles/gmom.py`: SST data, on-board moments,
   and ground moments (ESA and SST combined).
@@ -56,7 +60,8 @@ parent AGENTS.md) and some post-process the result.
 
 `fgm`, `fit`, `efi`, `scm`, `esa`, `sst`, `mom` and `gmom` take
 `apply_eclipse_corrections` (default False). When it is set, the level is `l2` and
-`downloadonly` is off, each wrapper, per probe:
+`downloadonly` is off, each wrapper, per probe (`efi()` passes its `probe` argument
+unchanged):
 
 1. calls `autoload_support(probe=p, trange=trange, spinmodel=True)`
    (`pyspedas/projects/themis/state_tools/autoload_support.py`), which loads state data
@@ -88,5 +93,5 @@ the spin-plane components in DSL, in place; GSE/GSM inputs go through
 
 ## Tests
 
-`pyspedas/projects/themis/tests/test_themis.py` covers the loaders;
+`pyspedas/projects/themis/tests/test_themis.py` covers the loaders except `esd()`;
 `pyspedas/projects/themis/tests/test_themis_cal_fit.py` covers `cal_fit()`.

@@ -166,6 +166,23 @@ def lineplot(
         if line_opts["symbols"]:
             symbols = True
 
+    # fill_between options:
+    fills = False
+    if line_opts.get("fill_between") is not None:
+        if line_opts["fill_between"]:
+            fills = True
+            markers = None
+    
+    y_fill_lines = None
+    if line_opts.get("y_fill_line") is not None:
+        if fills:
+            y_fill_lines = line_opts["y_fill_line"]
+            y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
+    elif fills:
+        # fill_between defaults to 0, but y_fill_lines must be defined for the line_options to be cleaned up
+        y_fill_lines = 0
+        y_fill_lines = get_trace_options(y_fill_lines, running_trace_count, num_lines, repeat=True)
+    
     # create the plot
     line_options = {"alpha": alpha}
 
@@ -203,17 +220,21 @@ def lineplot(
         # 'symbols' option.  Instead, set the line_options metadata to 'None' (as a string).
         if symbols:
             plotter = this_axis.scatter
+        if fills:
+            plotter = this_axis.fill_between
 
+    # not using fill_between feature, plot data as normal:
     for line in range(0, num_lines):
+        
         if colors is not None:
             color = colors[line]
         else:
             color = None
-
+        
         if markers is not None:
-            marker = markers[line]
+            line_options["marker"] = markers[line]
         else:
-            marker = None
+            line_options["marker"] = None
 
         if marker_sizes is not None:
             # Note: scaling of marker sizes in scatter plots and line plots is different!
@@ -234,16 +255,19 @@ def lineplot(
         if marker_every is not None:
             line_options["markevery"] = marker_every[line]
 
+        if y_fill_lines is not None:
+            for key_to_remove in ("marker","markersize", "markevery", "s"):
+                line_options.pop(key_to_remove,None)
+            line_options["y2"] = y_fill_lines[line]
+
         this_line = plotter(
             var_times,
             var_data.y[time_idxs] if num_lines == 1 else var_data.y[time_idxs, line],
             color=color,
             linestyle=this_line_style,
             linewidth=thick[line],
-            marker=marker,
             **line_options,
-        )
-
+        ) 
         if labels is not None:
             try:
                 if isinstance(this_line, list):
@@ -252,7 +276,7 @@ def lineplot(
                     this_line.set_label(labels[line])
             except IndexError:
                 continue
-
+    
     if labels is not None:
         legend = this_axis.legend(
             loc=legend_location,

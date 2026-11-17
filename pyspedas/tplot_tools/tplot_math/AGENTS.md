@@ -39,6 +39,7 @@ related_files:
   - pyspedas/utilities/tests/test_math.py
   - pyspedas/utilities/tests/test_interp_nan.py
   - pyspedas/analysis/tests/test_analysis.py
+  - RULES.md
 maintenance: |
   Update when a function is added here (and imported in tplot_tools/__init__.py),
   or when a function changes how it names or overwrites its output variables.
@@ -46,9 +47,12 @@ maintenance: |
 
 # tplot_math
 
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
 Operations on tplot variables: arithmetic, interpolation, clipping, gap and flag
-handling, smoothing and power spectra. Each module holds one public function (plus
-helpers), imported in `pyspedas/tplot_tools/__init__.py` and re-exported from `pyspedas`.
+handling, smoothing and power spectra. Each module holds one public function (`tsmooth.py`
+holds two), imported in `pyspedas/tplot_tools/__init__.py` and re-exported from `pyspedas`.
 
 ## Layout
 

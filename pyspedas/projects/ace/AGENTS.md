@@ -18,6 +18,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py adds or changes an instrument branch or path template, when
   a wrapper's instrument code or default datatype changes, or when __init__.py
@@ -26,7 +27,10 @@ maintenance: |
 
 # ACE
 
-Loaders for the Advanced Composition Explorer at L1: magnetic field, solar wind
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loaders for the Advanced Composition Explorer: magnetic field, solar wind
 plasma, energetic particles and composition. All data are daily CDF files from
 SPDF (`https://spdf.gsfc.nasa.gov/pub/data/ace/`).
 
@@ -63,9 +67,13 @@ reversed in the file name (`ac_h3_sw2_...`).
   `Magnitude`.
 - The local data folder is `ACE_DATA_DIR`, else `SPEDAS_DATA_DIR/ace`, else
   `ace_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `ACE_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `ACE_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 
 `python -m pyspedas.projects.ace.tests.test_ace` (downloads data). CI runs it in
 `.github/workflows/quick_tests.yml`.
+
+Register each quick-test module once in `.github/workflows/quick_tests.yml`;
+all dependency policies share the same test list. New methods in an already-listed
+module need no extra workflow entry.

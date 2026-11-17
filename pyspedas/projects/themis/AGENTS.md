@@ -7,11 +7,13 @@ related_files:
   - pyspedas/projects/themis/config.py
   - pyspedas/projects/themis/load.py
   - pyspedas/projects/themis/common/check_args.py
+  - pyspedas/projects/themis/tests/test_themis_check_args.py
   - pyspedas/projects/themis/spacecraft/fields/fgm.py
   - pyspedas/projects/themis/README.md
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/download.py
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
+  - RULES.md
 maintenance: |
   Update when load.py's instrument chain or keywords change, when __init__.py
   adds or renames a loader, or when a subfolder gets its own AGENTS.md.
@@ -19,16 +21,21 @@ maintenance: |
 
 # THEMIS / ARTEMIS
 
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
 ## Layout
 
 - `spacecraft/fields/` (`fgm`, `fit`, `efi`, `fft`, `fbk`, `scm`),
   `spacecraft/particles/` (`esa`, `esd`, `sst`, `mom`, `gmom`) and `ground/`
   (`gmag`, `ask`): one loader per module. `spacecraft/` has its own AGENTS.md.
-- `state_tools/`: orbit and attitude (`state`), the spin model, and lunar
-  coordinates (`slp`, `ssc`). Has its own AGENTS.md.
+- `state_tools/`: orbit and attitude (`state`), the spin model, Solar and
+  Lunar Ephemeris data (`slp`), and CDAWeb/SSCWeb orbit data (`ssc`). Has its
+  own AGENTS.md.
 - `cotrans/`: THEMIS coordinate systems (`dsl2gse`, `ssl2dsl`, `gse2sse`, `sse2sel`).
 - `analysis/`: density from spacecraft potential (`scpot2dens`).
-- `common/check_args.py`: normalizes the `probe` and `level` arguments for the loaders.
+- `common/check_args.py`: validates and normalizes `probe` and `level`
+  arguments; no loader imports it, only `tests/test_themis_check_args.py`.
 - `tests/`: unittest modules; most download data.
 - `README.md`: user guide with examples.
 
@@ -40,7 +47,8 @@ over the time range with `dailynames()` (`pyspedas/utilities/dailynames.py`),
 downloads from `CONFIG['remote_data_dir']` (set in `config.py`) with `download()`
 (`pyspedas/utilities/download.py`), and stores the files as tplot variables with
 `cdf_to_tplot()` (`pyspedas/tplot_tools/importers/cdf_to_tplot.py`). The other
-loaders here work the same way. A new loader needs a branch in `load.py`, a
+loaders here also call `load()`; for `ssc` and `ssc_pre`, `load()` downloads from
+CDAWeb instead of `CONFIG['remote_data_dir']`. A new loader needs a branch in `load.py`, a
 wrapper module, and an import in `__init__.py`.
 
 ## Things to know
@@ -50,4 +58,5 @@ wrapper module, and an import in `__init__.py`.
 - Wrappers don't pass every `load()` keyword through (`fgm()` has no `prefix` or
   `force_download`), so check the wrapper's signature before relying on one.
 - The local data folder is `THM_DATA_DIR`, else `SPEDAS_DATA_DIR/themis`, else
-  `themis_data/` (`config.py`). Setting `THM_NO_DOWNLOAD` turns downloads off.
+  the `local_data_dir` preference, else `themis_data/` (`config.py`). Setting
+  `THM_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads off.

@@ -411,6 +411,7 @@ def load_ae(
                               force_download=force_download,
                               skip_realtime=skip_realtime,
                               skip_provisional=skip_provisional,
+                              download_only=download_only,
                               )
     # Print the acknowledgments
     logging.info(ack)

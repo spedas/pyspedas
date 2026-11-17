@@ -16,6 +16,7 @@ related_files:
   - pyspedas/projects/image/tests/test_image.py
   - pyspedas/utilities/datasets.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py gains or changes an instrument branch or keyword, or when
   a wrapper is added to __init__.py.
@@ -23,8 +24,11 @@ maintenance: |
 
 # IMAGE
 
-Loaders for the IMAGE magnetospheric imaging mission (neutral atom imagers,
-radio sounder, EUV and FUV imagers) and its orbit files. All data are CDF files
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loaders for the IMAGE mission (neutral atom imagers, radio plasma
+imaging, EUV and FUV imagers) and its orbit files. All data are CDF files
 from SPDF.
 
 ## Layout
@@ -45,11 +49,11 @@ instrument templates are all
 `<instrument>/<instrument>_<datatype>/%Y/im_<datatype>_<instrument>_%Y%m%d_v??.cdf`
 with two exceptions:
 
-- `fuv` loads only the WIC camera: `fuv/wic_<datatype>/%Y/im_<datatype>_wic_...`.
+- `fuv` loads only WIC files: `fuv/wic_<datatype>/%Y/im_<datatype>_wic_...`.
 - `orbit` takes `datatype='def_or'` (default) or `'pre_or'`, mapped to
   `orbit/<datatype>/%Y/im_or_def_...` or `im_or_pre_...`.
 
-Every instrument wrapper defaults to `datatype='k0'` (key parameters).
+Every instrument wrapper defaults to `datatype='k0'`.
 
 ## Things to know
 
@@ -57,7 +61,8 @@ Every instrument wrapper defaults to `datatype='k0'` (key parameters).
   (`WIC_PIXELS`, `GSM_POS`); both orbit datatypes create the same names.
 - `time_clip` defaults to False in the wrappers and in `load()`.
 - The local data folder is `IMAGE_DATA_DIR`, else `SPEDAS_DATA_DIR/image`, else
-  `image_data/` (`config.py`). Setting `IMAGE_NO_DOWNLOAD` turns downloads off.
+  `image_data/` (`config.py`). Setting `IMAGE_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

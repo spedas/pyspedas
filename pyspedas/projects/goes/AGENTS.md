@@ -4,18 +4,26 @@ related_files:
   - pyspedas/projects/goes/__init__.py
   - pyspedas/projects/goes/config.py
   - pyspedas/projects/goes/load.py
+  - pyspedas/projects/goes/goes_l1.py
+  - pyspedas/projects/goes/add_goes_xray_annotations.py
   - pyspedas/projects/goes/load_orbit.py
   - pyspedas/projects/goes/README.md
   - pyspedas/projects/goes/tests/test_goes.py
   - pyspedas/utilities/pyspedas_functools.py
   - pyspedas/tplot_tools/importers/netcdf_to_tplot.py
+  - pyspedas/tplot_tools/MPLPlotter/annotate.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load() or loadr() gains an instrument, datatype branch or keyword,
-  when a NOAA or SPDF server URL changes, or when __init__.py adds a loader.
+  when a NOAA or SPDF server URL changes, or when __init__.py adds a loader or
+  plotting helper.
 ---
 
 # GOES
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the GOES geostationary satellites: GOES 1-15 in the original NOAA
 NetCDF format, GOES-R (GOES-16 and later), and GOES 8-15 data reprocessed into
@@ -25,6 +33,13 @@ the GOES-R format. Unlike most missions the science files are NetCDF, not CDF.
 
 - `load.py`: `load()` (GOES 1-15, and the entry point for all probes) and
   `loadr()` (GOES-R format files).
+- `goes_l1.py`: L1b paths, explicit MAG/XRS clock mappings, support-data selection,
+  particle splitting and per-sensor SGPS timestamps; called only for `level="l1"`.
+- `add_goes_xray_annotations.py`: exported helper for A/B/C/M/X labels and
+  horizontal boundaries on explicitly selected flux panels in W/m^2. It enables
+  log scaling, preserves y limits unless `yrange` is supplied, and replaces only
+  its own tagged decorations on repeated calls. Mixed-coordinate labels use the
+  optional `annotation_clip` argument in `pyspedas/tplot_tools/MPLPlotter/annotate.py`.
 - `load_orbit.py`: `load_orbit()`, SSC ephemeris CDFs from SPDF; exported as
   `orbit`.
 - `__init__.py`: defines the instrument loaders; there are no wrapper modules.
@@ -48,12 +63,13 @@ probe when `goes_r=True`, to `loadr()`; it loads the rest itself:
   `full/`. The time variable is `time_tag`.
 - `loadr()`: daily files from NGDC
   (`https://data.ngdc.noaa.gov/platforms/solar-space-observing-satellites/goes/goes<N>/l2/data/`)
-  or, for reprocessed GOES 8-15, from NCEI `.../access/science/`. Both URLs are
-  hard-coded in `loadr()`, not read from `CONFIG`. Reprocessed data exist only
+  or, for reprocessed GOES 8-15, from NCEI `.../access/science/`. The base URLs
+  come from `CONFIG['remote_goes_r']` and `CONFIG['remote_goes_r_reprocessed']`
+  in `config.py`, respectively. Reprocessed data exist only
   for `mag` (hires) and `xrs`; `euvs`, `mpsh` and `sgps` are skipped with a
   warning, and GOES 1-15 instrument names have no branch in `loadr()`.
 
-Each probe and instrument goes through `dailynames()`, `download()` and
+For L2, each probe and instrument goes through `dailynames()`, `download()` and
 `netcdf_to_tplot()` (`pyspedas/tplot_tools/importers/netcdf_to_tplot.py`). When
 `xrs` is requested, the `*_xrs_*_flux` variables get `ylog`.
 
@@ -65,15 +81,16 @@ Each probe and instrument goes through `dailynames()`, `download()` and
   into the instrument's `else` branch, which is low resolution for some
   instruments and full resolution for others, so read the branch in `load.py`.
 - Names: an empty `prefix` or `'probename'` gives `g<probe>_<instrument>_`
-  (`g15_fgm_BX_1`, `g16_mag_b_gsm`, `g15_orbit_XYZ_GSM`). Any other `prefix`
+  (`g15_fgm_BX_1`, `g13_mag_b_gsm`, `g15_orbit_XYZ_GSM`). Any other `prefix`
   replaces it entirely, so multi-probe loads then collide.
-- `load()` has no `varformat`, `varnames`, `get_support_data` or `notplot`;
-  `load_orbit()` has them. `time_clip` defaults to True in both.
+- `load()` and `loadr()` accept `level="l1"` for probes 16-19, with L2 as the
+  default. `get_support_data` selects L1 auxiliary data and has no effect on L2.
+  `load()` has no `varformat`, `varnames` or `notplot`; `load_orbit()` has them. `time_clip` defaults to True in both.
 - `load_orbit()` uses the hard-coded SPDF URL `https://spdf.gsfc.nasa.gov/pub/data/goes/`
   (yearly `goes<N>_ephemeris_ssc_%Y0101_v??.cdf` files).
 - All three servers share one local folder, each mirroring its server paths:
   `GOES_DATA_DIR`, else `SPEDAS_DATA_DIR/goes`, else `goes_data/` (`config.py`).
-  Setting `GOES_NO_DOWNLOAD` turns downloads off.
+  Setting `GOES_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

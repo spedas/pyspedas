@@ -1,167 +1,350 @@
 name: quick_tests
 
-on: [push, pull_request, workflow_dispatch]
+run-name: quick_tests (${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}, Python ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }})
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+    inputs:
+      dependency_policy:
+        description: 'Runtime dependency policy; default uses normal pip installation behavior'
+        type: choice
+        required: true
+        default: default
+        options:
+          - default
+          - latest
+          - oldest
+      python_version:
+        description: 'Python version to test'
+        type: choice
+        required: true
+        default: '3.14'
+        options:
+          - '3.11'
+          - '3.12'
+          - '3.13'
+          - '3.14'
+          - '3.15'
+
+permissions:
+  contents: read
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
-    # runs-on: macos-latest
+  # Build the shared source bundle and wheel once for downstream jobs.
+  prepare:
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PYTHON_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+    - uses: actions/checkout@v5
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    - name: Build shared artifacts
+      run: |
+        python -m venv ../.venv
+        source ../.venv/bin/activate
+        python -m pip install --group setup
+        python -m build --no-isolation
+        tar --exclude='./.git' --exclude='./dist' --exclude='./build' \
+          --exclude='*/__pycache__' -czf "$RUNNER_TEMP/pyspedas-source.tar.gz" .
+    - name: Upload prepared source
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: ${{ runner.temp }}/pyspedas-source.tar.gz
+    - name: Upload prepared wheel
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: dist/*.whl
+
+  # Run quality checks once using the artifacts prepared above.
+  quality:
+    needs: prepare
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PYTHON_VERSION: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    steps:
+    - name: Set up Python ${{ env.PYTHON_VERSION }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ env.PYTHON_VERSION }}
+    # Reuse the prepared source instead of checking out the repository again.
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ env.PYTHON_VERSION }}
+        path: source-bundle
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Create quality environment
+      run: |
+        python -m venv ../.venv
+        source ../.venv/bin/activate
+        python -m pip install --group lint
+    - name: Test dependency policy handling
+      run: python -m unittest discover -s .github/scripts/tests -p 'test_quick_test_dependencies.py' -v
+    - name: Lint with flake8
+      run: |
+        source ../.venv/bin/activate
+        flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
+        flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
+    - name: Lint with ruff
+      run: |
+        source ../.venv/bin/activate
+        ruff check . --select=E9,F63,F7,F82 --statistics
+        ruff check . --exit-zero --statistics --line-length=127
+
+  # Build the test venv once per Python version, so the parallel test-group
+  # jobs below restore it instead of each resolving and installing it themselves.
+  build-venv:
+    needs: prepare
+    runs-on: ubuntu-latest
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
     strategy:
+      matrix:
+        python-version: ["${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}"]
+    steps:
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: source-bundle
+    - name: Download prepared wheel
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-wheel-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: quick-test-wheel
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ matrix.python-version }}
+    - name: Create test venv
+      run: |
+        python -m venv ../.venv
+        cat > "$RUNNER_TEMP/pip-bootstrap.txt" <<'REQUIREMENTS'
+        pip==26.2.1 --hash=sha256:71138adf1f4ca900cdb7d289c21b7494329f2332b6d85f0e1c42108c0384ed3e
+        REQUIREMENTS
+        ../.venv/bin/python -m pip install --require-hashes --no-deps --only-binary=:all: \
+          -r "$RUNNER_TEMP/pip-bootstrap.txt"
+    - name: Create resolver tools venv
+      run: |
+        # Keep resolver tooling separate so it cannot satisfy test dependencies.
+        python -m venv "$RUNNER_TEMP/quick-test-tools"
+        mkdir -p "$RUNNER_TEMP/quick-test-dependencies"
+        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install --require-hashes --no-deps --only-binary=:all: \
+          -r "$RUNNER_TEMP/pip-bootstrap.txt"
+        cutoff=$(python -c 'from datetime import datetime, timedelta, timezone; print((datetime.now(timezone.utc) - timedelta(days=7)).strftime("%Y-%m-%dT%H:%M:%SZ"))')
+        "$RUNNER_TEMP/quick-test-tools/bin/python" -m pip install \
+        --uploaded-prior-to "$cutoff" --only-final=:all: \
+        pdm uv
+    - name: Install dependencies (${{ env.DEPENDENCY_POLICY }})
+      run: |
+        source ../.venv/bin/activate
+        # Use the wheel from prepare and omit lint tools already checked by quality.
+        wheel_path=$(find quick-test-wheel -type f -name '*.whl' -print -quit)
+        test -n "$wheel_path"
+        python .github/scripts/install_quick_test_dependencies.py \
+          --policy "$DEPENDENCY_POLICY" \
+          --python "$VIRTUAL_ENV/bin/python" \
+          --tools-python "$RUNNER_TEMP/quick-test-tools/bin/python" \
+          --output-dir "$RUNNER_TEMP/quick-test-dependencies" \
+          --skip-lint \
+          --wheel-path "$wheel_path"
+    - name: Record installed dependencies
+      run: |
+        ../.venv/bin/python -m pip freeze --all > "$RUNNER_TEMP/quick-test-dependencies/freeze.txt"
+        ../.venv/bin/python -m pip inspect > "$RUNNER_TEMP/quick-test-dependencies/inspect.json"
+    - name: Upload dependency diagnostics
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-dependencies-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: ${{ runner.temp }}/quick-test-dependencies/
+        if-no-files-found: warn
+    - name: Package prepared venv
+      run: tar -czf "$RUNNER_TEMP/quick-test-venv.tar.gz" -C .. .venv
+    - name: Upload prepared venv
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-venv-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: ${{ runner.temp }}/quick-test-venv.tar.gz
+
+  test:
+    needs: build-venv
+    runs-on: ${{ matrix.os }}
+    defaults:
+      run:
+        shell: bash
+    env:
+      DEPENDENCY_POLICY: ${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}
+      PIP_INDEX_URL: https://pypi.org/simple
+      PIP_EXTRA_INDEX_URL: ""
+      PIP_CONFIG_FILE: /dev/null
+      PIP_DISABLE_PIP_VERSION_CHECK: "1"
+    strategy:
+      fail-fast: false
       matrix:
         #python-version: [3.5, 3.6, 3.7, 3.8]
         #os: [ubuntu-latest, macos-latest, windows-latest]
         os: [ubuntu-latest]
         #os: [ubuntu-latest]
         #os: [windows-latest]
-        python-version: ["3.14"]
+        python-version: ["${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}"]
+        test-group:
+          - utilities
+          - tplot
+          - cotrans
+          - analysis
+          - hapi
+          - themis
+          - themis-s3
+          - psp
+          - rbsp
+          - mms
+          - missions-spdf
+          - missions-non-spdf
+        include:
+          - test-group: utilities
+            test-command: |
+              # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
+              echo IP address for this test:
+              run_test "utilities find_ip_address" pyspedas.utilities.tests.test_find_ip_address
+              run_test "DOI metadata" pyspedas.utilities.tests.test_doi
+              run_test "Zenodo draft client" pyspedas.utilities.tests.test_zenodo_draft
+              run_test "utilities download" pyspedas.utilities.tests.test_utilities_download
+              run_test "utilities misc" pyspedas.utilities.tests.test_utilities_misc
+              run_test "user preferences" pyspedas.utilities.tests.test_preferences
+              run_test "utilities URI" pyspedas.utilities.tests.test_utilities_download_uri
+              run_test "utilities xdegap" pyspedas.utilities.tests.test_xdegap
+              run_test "utilities tplot_math" pyspedas.utilities.tests.test_math
+              run_test "utilities interp_nan" pyspedas.utilities.tests.test_interp_nan
+              run_test "utilities time_tests" pyspedas.utilities.tests.test_utilities_time
+              run_test "utilities libs_tests" pyspedas.utilities.tests.test_utilities_libs
+              run_test "tinterpol_mxn" pyspedas.utilities.tests.test_tinterpol_mxn
+              run_test "interpolate_rotation" pyspedas.utilities.tests.test_interpolate_rotation
+          - test-group: tplot
+            test-command: |
+              run_test "tplot wildcard" pyspedas.utilities.tests.test_utilities_tplot_wildcard
+              run_test "plotting" pyspedas.utilities.tests.test_utilities_plot
+              run_test "wrap_label" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
+              run_test "fill_between" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_fill_between
+              run_test "grid and background plot options" pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
+              run_test "orbit plot" pyspedas.utilities.tests.test_utilities_tplotxy
+              run_test "orbit plot ranges" pyspedas.utilities.tests.test_tplotxy_ranges
+          - test-group: cotrans
+            test-command: |
+              run_test "cotrans quaternion" pyspedas.cotrans_tools.tests.test_quaternions
+              run_test "cotrans" pyspedas.cotrans_tools.tests.test_cotrans
+              run_test "cotrans minvar" pyspedas.cotrans_tools.tests.test_minvar
+              run_test "cotrans fac" pyspedas.cotrans_tools.tests.test_fac
+              run_test "cotrans lmn" pyspedas.cotrans_tools.tests.test_lmn
+          - test-group: analysis
+            test-command: |
+              run_test "analysis" pyspedas.analysis.tests.test_analysis
+              run_test "analysis wavpol" pyspedas.analysis.tests.test_twavpol
+              run_test "analysis wavelet" pyspedas.analysis.tests.test_wavelet
+          - test-group: hapi
+            test-command: |
+              run_test "HAPI TestData" pyspedas.hapi_tools.tests.test_hapi_testdata
+          - test-group: themis
+            test-command: |
+              run_test "themis tplot_time" pyspedas.projects.themis.tests.test_themis_tplot_time
+              run_test "themis version" pyspedas.projects.themis.tests.test_themis_versions
+              run_test "themis" pyspedas.projects.themis.tests.test_themis
+              run_test "themis_check_args" pyspedas.projects.themis.tests.test_themis_check_args
+              run_test "themis autoload support" pyspedas.projects.themis.tests.test_themis_autoload_support
+              run_test "themis cal_fit" pyspedas.projects.themis.tests.test_themis_cal_fit
+              run_test "themis dsl_cotrans" pyspedas.projects.themis.tests.test_themis_dsl_cotrans
+              run_test "themis lunar_cotrans" pyspedas.projects.themis.tests.test_themis_lunar_cotrans
+              run_test "themis spinmodel" pyspedas.projects.themis.tests.test_themis_spinmodel
+              run_test "themis state" pyspedas.projects.themis.tests.test_themis_state
+              run_test "themis scpot2dens" pyspedas.projects.themis.tests.test_themis_scpot2dens
+          - test-group: themis-s3
+            test-command: |
+              run_test "themis S3" pyspedas.projects.themis.tests.test_themis_s3
+          - test-group: psp
+            test-command: |
+              run_test "psp" pyspedas.projects.psp.tests.test_psp
+          - test-group: rbsp
+            test-command: |
+              run_test "rbsp" pyspedas.projects.rbsp.tests.test_rbsp
+          - test-group: mms
+            test-command: |
+              run_test "mms cache cleanup" pyspedas.projects.mms.tests.test_mms_remove_old_files
+              run_test "mms perigee tests" pyspedas.projects.mms.tests.test_mms_perigee    
+          - test-group: missions-spdf
+            test-command: |
+              run_test "ace" pyspedas.projects.ace.tests.test_ace
+              run_test "barrel" pyspedas.projects.barrel.tests.test_barrel
+              run_test "soho" pyspedas.projects.soho.tests.test_soho
+              run_test "de2" pyspedas.projects.de2.tests.test_de2
+              run_test "st5" pyspedas.projects.st5.tests.test_st5
+              run_test "lanl" pyspedas.projects.lanl.tests.test_lanl
+              run_test "cnofs" pyspedas.projects.cnofs.tests.test_cnofs
+              run_test "dmsp" pyspedas.projects.dmsp.tests.test_dmsp
+              run_test "dscovr" pyspedas.projects.dscovr.tests.test_dscovr
+              run_test "csswe" pyspedas.projects.csswe.tests.test_csswe
+              run_test "equator_s" pyspedas.projects.equator_s.tests.test_equator_s
+              run_test "image" pyspedas.projects.image.tests.test_image
+              run_test "twins" pyspedas.projects.twins.tests.test_twins
+              run_test "wind" pyspedas.projects.wind.tests.test_wind
+              run_test "polar" pyspedas.projects.polar.tests.test_polar
+              run_test "geotail" pyspedas.projects.geotail.tests.test_geotail
+              run_test "fast" pyspedas.projects.fast.tests.test_fast
+              run_test "omni" pyspedas.projects.omni.tests.test_omni
+              run_test "ulysses" pyspedas.projects.ulysses.tests.test_ulysses
+              run_test "solo" pyspedas.projects.solo.tests.test_solo
+          - test-group: missions-non-spdf
+            test-command: |
+              run_test "swfo" pyspedas.projects.swfo.tests.test_swfo
+              run_test "stereo" pyspedas.projects.stereo.tests.test_stereo
+              run_test "kyoto" pyspedas.projects.kyoto.tests.test_kyoto
+              run_test "swarm" pyspedas.projects.swarm.tests.test_swarm
+              # These tests use a DAS2 server at UIowa.
+              #echo "Starting galileo tests at $(date)"
+              #coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
+              #echo "Starting juno tests at $(date)"
+              #coverage run -a -m pyspedas.projects.juno.tests.test_juno
 
     steps:
-    - uses: actions/checkout@v5
+    # Each parallel test job only downloads the prepared venv; no source checkout
+    # or unpack happens here, so there is nothing to shadow the installed package.
     - name: Set up Python ${{ matrix.python-version }}
       uses: actions/setup-python@v7
       with:
         python-version: ${{ matrix.python-version }}
-    - name: Install dependencies (Linux)
-      run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'ubuntu-latest'
-    - name: Install dependencies (Windows)
-      run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'windows-latest'
-    - name: Install dependencies (macOS)
-      run: |
-          working_dir=$(pwd)
-          echo working dir: ${working_dir}
-          echo virtual env: $VIRTUAL_ENV
-          # Create fresh virtual environment in a known location
-          python -m venv ../.venv
-          # Activate new environment
-          source ../.venv/bin/activate
-          echo "Which pip:"
-          which pip
-          echo "Installing pip, pdm, and uv"
-          python -m pip install --upgrade pip
-          pip install pdm
-          pip install uv
-          pdm config use_uv true
-          hash -r
-          echo "which pdm?"
-          which pdm
-          echo "which uv?"
-          which uv
-          echo "Installing lint, setup, and test dependencies only"
-          pdm install -dG lint -dG test -dG setup --no-default
-          echo "which pip?"
-          which pip
-          echo "which python?"
-          which python
-          pip install coverage
-          echo "Building pyspedas sdist and wheel"
-          python -m build
-          wheelbase=$(echo dist/*.whl)
-          extras='[mth5]'
-          echo "Installing pyspedas, pyspedas dependencies (no extras) in venv"
-          pip install ${wheelbase}${extras}
-          pip show pyspedas
-          pip show xarray
-      if: matrix.os == 'macos-latest'
-    - name: Lint with flake8
-      run: |
-        source ../.venv/bin/activate
-        #pip install flake8
-        # stop the build if there are Python syntax errors or undefined names
-        flake8 . --exclude '*venv*','build' --count --select=E9,F63,F7,F82 --show-source --statistics --max-line-length=127
-        # exit-zero treats all errors as warnings. 
-        flake8 . --exclude '*venv*','build' --count --exit-zero --max-complexity=10 --statistics --max-line-length=127
-    - name: Lint with ruff
-      run: |
-        source ../.venv/bin/activate
-        # stop the build if there are Python syntax errors or undefined names
-        ruff check .  --select=E9,F63,F7,F82 --statistics
-        # exit-zero treats all errors as warnings. 
-        ruff check . --exit-zero --statistics --line-length=127 -- --max-complexity=10
-    - name: Hide the repo copy so imports use site-packages
-      run: |
-        # keep it around for debugging; delete instead if you want the space back
-        printenv
-        pwd
-        ls -a
-        if [ -d pyspedas ]; then mv pyspedas __repo_pyspedas; fi
-        ls -a
-        ls $VIRTUAL_ENV
-
+    - name: Download prepared venv
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-venv-${{ env.DEPENDENCY_POLICY }}-py${{ matrix.python-version }}
+        path: quick-test-venv
+    - name: Restore prepared venv
+      run: tar -xzf quick-test-venv/quick-test-venv.tar.gz -C ..
     - name: Sanity check import location
       shell: bash
       run: |
         source ../.venv/bin/activate
-        printenv
         python - <<'PY'
         import pyspedas, pathlib, sys
         p = pathlib.Path(pyspedas.__file__).resolve()
@@ -170,8 +353,30 @@ jobs:
         print("sys.path[0]:", sys.path[0])
         assert "site-packages" in str(p), f"Still importing from repo: {p}"
         PY
+    - name: Create coverage config
+      run: |
+        # Scope coverage to modules actually imported by the test that ran, instead of
+        # the whole pyspedas tree (.coveragerc's source_pkgs would report 0% for every
+        # file untouched by this job's small test subset).
+        cat > "$RUNNER_TEMP/quick_tests_coveragerc" <<'COVERAGERC'
+        [run]
+        include =
+          pyspedas/*
+          */site-packages/pyspedas/*
+          */dist-packages/pyspedas/*
+        relative_files = True
+        omit =
+          */tests/*
+
+        [paths]
+        pyspedas =
+          pyspedas
+          **/site-packages/pyspedas
+          **/dist-packages/pyspedas
+        COVERAGERC
     - name: Test with unittest
       env:
+        COVERAGE_RCFILE: ${{ runner.temp }}/quick_tests_coveragerc
         SPEDAS_DATA_DIR: data
         ACE_DATA_DIR: ace_data/
         BARREL_DATA_DIR: barrel_data/
@@ -203,145 +408,45 @@ jobs:
         PYTPLOT_LOGGING_LEVEL: error
       run: |
         source ../.venv/bin/activate
+        # Group each test and annotate failures without duplicating shell logic.
+        run_test() {
+          local name="$1"
+          local module="$2"
+          local status
+          local result
+          local start_time
+          local duration
+
+          start_time=$(date +%s)
+          echo "::group::$name"
+          echo "Starting $name tests at `date`"
+          if coverage run -a -m "$module"; then
+            status=0
+            result="PASS"
+          else
+            status=$?
+            result="FAIL"
+          fi
+          duration=$(($(date +%s) - start_time))
+          printf '| %s | %s | `%s` | %ss |\n' "$result" "$name" "$module" "$duration" >> "$GITHUB_STEP_SUMMARY"
+          echo "::endgroup::"
+          if [ "$status" -ne 0 ]; then
+            echo "::error::Test $name failed"
+          fi
+          return "$status"
+        }
+        {
+          echo "## Quick-test results: ${{ matrix.test-group }}"
+          echo
+          echo "| Status | Test | Module | Duration |"
+          echo "|---|---|---|---:|"
+        } >> "$GITHUB_STEP_SUMMARY"
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space prior to starting tests:"
         df -h .
-        # Show the IP address the test suite is running from (useful for troubleshooting data server access issues)
         echo "========================================================="
-        echo IP address for this test:
-        coverage run -a -m  pyspedas.utilities.tests.test_find_ip_address
-        # These tests use a DAS2 server at UIowa
-        echo "Starting galileo tests at $(date)"
-        coverage run -a -m pyspedas.projects.galileo.tests.test_galileo
-        echo "Starting juno tests at $(date)"
-        coverage run -a -m pyspedas.projects.juno.tests.test_juno
-        echo Starting DOI metadata tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_doi
-        echo Starting Zenodo draft client tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_zenodo_draft
-        echo Starting ace tests at `date`
-        coverage run -a -m  pyspedas.projects.ace.tests.test_ace
-        echo Starting themis tplot_time  tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_tplot_time
-        echo Starting themis version tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_versions
-        echo Starting barrel tests at `date`
-        coverage run -a -m  pyspedas.projects.barrel.tests.test_barrel
-        echo Starting soho tests at `date`
-        coverage run -a -m  pyspedas.projects.soho.tests.test_soho
-        echo Starting de2 tests at `date`
-        coverage run -a -m  pyspedas.projects.de2.tests.test_de2
-        echo Starting st5 tests at `date`
-        coverage run -a -m  pyspedas.projects.st5.tests.test_st5
-        echo Starting lanl tests at `date`
-        coverage run -a -m  pyspedas.projects.lanl.tests.test_lanl
-        echo Starting cotrans quaternion tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_quaternions
-        echo Starting cnofs tests at `date`
-        coverage run -a -m  pyspedas.projects.cnofs.tests.test_cnofs
-        echo Starting dscovr tests at `date`
-        coverage run -a -m  pyspedas.projects.dscovr.tests.test_dscovr
-        echo Starting utilities download tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_download
-        echo Starting utilities misc tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_misc
-        echo Starting user preferences tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_preferences
-        echo Starting utilities URI tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_download_uri
-        echo Starting utilities xdegap tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_xdegap
-        echo Starting utilities tplot_math tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_math
-        echo Starting utilities interp_nan tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_interp_nan
-        echo Starting tplot wildcard tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_tplot_wildcard
-        echo Starting plotting tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_plot
-        echo Starting wrap_label tests at `date`
-        coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_wrap_label
-        echo Starting grid and background plot option tests at `date`
-        coverage run -a -m pyspedas.tplot_tools.MPLPlotter.plot_tests.test_grid_background_options
-        echo Starting orbit plot tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_utilities_tplotxy
-        echo Starting orbit plot range tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_tplotxy_ranges
-        echo Starting utilities time_tests tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_time
-        echo Starting utilities libs_tests tests at `date`
-        coverage run -a -m  pyspedas.utilities.tests.test_utilities_libs
-        echo Starting cotrans tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_cotrans
-        echo Starting cotrans minvar tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_minvar
-        echo Starting cotrans fac tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_fac
-        echo Starting cotrans lmn tests at `date`
-        coverage run -a -m  pyspedas.cotrans_tools.tests.test_lmn
-        echo Starting csswe tests at `date`
-        coverage run -a -m  pyspedas.projects.csswe.tests.test_csswe
-        echo Starting equator_s tests at `date`
-        coverage run -a -m  pyspedas.projects.equator_s.tests.test_equator_s
-        echo Starting image tests at `date`
-        coverage run -a -m  pyspedas.projects.image.tests.test_image
-        echo Starting psp tests at `date`
-        coverage run -a -m  pyspedas.projects.psp.tests.test_psp
-        echo Starting rbsp tests at `date`
-        coverage run -a -m  pyspedas.projects.rbsp.tests.test_rbsp
-        echo Starting stereo tests at `date`
-        coverage run -a -m  pyspedas.projects.stereo.tests.test_stereo
-        echo Starting twins tests at `date`
-        coverage run -a -m  pyspedas.projects.twins.tests.test_twins
-        echo Starting wind tests at `date`
-        coverage run -a -m  pyspedas.projects.wind.tests.test_wind
-        echo Starting polar tests at `date`
-        coverage run -a -m  pyspedas.projects.polar.tests.test_polar
-        echo Starting geotail tests at `date`
-        coverage run -a -m  pyspedas.projects.geotail.tests.test_geotail
-        echo Starting analysis tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.test_analysis
-        echo Starting tinterpol_mxn tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_tinterpol_mxn
-        echo Starting interpolate_rotation tests at `date`
-        coverage run -a -m pyspedas.utilities.tests.test_interpolate_rotation
-        echo Starting analysis wavpol tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.test_twavpol
-        echo Starting analysis wavelet tests at `date`
-        coverage run -a -m  pyspedas.analysis.tests.test_wavelet
-        echo Starting fast tests at `date`
-        coverage run -a -m  pyspedas.projects.fast.tests.test_fast
-        echo Starting omni tests at `date`
-        coverage run -a -m  pyspedas.projects.omni.tests.test_omni
-        echo Starting themis tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis
-        echo Starting themis S3 tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_s3
-        echo Starting ulysses tests at `date`
-        coverage run -a -m  pyspedas.projects.ulysses.tests.test_ulysses
-        echo Starting solo tests at `date`
-        coverage run -a -m  pyspedas.projects.solo.tests.test_solo
-        echo Starting kyoto tests at `date`
-        coverage run -a -m  pyspedas.projects.kyoto.tests.test_kyoto
-        echo Starting swarm tests at `date`
-        coverage run -a -m  pyspedas.projects.swarm.tests.test_swarm
-        echo Starting themis_check_args tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_check_args
-        echo Starting themis autoload support tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_autoload_support
-        echo Starting themis cal_fit tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_cal_fit
-        echo Starting themis dsl_cotrans tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_dsl_cotrans
-        echo Starting themis lunar_cotrans tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_lunar_cotrans
-        echo Starting themis spinmodel tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_spinmodel
-        echo Starting themis state tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_state
-        echo Starting themis scpot2dens tests at `date`
-        coverage run -a -m  pyspedas.projects.themis.tests.test_themis_scpot2dens
+        ${{ matrix.test-command }}
         echo "========================================================="
         # Show the free disk space on this filesystem
         echo "Disk space after all tests:"
@@ -349,3 +454,67 @@ jobs:
         echo "========================================================="        
 
         echo Done with tests at `date`
+    - name: Save coverage data
+      if: always()
+      run: |
+        mkdir -p "$RUNNER_TEMP/quick-test-coverage"
+        if [ -f .coverage ]; then
+          cp .coverage "$RUNNER_TEMP/quick-test-coverage/.coverage.${{ matrix.test-group }}"
+        else
+          echo "No coverage data was produced for ${{ matrix.test-group }}" > "$RUNNER_TEMP/quick-test-coverage/README.txt"
+        fi
+    - name: Upload coverage data
+      if: always()
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-coverage-${{ env.DEPENDENCY_POLICY }}-${{ matrix.os }}-py${{ matrix.python-version }}-${{ matrix.test-group }}
+        path: ${{ runner.temp }}/quick-test-coverage/
+        include-hidden-files: true
+        if-no-files-found: warn
+
+  coverage:
+    if: always()
+    needs: test
+    runs-on: ubuntu-latest
+    steps:
+    - name: Set up Python
+      uses: actions/setup-python@v7
+      with:
+        python-version: ${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+    - name: Download prepared source
+      uses: actions/download-artifact@v6
+      with:
+        name: quick-test-source-${{ github.event_name == 'workflow_dispatch' && inputs.dependency_policy || 'default' }}-py${{ github.event_name == 'workflow_dispatch' && inputs.python_version || '3.14' }}
+        path: source-bundle
+    - name: Unpack prepared source
+      run: tar -xzf source-bundle/pyspedas-source.tar.gz
+    - name: Download coverage data
+      uses: actions/download-artifact@v6
+      with:
+        pattern: quick-test-coverage-*
+        path: coverage-data
+        merge-multiple: true
+    - name: Combine coverage data
+      run: |
+        python -m pip install coverage
+        if compgen -G 'coverage-data/.coverage.*' > /dev/null; then
+          python -m coverage combine coverage-data
+          python -m coverage report --omit='*/tests/*'
+          {
+            echo "## Coverage"
+            echo
+            python -m coverage report --omit='*/tests/*' --format=markdown
+          } >> "$GITHUB_STEP_SUMMARY"
+          python -m coverage xml --omit='*/tests/*' -o coverage.xml
+          python -m coverage html --omit='*/tests/*' -d htmlcov
+        else
+          echo "No coverage data was uploaded by the test groups."
+          exit 1
+        fi
+    - name: Upload coverage report
+      uses: actions/upload-artifact@v6
+      with:
+        name: quick-test-coverage-report
+        path: |
+          coverage.xml
+          htmlcov/

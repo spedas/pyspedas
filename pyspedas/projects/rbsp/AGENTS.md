@@ -23,6 +23,7 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/preferences.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch or its instrument-specific
   keywords, when the RBSPICE post-processing in rbspice.py or rbspice_lib/
@@ -31,9 +32,12 @@ maintenance: |
 
 # RBSP (Van Allen Probes)
 
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
 Loaders for the two Van Allen Probes, `a` and `b`: EMFISIS, EFW, RBSPICE, the
 ECT suite (MagEIS, HOPE, REPT), the RPS proton spectrometer and the ECT magnetic
-ephemeris. All data are daily CDF files from SPDF
+ephemeris. All data are CDF files from SPDF
 (`https://spdf.gsfc.nasa.gov/pub/data/rbsp/`).
 
 ## Layout
@@ -62,7 +66,8 @@ under `rbsp<probe>/<level>/ect/<instr>/...` and the ephemeris under
 in `_v*.cdf` (EFW `_v??.cdf`), and `last_version` is not passed, so every
 matching version on the server is downloaded.
 
-`rbspice()` then runs, for each probe, `rbsp_load_rbspice_read()`,
+`rbspice()` then runs, for each probe (if `datatype` is `TOFxEH`, `TOFxEnonH`
+or `TOFxPHHHELT`), `rbsp_load_rbspice_read()`,
 `rbsp_rbspice_omni()` and `rbsp_rbspice_spin_avg()` and adds the new variable
 names to its return list.
 
@@ -84,9 +89,14 @@ names to its return list.
 - `rbspice()` and `rps()` default to `get_support_data=True`.
 - The local data folder is `RBSP_DATA_DIR`, else `SPEDAS_DATA_DIR/rbsp`, else
   `rbsp_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `RBSP_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `RBSP_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads
+  off.
 
 ## Tests
 
 `python -m pyspedas.projects.rbsp.tests.test_rbsp` (downloads data). CI runs it
 in `.github/workflows/quick_tests.yml`.
+
+Register each quick-test module once in `.github/workflows/quick_tests.yml`;
+all dependency policies share the same test list. New methods in an already-listed
+module need no extra workflow entry.

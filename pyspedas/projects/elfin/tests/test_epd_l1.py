@@ -36,7 +36,7 @@ class TestELFL1Validation(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not calfile:
-            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+            raise FileNotFoundError(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_raw = get_data(f"el{cls.probe}_pef_raw")
@@ -48,7 +48,7 @@ class TestELFL1Validation(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not calfile:
-            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+            raise FileNotFoundError(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_cps = get_data(f"el{cls.probe}_pef_cps")
@@ -60,7 +60,7 @@ class TestELFL1Validation(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not calfile:
-            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+            raise FileNotFoundError(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_nflux = get_data(f"el{cls.probe}_pef_nflux")
@@ -72,7 +72,7 @@ class TestELFL1Validation(unittest.TestCase):
                            local_path=CONFIG['local_data_dir'],
                            no_download=False)
         if not calfile:
-            raise unittest.SkipTest(f"Cannot download validation file {calfile_name}")
+            raise FileNotFoundError(f"Cannot download validation file {calfile_name}")
         filename = CONFIG['local_data_dir'] + calfile_name
         tplot_restore(filename)
         cls.elf_pef_eflux = get_data(f"el{cls.probe}_pef_eflux")

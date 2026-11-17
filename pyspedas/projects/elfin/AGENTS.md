@@ -25,6 +25,7 @@ related_files:
   - pyspedas/preferences.py
   - pyproject.toml
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes a path template, when the EPD L1 or L2
   post-processing or its keywords change, when a calibration data file is added,
@@ -33,8 +34,11 @@ maintenance: |
 
 # ELFIN
 
-Loaders for the ELFIN-A and ELFIN-B CubeSats: energetic particles (EPD),
-magnetometer (FGM), state (orbit and attitude), magnetoresistive magnetometers
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Loaders for the ELFIN-A and ELFIN-B spacecraft: energetic particles (EPD),
+magnetometer (FGM), state, magnetoresistive magnetometers
 (MRMa, MRMi) and engineering data. Daily CDF files come from UCLA
 (`https://data.elfin.ucla.edu/`).
 
@@ -87,7 +91,8 @@ else `fgs`.
   under `package-data`.
 - The local data folder is `ELFIN_DATA_DIR`, else `SPEDAS_DATA_DIR/elfin/`, else
   `elfin_data/` (`config.py`, which first applies saved preferences from
-  `pyspedas/preferences.py`). Setting `ELFIN_NO_DOWNLOAD` turns downloads off.
+  `pyspedas/preferences.py`). Setting `ELFIN_NO_DOWNLOAD` to true turns downloads
+  off.
 
 ## Tests
 

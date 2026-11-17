@@ -31,6 +31,7 @@ related_files:
   - pyspedas/projects/erg/satellite/erg/particle/erg_lep_part_products.py
   - pyspedas/cotrans_tools/quaternions.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when the particle distribution dict gains or changes required keys,
   when a mission starts or stops using these routines, or when a routine moves
@@ -38,6 +39,9 @@ maintenance: |
 ---
 
 # particles
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Mission-independent pieces for 3-D particle distributions, ported from IDL SPEDAS:
 moments, spectrogram and FAC helpers for "part_products", and 2-D slices. The README
@@ -70,7 +74,7 @@ There is no generic part_products driver in this folder.
   `theta`, `dtheta`, `phi`, `dphi`, `bins` (1 = use the bin), `mass`, `charge` and `magf`;
   `moments_3d()` needs all of these. Angles are in degrees.
 - `moments_3d()` expects `data` in energy flux, with `mass` in eV/(km/s)^2 (proton 0.0104535),
-  and energies below 0.1 eV raised to 0.1. `sc_pot` shifts energies by `charge * sc_pot`.
+  and energies <= 0 set to 0.1 eV. `sc_pot` shifts energies by `charge * sc_pot`.
 - `slice2d()` takes a list of distributions, not tplot names; time selection is by
   `time` with `samples` or `window`, or by `trange`. Rotations such as 'BV' and 'perp' need
   the `mag_data` and/or `vel_data` tplot names.

@@ -7,6 +7,7 @@ related_files:
   - pyspedas/geopack/AGENTS.md
   - pyspedas/particles/AGENTS.md
   - pyspedas/analysis/AGENTS.md
+  - pyspedas/mth5/AGENTS.md
   - pyspedas/__init__.py
   - pyspedas/projects/themis/spacecraft/fields/fgm.py
   - pyspedas/projects/themis/load.py
@@ -20,35 +21,61 @@ related_files:
   - pyspedas/tplot_tools/store_data.py
   - pyspedas/tplot_tools/get_data.py
   - pyspedas/tplot_tools/tplot_rename.py
+  - docs/AGENTS.md
   - docs/source/pyspedas_2_migration.rst
   - CONTRIBUTING.md
+  - README.md
+  - docs/source/devguide.rst
   - pyproject.toml
+  - pdm.lock
   - .github/workflows/quick_tests.yml
+  - .github/scripts/install_quick_test_dependencies.py
+  - .github/scripts/tests/test_quick_test_dependencies.py
+  - .github/workflows/full_coverage.yml
   - .github/workflows/agents_md.yml
   - .github/scripts/check_agents_md.py
   - .github/scripts/build_agents_map.py
   - .agents/skills/agents-map/SKILL.md
   - .agents/map/MAP.md
   - .agents/map/graph.json
+  - RULES.md
+  - .agents/skills/deprecation-scan/SKILL.md
+  - .github/scripts/scan_deprecations.py
 maintenance: |
   Update when the package layout, the loader pipeline, tplot storage or the test
-  setup changes, and list any new AGENTS.md whose nearest parent is this file.
+  setup, branching policy or documentation workflow changes, and list any new
+  AGENTS.md whose nearest parent is this file. If RULES.md moves or is renamed,
+  update the pointer under the title of every AGENTS.md.
 ---
 
-# pySPEDAS
+# PySPEDAS
 
 Python Space Physics Environment Data Analysis Software. Mission loaders download
 data files (mostly CDF) and store them as tplot variables; the rest of the package
 analyzes, transforms and plots those variables. Package code is in `pyspedas/`;
 dependencies are in `pyproject.toml`.
 
+## Repository rules
+
+`RULES.md` holds the rules that every change follows, whether a person or an
+agent makes it. Read it before you change code. It covers breaking changes,
+porting features from IDL SPEDAS, keeping code clear and simple, and adding
+dependencies. A change that renames, removes or changes the behavior of a
+user-facing routine, parameter, configuration setting or dependency is phased
+in with a deprecation warning, tests and documentation, and the old form is
+removed only in a major release. If you can't tell whether a change is covered,
+ask the human before making it. To find deprecated code that doesn't follow
+these rules yet, use `.agents/skills/deprecation-scan/SKILL.md`.
+
 ## Layout
 
 Each of these folders has its own AGENTS.md, and so do most mission packages.
 
-- `pyspedas/projects/<mission>/`: one package per mission (39). Each has a
-  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`,
-  one module per instrument, a README.md user guide and a `tests/` folder.
+- `pyspedas/projects/<mission>/`: one package per mission. Most have a
+  `config.py` with `CONFIG` (`local_data_dir`, `remote_data_dir`), a `load.py`
+  and one module per instrument; instrument wrappers may instead be defined in
+  `__init__.py`. Mission packages generally include a README.md user guide and
+  a `tests/` folder.
 - `pyspedas/tplot_tools/`: tplot variable storage and plotting. This is the former
   PyTplot package, now part of pySPEDAS; there is no external `pytplot` dependency.
 - `pyspedas/utilities/`: shared helpers, including downloading and file naming.
@@ -56,6 +83,23 @@ Each of these folders has its own AGENTS.md, and so do most mission packages.
   `pyspedas/analysis/`: coordinate transforms, field models, particle
   distributions and general analysis.
 - `pyspedas/__init__.py` re-exports the public API by name (no `import *`).
+
+## Branching and pull requests
+
+The `master` branch has protection rules that prevent direct pushes. Perform all
+work in a separate branch, and create a pull request when it is ready for review
+by a package maintainer. Do not commit or merge changes to `master` without human
+review. Approved pull requests are squash-merged into `master`.
+
+After a pull request is squash-merged, start subsequent work in a fresh branch
+from updated `master`. Reusing an already-merged branch can complicate the history
+of subsequent pull requests and may cause merge conflicts.
+
+Before committing, review `git status` and the diff, and stage intended new
+source files, tests, documentation and images, including files created by an
+agent. Keep downloaded data, local environments and scratch files out of commits.
+See `CONTRIBUTING.md` and `docs/source/devguide.rst` for the human development
+process; `README.md` provides a brief overview.
 
 ## How a loader works
 
@@ -66,11 +110,12 @@ Most loaders run the same pipeline. For `pyspedas.projects.themis.fgm()`:
 2. `load()` picks a file path template for the instrument in an if/elif chain.
 3. `dailynames()` (`pyspedas/utilities/dailynames.py`) expands the template over
    the time range, and `download()` (`pyspedas/utilities/download.py`) fetches the
-   files by reading the remote directory listing (S3 and fsspec also work).
+   files; when a file name has wildcards (`?`, `*`) it first reads the remote
+   directory listing to expand them (S3 and fsspec also work).
 4. `cdf_to_tplot()` (`pyspedas/tplot_tools/importers/cdf_to_tplot.py`) stores the
    file contents as tplot variables.
 
-MMS is the main exception: `pyspedas/projects/mms/mms_load_data.py` queries the
+MMS is an exception: `pyspedas/projects/mms/mms_load_data.py` queries the
 LASP SDC file API instead of a directory listing.
 
 ## tplot variables
@@ -85,6 +130,10 @@ Read it as `pyspedas.tplot_tools.data_quants`, never with
 `from pyspedas.tplot_tools import data_quants`: `tplot_rename()`
 (`pyspedas/tplot_tools/tplot_rename.py`) replaces the dict with a new object, so
 a name bound at import time goes stale.
+
+Treat the details of the `data_quants` structure as an implementation detail,
+not an API contract. Most user-facing routines should interact with this structure
+via `get_data()`, `store_data()`, and similar utilities.
 
 ## Finding code
 
@@ -101,13 +150,64 @@ a name bound at import time goes stale.
 
 ## Tests and style
 
+- Include one or more `unittest` tests for each new feature or bug fix. For bug
+  fixes, add a regression test that exercises the original failure. Run relevant
+  tests and report their results before requesting review.
+- CI lists test modules explicitly. Tests added to an existing module use its
+  existing workflow entries; verify that the module is included. Register every
+  new module in the appropriate workflows as described below.
 - Tests sit next to the code in `tests/` folders and most download real data, so
   they need network access. Run one module the way CI
   (`.github/workflows/quick_tests.yml`) does:
   `python -m pyspedas.projects.themis.tests.test_themis`.
 - `SPEDAS_DATA_DIR`, or a per-mission variable such as `THM_DATA_DIR`, sets where
   data is downloaded.
+- CI workflows include `.github/workflows/quick_tests.yml` and
+  `.github/workflows/full_coverage.yml`. Always add new test suites to full
+  coverage, preferably in a shard using the same data server or related code.
+  Add quick-test modules only if they avoid lengthy calculations, large downloads
+  and known unreliable data providers. All quick-test dependency policies share
+  one test list; register each module once.
+- `quick_tests` runs on pushes and pull requests with `dependency_policy=default`.
+  Automatic runs use Python 3.14. Manual dispatch can choose `default`, `latest`
+  or `oldest` and `python_version` from 3.11 through 3.15 (default 3.14).
+  `default` installs development groups from `pdm.lock` and lets pip resolve wheel
+  runtime dependencies normally. `latest` eagerly selects compatible stable
+  versions without the lockfile. `oldest` uses uv's `lowest-direct` for runtime
+  requirements and the `mth5` extra; transitive dependencies and development tools
+  use newer compatible versions. The latest and oldest policies apply a seven-day upload
+  cutoff and fail if resolution or installation cannot succeed. Oldest versions
+  are subject to the selected Python and package metadata, so they may exceed
+  declared lower bounds or fail to build on the selected Python version.
+- `.github/scripts/install_quick_test_dependencies.py` handles policy-specific
+  installation. `.github/scripts/tests/test_quick_test_dependencies.py` checks
+  isolation, runtime constraints and failure handling; both testing workflows
+  run it before package installation. Policy metadata, pip reports and installed
+  versions are uploaded for diagnosis. The lockfile is not rewritten.
+- `full_coverage` is triggered manually. If shards fail because of transient data
+  server failures, manually rerun failed jobs in the same run. The workflow does
+  not retry automatically. Once all shards succeed, it combines coverage data
+  and uploads the report to Coveralls.
 - Docstrings are numpy style (`CONTRIBUTING.md`).
+
+## Documentation
+
+The definitive PySPEDAS documentation is at
+[pyspedas.readthedocs.io](https://pyspedas.readthedocs.io/). It is built with Sphinx
+and the Read the Docs theme from the RST sources, indices, images and build
+scripts in `docs/`. Pushing to `master` triggers a documentation rebuild on
+Read the Docs.
+
+The documentation follows the package structure, with mission pages and pages
+for coordinate transforms, field modeling, utilities and analysis tools. RST
+pages use `autofunction` extensively to render function docstrings, including
+arguments, return values, usage notes and examples. Keep docstrings and any
+examples repeated in RST pages consistent with the code.
+
+New missions must have their own RST page and an entry in the mission index.
+Document new analysis tools in an appropriate existing page, or create a page
+and index entry for a new group of tools. See `docs/AGENTS.md` for source layout,
+local build dependencies and documentation authoring guidance.
 
 ## AGENTS.md files
 
@@ -118,6 +218,18 @@ header with exactly two fields:
   describes and every related AGENTS.md (the nearest parent, the children, and
   any other it points to), as repo-relative paths.
 - `maintenance`: when and how to update that AGENTS.md.
+
+Under its title, every AGENTS.md points to `RULES.md` and lists it in
+`related_files`. Give a new AGENTS.md the same pointer.
+
+Write only what the code or its comments show. Every statement about what a
+routine does, its keywords and defaults, or the science or instrument behind it
+must be checkable against a file in this tree; if you can't point to one, leave
+the statement out. Keep the source's own terms (for example "onboard moments",
+"L2", or a coordinate system name) instead of paraphrasing them, because
+dropping a qualifier can change the meaning. Don't generalize from a few
+examples ("all loaders", "always"), and don't state counts that will go stale.
+When you revise an AGENTS.md, keep text that a maintainer added by hand.
 
 CI (`.github/workflows/agents_md.yml`) runs `.github/scripts/check_agents_md.py`
 on every push and pull request. A missing or malformed header fails the build.

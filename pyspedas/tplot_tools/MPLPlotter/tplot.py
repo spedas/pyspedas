@@ -23,6 +23,41 @@ munits.registry[np.datetime64] = converter
 munits.registry[date] = converter
 munits.registry[datetime] = converter
 
+def _draw_bars(axis, plot_options):
+    """Draw the vertical and horizontal bars attached to a variable."""
+    for bar in plot_options.get('time_bar') or []:
+        line_options = {
+            'color': np.array(bar.get('line_color')) / 256.0,
+            'lw': bar.get('line_width'),
+            'linestyle': bar.get('line_dash'),
+        }
+        if bar['dimension'] == 'height':
+            axis.axvline(
+                x=datetime.fromtimestamp(bar['location'], tz=timezone.utc),
+                **line_options,
+            )
+        elif bar['dimension'] == 'width':
+            axis.axhline(y=bar['location'], **line_options)
+
+
+def _draw_annotations(axis, plot_options):
+    """Draw the text annotations attached to a variable."""
+    foreground = pyspedas.tplot_tools.tplot_opt_glob.get('foreground')
+    for annotation in plot_options.get('extras', {}).get('annotations') or []:
+        axis.annotate(annotation['text'], annotation['position'],
+                      xycoords=annotation['xycoords'],
+                      annotation_clip=annotation.get('annotation_clip'),
+                      fontsize=annotation['fontsize'],
+                      alpha=annotation['alpha'],
+                      fontfamily=annotation['fontfamily'],
+                      fontvariant=annotation['fontvariant'],
+                      fontstyle=annotation['fontstyle'],
+                      fontstretch=annotation['fontstretch'],
+                      fontweight=annotation['fontweight'],
+                      rotation=annotation['rotation'],
+                      color=annotation.get('color') or foreground or 'black')
+
+
 def pseudovar_component_props(varname: str):
     """ Return or calculate the plot properties for a single normal tplot variable
 
@@ -471,13 +506,16 @@ def tplot(variables,
             line_opts = None
             plot_extras = None
             if pseudo_var:
+                xaxis_options = {}
+                for option in ('x_major_ticks', 'x_minor_tick_interval'):
+                    value = var_quants.attrs['plot_options']['xaxis_opt'].get(option)
+                    if value is not None:
+                        xaxis_options[option] = value
                 plot_extras = var_quants.attrs['plot_options']['extras']
                 if plot_extras.get('spec') is not None:
                     spec = True
 
-                if plot_extras.get('right_axis') is not None:
-                    if plot_extras.get('right_axis'):
-                        pseudo_right_axis = True
+                pseudo_right_axis = bool(plot_extras.get('right_axis')) # if right_axis is None, pseudo_right_axis will be False
 
                 if pseudo_right_axis: # if pseudo_right_axis:?
                     plot_extras = None
@@ -581,7 +619,9 @@ def tplot(variables,
                       pseudo_right_axis=pseudo_right_axis,
                       show_colorbar=pseudo_show_colorbar)
                 traces_processed += trace_count_thisvar
-            
+
+            _draw_bars(this_axis, var_quants.attrs['plot_options'])
+            _draw_annotations(this_axis, var_quants.attrs['plot_options'])
 
             continue
 
@@ -849,22 +889,21 @@ def tplot(variables,
             if not plot_created:
                 continue
 
+        xmajor_ticks = xaxis_options.get('x_major_ticks')
+        if xmajor_ticks is not None:
+            # FixedLocator preserves the time range and the automatic date formatter.
+            tick_dates = pyspedas.time_datetime(xmajor_ticks)
+            this_axis.xaxis.set_major_locator(mpl.ticker.FixedLocator(mdates.date2num(tick_dates)))
+            if len(xmajor_ticks) == 0:
+                this_axis.xaxis.set_major_formatter(mpl.ticker.NullFormatter())
+
+        xminor_tick_interval = xaxis_options.get('x_minor_tick_interval')
+        if xminor_tick_interval is not None:
+            # Matplotlib date coordinates are in days; the option is in seconds.
+            this_axis.xaxis.set_minor_locator(plt.MultipleLocator(xminor_tick_interval / 86400.0))
+
         # apply any vertical/horizontal bars
-        if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options'].get('time_bar') is not None:
-            time_bars = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['time_bar']
-
-            for time_bar in time_bars:
-                # vertical bars
-                if time_bar['dimension'] == 'height':
-                    this_axis.axvline(x=datetime.fromtimestamp(time_bar['location'], tz=timezone.utc),
-                        color=np.array(time_bar.get('line_color'))/256.0, lw=time_bar.get('line_width'),
-                                      linestyle=time_bar.get('line_dash'))
-
-                # horizontal bars
-                if time_bar['dimension'] == 'width':
-                    this_axis.axhline(y=time_bar['location'], color=np.array(time_bar.get('line_color'))/256.0,
-                                      lw=time_bar.get('line_width'),
-                                      linestyle=time_bar.get('line_dash'))
+        _draw_bars(this_axis, var_quants.attrs['plot_options'])
 
         # highlight time intervals
         if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options'].get('highlight_intervals') is not None:
@@ -880,21 +919,7 @@ def tplot(variables,
                                   mdates.date2num(datetime.fromtimestamp(highlight_interval['location'][1], timezone.utc)),
                                   **hightlight_opts)
 
-        # add annotations
-        if pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['extras'].get('annotations') is not None:
-            annotations = pyspedas.tplot_tools.data_quants[variable].attrs['plot_options']['extras']['annotations']
-            for annotation in annotations:
-                this_axis.annotate(annotation['text'], annotation['position'],
-                                   xycoords=annotation['xycoords'],
-                                   fontsize=annotation['fontsize'],
-                                   alpha=annotation['alpha'],
-                                   fontfamily=annotation['fontfamily'],
-                                   fontvariant=annotation['fontvariant'],
-                                   fontstyle=annotation['fontstyle'],
-                                   fontstretch=annotation['fontstretch'],
-                                   fontweight=annotation['fontweight'],
-                                   rotation=annotation['rotation'],
-                                   color=annotation.get('color') or foreground or 'black')
+        _draw_annotations(this_axis, var_quants.attrs['plot_options'])
 
     # apply any addition x-axes (or panel) specified by the var_label keyword
     if var_label is not None:

@@ -16,12 +16,16 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/utilities/download.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch, the automatic prefixes, the
   master-CDF handling or the Berkeley server option, or when __init__.py adds a loader.
 ---
 
 # Wind
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Wind solar wind mission: magnetic field, plasma, composition,
 3DP particles, WAVES radio and orbit/attitude. All data are CDF files, from SPDF
@@ -55,7 +59,7 @@ Two steps are specific to Wind:
   WAVES `tnr`, `qtnfit` and `qtnfit-filtered`.
 - Both downloads pass `last_version=True` to `download()`
   (`pyspedas/utilities/download.py`), so only the highest `v??` version of each
-  file is kept.
+  file is used.
 
 ## Things to know
 
@@ -69,7 +73,7 @@ Two steps are specific to Wind:
   `berkeley`.
 - `time_clip` defaults to False in all wrappers.
 - The local data folder is `WIND_DATA_DIR`, else `SPEDAS_DATA_DIR/wind`, else
-  `wind_data/` (`config.py`). Setting `WIND_NO_DOWNLOAD` turns downloads off.
+  `wind_data/` (`config.py`). Setting `WIND_NO_DOWNLOAD` to true turns downloads off.
 
 ## Tests
 

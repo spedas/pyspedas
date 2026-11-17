@@ -12,6 +12,7 @@ related_files:
   - pyspedas/projects/goes/load.py
   - pyspedas/projects/poes/load.py
   - pyspedas/projects/maven/maven_load.py
+  - RULES.md
 maintenance: |
   Update when cdf_to_tplot changes which CDF attributes it reads or how it fills
   .attrs and plot options, when a reader gains or loses a keyword, or when a new
@@ -20,8 +21,11 @@ maintenance: |
 
 # importers
 
-Readers that turn data files into tplot variables. Mission loaders call them after
-downloading; all four are re-exported from `pyspedas`.
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
+
+Readers that turn data files into tplot variables. Mission loaders call the file readers
+(not `tplot_restore()`) after downloading; all four are re-exported from `pyspedas`.
 
 ## Layout
 
@@ -35,7 +39,7 @@ downloading; all four are re-exported from `pyspedas`.
 1. Attributes come from `mastercdf` when given, else from each file itself.
 2. Variables are kept by `VAR_TYPE`: `data` always, `support_data` with `get_support_data=True`,
    `ignore_data` with `get_ignore_data=True`. Passing `varformat` or `varnames` turns support
-   data on, so named variables load whatever their type.
+   data on, so named variables load whether or not they are marked `support_data`.
 3. The time variable is `DEPEND_TIME`, else `DEPEND_0`; a variable with neither is
    non-record-varying. Epochs go through `cdflib.cdfepoch.to_datetime` and are cached per file;
    `center_measurement=True` shifts them by `DELTA_PLUS_VAR`/`DELTA_MINUS_VAR`.
@@ -54,7 +58,8 @@ downloading; all four are re-exported from `pyspedas`.
 - `varformat` and `exclude_format` are regular expressions matched with `re.match` after `*` is
   turned into `.*`; a list or a space-separated string becomes an alternation. A `?` is a regex
   quantifier here, not a one-character wildcard.
-- Names are `prefix + cdf_name + suffix`; filters also try the prefixed name when a prefix or
+- Names are `prefix + cdf_name + suffix` (the `TPLOT_NAME` attribute replaces `cdf_name` when
+  present); filters also try the prefixed name when a prefix or
   suffix is set.
 - Without `merge=True`, each call overwrites existing variables of the same name.
 - `netcdf_to_tplot()` finds each variable's time from its first dimension (falling back to
