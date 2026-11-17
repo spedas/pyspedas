@@ -20,8 +20,24 @@ mepe(version='v01_02')
 
 `CONFIG['ground_remote_data_dir']` controls ground data independently. SPDF mirrors
 only some satellite products; ground data still come from ERG-SC. The shared loader
-translates SPDF directory layouts and EFD filename case automatically. Existing local
-cache paths (`satellite/erg/` and `ground/` beneath `local_data_dir`) are preserved.
+translates SPDF directory layouts and EFD filename case automatically. Files are cached
+beneath `local_data_dir` using paths relative to the selected data-family URL. For
+example, MEPE omniflux files use `mepe/l2/omniflux/2017/` with SPDF and
+`mepe/l2/omniflux/2017/03/` with ERG-SC. No `satellite/erg/` or `ground/` prefix is
+added to the cache path.
+
+To read an existing SPDF filesystem without HTTP requests, point `local_data_dir`
+at the directory corresponding to the Arase URL root and enable `no_download`:
+
+```python
+CONFIG['satellite_remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/arase/'
+CONFIG['local_data_dir'] = '/path/to/pub/data/arase/'
+CONFIG['no_download'] = True
+mepe()
+```
+
+Switching servers can create separate copies where their layouts or filenames differ.
+Existing files are not moved or renamed.
 
 Stored ERG preferences accept both URL keys. Environment variables
 `ERG_SATELLITE_REMOTE_DATA_DIR` and `ERG_GROUND_REMOTE_DATA_DIR` override them.

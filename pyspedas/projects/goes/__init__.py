@@ -2,6 +2,7 @@ from functools import update_wrapper
 
 from pyspedas.utilities.pyspedas_functools import better_partial
 
+from .add_goes_xray_annotations import add_goes_xray_annotations
 from .load import load
 from .load_orbit import load_orbit
 

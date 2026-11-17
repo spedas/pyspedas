@@ -19,12 +19,16 @@ related_files:
   - pyspedas/projects/erg/tests/test_erg.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
   - pyspedas/projects/erg/tests/test_erg_cotrans.py
+  - RULES.md
 maintenance: |
   Update when satellite/erg/load.py changes, when config.py changes the data server or
   environment variables, or when __init__.py adds or renames a loader or tool.
 ---
 
 # Arase (ERG)
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Arase (ERG) satellite and for the ground-based networks served by the ERG
 Science Center (ERG-SC, ISEE, Nagoya University), plus Arase coordinate transforms and
@@ -56,7 +60,7 @@ with `ground/` (see `ground/geomag/gmag_isee_fluxgate.py`). `load()`:
 2. selects the ground or satellite URL, strips the corresponding template prefix for
    remote names, translates SPDF product directories and EFD filename case when the
    satellite URL is SPDF, and
-   retains the original ERG-SC directories in the local cache path; `download()` selects
+   uses those URL-relative paths directly beneath `local_data_dir`; `download()` selects
    the last version only for wildcard paths and passes `uname`/`passwd` as credentials;
 3. loads the files with `cdf_to_tplot()`, using the caller's `prefix` and `suffix`;
 4. with `notplot=True`, adds the last file's CDF attributes to the returned dicts under

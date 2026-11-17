@@ -54,8 +54,6 @@ class PlotTestCases(unittest.TestCase):
         set_units('ns_gsm_pos', 're')
         cotrans('ns_gsm_pos', 'ns_gse_pos',coord_in='gsm', coord_out='gse')
         cls.gse_dat = get_data('ns_gse_pos')
-
-        tplot_restore('/tmp/ttrace_iono_t89.tplot')
         tplot_names()
 
 

@@ -28,6 +28,7 @@ related_files:
   - pyspedas/projects/omni/load.py
   - pyspedas/tplot_tools/MPLPlotter/tplot_map.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when a field model or tracing option is added, when the model wrappers
   change how they read positions or parameters, or when the dependency on the
@@ -35,6 +36,9 @@ maintenance: |
 ---
 
 # geopack
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 tplot wrappers around the external `geopack` package (Sheng Tian's Python port of
 Tsyganenko's GEOPACK, a dependency in `pyproject.toml`): model field along a position

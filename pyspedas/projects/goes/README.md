@@ -97,3 +97,47 @@ For Level 1b science loads, `get_support_data=False` (the default) selects the
 primary science variables. Set `get_support_data=True` to also load available
 auxiliary variables, such as quality flags and instrument temperatures. This
 keyword has no effect on Level 2 or original netCDF science loads.
+
+## X-ray flare class annotations
+
+Use `goes.add_goes_xray_annotations()` to add A/B/C/M/X labels and dashed
+horizontal flux boundaries to an XRS panel. The scale refers to the **1-8
+Angstrom channel** (`xrsb_flux` for GOES-R), with irradiance in **W/m²**. Pass
+the desired panel explicitly; do not pass every variable returned by `xrs()`.
+Names and units are not checked, and no data conversion is performed.
+
+```python
+from pyspedas import tplot
+from pyspedas.projects import goes
+
+goes.xrs(probe="18", trange=["2023-01-01", "2023-01-02"])
+goes.add_goes_xray_annotations("g18_xrs_xrsb_flux", yrange=[1e-8, 1e-3])
+tplot("g18_xrs_xrsb_flux")
+```
+
+Alternatively, load the data and annotate a combined panel. Component
+decorations also appear when overplotted, so apply the helper once to the
+combined panel:
+
+```python
+from pyspedas import store_data, tplot
+from pyspedas.projects import goes
+
+# Show both wavelength channels together, with one class scale for XRS-B.
+goes.xrs(probe="18", trange=["2023-01-01", "2023-01-02"])
+store_data("combined_xrs", data=["g18_xrs_xrsa_flux", "g18_xrs_xrsb_flux"])
+goes.add_goes_xray_annotations("combined_xrs", yrange=[1e-8, 1e-3])
+tplot("combined_xrs")
+```
+
+The helper accepts names, lists and wildcards, enables logarithmic y scaling,
+and returns the annotated names. Without `yrange`, the current limits are
+preserved; labels outside the visible range are clipped. Use `color` and
+`fontsize` to style the decorations. Existing annotations and bars are retained,
+and repeated calls replace only this helper's decorations. For separate left
+and right y axes, the class scale uses the left axis.
+
+The thresholds are A: `1e-8`, B: `1e-7`, C: `1e-6`, M: `1e-5`, and X:
+`1e-4` W/m². The line at `1e-3` marks X10, not an upper limit on X-class
+flares. See the [NOAA flare classification](https://www.swpc.noaa.gov/phenomena/solar-flares-radio-blackouts)
+and [GOES X-ray plots](https://www.swpc.noaa.gov/products/goes-x-ray-flux).

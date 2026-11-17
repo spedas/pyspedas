@@ -7,7 +7,11 @@ import tempfile
 import unittest
 from unittest.mock import patch
 
+import cdflib
+from cdflib import cdfwrite
+import numpy as np
 import pyspedas
+from pyspedas.tplot_tools import del_data, get_data
 from pyspedas.projects.erg.config import CONFIG
 
 load_module = importlib.import_module('pyspedas.projects.erg.satellite.erg.load')
@@ -23,7 +27,7 @@ class LoadRoutingTests(unittest.TestCase):
         config_patch.start()
         self.addCleanup(config_patch.stop)
 
-    def test_data_family_urls_and_existing_cache(self):
+    def test_data_family_urls_and_cache_root(self):
         for prefix, url in [('ground/', 'https://ground.example/data/'),
                             ('satellite/erg/', 'https://satellite.example/arase/')]:
             with self.subTest(prefix=prefix), patch.object(load_module, 'download', return_value=[]) as download:
@@ -33,7 +37,7 @@ class LoadRoutingTests(unittest.TestCase):
                 kwargs = download.call_args.kwargs
                 self.assertEqual(kwargs['remote_path'], url)
                 self.assertEqual(kwargs['remote_file'], ['mgf/2017/file_20170327_v01.cdf'])
-                self.assertEqual(kwargs['local_path'], os.path.join('/cache/erg', prefix))
+                self.assertEqual(kwargs['local_path'], '/cache/erg')
                 self.assertFalse(kwargs['last_version'])
                 self.assertTrue(kwargs['no_download'])
                 self.assertTrue(kwargs['force_download'])
@@ -97,32 +101,66 @@ class LoadRoutingTests(unittest.TestCase):
                     getattr(pyspedas.projects.erg, instrument)(downloadonly=True, ror=False, **args)
                     for call in download.call_args_list:
                         kwargs = call.kwargs
-                        self.assertEqual(kwargs['remote_path'], base + directory)
-                        self.assertTrue(kwargs['local_path'].startswith('/cache/erg/satellite/erg/'))
-                        self.assertTrue(all('/' not in filename for filename in kwargs['remote_file']))
+                        self.assertEqual(kwargs['remote_path'], base)
+                        self.assertEqual(kwargs['local_path'], '/cache/erg')
+                        self.assertTrue(all(filename.startswith(directory) for filename in kwargs['remote_file']))
                         if instrument == 'pwe_efd':
                             self.assertTrue(all(filename == filename.lower() for filename in kwargs['remote_file']))
 
-    def test_spdf_reuses_existing_cache_without_network(self):
+    def test_server_filesystem_layout_without_network(self):
+        cases = [
+            ('satellite_remote_data_dir', 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+             'satellite/erg/mepe/l2/omniflux/%Y/%m/erg_mepe_l2_omniflux_%Y%m%d_v??_??.cdf',
+             'mepe/l2/omniflux/2017/erg_mepe_l2_omniflux_20170327_'),
+            ('satellite_remote_data_dir', 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
+             'satellite/erg/mepe/l2/omniflux/%Y/%m/erg_mepe_l2_omniflux_%Y%m%d_v??_??.cdf',
+             'mepe/l2/omniflux/2017/03/erg_mepe_l2_omniflux_20170327_'),
+            ('ground_remote_data_dir', 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/',
+             'ground/geomag/isee/fluxgate/1min/ktb/%Y/isee_fluxgate_1min_ktb_%Y%m%d_v??.cdf',
+             'geomag/isee/fluxgate/1min/ktb/2017/isee_fluxgate_1min_ktb_20170327_'),
+        ]
+        for key, url, template, relative in cases:
+            for no_update in [False, True]:
+                with self.subTest(url=url, no_update=no_update), tempfile.TemporaryDirectory() as cache, patch.dict(CONFIG, {
+                        'local_data_dir': cache, key: url, 'no_download': not no_update}), patch('requests.Session.request', side_effect=AssertionError('Unexpected HTTP request')):
+                    versions = ['v01', 'v02'] if key == 'ground_remote_data_dir' else ['v01_01', 'v01_02']
+                    for version in versions:
+                        filename = Path(cache) / (relative + version + '.cdf')
+                        filename.parent.mkdir(parents=True, exist_ok=True)
+                        filename.touch()
+                    files = load_module.load(pathformat=template, downloadonly=True, no_update=no_update)
+                    self.assertEqual(files, [str(filename)])
+
+    def test_spdf_lowercase_efd_filesystem(self):
         with tempfile.TemporaryDirectory() as cache, patch.dict(CONFIG, {
-                'local_data_dir': cache,
-                'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/'}):
-            filename = Path(cache) / 'satellite/erg/mepe/l2/omniflux/2017/03/erg_mepe_l2_omniflux_20170327_v01_02.cdf'
+                'local_data_dir': cache, 'no_download': True,
+                'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/'}), patch('requests.Session.request', side_effect=AssertionError('Unexpected HTTP request')):
+            filename = Path(cache) / 'pwe/efd/l2/e_spin/2017/erg_pwe_efd_l2_e_spin_20170401_v05_03.cdf'
             filename.parent.mkdir(parents=True)
             filename.touch()
-            files = pyspedas.projects.erg.mepe(downloadonly=True, no_update=True, ror=False, version='v01_02')
+            files = pyspedas.projects.erg.pwe_efd(downloadonly=True, ror=False, version='v05_03')
             self.assertEqual(files, [str(filename)])
 
-    def test_spdf_reuses_mixed_case_efd_cache(self):
+    def test_spdf_reads_cdf_from_filesystem(self):
         with tempfile.TemporaryDirectory() as cache, patch.dict(CONFIG, {
-                'local_data_dir': cache,
-                'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/'}):
-            filename = Path(cache) / 'satellite/erg/pwe/efd/l2/E_spin/2017/04/erg_pwe_efd_l2_E_spin_20170401_v05_03.cdf'
+                'local_data_dir': cache, 'no_download': True,
+                'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/'}), patch('requests.Session.request', side_effect=AssertionError('Unexpected HTTP request')):
+            filename = Path(cache) / 'mepe/l2/omniflux/2017/erg_mepe_l2_omniflux_20170327_v01_02.cdf'
             filename.parent.mkdir(parents=True)
-            filename.touch()
-            files = pyspedas.projects.erg.pwe_efd(downloadonly=True, no_update=True, ror=False, version='v05_03')
-            self.assertEqual(len(files), 1)
-            self.assertTrue(Path(files[0]).samefile(filename))
+            with cdfwrite.CDF(filename) as cdf:
+                cdf.write_var({'Variable': 'Epoch', 'Data_Type': cdfwrite.CDF.CDF_EPOCH,
+                               'Num_Elements': 1, 'Rec_Vary': True, 'Dim_Sizes': []},
+                              var_attrs={'VAR_TYPE': 'support_data'},
+                              var_data=cdflib.cdfepoch.compute_epoch([
+                                  [2017, 3, 27, 0, 0, 0, 0], [2017, 3, 27, 0, 0, 1, 0]]))
+                cdf.write_var({'Variable': 'cache_test', 'Data_Type': cdfwrite.CDF.CDF_DOUBLE,
+                               'Num_Elements': 1, 'Rec_Vary': True, 'Dim_Sizes': []},
+                              var_attrs={'VAR_TYPE': 'data', 'DEPEND_0': 'Epoch'},
+                              var_data=np.array([1.0, 2.0]))
+            self.addCleanup(del_data, 'erg_cache_test')
+            names = load_module.load(pathformat='satellite/erg/mepe/l2/omniflux/%Y/%m/erg_mepe_l2_omniflux_%Y%m%d_v??_??.cdf', prefix='erg_')
+            self.assertIn('erg_cache_test', names)
+            np.testing.assert_array_equal(get_data('erg_cache_test').y, [1.0, 2.0])
 
     def test_config_url_overrides(self):
         config_file = Path(load_module.__file__).parents[2] / 'config.py'
