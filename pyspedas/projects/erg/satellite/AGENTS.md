@@ -2,6 +2,7 @@
 related_files:
   - pyspedas/projects/erg/AGENTS.md
   - pyspedas/projects/erg/__init__.py
+  - pyspedas/projects/erg/config.py
   - pyspedas/projects/erg/satellite/__init__.py
   - pyspedas/projects/erg/satellite/erg/load.py
   - pyspedas/projects/erg/satellite/erg/get_gatt_ror.py
@@ -51,8 +52,9 @@ code is under `erg/`; this folder level only holds that package.
 
 ## Layout
 
-- `erg/load.py`: the shared `load()`, also used by the ground loaders. It selects the
-  separate ground/satellite URL, uses its layout for the local cache, and enables
+- `erg/load.py`: the shared `load()`, also used by the ground loaders. Wrappers pass an explicit
+  family URL/layout using `resolve_source()` from `pyspedas/projects/erg/config.py`.
+  It uses the selected server layout for the local cache and enables
   latest-version selection only for wildcard templates.
 - `erg/get_gatt_ror.py`: gets CDF global attributes for the rules-of-the-road printout.
 - Instrument wrappers, one module each: `erg/att/att.py` (attitude, from text files),

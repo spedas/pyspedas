@@ -3,6 +3,7 @@ import numpy as np
 from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 from typing import List, Union, Optional, Dict, Any
@@ -147,16 +148,16 @@ def gmag_isee_fluxgate(
             fres = data_type_in
             if fres == '64hz':
                 file_res = 3600.
-                pathformat = 'ground/geomag/isee/fluxgate/'+fres+'/'+site_input\
+                pathformat = 'geomag/isee/fluxgate/'+fres+'/'+site_input\
                                 +'/%Y/%m/isee_fluxgate_'+fres+'_'+site_input+'_%Y%m%d%H_v??.cdf'
             if fres == '1h':
                 fres = '1min'
             if (fres == '1sec') or (fres == '1min'):
                 file_res = 3600. * 24
-                pathformat = 'ground/geomag/isee/fluxgate/'+fres+'/'+site_input\
+                pathformat = 'geomag/isee/fluxgate/'+fres+'/'+site_input\
                                 +'/%Y/isee_fluxgate_'+fres+'_'+site_input+'_%Y%m%d_v??.cdf'
             
-            loaded_data_temp = load(pathformat=pathformat, file_res=file_res, trange=trange, datatype=datatype, prefix=prefix, suffix='_'+site_input+suffix, get_support_data=get_support_data,
+            loaded_data_temp = load(**resolve_source('ground'), pathformat=pathformat, file_res=file_res, trange=trange, datatype=datatype, prefix=prefix, suffix='_'+site_input+suffix, get_support_data=get_support_data,
                             varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
             
             if notplot:

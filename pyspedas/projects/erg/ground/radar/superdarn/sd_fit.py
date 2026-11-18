@@ -8,6 +8,7 @@ from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim, zlim
 from pyspedas import tnames
 
 from ....satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ....satellite.erg.get_gatt_ror import get_gatt_ror
 
 from .get_sphcntr import get_sphcntr
@@ -199,7 +200,7 @@ def sd_fit(
         prefix = "sd_" + site_input + "_"
         file_res = 3600.0 * 24.0
         pathformat = (
-            "ground/radar/sd/fitacf/"
+            "radar/sd/fitacf/"
             + site_input
             + "/%Y/sd_fitacf_l2_"
             + site_input
@@ -207,6 +208,7 @@ def sd_fit(
         )
 
         loaded_data_temp = load(
+            **resolve_source('ground'),
             pathformat=pathformat,
             file_res=file_res,
             trange=trange,
@@ -322,6 +324,7 @@ def sd_fit(
 
                 if not prefix + "vlos_" + number_string + suffix in loaded_data:
                     vlos_notplot_dictionary = load(
+                        **resolve_source('ground'),
                         pathformat=pathformat,
                         file_res=file_res,
                         trange=trange,

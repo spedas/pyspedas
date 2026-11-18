@@ -3,6 +3,7 @@ from pyspedas import tnames
 from pyspedas import clip, get_data, options, ylim
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from .remove_duplicated_tframe import remove_duplicated_tframe
 from ..get_gatt_ror import get_gatt_ror
 
@@ -127,23 +128,23 @@ def orb(
 
     if level == 'l3':
         if model == 'op':
-            pathformat = 'satellite/erg/orb/'+level + \
+            pathformat = 'orb/'+level + \
                 '/opq/%Y/%m/erg_orb_'+level+'_op_%Y%m%d_'
         else:
-            pathformat = 'satellite/erg/orb/'+level+'/'+model + \
+            pathformat = 'orb/'+level+'/'+model + \
                 '/%Y/%m/erg_orb_'+level+'_'+model+'_%Y%m%d_'
     elif level == 'l2':
         if datatype == 'def':
-            pathformat = 'satellite/erg/orb/' + datatype + '/%Y/erg_orb_'+level+'_%Y%m%d_'
+            pathformat = 'orb/' + datatype + '/%Y/erg_orb_'+level+'_%Y%m%d_'
         else:
-            pathformat = 'satellite/erg/orb/' + datatype + \
+            pathformat = 'orb/' + datatype + \
                 '/%Y/erg_orb_' + datatype + '_'+level+'_%Y%m%d_'
     if version is None:
         pathformat += 'v??.cdf'
     else:
         pathformat += version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, version=version, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:

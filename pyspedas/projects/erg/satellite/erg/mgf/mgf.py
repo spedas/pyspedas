@@ -2,6 +2,7 @@ import numpy as np
 from pyspedas import clip, get_data, options, ylim
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -119,11 +120,11 @@ def mgf(
     prefix = 'erg_mgf_'+level+'_'
     if datatype == '8sec':
         file_res = 3600. * 24
-        pathformat = 'satellite/erg/mgf/'+level+'/'+datatype + \
+        pathformat = 'mgf/'+level+'/'+datatype + \
             '/%Y/%m/erg_mgf_'+level+'_'+datatype+'_%Y%m%d_'
     else:
         file_res = 3600.
-        pathformat = 'satellite/erg/mgf/'+level+'/'+datatype + \
+        pathformat = 'mgf/'+level+'/'+datatype + \
             '/%Y/%m/erg_mgf_'+level+'_'+datatype+'_' + coord + '_%Y%m%d%H_'
 
     if version is None:
@@ -131,7 +132,7 @@ def mgf(
     else:
         pathformat += version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, file_res=file_res, trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, file_res=file_res, trange=trange, level=level, datatype=datatype, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if (loaded_data is None) or (loaded_data == []):

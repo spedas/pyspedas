@@ -1,6 +1,7 @@
 from pyspedas import clip, options, ylim, zlim, get_data
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -117,14 +118,14 @@ def pwe_hfa(
         prefix = 'erg_pwe_hfa_'+level+'_' + mode + '_'
 
     if level == 'l2':
-        pathformat = 'satellite/erg/pwe/hfa/'+level+'/'+datatype+'/'+mode + \
+        pathformat = 'pwe/hfa/'+level+'/'+datatype+'/'+mode + \
             '/%Y/%m/erg_pwe_hfa_'+level+'_'+datatype+'_'+mode+'_%Y%m%d_' + file_version + '.cdf'
     elif level == 'l3':
         prefix = 'erg_pwe_hfa_'+level+'_1min_'
-        pathformat = 'satellite/erg/pwe/hfa/'+level + \
+        pathformat = 'pwe/hfa/'+level + \
             '/%Y/%m/erg_pwe_hfa_'+level+'_1min_%Y%m%d_' + file_version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd)
 
     if (len(loaded_data) > 0) and ror:

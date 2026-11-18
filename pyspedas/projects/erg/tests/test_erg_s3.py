@@ -18,11 +18,14 @@ import pyspedas
 class LoadTestCases(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
-        # A fresh cache ensures these tests really exercise SPDF URLs.
+        # A fresh cache ensures satellite tests exercise S3; attitude uses SPDF explicitly.
         cls.cache = tempfile.TemporaryDirectory()
         cls.config_patch = patch.dict(
             CONFIG,
             {
+                'satellite_remote_data_layout': 'spdf',
+                'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+                'att_remote_data_layout': 'spdf',
                 "satellite_remote_data_dir": "s3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/",
                 "local_data_dir": cls.cache.name,
                 "no_download": False,
@@ -30,7 +33,12 @@ class LoadTestCases(unittest.TestCase):
         )
         cls.config_patch.start()
 
-    @unittest.skip("ERG attitude data not available from heliocloud")
+    @classmethod
+    def tearDownClass(cls):
+        cls.config_patch.stop()
+        cls.cache.cleanup()
+        del_data()
+
     def test_load_att_data(self):
         del_data()
         att_vars = pyspedas.projects.erg.att()
@@ -40,7 +48,6 @@ class LoadTestCases(unittest.TestCase):
         self.assertTrue('erg_att_sprate' in att_vars)
         self.assertTrue('erg_att_spphase' in att_vars)
 
-    @unittest.skip("ERG attitude data not available from heliocloud")
     def test_load_att_data_notplot(self):
         del_data()
         att_dict = pyspedas.projects.erg.att(notplot=True)

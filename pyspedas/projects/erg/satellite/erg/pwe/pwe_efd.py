@@ -4,6 +4,7 @@ from pyspedas.tplot_tools import time_float
 from pyspedas.tplot_tools import get_data, options, store_data, ylim, zlim
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -124,7 +125,7 @@ def pwe_efd(
         elif '256' in datatype:
             mode = '256Hz'
         md = 'E'+mode
-        pathformat = 'satellite/erg/pwe/efd/'+level+'/'+md + \
+        pathformat = 'pwe/efd/'+level+'/'+md + \
             '/%Y/%m/erg_pwe_efd_'+level+'_'+md+'_'+coord+'_%Y%m%d_' + file_version + '.cdf'
         prefix += md + '_' + coord + '_'
         if coord == 'wpt':
@@ -134,7 +135,7 @@ def pwe_efd(
                          'Eu_offset'+'_'+mode, 'Ev_offset'+'_'+mode]
 
     else:
-        pathformat = 'satellite/erg/pwe/efd/'+level+'/'+datatype + \
+        pathformat = 'pwe/efd/'+level+'/'+datatype + \
             '/%Y/%m/erg_pwe_efd_'+level+'_'+datatype+'_%Y%m%d_' + file_version + '.cdf'
         prefix += datatype + '_'
         if 'spin' in datatype:
@@ -146,7 +147,7 @@ def pwe_efd(
             component = ['Vu1_waveform_8Hz', 'Vu2_waveform_8Hz',
                          'Vv1_waveform_8Hz', 'Vv2_waveform_8Hz']
 
-    loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:
