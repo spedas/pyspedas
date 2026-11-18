@@ -1,25 +1,45 @@
 import numpy as np
 
-def geodetic_correction(lat_deg,f=(1/298.26),inverse=False):
+def geodetic_correction(lat_deg,flattening=(1/298.26),inverse=False):
         """
-        Convert geocentric latitude to geodetic latitude using squashing factor f.
-        Forward transformation assumes input is geocentric latitude, returns 
-        corresponding geodetic latitude.
+        Converts geocentric latitude to geodetic latitude, or vice versa. 
 
-        Setting argument 'inverse' to True assumes geodetic latitude 
-        and returns corresponding geocentric latitude
+        Parameters
+        ----------
+        lat_deg : array_like
+            Latitude, in degrees. Assumed to be geocentric latitude if 
+            `inverse` is False. Assumed to be geodetic latitude if 
+            `inverse` is True.
+        flattening : float
+            Flattening factor for oblate spheroid of interest. By default,
+            the flattening factor is assumed to be that of Earth, at a 
+            value of 1/298.26.
+        inverse : bool
+            Indicates whether or not to use the inverse transformation. If
+            False, converts geocentric latitude to geodetic latitude. If
+            True, converts geodetic latitude to geocentric latitude.
+
+        Returns
+        -------
+        ndarray
+            Geodetic latitude (inverse=False) or geocentric latitude (inverse=True), 
+            in degrees.
+
+        Examples
+        --------
+        Convert geocentric latitude to geodetic latitude:
+        >>> lat_geodetic = geodetic_correction(lat_deg=50)
+        >>> print(lat_geodetic)
+        50.18938768317834
+
+        Convert geodetic latitude to geocentric latitude:
+        >>> lat_geocentric = geodetic_correction(lat_deg=50.18938768317834,inverse=True)
+        >>> print(lat_geocentric)
+        50.0
         """
         if not inverse:
-            # Forward conversion
-            geoc_lat_rad = np.deg2rad(lat_deg)
-            geod_lat_rad = np.arctan( (1-f)**2 * np.tan(geoc_lat_rad) )
-            geod_lat_deg = np.rad2deg(geod_lat_rad)
-            return geod_lat_deg
+            # Convert geocentric latitude to geodetic latitude:
+            return np.rad2deg( np.arctan( np.tan(np.deg2rad(lat_deg))/((1-flattening)**2) ) )
         else:
-            # Inverse conversion
-            geod_lat_rad = np.deg2rad(lat_deg)
-            geoc_lat_rad = np.arctan(np.tan(geod_lat_rad)/((1-f)**2))
-            geoc_lat_deg = np.rad2deg(geoc_lat_rad)
-            return geoc_lat_deg
-        
-            
+            # Convert geodetic latitude to geocentric latitude:
+            return np.rad2deg( np.arctan( (1-flattening)**2 * np.tan( np.deg2rad(lat_deg) ) ) )
