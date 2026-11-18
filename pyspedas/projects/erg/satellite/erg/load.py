@@ -93,7 +93,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
     remote_format = pathformat[len(path_prefix):]
     last_version = any(char in pathformat for char in '?*')
 
-    if path_prefix == 'satellite/erg/' and urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov':
+    if path_prefix == 'satellite/erg/' and (urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov' or urlparse(remote_path).hostname == 'gov-nasa-hdrl-data1'):
         remote_format = _spdf_path(remote_format)
 
     remote_names = dailynames(file_format=remote_format, trange=trange, res=file_res)
