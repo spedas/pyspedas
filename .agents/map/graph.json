@@ -3408,6 +3408,18 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/themis/ground/gmag.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_versions.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/themis/tests/test_themis_s3.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/themis/load.py",
           "kind": "file"
         },

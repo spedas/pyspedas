@@ -2,7 +2,9 @@
 import os
 import unittest
 import logging
-import pyspedas
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
+
 import pyspedas
 from pyspedas.tplot_tools import data_exists, get_coords
 
@@ -18,8 +20,19 @@ class GmagTestCases(unittest.TestCase):
         The SPEDAS script that creates the file: general/tools/python_validate/thm_cotrans_validate.pro
         """
         from pyspedas.projects.themis.config import CONFIG
-        old_remote=CONFIG['remote_data_dir']
-        CONFIG['remote_data_dir'] = 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/'
+        cls.cache = TemporaryDirectory()
+        cls.addClassCleanup(cls.cache.cleanup)
+        cls.config_patch = patch.dict(CONFIG, {
+            'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/',
+            'remote_data_layout': 'spdf',
+            'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
+            'variometer_remote_data_layout': 'themis',
+            'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
+            'local_data_dir': cls.cache.name,
+            'no_download': False,
+        })
+        cls.config_patch.start()
+        cls.addClassCleanup(cls.config_patch.stop)
 
 
     @unittest.skip("Heliocloud file is corrupted")
@@ -28,19 +41,16 @@ class GmagTestCases(unittest.TestCase):
         pyspedas.projects.themis.gmag(varnames=['thg_mag_amer'], sites='amer')
         self.assertTrue(data_exists('thg_mag_amer'))
 
-    @unittest.skip("Variometer data not yet available from heliocloud")
     def test_load_gmag_variometer_1_hz_data(self):
         """Load gmag variometer 1 Hz data."""
         pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a'], sites='s61a',trange=['2026-02-24', '2026-02-25'])
         self.assertTrue(data_exists('thg_mag_s61a'))
 
-    @unittest.skip("Variometer data not yet available from heliocloud")
     def test_load_gmag_variometer_10_hz_data_notag(self):
         """Load gmag variometer 10 Hz data using the sampling_rate argument and not the time resolution tag."""
         pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a',sampling_rate=10,trange=['2026-02-24', '2026-02-25'])
         self.assertTrue(data_exists('thg_mag_s61a_100ms'))
 
-    @unittest.skip("Variometer data not yet available from heliocloud")
     def test_load_gmag_variometer_10_hz_data_tag(self):
         """Load gmag variometer 10 Hz data using the time resolution tag and not the sampling_rate argument."""
         pyspedas.projects.themis.gmag(varnames=['thg_mag_s61a_100ms'], sites='s61a_100ms',trange=['2026-02-24', '2026-02-25'])
@@ -57,8 +67,19 @@ class LoadTestCases(unittest.TestCase):
         The SPEDAS script that creates the file: general/tools/python_validate/thm_cotrans_validate.pro
         """
         from pyspedas.projects.themis.config import CONFIG
-        old_remote=CONFIG['remote_data_dir']
-        CONFIG['remote_data_dir'] = 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/'
+        cls.cache = TemporaryDirectory()
+        cls.addClassCleanup(cls.cache.cleanup)
+        cls.config_patch = patch.dict(CONFIG, {
+            'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/',
+            'remote_data_layout': 'spdf',
+            'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
+            'variometer_remote_data_layout': 'themis',
+            'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
+            'local_data_dir': cls.cache.name,
+            'no_download': False,
+        })
+        cls.config_patch.start()
+        cls.addClassCleanup(cls.config_patch.stop)
 
     @unittest.skip("heliocloud data file is corrupted")
     def test_load_state_data(self):

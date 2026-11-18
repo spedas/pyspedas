@@ -3,6 +3,59 @@ Time History of Events and Macroscale Interactions during Substorms (THEMIS)
 The routines in this module can be used to load data from the Time History of Events and Macroscale Interactions during Substorms (THEMIS) mission.
 
 
+Data sources and layouts
+------------------------
+Ordinary satellite and ground data use ``remote_data_dir`` and
+``remote_data_layout`` in ``pyspedas.projects.themis.config.CONFIG``.
+The THEMIS server and UCLA mirror use ``themis`` layout. SPDF and heliocloud
+use ``spdf`` layout. Set the layout explicitly, independently of the hostname
+or URL scheme. Existing SPDF/S3 configurations must set it to ``spdf``.
+
+Variometers use independent ``variometer_remote_data_dir`` and
+``variometer_remote_data_layout`` settings. Both pairs default to THEMIS URLs
+and ``themis`` layout. URLs point to mission roots with ``tha/``, ``thg/``, etc.
+beneath them. Mixed GMAG requests select a source for each station.
+
+``gmag_metadata_file`` is the full URL of the station/network CSV, independently
+configured from science data. Metadata is cached as ``thg/gmags_meta.csv`` beneath
+``local_data_dir``. Both ``gmag(no_update=True)`` and ``CONFIG['no_download']``
+suppress metadata downloads; missing offline metadata raises ``FileNotFoundError``.
+Changing the metadata URL or cache root reloads the in-memory table.
+
+``ssc_remote_data_dir`` controls both definitive and predicted SSC orbit data,
+retaining their existing path conventions. For heliocloud science data with
+THEMIS variometers and metadata, and the existing CDAWeb SSC source:
+
+.. code-block:: python
+
+    from pyspedas.projects.themis.config import CONFIG
+
+    CONFIG.update({
+        'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/',
+        'remote_data_layout': 'spdf',
+        'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
+        'variometer_remote_data_layout': 'themis',
+        'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
+        'ssc_remote_data_dir': 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/',
+    })
+
+Heliocloud currently lacks variometers and the metadata CSV. To use SPDF science
+data, set ``remote_data_dir`` to ``https://spdf.gsfc.nasa.gov/pub/data/themis/``
+and retain ``spdf`` layout. Variometers can independently use that root and
+``spdf`` layout. Each resource uses only its configured source, without automatic
+fallback. Cache paths follow the server layout; existing files are not moved.
+
+State version selection is unchanged. With no explicit version, ``themis`` uses
+the unversioned current-file link; ``spdf`` wildcards the version and selects the
+highest available. An explicit version requests that exact file, which may be
+absent from the server. Other instrument version defaults remain unchanged.
+
+All six source settings support preferences under ``[projects.themis]`` and
+matching environment overrides: ``THM_REMOTE_DATA_DIR``, ``THM_REMOTE_DATA_LAYOUT``,
+``THM_VARIOMETER_REMOTE_DATA_DIR``, ``THM_VARIOMETER_REMOTE_DATA_LAYOUT``,
+``THM_GMAG_METADATA_FILE``, and ``THM_SSC_REMOTE_DATA_DIR``.
+
+
 Fluxgate magnetometer (FGM)
 ----------------------------------------------------------
 .. autofunction:: pyspedas.projects.themis.fgm
