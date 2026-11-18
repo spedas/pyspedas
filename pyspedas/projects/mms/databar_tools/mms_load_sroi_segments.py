@@ -3,7 +3,7 @@ import logging
 import numpy as np
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas import month_intervals
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 from pyspedas.utilities.download import download
 
 def read_mms_srois_csv(filename):
@@ -51,7 +51,7 @@ def download_mms_srois(start_time=None, end_time=None, sc_id=None):
         month_string = time_string(t0,fmt='%Y_%m')+'.csv'
 
         # public unauthenticated path
-        path = 'mms/sdc/public/service/latis/mms_events_view.csv'
+        path = 'public/service/latis/mms_events_view.csv'
         query = '?start_time_utc,end_time_utc,sc_id,start_orbit&event_type=SROI'
 
         # convert to standard ISO format as accepted by LaTiS
@@ -59,7 +59,7 @@ def download_mms_srois(start_time=None, end_time=None, sc_id=None):
         query += '&start_time_utc<' + t1_string
         query += '&sc_id=' + sc_id.lower()
 
-        remote_path = 'https://lasp.colorado.edu/' + path
+        remote_path = sdc_url(path)
         local_file = CONFIG['local_data_dir']+'/mms/'+sc_id+'/srois/monthly_'+month_string
         downloaded = download(remote_path = remote_path, remote_file = query, local_file=local_file, no_wildcards=True,force_download=True),
         if downloaded is None:

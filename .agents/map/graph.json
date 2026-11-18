@@ -2441,6 +2441,38 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/mms/mms_load_data_archive.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_sources.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mec_ascii/mms_get_state_data.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mec_ascii/mms_get_tetrahedron_qf.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/databar_tools/mms_update_fast_intervals.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/databar_tools/mms_update_brst_intervals.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/databar_tools/mms_load_sroi_segments.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/mms_remove_old_files.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/mms/mms_login_lasp.py",
           "kind": "file"
         },
@@ -2758,6 +2790,10 @@
         },
         {
           "path": "pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/config.py",
           "kind": "file"
         },
         {

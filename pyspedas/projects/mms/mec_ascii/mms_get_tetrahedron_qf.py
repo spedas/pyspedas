@@ -3,7 +3,7 @@ import json
 import logging
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 from pyspedas.projects.mms.mec_ascii.mms_get_local_ancillary_files import mms_get_local_ancillary_files
 from pyspedas.projects.mms.mec_ascii.mms_load_qf_tplot import mms_load_qf_tplot
 
@@ -16,6 +16,7 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
     Helper routine for loading tetrahedron QF data (ASCII files from the SDC); not meant to be called directly
     """
 
+    no_download = no_download or CONFIG['no_download']
     local_data_dir = CONFIG['local_data_dir']
     download_only = CONFIG['download_only']
 
@@ -51,9 +52,9 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
         dates_for_query = '&start_date='+start_time_str+'&end_date='+end_time_str
 
         if user is None:
-            url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/ancillary?sc_id=mms&product=defq'+dates_for_query
+            url = sdc_url('public/files/api/v1/file_info/ancillary?sc_id=mms&product=defq')+dates_for_query
         else:
-            url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/file_info/ancillary?sc_id=mms&product=defq'+dates_for_query
+            url = sdc_url('sitl/files/api/v1/file_info/ancillary?sc_id=mms&product=defq')+dates_for_query
 
         response_text = download(
             remote_file=url,
@@ -89,9 +90,9 @@ def mms_get_tetrahedron_qf(trange=['2015-10-16', '2015-10-17'], no_download=Fals
                     continue
 
             if user is None:
-                download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/ancillary?file=' + file['file_name']
+                download_url = sdc_url('public/files/api/v1/download/ancillary?file=') + file['file_name']
             else:
-                download_url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/ancillary?file=' + file['file_name']
+                download_url = sdc_url('sitl/files/api/v1/download/ancillary?file=') + file['file_name']
 
             logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 

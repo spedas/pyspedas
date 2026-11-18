@@ -5,6 +5,7 @@ import pickle
 import logging
 import warnings
 from pyspedas.utilities.download import configure_retry_session
+from .config import sdc_url
 
 
 def mms_login_lasp(always_prompt=False, headers=None):
@@ -83,7 +84,7 @@ def mms_login_lasp(always_prompt=False, headers=None):
             with warnings.catch_warnings():
                 warnings.simplefilter("ignore", category=ResourceWarning)
                 testget = session.get(
-                    "https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science",
+                    sdc_url('sitl/files/api/v1/download/science'),
                     verify=True,
                     timeout=5,
                     headers=headers,

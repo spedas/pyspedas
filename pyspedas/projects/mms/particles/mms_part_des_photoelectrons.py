@@ -1,6 +1,6 @@
 import os
 import logging
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import get_data, cdf_to_tplot
 
@@ -52,7 +52,7 @@ def mms_part_des_photoelectrons(dist_var):
     # download the model file from the SDC
     pe_model = download(
         last_version=True,
-        remote_path='https://lasp.colorado.edu/mms/sdc/public/data/models/fpi/',
+        remote_path=sdc_url('public/data/models/fpi/'),
         remote_file='mms_fpi_'+data_rate+'_l2_des-bgdist_v?.?.?_p'+stepper_id+'.cdf',
         local_path=os.path.join(CONFIG['local_data_dir'], 'mms'+os.path.sep+'sdc'+os.path.sep+'public'+os.path.sep+'data'+os.path.sep+'models'+os.path.sep+'fpi'+os.path.sep+''))
 

@@ -14,6 +14,7 @@ related_files:
   - pyspedas/projects/mms/particles/mms_pgs_make_fac.py
   - pyspedas/projects/mms/particles/mms_pgs_split_hpca.py
   - pyspedas/projects/mms/particles/mms_part_des_photoelectrons.py
+  - pyspedas/projects/mms/config.py
   - pyspedas/projects/mms/particles/moka_mms_clean_data.py
   - pyspedas/projects/mms/fpi_tools/mms_get_fpi_dist.py
   - pyspedas/projects/mms/fpi_tools/mms_pad_fpi.py
@@ -55,7 +56,8 @@ MMS front ends to the generic particle code in `pyspedas/particles/`.
   `mms_pgs_make_fac.py`: spectrum builders and field-aligned rotation matrices.
 - `mms_pgs_split_hpca.py`: splits HPCA elevation bins so dphi equals dtheta.
 - `mms_part_des_photoelectrons.py`: downloads the DES photoelectron model CDF from
-  `https://lasp.colorado.edu/mms/sdc/public/data/models/fpi/`.
+  `public/data/models/fpi/` beneath `CONFIG['sdc_data_dir']` using
+  `sdc_url()` in `pyspedas/projects/mms/config.py`, regardless of archive access.
 - `moka_mms_clean_data.py`: used by `pyspedas/projects/mms/fpi_tools/mms_pad_fpi.py`, not here.
 
 ## How `mms_part_getspec()` works
