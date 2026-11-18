@@ -5,6 +5,7 @@ from copy import deepcopy
 from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 
@@ -147,7 +148,7 @@ def gmag_isee_induction(
     for site_input in site_code:
         file_res = 3600.0
         pathformat = (
-            "ground/geomag/isee/induction/"
+            "geomag/isee/induction/"
             + site_input
             + "/%Y/%m/isee_induction_"
             + site_input
@@ -155,6 +156,7 @@ def gmag_isee_induction(
         )
 
         loaded_data_temp = load(
+            **resolve_source('ground'),
             pathformat=pathformat,
             file_res=file_res,
             trange=trange,

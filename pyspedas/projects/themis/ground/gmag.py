@@ -15,6 +15,7 @@ class GMAG_Info():
         # Initialize empty table:
         self.table = pd.DataFrame()
         self.no_download = no_download
+        self.source = (CONFIG['gmag_metadata_file'], str(CONFIG['local_data_dir']))
         # Load GMAG info:
         self.table = self.get_gmag_info()
         # Note: the final info column should always be "notes"
@@ -30,23 +31,16 @@ class GMAG_Info():
 
     def query_gmags(self):
         """Fills a Pandas DataFrame of gmag stations and all their metadata"""
-        # url = "https://themis.ssl.berkeley.edu/gmag/gmags_meta.csv"
-        # resp = requests.get(url=url)
-        # resp.raise_for_status()
-        # # convert response into Pandas dataframe:
-        # self.table = pd.read_csv(BytesIO(resp.content))
-        file = None
-        if not self.no_download:
-            file = download(remote_file="thg/gmags_meta.csv",
-                            remote_path=CONFIG['remote_data_dir'],
-                            local_path=CONFIG['local_data_dir'],
-                            no_download=CONFIG["no_download"])
-        if file is not None:
-            # load from newly downloaded file:
-            self.table = pd.read_csv(file[0])
-        else:
-            # attempt to load local file:
-            self.table = pd.read_csv(CONFIG['local_data_dir'] + "thg/gmags_meta.csv")
+        url, cache_root = self.source
+        files = download(remote_file=url,
+                         local_path=cache_root,
+                         local_file='thg/gmags_meta.csv',
+                         no_download=self.no_download or CONFIG['no_download'])
+        if not files:
+            raise FileNotFoundError(
+                f'THEMIS GMAG metadata unavailable: {url}; '
+                f'expected cache file thg/gmags_meta.csv beneath {cache_root}')
+        self.table = pd.read_csv(files[0])
 
     def get_gmag_info(self) -> pd.DataFrame:
         """returns the gmag table, querying if necessary"""
@@ -120,6 +114,11 @@ def gmag(
 ):
     """
     Load ground magnetometer data from the THEMIS mission.
+
+    Variometer files use the separately configured variometer source; other
+    networks use the main source. Station metadata uses ``gmag_metadata_file``
+    and is cached as ``thg/gmags_meta.csv`` beneath ``local_data_dir``. Both
+    ``no_update`` and the configured ``no_download`` apply to metadata too.
 
     Parameters
     ----------
@@ -203,7 +202,7 @@ def gmag(
     >>>
     
     """
-    _init_gmag_info()
+    _init_gmag_info(no_update=no_update)
 
     if sampling_rate is not None:
         logging.warning('The keyword argument "sampling_rate" is deprecated. Please use "time_resolution" (specified using a string) instead. The 1 Hz data for variometers is selected by default and does not require specification. The 10 Hz data can be selected by setting time_resolution="100ms".')
@@ -259,10 +258,12 @@ def gmag(
         version=version,
     )
 
-def _init_gmag_info():
+def _init_gmag_info(no_update=False):
     global gmag_info
-    if gmag_info is None:
-        gmag_info = GMAG_Info()
+    source = (CONFIG['gmag_metadata_file'], str(CONFIG['local_data_dir']))
+    if gmag_info is None or gmag_info.source != source:
+        gmag_info = GMAG_Info(no_download=no_update)
+
 def _split_station_code_time_res(station_code: str) -> list:
     _init_gmag_info()
     code_split = station_code.split("_")

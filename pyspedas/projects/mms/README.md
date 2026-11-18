@@ -2,6 +2,70 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this module can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
+### Data sources
+
+MMS separates SDC API access from file-archive access. Defaults preserve existing
+behavior:
+
+| Setting | Default | Purpose |
+| --- | --- | --- |
+| `data_access` | `sdc` | `sdc` API access or `archive` access for supported science products |
+| `remote_data_dir` | `https://spdf.gsfc.nasa.gov/pub/data/mms/` | Archive mission root |
+| `sdc_data_dir` | `https://lasp.colorado.edu/mms/sdc/` | Root for SDC services, authentication, and SDC-only products |
+
+The existing `spdf` keyword remains supported for Python and IDL compatibility.
+`spdf=True` selects the configured archive for archive-capable products;
+`spdf=False` (including its default) follows `data_access`. With the default
+configuration, `spdf=True` still means SPDF and ordinary calls still use SDC.
+Changing the archive URL does not change the SDC URL. There is no hostname-based
+routing and no automatic retry against SDC after an archive request fails.
+
+For heliocloud science data while retaining SDC-only products:
+
+```python
+import pyspedas
+from pyspedas.projects.mms.config import CONFIG
+
+CONFIG.update({
+    'data_access': 'archive',
+    'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/mms/',
+    'sdc_data_dir': 'https://lasp.colorado.edu/mms/sdc/',
+})
+pyspedas.projects.mms.fgm(trange=['2015-10-16', '2015-10-17'])
+```
+
+SPDF and heliocloud use the same archive path templates, so there is no separate
+layout setting. Archive URLs point to the directory containing `mms1/` through
+`mms4/`. Cache paths follow the selected access implementation: archive burst
+paths use year/month, while SDC science burst caches include a day directory.
+Existing files are not moved; existing local-cache and read-only mirror searches
+remain available.
+
+Archive path templates are implemented for FGM, ASPOC, EDI, FPI, EIS, FEEPS,
+HPCA, MEC CDFs, SCM, DSP, and EDP. FSM, SITL/trigger levels, and restricted FEEPS
+L1b requests use SDC directly. Requests combining archive-capable and SDC-only
+levels use SDC for the whole request. This routing describes supported product
+types, not guaranteed archive coverage for every date, level, or descriptor.
+Missing archive data do not cause a switch to SDC.
+
+ASCII ancillary state/attitude, tetrahedron quality factors, burst/fast/SROI
+interval services, the DES photoelectron model, and SDC cache-cleanup queries
+always use `sdc_data_dir`, independently of `data_access` or `spdf`. SDC endpoint
+paths retain their existing `public/` and authenticated `sitl/` conventions.
+The SDC URL must be an SDC service root, not a static archive URL.
+
+The archive loader honors `no_update`, `no_download`, `download_only`, `notplot`,
+`available`, prefix/suffix, and the existing CDF version filters. `available=True`
+lists remote filenames without downloading CDF contents; in offline mode it
+lists matching cached filenames. `notplot=True` returns data dictionaries,
+including when several probes or products are requested. The historical
+`mms_load_data_spdf` helper remains as a compatibility wrapper around
+`mms_load_data_archive`; importing it no longer overwrites the configured URL.
+
+All three settings support stored preferences under `[projects.mms]` and matching
+environment overrides: `MMS_DATA_ACCESS`, `MMS_REMOTE_DATA_DIR`, and
+`MMS_SDC_DATA_DIR`. Environment variables take precedence over stored preferences.
+
 ### Cleaning the local data cache
 
 `pyspedas.projects.mms.mms_remove_old_files()` finds local MMS CDF files that

@@ -5,6 +5,7 @@ from pyspedas import tnames
 from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim, zlim
 
 from ...satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 
@@ -120,7 +121,7 @@ def isee_vlf(
         prefix = "isee_vlf_" + site_input + "_"
         file_res = 3600.0
         pathformat = (
-            "ground/vlf/"
+            "vlf/"
             + site_input
             + "/%Y/%m/isee_vlf_"
             + site_input
@@ -128,6 +129,7 @@ def isee_vlf(
         )
 
         loaded_data_temp = load(
+            **resolve_source('ground'),
             pathformat=pathformat,
             file_res=file_res,
             trange=trange,

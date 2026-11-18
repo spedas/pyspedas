@@ -12,7 +12,7 @@ from pathlib import Path
 from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.download import is_fsspec_uri
 
-from .config import CONFIG
+from .config import CONFIG, sdc_url
 from .mms_file_filter import mms_file_filter
 from .mms_login_lasp import mms_login_lasp
 
@@ -254,7 +254,7 @@ def mms_remove_old_files(
     session, user = mms_login_lasp(always_prompt=always_prompt)
     candidates = []
     try:
-        url = f"https://lasp.colorado.edu/mms/sdc/{'sitl' if user else 'public'}/files/api/v1/file_info/science"
+        url = sdc_url(f"{'sitl' if user else 'public'}/files/api/v1/file_info/science")
         control_files = _sdc_files(
             session,
             url,

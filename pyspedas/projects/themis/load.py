@@ -3,7 +3,7 @@ from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download
 from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import cdf_to_tplot
-from .config import CONFIG
+from .config import CONFIG, resolve_source
 
 
 def load(trange=['2013-11-5', '2013-11-6'],
@@ -54,7 +54,11 @@ def load(trange=['2013-11-5', '2013-11-6'],
         explicitly versioned filename. EFI, L2 SCM and SLP retain their
         existing fixed v01 paths regardless of this argument.
         Default: None, which uses v02 for L1 ESA and v01 for the other
-        probe instruments. State, ground and SSC file selection is unchanged.
+        probe instruments. For state with no explicit version, ``themis`` layout
+        uses the unversioned current-file link; ``spdf`` layout uses a wildcard
+        and selects the highest available version. An explicit state version
+        requests that exact file, which may be absent from the selected server.
+        Ground and SSC file selection is unchanged.
 
     """
 
@@ -76,8 +80,12 @@ def load(trange=['2013-11-5', '2013-11-6'],
 
     for prb in probe:
 
-        # Remote data directory (CDAWeb for SSC data)
-        remote_data_dir = CONFIG['remote_data_dir']
+        # SSC has its own fixed path convention; other sources select a layout.
+        if instrument in ('ssc', 'ssc_pre'):
+            remote_data_dir = CONFIG['ssc_remote_data_dir']
+        else:
+            remote_data_dir, remote_data_layout = resolve_source()
+        station_sources = None
 
         if instrument == 'ask':
             if stations is None:
@@ -168,7 +176,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
                           + '/%Y/th' + prb + '_' + level + '_' + instrument
                           + '_%Y%m%d_' + file_version + '.cdf')
         elif instrument == 'state':
-            if version is not None or 'spdf' in remote_data_dir:
+            if version is not None or remote_data_layout == 'spdf':
                 # Use a versioned path for explicit requests and for SPDF,
                 # which has no unversioned link. Substitute the version below.
                 pathformat = ('th' + prb + '/' + level + '/' + instrument
@@ -185,21 +193,25 @@ def load(trange=['2013-11-5', '2013-11-6'],
         elif instrument == 'ssc':
             # current/past orbit data from CDAWeb
             pathformat = 'th' + prb + '/ssc/%Y/th' + prb + '_or_ssc' + '_%Y%m01_v??.cdf'
-            remote_data_dir = 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/'
         elif instrument == 'ssc_pre':
             # predicted orbit data from CDAWeb
             pathformat = 'th' + prb + '/ssc_pre/%Y/th' + prb + 'pred_or_ssc' + '_%Y0101_v??.cdf'
-            remote_data_dir = 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/'
         elif instrument == 'gmag':
             if stations is None:
                 logging.error('No stations specified')
                 return
             else:
                 pathformat = []
+                station_sources = []
                 for ccode,g_group in zip(stations,gmag_group):
                     ccode_clean = ccode
                     if "_" in ccode:
                         ccode_clean = (ccode.split("_"))[0]
+                    # One request can mix variometers with other networks.
+                    station_url = remote_data_dir
+                    if g_group == 'variom' and ccode != 'idx':
+                        station_url, _ = resolve_source('variometer')
+                    station_sources.append(station_url)
                     if ccode == 'idx':
                         # THEMIS GMAG index files are only L1
                         pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
@@ -219,7 +231,8 @@ def load(trange=['2013-11-5', '2013-11-6'],
         if not isinstance(pathformat, list):
             pathformat = [pathformat]
 
-        for file_format in pathformat:
+        for index, file_format in enumerate(pathformat):
+            file_source = remote_data_dir if station_sources is None else station_sources[index]
             if version is not None:
                 file_format = file_format.replace('_v??', '_' + version)
 
@@ -227,7 +240,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
             remote_names = dailynames(file_format=file_format, trange=trange, res=file_resolution)
 
             files = download(remote_file=remote_names,
-                             remote_path=remote_data_dir,
+                             remote_path=file_source.rstrip('/') + '/',
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update or CONFIG["no_download"],
                              last_version=version is None and not fixed_version,

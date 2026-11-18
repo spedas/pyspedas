@@ -13,6 +13,9 @@ class LoadTestCases(unittest.TestCase):
         # A fresh cache ensures these tests really exercise SPDF URLs.
         cls.cache = tempfile.TemporaryDirectory()
         cls.config_patch = patch.dict(CONFIG, {
+            'satellite_remote_data_layout': 'spdf',
+            'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+            'att_remote_data_layout': 'spdf',
             'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
             'local_data_dir': cls.cache.name,
             'no_download': False,

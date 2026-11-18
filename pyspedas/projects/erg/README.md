@@ -7,43 +7,76 @@ Please note that the routines in this module are still highly EXPERIMENTAL.
 
 ### Data servers and file versions
 
-Ground and satellite data use separate configurable URLs. Both default to ERG-SC.
-To load satellite data from the SPDF Arase mirror:
+Satellite science data, ASCII attitude data, and ground data have independent
+URL/layout pairs. All default to ERG-SC:
+
+| Family | URL setting | Layout setting |
+| --- | --- | --- |
+| Satellite (other than ATT) | `satellite_remote_data_dir` | `satellite_remote_data_layout` |
+| Attitude | `att_remote_data_dir` | `att_remote_data_layout` |
+| Ground | `ground_remote_data_dir` | `ground_remote_data_layout` |
+
+Satellite and attitude layouts accept `ergsc` or `spdf`; ground supports `ergsc`.
+The layout is explicit and is never inferred from the URL hostname or scheme.
+SPDF and heliocloud use the same `spdf` layout; their different top-level names
+(`arase` and `erg`) belong in the URL. Each URL points to the family root:
+`.../satellite/erg/` for ERG-SC satellite and attitude, `.../ground/` for ground,
+or `.../arase/` for SPDF satellite and attitude. Attitude paths beneath that root
+start with `att/txt/`.
+
+For satellite data from heliocloud, attitude from SPDF, and ground from ERG-SC:
 
 ```python
 from pyspedas.projects.erg.config import CONFIG
-from pyspedas.projects.erg import mepe
+from pyspedas.projects.erg import mepe, att
 
-CONFIG['satellite_remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/arase/'
+CONFIG.update({
+    'satellite_remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/',
+    'satellite_remote_data_layout': 'spdf',
+    'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+    'att_remote_data_layout': 'spdf',
+    'ground_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/',
+    'ground_remote_data_layout': 'ergsc',
+})
 mepe(version='v01_02')
+att(version='v03')
 ```
 
-`CONFIG['ground_remote_data_dir']` controls ground data independently. SPDF mirrors
-only some satellite products; ground data still come from ERG-SC. The shared loader
-translates SPDF directory layouts and EFD filename case automatically. Files are cached
-beneath `local_data_dir` using paths relative to the selected data-family URL. For
-example, MEPE omniflux files use `mepe/l2/omniflux/2017/` with SPDF and
-`mepe/l2/omniflux/2017/03/` with ERG-SC. No `satellite/erg/` or `ground/` prefix is
-added to the cache path.
+To use SPDF for satellite science data too, set `satellite_remote_data_dir` to
+`https://spdf.gsfc.nasa.gov/pub/data/arase/` and keep its layout set to `spdf`.
+Heliocloud does not supply the ASCII attitude files; configuring attitude
+separately also serves automatic attitude loads during coordinate transforms.
+Each family uses only its configured source. Failed requests do not try another
+server automatically. Configuring a source does not guarantee product coverage.
 
-To read an existing SPDF filesystem without HTTP requests, point `local_data_dir`
-at the directory corresponding to the Arase URL root and enable `no_download`:
+Files are cached beneath `local_data_dir` using paths relative to the selected
+family URL, including the selected layout's directories and filename case.
+For example, MEPE omniflux uses `mepe/l2/omniflux/2017/` with `spdf` and
+`mepe/l2/omniflux/2017/03/` with `ergsc`. No `satellite/erg/` or `ground/` prefix
+is added. Switching layouts can create separate copies; existing files are not
+moved or renamed. To read an existing SPDF filesystem without network requests:
 
 ```python
 CONFIG['satellite_remote_data_dir'] = 'https://spdf.gsfc.nasa.gov/pub/data/arase/'
+CONFIG['satellite_remote_data_layout'] = 'spdf'
 CONFIG['local_data_dir'] = '/path/to/pub/data/arase/'
 CONFIG['no_download'] = True
 mepe()
 ```
 
-Switching servers can create separate copies where their layouts or filenames differ.
-Existing files are not moved or renamed.
+All six settings can be stored under `[projects.erg]` in the PySPEDAS preferences
+file. Environment variables `ERG_SATELLITE_REMOTE_DATA_DIR`,
+`ERG_ATT_REMOTE_DATA_DIR`, `ERG_GROUND_REMOTE_DATA_DIR` and the matching
+`ERG_SATELLITE_REMOTE_DATA_LAYOUT`, `ERG_ATT_REMOTE_DATA_LAYOUT`,
+`ERG_GROUND_REMOTE_DATA_LAYOUT` override preferences.
 
-Stored ERG preferences accept both URL keys. Environment variables
-`ERG_SATELLITE_REMOTE_DATA_DIR` and `ERG_GROUND_REMOTE_DATA_DIR` override them.
-The legacy `remote_data_dir` preference and `ERG_REMOTE_DATA_DIR` environment
-variable still set the common ERG-SC base URL; the separate environment variables
-take precedence over the legacy environment variable.
+The common-root `remote_data_dir` preference and `ERG_REMOTE_DATA_DIR` environment
+variable are deprecated and log a warning. They still derive the family URLs
+using ERG-SC suffixes; they do not select layouts. Explicit family preferences
+override the legacy preference. Environment variables override preferences;
+family environment variables override the legacy environment variable. Existing
+SPDF/S3 configurations must now specify `spdf` layout explicitly and configure
+attitude independently.
 
 Every satellite loader accepts `version`, including the leading `v` and the
 product's separator (for example, `v03` for ATT, `v03.03` for MGF or `v01_02`

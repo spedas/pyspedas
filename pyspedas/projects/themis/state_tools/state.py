@@ -83,9 +83,11 @@ def state(trange=['2007-03-23', '2007-03-24'],
             Default: False
 
         version: str, optional
-            CDF version to load, e.g. "v01", from either Berkeley or SPDF.
-            Default: None, which uses the unversioned link at Berkeley or
-            the latest available version at SPDF.
+            CDF version to load, e.g. "v01". An explicit version requests
+            that exact file, which may not exist on the selected server.
+            Default: None, which uses the unversioned current-file link with
+            ``themis`` layout, or a version wildcard and highest-version
+            selection with ``spdf`` layout (including heliocloud).
 
     Returns
     -------

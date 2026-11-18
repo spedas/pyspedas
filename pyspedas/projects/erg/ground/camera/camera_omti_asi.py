@@ -4,6 +4,7 @@ import numpy as np
 from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 from typing import List, Union, Optional
@@ -139,10 +140,10 @@ def camera_omti_asi(
         for wavelength_in in wavelengthc:
             prefix = 'omti_asi_'+site_input+'_'+wavelength_in+'_'
             file_res = 3600.
-            pathformat = 'ground/camera/omti/asi/'+site_input\
+            pathformat = 'camera/omti/asi/'+site_input\
                             +'/%Y/%m/%d/omti_asi_c??_'+site_input+'_'+wavelength_in+'_%Y%m%d%H_v??.cdf'
 
-            loaded_data_temp = load(pathformat=pathformat, file_res=file_res, trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+            loaded_data_temp = load(**resolve_source('ground'), pathformat=pathformat, file_res=file_res, trange=trange, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                             varformat=varformat, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
             
             if notplot:

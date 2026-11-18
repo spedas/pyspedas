@@ -5,6 +5,9 @@ related_files:
   - pyspedas/projects/themis/state_tools/AGENTS.md
   - pyspedas/projects/themis/__init__.py
   - pyspedas/projects/themis/config.py
+  - pyspedas/projects/themis/ground/gmag.py
+  - pyspedas/projects/themis/tests/test_themis_versions.py
+  - pyspedas/projects/themis/tests/test_themis_s3.py
   - pyspedas/projects/themis/load.py
   - pyspedas/projects/themis/common/check_args.py
   - pyspedas/projects/themis/tests/test_themis_check_args.py
@@ -48,7 +51,7 @@ downloads from `CONFIG['remote_data_dir']` (set in `config.py`) with `download()
 (`pyspedas/utilities/download.py`), and stores the files as tplot variables with
 `cdf_to_tplot()` (`pyspedas/tplot_tools/importers/cdf_to_tplot.py`). The other
 loaders here also call `load()`; for `ssc` and `ssc_pre`, `load()` downloads from
-CDAWeb instead of `CONFIG['remote_data_dir']`. A new loader needs a branch in `load.py`, a
+`CONFIG['ssc_remote_data_dir']` instead of the main URL. A new loader needs a branch in `load.py`, a
 wrapper module, and an import in `__init__.py`.
 
 ## Things to know
@@ -60,3 +63,27 @@ wrapper module, and an import in `__init__.py`.
 - The local data folder is `THM_DATA_DIR`, else `SPEDAS_DATA_DIR/themis`, else
   the `local_data_dir` preference, else `themis_data/` (`config.py`). Setting
   `THM_NO_DOWNLOAD` to `true`, `1` or `yes` turns downloads off.
+
+## Source routing
+
+`config.py` defines explicit `remote_data_layout` (`themis` or `spdf`) alongside
+`remote_data_dir`. THEMIS and UCLA use `themis`; SPDF and heliocloud use `spdf`.
+`resolve_source()` validates the main or variometer URL/layout pair. State with
+no version uses an unversioned link for `themis`, or a version wildcard with
+highest-version selection for `spdf`. Explicit versions request exact files.
+Other instrument version defaults are unchanged.
+
+GMAG variometers use `variometer_remote_data_dir` and
+`variometer_remote_data_layout`; mixed-station requests associate each file path
+with its source. `ground/gmag.py` downloads metadata from the full URL in
+`gmag_metadata_file` to `thg/gmags_meta.csv` beneath the local cache root.
+`no_update` and `no_download` apply to metadata; an unavailable metadata file
+raises `FileNotFoundError`. The in-memory metadata table is invalidated when
+its URL or cache root changes. Both SSC products use `ssc_remote_data_dir`.
+
+Source settings support matching `THM_*` environment variables after stored
+preferences. Data URLs name mission roots. Cache paths follow server layouts;
+there is no automatic source fallback. `tests/test_themis_versions.py` checks
+routing, versions, metadata caching and preferences offline.
+`tests/test_themis_s3.py` uses S3 science data with separately configured THEMIS
+variometers and metadata in temporary caches.

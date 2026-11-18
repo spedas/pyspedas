@@ -8,6 +8,14 @@ related_files:
   - pyspedas/projects/mms/config.py
   - pyspedas/projects/mms/mms_load_data.py
   - pyspedas/projects/mms/mms_load_data_spdf.py
+  - pyspedas/projects/mms/mms_load_data_archive.py
+  - pyspedas/projects/mms/tests/test_mms_sources.py
+  - pyspedas/projects/mms/mec_ascii/mms_get_state_data.py
+  - pyspedas/projects/mms/mec_ascii/mms_get_tetrahedron_qf.py
+  - pyspedas/projects/mms/databar_tools/mms_update_fast_intervals.py
+  - pyspedas/projects/mms/databar_tools/mms_update_brst_intervals.py
+  - pyspedas/projects/mms/databar_tools/mms_load_sroi_segments.py
+  - pyspedas/projects/mms/mms_remove_old_files.py
   - pyspedas/projects/mms/mms_login_lasp.py
   - pyspedas/projects/mms/mms_files_in_interval.py
   - pyspedas/projects/mms/mms_get_local_files.py
@@ -41,8 +49,8 @@ Every change here follows `RULES.md` at the repository root. Read it before
 you change code here.
 
 Loaders and analysis tools for the four Magnetospheric Multiscale spacecraft. All CDF
-instrument loaders go through `mms_load_data.py`, which asks the LASP Science Data
-Center (SDC) file API for file names instead of reading a remote directory listing.
+instrument loaders go through `mms_load_data.py`, which selects the configured
+SDC API or archive implementation for archive-capable products.
 
 ## Layout
 
@@ -66,7 +74,9 @@ Center (SDC) file API for file names instead of reading a remote directory listi
 `fgm_tools/fgm.py` calls `mms_load_data(instrument='fgm', ...)` and then post-processes
 (flag removal, splitting, metadata). `mms_load_data()`:
 
-1. With `spdf=True`, returns `mms_load_data_spdf()` instead (see below).
+1. With `spdf=True` or `CONFIG['data_access'] == 'archive'`, selects
+   `mms_load_data_archive()` for supported instruments and levels (see below).
+   SDC-only requests continue through the SDC path.
 2. Unless `no_update` or `CONFIG['no_download']` is set, calls `mms_login_lasp()` for a
    `requests` session and user name.
 3. Per probe, data rate, level and datatype, queries `.../files/api/v1/file_info/science`
@@ -80,9 +90,23 @@ Center (SDC) file API for file names instead of reading a remote directory listi
    `cdf_version`, and each (probe, rate, level, datatype) group goes to `cdf_to_tplot()` separately.
 
 `available=True` returns file names without downloading; `CONFIG['download_only']` returns
-paths. `mms_load_data_spdf()` instead builds a per-instrument path template in an if/elif
-chain and uses `dailynames()` and `download()` against `https://spdf.gsfc.nasa.gov/pub/data/mms/`;
-an instrument without a branch there cannot use `spdf=True`.
+paths. `mms_load_data_archive()` builds per-instrument path templates and uses
+`dailynames()` / `download()` against `CONFIG['remote_data_dir']`, whose default
+is SPDF. `mms_load_data_spdf()` remains a compatibility wrapper and does not
+modify configuration at import. The archive implementation preserves dictionary
+results across groups, prefix/suffix, clipping, offline flags, download-only mode
+and version filtering. `available` lists files without CDF transfers.
+
+`config.py` defaults `data_access` to `sdc`, `remote_data_dir` to the SPDF MMS root,
+and `sdc_data_dir` to `https://lasp.colorado.edu/mms/sdc/`. Matching `MMS_*`
+environment variables override stored preferences. `sdc_url(path)` constructs
+all SDC endpoints, including public/sitl science and ancillary queries,
+authentication, burst/fast/SROI intervals, DES models, and cache-cleanup queries.
+These support products use SDC regardless of archive selection. FSM, SITL/trigger
+levels, and restricted FEEPS L1b requests also use SDC. A mixed-level request
+containing SDC-only levels uses SDC for the whole request. Missing archive data
+never trigger a switch to SDC. The archive URL names a mission root containing
+`mms1/` through `mms4/`; no hostname inference or separate layout setting is used.
 
 ## Things to know
 
@@ -109,3 +133,7 @@ an instrument without a branch there cannot use `spdf=True`.
 
 `tests/` has test modules for loaders and tools; most download from the SDC.
 `tests/test_mms_login_lasp.py` mocks the network and covers the credential fallbacks.
+
+`tests/test_mms_sources.py` tests routing, SDC-only services, configurable URLs,
+archive options, real cached CDFs, authentication and preferences without network
+access; it is registered in quick_tests and full_coverage.

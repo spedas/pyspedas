@@ -4,6 +4,7 @@ from pyspedas import clip, get_data, options, store_data, ylim, zlim
 from pyspedas import tcopy
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -118,14 +119,14 @@ def lepi(
     file_res = 3600. * 24
     prefix = 'erg_lepi_'+level+'_' + datatype + '_'
 
-    pathformat = 'satellite/erg/lepi/'+level+'/'+datatype + \
+    pathformat = 'lepi/'+level+'/'+datatype + \
         '/%Y/%m/erg_lepi_'+level+'_'+datatype+'_%Y%m%d_'
     if version is None:
         pathformat += 'v??_??.cdf'
     else:
         pathformat += version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, trange=trange, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     flag_FPDO = False # In case it doesn't get set later

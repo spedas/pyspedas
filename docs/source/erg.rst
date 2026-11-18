@@ -3,6 +3,50 @@ Arase (ERG)
 The routines in this module can be used to load data from the Arase mission, as well as several other ground-based datasets made available by
 the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 
+Data sources and caching
+------------------------
+Satellite science, ASCII attitude, and ground data use independent configuration
+pairs: ``satellite_remote_data_dir`` / ``satellite_remote_data_layout``,
+``att_remote_data_dir`` / ``att_remote_data_layout``, and
+``ground_remote_data_dir`` / ``ground_remote_data_layout``. All default to ERG-SC.
+Satellite and attitude layouts accept ``ergsc`` or ``spdf``; ground supports
+``ergsc``. Set layouts explicitly, including for custom mirrors.
+
+For heliocloud satellite data, SPDF attitude, and ERG-SC ground data:
+
+.. code-block:: python
+
+    from pyspedas.projects.erg.config import CONFIG
+
+    CONFIG.update({
+        'satellite_remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/',
+        'satellite_remote_data_layout': 'spdf',
+        'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+        'att_remote_data_layout': 'spdf',
+        'ground_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/',
+        'ground_remote_data_layout': 'ergsc',
+    })
+
+The satellite and attitude URLs point to the mission root, with ``att/txt/``
+beneath it for attitude. Heliocloud uses the ``spdf`` layout but does not supply
+ASCII attitude files. Automatic attitude loads during coordinate transforms use
+the separately configured attitude source. Each family uses only its configured
+source, with no automatic fallback.
+
+Cache paths follow the selected server layout beneath ``local_data_dir``.
+Switching layouts can create separate copies; existing files are not moved.
+``no_download=True`` reads the cache without network access.
+
+All six settings accept stored preferences under ``[projects.erg]`` and matching
+environment variables, for example ``ERG_ATT_REMOTE_DATA_DIR`` and
+``ERG_ATT_REMOTE_DATA_LAYOUT``. Environment variables override preferences.
+The common-root ``remote_data_dir`` and ``ERG_REMOTE_DATA_DIR`` settings are
+deprecated compatibility settings that still derive ERG-SC family URLs and log
+a warning. Explicit family preferences override the legacy preference; family
+environment variables override the legacy environment variable. Legacy settings
+do not select layouts. Existing SPDF/S3 configurations must specify ``spdf``
+layout explicitly and configure attitude independently.
+
 Attitude Data
 -------------
 .. autofunction:: pyspedas.projects.erg.att

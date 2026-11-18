@@ -1,5 +1,3 @@
-from urllib.parse import urlparse
-
 import cdflib
 
 from pyspedas.tplot_tools import time_clip as tclip
@@ -63,8 +61,15 @@ def load(trange=['2017-03-27', '2017-03-28'],
          passwd=None,
          time_clip=False,
          version=None,
-         force_download=False):
+         force_download=False,
+         remote_data_dir=None,
+         remote_data_layout=None):
     """
+    ``pathformat`` is relative to the configured family root. The calling
+    wrapper supplies ``remote_data_dir`` and ``remote_data_layout`` using
+    ``resolve_source()``. Supported layouts are ``ergsc`` and ``spdf``;
+    layout selection never depends on the URL hostname or scheme.
+
     This function is not meant to be called directly; please see the instrument specific wrappers:
         pyspedas.projects.erg.mgf()
         pyspedas.projects.erg.hep()
@@ -79,26 +84,20 @@ def load(trange=['2017-03-27', '2017-03-28'],
         pyspedas.projects.erg.xep()
     """
 
-    # File paths are relative to the selected data-family URL for both remote
-    # access and the local cache.
-    if pathformat.startswith('satellite/erg/'):
-        path_prefix = 'satellite/erg/'
-        remote_path = CONFIG['satellite_remote_data_dir']
-    elif pathformat.startswith('ground/'):
-        path_prefix = 'ground/'
-        remote_path = CONFIG['ground_remote_data_dir']
-    else:
-        path_prefix = ''
-        remote_path = CONFIG['remote_data_dir']
-    remote_format = pathformat[len(path_prefix):]
-    last_version = any(char in pathformat for char in '?*')
-
-    if path_prefix == 'satellite/erg/' and urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov':
+    # Wrappers select the source explicitly and supply family-relative paths.
+    # Remote names also define the cache layout, independently of URL scheme.
+    if not remote_data_dir:
+        raise ValueError('ERG load requires an explicit remote_data_dir')
+    if remote_data_layout not in ('ergsc', 'spdf'):
+        raise ValueError(f'Unsupported ERG remote_data_layout: {remote_data_layout!r}')
+    remote_format = pathformat
+    if remote_data_layout == 'spdf':
         remote_format = _spdf_path(remote_format)
+    last_version = any(char in remote_format for char in '?*')
 
     remote_names = dailynames(file_format=remote_format, trange=trange, res=file_res)
     files = download(remote_file=remote_names,
-                     remote_path=remote_path.rstrip('/') + '/',
+                     remote_path=remote_data_dir.rstrip('/') + '/',
                      local_path=CONFIG['local_data_dir'],
                      no_download=no_update or CONFIG["no_download"],
                      last_version=last_version, username=uname, password=passwd,

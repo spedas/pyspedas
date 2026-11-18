@@ -1,6 +1,7 @@
 ---
 related_files:
   - pyspedas/projects/erg/AGENTS.md
+  - pyspedas/projects/erg/config.py
   - pyspedas/projects/erg/__init__.py
   - pyspedas/projects/erg/ground/__init__.py
   - pyspedas/projects/erg/ground/geomag/gmag_isee_fluxgate.py
@@ -55,8 +56,8 @@ Take `gmag_isee_fluxgate()`:
    with a hard-coded list of station codes; unknown codes are dropped silently. `datatype`
    (time resolution) is handled the same way.
 2. For each site and resolution it builds a template such as
-   `ground/geomag/isee/fluxgate/1min/<site>/%Y/isee_fluxgate_1min_<site>_%Y%m%d_v??.cdf`
-   (hourly files for 64 Hz) and calls `load()` with prefix `isee_fluxgate_` and suffix
+   `geomag/isee/fluxgate/1min/<site>/%Y/isee_fluxgate_1min_<site>_%Y%m%d_v??.cdf`
+   (hourly files for 64 Hz) and calls `load()` with `**resolve_source('ground')`, prefix `isee_fluxgate_` and suffix
    `_<site>`.
 3. It prints the station's PI and rules of the road from the CDF global attributes
    (`pyspedas/projects/erg/satellite/erg/get_gatt_ror.py`).

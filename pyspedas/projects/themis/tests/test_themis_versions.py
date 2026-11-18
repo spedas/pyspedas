@@ -1,6 +1,9 @@
-"""Verify version selection without accessing remote servers or local CDFs."""
+"""Offline regression tests for THEMIS source routing and version selection."""
 
 import importlib
+import os
+from pathlib import Path
+import runpy
 import unittest
 from tempfile import TemporaryDirectory
 from unittest.mock import Mock, patch
@@ -23,7 +26,8 @@ class TestThemisVersions(unittest.TestCase):
                        'https://spdf.gsfc.nasa.gov/pub/data/themis/'):
             for version in (None, 'v01', 'v02'):
                 with self.subTest(server=server, version=version), patch.dict(
-                        LOAD_MODULE + '.CONFIG', remote_data_dir=server):
+                        LOAD_MODULE + '.CONFIG', remote_data_dir=server,
+                        remote_data_layout='spdf' if 'spdf' in server else 'themis'):
                     calls = self.download_calls(instrument='state', level='l1',
                                                 probe=['a', 'b'], version=version)
                     self.assertEqual(len(calls), 2)
@@ -115,7 +119,7 @@ class TestThemisVersions(unittest.TestCase):
                         kwargs = {} if version is None else {'version': version}
                         if instrument == 'gmag':
                             kwargs['sites'] = ['idx']
-                            with patch.object(module, 'in_gmag_group', return_value=False):
+                            with patch.object(module, 'in_gmag_group', return_value=False), patch.object(module, '_init_gmag_info'):
                                  module.gmag(downloadonly=True, **kwargs)
                         else:
                             getattr(module, instrument)(downloadonly=True, **kwargs)
@@ -215,6 +219,183 @@ class TestDirectDownloads(unittest.TestCase):
                              server + 'slp/l1/eph/2007/slp_l1_eph_20070323_v01.cdf')
             self.assertEqual(len(files), 1)
             session.get.assert_not_called()
+
+
+
+class TestThemisSources(unittest.TestCase):
+    def setUp(self):
+        self.load_module = importlib.import_module(LOAD_MODULE)
+        self.gmag_module = importlib.import_module('pyspedas.projects.themis.ground.gmag')
+        self.cache = TemporaryDirectory()
+        self.addCleanup(self.cache.cleanup)
+        config = patch.dict(self.load_module.CONFIG, {
+            'remote_data_dir': 's3://science/themis/',
+            'remote_data_layout': 'spdf',
+            'variometer_remote_data_dir': 'https://variometers.example/themis/',
+            'variometer_remote_data_layout': 'themis',
+            'ssc_remote_data_dir': 'https://orbits.example/themis/',
+            'gmag_metadata_file': 'https://metadata.example/stations.csv',
+            'local_data_dir': self.cache.name,
+            'no_download': False,
+        })
+        config.start()
+        self.addCleanup(config.stop)
+        metadata = patch.object(self.gmag_module, 'gmag_info', None)
+        metadata.start()
+        self.addCleanup(metadata.stop)
+
+    def metadata_file(self, root=None, station='ATHA'):
+        file = Path(root or self.cache.name) / 'thg/gmags_meta.csv'
+        file.parent.mkdir(parents=True, exist_ok=True)
+        file.write_text(
+            'ccode,network_code,alt_period,notes,all,variom,greenland\n'
+            f'{station},CARISMA,,fixture,Y,,\n'
+            'S61A,USGS,100ms,fixture,Y,Y,\n'
+            'UPN,GREENLAND,,fixture,Y,,Y\n'
+            'IDX,THEMIS,,fixture,Y,,\n')
+        return file
+
+    def test_state_layout_independent_of_hostname(self):
+        for url in ('https://mirror.example/themis/',
+                    's3://science/themis/',
+                    'https://spdf.gsfc.nasa.gov/pub/data/themis/'):
+            for layout in ('themis', 'spdf'):
+                for version in (None, 'v03'):
+                    with self.subTest(url=url, layout=layout, version=version), patch.dict(
+                            self.load_module.CONFIG, remote_data_dir=url, remote_data_layout=layout), patch.object(
+                            self.load_module, 'download', return_value=[]) as download:
+                        load(instrument='state', level='l1', probe=['a', 'b'],
+                             trange=TRANGE, version=version, downloadonly=True)
+                        suffix = '_' + version if version else ('_v??' if layout == 'spdf' else '')
+                        for probe, call in zip(('a', 'b'), download.call_args_list):
+                            self.assertEqual(call.kwargs['remote_file'], [
+                                f'th{probe}/l1/state/2007/th{probe}_l1_state_20070323{suffix}.cdf'])
+                            self.assertEqual(call.kwargs['last_version'], version is None)
+                            self.assertEqual(call.kwargs['remote_path'], url)
+
+    def test_state_highest_version_and_exact_version_from_cache(self):
+        directory = Path(self.cache.name) / 'tha/l1/state/2007'
+        directory.mkdir(parents=True)
+        base = 'tha_l1_state_20070323'
+        for suffix in ('', '_v01', '_v03', '_v12'):
+            (directory / (base + suffix + '.cdf')).touch()
+        with patch.dict(self.load_module.CONFIG, no_download=True), patch(
+                'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            for layout, version, suffix in [('spdf', None, '_v12'), ('themis', None, ''),
+                                             ('spdf', 'v03', '_v03'), ('themis', 'v03', '_v03')]:
+                with self.subTest(layout=layout, version=version), patch.dict(
+                        self.load_module.CONFIG, remote_data_layout=layout):
+                    files = load(instrument='state', level='l1', probe='a',
+                                 trange=TRANGE, downloadonly=True, version=version)
+                    self.assertEqual(files, [str(directory / (base + suffix + '.cdf'))])
+            self.assertEqual(load(instrument='state', level='l1', probe='a',
+                                  trange=TRANGE, downloadonly=True, version='v99'), [])
+
+    def test_mixed_gmag_station_routing_and_offline_metadata(self):
+        self.metadata_file()
+        for no_update in (False, True):
+            with self.subTest(no_update=no_update), patch.dict(
+                    self.load_module.CONFIG, no_download=not no_update), patch.object(
+                    self.gmag_module, 'gmag_info', None), patch.object(
+                    self.load_module, 'download', return_value=[]) as download, patch(
+                    'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+                self.gmag_module.gmag(sites=['atha', 's61a_100ms', 'upn', 'idx', 's61a'],
+                                      trange=TRANGE, downloadonly=True, no_update=no_update)
+                calls = [call.kwargs for call in download.call_args_list]
+                self.assertEqual(len(calls), 5)
+                self.assertEqual([call['remote_path'] for call in calls], [
+                    's3://science/themis/', 'https://variometers.example/themis/',
+                    's3://science/themis/', 's3://science/themis/',
+                    'https://variometers.example/themis/'])
+                self.assertIn('/variometers/s61a/', calls[1]['remote_file'][0])
+                self.assertIn('_s61a_100ms_', calls[1]['remote_file'][0])
+                self.assertIn('/greenland_gmag/', calls[2]['remote_file'][0])
+                self.assertIn('/l1/mag/idx/', calls[3]['remote_file'][0])
+                self.assertTrue(all(call['no_download'] for call in calls))
+
+    def test_metadata_url_and_cache_destination(self):
+        file = self.metadata_file()
+        with patch.object(self.gmag_module, 'download', return_value=[str(file)]) as download:
+            info = self.gmag_module.GMAG_Info()
+        self.assertIn('atha', info.station_codes)
+        self.assertEqual(download.call_args.kwargs, {
+            'remote_file': 'https://metadata.example/stations.csv',
+            'local_file': 'thg/gmags_meta.csv',
+            'local_path': self.cache.name,
+            'no_download': False,
+        })
+
+    def test_metadata_cache_refreshes_for_source_or_cache_root(self):
+        file = self.metadata_file()
+        with patch.object(self.gmag_module, 'download', return_value=[str(file)]) as download:
+            self.gmag_module._init_gmag_info()
+            first = self.gmag_module.gmag_info
+            self.gmag_module._init_gmag_info()
+            self.assertEqual(download.call_count, 1)
+            # Changing only the science server does not invalidate metadata.
+            with patch.dict(self.load_module.CONFIG, remote_data_dir='https://science.example/'):
+                self.gmag_module._init_gmag_info()
+                self.assertIs(self.gmag_module.gmag_info, first)
+            file = self.metadata_file(station='BETT')
+            with patch.dict(self.load_module.CONFIG, gmag_metadata_file='https://other.example/meta.csv'):
+                self.gmag_module._init_gmag_info()
+                self.assertIsNot(self.gmag_module.gmag_info, first)
+                self.assertIn('bett', self.gmag_module.gmag_info.station_codes)
+                self.assertEqual(download.call_count, 2)
+                with TemporaryDirectory() as other_cache, patch.dict(
+                        self.load_module.CONFIG, local_data_dir=other_cache):
+                    self.gmag_module._init_gmag_info()
+                    self.assertEqual(download.call_count, 3)
+                    self.assertEqual(download.call_args.kwargs['local_path'], other_cache)
+
+    def test_missing_offline_metadata_fails_without_network(self):
+        with patch('requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            with self.assertRaisesRegex(FileNotFoundError, 'GMAG metadata unavailable'):
+                self.gmag_module.gmag(sites='atha', no_update=True, downloadonly=True)
+
+    def test_ssc_sources_are_configurable(self):
+        for instrument, path in [('ssc', 'tha/ssc/2007/tha_or_ssc_20070301_v??.cdf'),
+                                 ('ssc_pre', 'tha/ssc_pre/2007/thapred_or_ssc_20070101_v??.cdf')]:
+            with self.subTest(instrument=instrument), patch.object(
+                    self.load_module, 'download', return_value=[]) as download:
+                load(instrument=instrument, probe='a', trange=TRANGE, downloadonly=True)
+                self.assertEqual(download.call_args.kwargs['remote_path'], 'https://orbits.example/themis/')
+                self.assertEqual(download.call_args.kwargs['remote_file'], [path])
+
+    def test_failed_source_does_not_try_another_server(self):
+        with patch.object(self.load_module, 'download', side_effect=RuntimeError('source unavailable')) as download:
+            with self.assertRaisesRegex(RuntimeError, 'source unavailable'):
+                load(trange=TRANGE, downloadonly=True)
+            download.assert_called_once()
+
+    def test_config_preferences_and_environment(self):
+        from pyspedas import preferences
+        config_file = Path(self.load_module.__file__).with_name('config.py')
+        values = {key: value for key, value in self.load_module.CONFIG.items()
+                  if key in ('remote_data_dir', 'remote_data_layout',
+                             'variometer_remote_data_dir', 'variometer_remote_data_layout',
+                             'gmag_metadata_file', 'ssc_remote_data_dir')}
+        with patch.dict(os.environ, {
+                'PYSPEDAS_CONFIG_FILE': str(Path(self.cache.name) / 'preferences.toml')}, clear=True):
+            self.addCleanup(preferences._read_file.cache_clear)
+            preferences.save_preferences('themis', values)
+            config = runpy.run_path(str(config_file))['CONFIG']
+            for key, value in values.items():
+                self.assertEqual(config[key], value)
+            env_values = {key: ('themis' if key.endswith('_layout') else f'https://env.example/{key}/')
+                          for key in values}
+            with patch.dict(os.environ, {'THM_' + key.upper(): value for key, value in env_values.items()}):
+                config = runpy.run_path(str(config_file))['CONFIG']
+                for key, value in env_values.items():
+                    self.assertEqual(config[key], value)
+
+    def test_invalid_layouts_fail_before_downloading(self):
+        for family, key in [('data', 'remote_data_layout'),
+                            ('variometer', 'variometer_remote_data_layout')]:
+            with self.subTest(family=family), patch.dict(
+                    self.load_module.CONFIG, {key: 'heliocloud'}):
+                with self.assertRaisesRegex(ValueError, 'Unsupported THEMIS'):
+                    self.load_module.resolve_source(family)
 
 
 if __name__ == '__main__':
