@@ -87,3 +87,21 @@ there is no automatic source fallback. `tests/test_themis_versions.py` checks
 routing, versions, metadata caching and preferences offline.
 `tests/test_themis_s3.py` uses S3 science data with separately configured THEMIS
 variometers and metadata in temporary caches.
+
+## Provider shortcuts
+
+`config.py` defines provider-preset dictionaries and these setter/getter pairs:
+
+- `set_data_source()` / `get_data_source()`: berkeley, ucla, spdf, heliocloud.
+- `set_variometer_source()` / `get_variometer_source()`: berkeley, spdf.
+- `set_gmag_metadata_source()` / `get_gmag_metadata_source()`: berkeley, spdf.
+- `set_ssc_source()` / `get_ssc_source()`: spdf.
+
+Setters validate a case-sensitive tag before updating its CONFIG keys together,
+log the resulting settings at INFO level, and neither access the network nor
+save preferences. Getters match relevant current settings exactly and return
+`None` for custom or incomplete settings, including direct CONFIG edits.
+The existing offline routing tests also cover these APIs.
+The SSC `spdf` preset uses the existing CDAWeb endpoint. UCLA has only a
+main-data preset; support endpoints remain directly configurable. Metadata
+changes use the existing lazy in-memory cache invalidation.

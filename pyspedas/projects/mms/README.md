@@ -2,6 +2,42 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this module can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
+### Provider shortcuts
+
+Setters update in-memory `CONFIG` settings for the current session, log the new
+settings at INFO level, and make no network requests. Tags are case-sensitive.
+Unsupported tags raise `ValueError` with the valid choices before changing any
+settings. Other data families and cache/offline settings are unaffected.
+
+Each setter has a corresponding `get_..._source()` function. Getters match the
+current relevant URL/layout or access settings exactly, including changes made
+directly to `CONFIG`. They return the provider tag, or `None` for custom or
+incomplete settings. Direct URL configuration remains supported. Setters do not
+save preferences; use the existing preferences API explicitly to persist them.
+
+| Data family | Setter | Supported tags |
+| --- | --- | --- |
+| Main science data/access method | `set_data_source(source_tag)` | `sdc`, `spdf`, `heliocloud` |
+| Independent SDC support service | `set_sdc_source(source_tag)` | `sdc` |
+
+```python
+from pyspedas.projects.mms import config
+
+config.set_data_source('heliocloud')
+print(config.get_data_source())  # heliocloud
+print(config.get_sdc_source())   # sdc, with the default support-service URL
+config.set_data_source('sdc')
+```
+
+The main `sdc` preset sets API access and the canonical SDC URL, retaining
+the inactive archive URL. `spdf` and `heliocloud` set archive access and their
+archive URL, retaining the independent SDC support URL. `set_sdc_source('sdc')`
+resets only that support URL and does not change the main access method.
+`get_data_source()` ignores the inactive archive URL in SDC mode and the
+independent support URL in archive mode. A custom active-source URL returns
+`None`. SDC-only products and the existing `spdf=True` override retain their
+previous routing rules.
+
 ### Data sources
 
 MMS separates SDC API access from file-archive access. Defaults preserve existing

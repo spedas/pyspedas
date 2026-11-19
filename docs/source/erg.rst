@@ -3,6 +3,59 @@ Arase (ERG)
 The routines in this module can be used to load data from the Arase mission, as well as several other ground-based datasets made available by
 the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 
+Provider shortcuts
+------------------
+Setters update in-memory ``CONFIG`` settings for the current session, log the
+result at INFO level, and perform no network requests. Tags are case-sensitive.
+An unsupported tag raises ``ValueError`` listing valid choices before any settings
+change. Only the selected family's settings are updated.
+
+Each setter has a matching ``get_..._source()`` function. Getters match the current
+relevant configuration exactly, including direct ``CONFIG`` edits, and return a
+provider tag or ``None`` for custom or incomplete settings. Direct URLs remain
+supported. Setters do not save preferences; persistence remains an explicit step
+through the existing preferences API.
+
+.. list-table:: Supported presets
+   :header-rows: 1
+
+   * - Data family
+     - Setter
+     - Supported tags
+   * - Satellite
+     - ``set_satellite_source(source_tag)``
+     - ``ergsc``, ``spdf``, ``heliocloud``
+   * - ASCII attitude
+     - ``set_attitude_source(source_tag)``
+     - ``ergsc``, ``spdf``
+   * - Ground
+     - ``set_ground_source(source_tag)``
+     - ``ergsc``
+
+.. code-block:: python
+
+    from pyspedas.projects.erg import config
+
+    config.set_satellite_source('heliocloud')
+    config.set_attitude_source('spdf')
+    config.set_ground_source('ergsc')
+    print(config.get_satellite_source())  # heliocloud
+
+Heliocloud uses the ``spdf`` satellite layout. Attitude and ground sources
+are selected independently from their supported providers.
+
+.. autofunction:: pyspedas.projects.erg.config.set_satellite_source
+
+.. autofunction:: pyspedas.projects.erg.config.get_satellite_source
+
+.. autofunction:: pyspedas.projects.erg.config.set_attitude_source
+
+.. autofunction:: pyspedas.projects.erg.config.get_attitude_source
+
+.. autofunction:: pyspedas.projects.erg.config.set_ground_source
+
+.. autofunction:: pyspedas.projects.erg.config.get_ground_source
+
 Data sources and caching
 ------------------------
 Satellite science, ASCII attitude, and ground data use independent configuration

@@ -103,3 +103,17 @@ the other modules cover the particle products of one instrument each.
 without network access. `tests/test_erg_spdf.py` tests satellite loading from SPDF in a
 fresh cache, including explicit versions; it runs in the SPDF-heavy full coverage shard,
 not in quick_tests, and excludes particle get_dist tests.
+
+## Provider shortcuts
+
+`config.py` defines provider-preset dictionaries and these setter/getter pairs:
+
+- `set_satellite_source()` / `get_satellite_source()`: ergsc, spdf, heliocloud.
+- `set_attitude_source()` / `get_attitude_source()`: ergsc, spdf.
+- `set_ground_source()` / `get_ground_source()`: ergsc.
+
+Setters validate a case-sensitive tag before updating its CONFIG keys together,
+log the resulting settings at INFO level, and neither access the network nor
+save preferences. Getters match relevant current settings exactly and return
+`None` for custom or incomplete settings, including direct CONFIG edits.
+The existing offline routing tests also cover these APIs.

@@ -2,6 +2,42 @@
 ## Time History of Events and Macroscale Interactions during Substorms (THEMIS)
 The routines in this module can be used to load data from the THEMIS mission. 
 
+### Provider shortcuts
+
+Setters update in-memory `CONFIG` settings for the current session, log the new
+settings at INFO level, and make no network requests. Tags are case-sensitive.
+Unsupported tags raise `ValueError` with the valid choices before changing any
+settings. Other data families and cache/offline settings are unaffected.
+
+Each setter has a corresponding `get_..._source()` function. Getters match the
+current relevant URL/layout or access settings exactly, including changes made
+directly to `CONFIG`. They return the provider tag, or `None` for custom or
+incomplete settings. Direct URL configuration remains supported. Setters do not
+save preferences; use the existing preferences API explicitly to persist them.
+
+| Data family | Setter | Supported tags |
+| --- | --- | --- |
+| Main satellite/ground data | `set_data_source(source_tag)` | `berkeley`, `ucla`, `spdf`, `heliocloud` |
+| Variometers | `set_variometer_source(source_tag)` | `berkeley`, `spdf` |
+| GMAG metadata CSV | `set_gmag_metadata_source(source_tag)` | `berkeley`, `spdf` |
+| SSC orbit data | `set_ssc_source(source_tag)` | `spdf` |
+
+```python
+from pyspedas.projects.themis import config
+
+config.set_data_source('heliocloud')
+config.set_variometer_source('spdf')
+config.set_gmag_metadata_source('spdf')
+print(config.get_data_source())  # heliocloud
+```
+
+The main `berkeley` and `ucla` presets select `themis` layout; `spdf` and
+`heliocloud` select `spdf` layout. UCLA currently has a main-data preset only;
+its support endpoints can still be configured directly. The SSC `spdf` preset
+retains the existing CDAWeb root,
+`https://cdaweb.gsfc.nasa.gov/pub/data/themis/`. Metadata source changes trigger
+the existing in-memory table refresh on the next metadata lookup.
+
 ### Data sources and layouts
 
 Ordinary satellite and ground data use `remote_data_dir` and

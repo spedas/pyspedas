@@ -3,6 +3,69 @@ Time History of Events and Macroscale Interactions during Substorms (THEMIS)
 The routines in this module can be used to load data from the Time History of Events and Macroscale Interactions during Substorms (THEMIS) mission.
 
 
+Provider shortcuts
+------------------
+Setters update in-memory ``CONFIG`` settings for the current session, log the
+result at INFO level, and perform no network requests. Tags are case-sensitive.
+An unsupported tag raises ``ValueError`` listing valid choices before any settings
+change. Only the selected family's settings are updated.
+
+Each setter has a matching ``get_..._source()`` function. Getters match the current
+relevant configuration exactly, including direct ``CONFIG`` edits, and return a
+provider tag or ``None`` for custom or incomplete settings. Direct URLs remain
+supported. Setters do not save preferences; persistence remains an explicit step
+through the existing preferences API.
+
+.. list-table:: Supported presets
+   :header-rows: 1
+
+   * - Data family
+     - Setter
+     - Supported tags
+   * - Main satellite/ground data
+     - ``set_data_source(source_tag)``
+     - ``berkeley``, ``ucla``, ``spdf``, ``heliocloud``
+   * - Variometers
+     - ``set_variometer_source(source_tag)``
+     - ``berkeley``, ``spdf``
+   * - GMAG metadata CSV
+     - ``set_gmag_metadata_source(source_tag)``
+     - ``berkeley``, ``spdf``
+   * - SSC orbit data
+     - ``set_ssc_source(source_tag)``
+     - ``spdf``
+
+.. code-block:: python
+
+    from pyspedas.projects.themis import config
+
+    config.set_data_source('heliocloud')
+    config.set_variometer_source('spdf')
+    config.set_gmag_metadata_source('spdf')
+    print(config.get_data_source())  # heliocloud
+
+Main presets ``berkeley`` and ``ucla`` use ``themis`` layout; ``spdf`` and
+``heliocloud`` use ``spdf`` layout. UCLA has a main-data preset only; support
+endpoints remain directly configurable. The SSC ``spdf`` preset retains the
+existing ``https://cdaweb.gsfc.nasa.gov/pub/data/themis/`` root. Changing the
+metadata source refreshes the in-memory table on the next metadata lookup.
+
+.. autofunction:: pyspedas.projects.themis.config.set_data_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_data_source
+
+.. autofunction:: pyspedas.projects.themis.config.set_variometer_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_variometer_source
+
+.. autofunction:: pyspedas.projects.themis.config.set_gmag_metadata_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_gmag_metadata_source
+
+.. autofunction:: pyspedas.projects.themis.config.set_ssc_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_ssc_source
+
 Data sources and layouts
 ------------------------
 Ordinary satellite and ground data use ``remote_data_dir`` and

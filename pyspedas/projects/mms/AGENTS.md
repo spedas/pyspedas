@@ -137,3 +137,19 @@ never trigger a switch to SDC. The archive URL names a mission root containing
 `tests/test_mms_sources.py` tests routing, SDC-only services, configurable URLs,
 archive options, real cached CDFs, authentication and preferences without network
 access; it is registered in quick_tests and full_coverage.
+
+## Provider shortcuts
+
+`config.py` defines provider-preset dictionaries and these setter/getter pairs:
+
+- `set_data_source()` / `get_data_source()`: sdc, spdf, heliocloud.
+- `set_sdc_source()` / `get_sdc_source()`: sdc.
+
+Setters validate a case-sensitive tag before updating its CONFIG keys together,
+log the resulting settings at INFO level, and neither access the network nor
+save preferences. Getters match relevant current settings exactly and return
+`None` for custom or incomplete settings, including direct CONFIG edits.
+The existing offline routing tests also cover these APIs.
+The main `sdc` preset resets its canonical SDC URL and access mode while
+retaining the inactive archive URL. Archive presets retain the separate SDC
+support URL. The independent SDC setter does not change access mode.

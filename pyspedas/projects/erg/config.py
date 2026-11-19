@@ -8,15 +8,46 @@ family environment variables override the legacy environment variable.
 import logging
 import os
 
+# Provider presets contain only the CONFIG keys changed by that selection.
+SATELLITE_SOURCES = {
+    'ergsc': {
+        'satellite_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
+        'satellite_remote_data_layout': 'ergsc',
+    },
+    'spdf': {
+        'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+        'satellite_remote_data_layout': 'spdf',
+    },
+    'heliocloud': {
+        'satellite_remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/',
+        'satellite_remote_data_layout': 'spdf',
+    },
+}
+
+ATTITUDE_SOURCES = {
+    'ergsc': {
+        'att_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
+        'att_remote_data_layout': 'ergsc',
+    },
+    'spdf': {
+        'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
+        'att_remote_data_layout': 'spdf',
+    },
+}
+
+GROUND_SOURCES = {
+    'ergsc': {
+        'ground_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/',
+        'ground_remote_data_layout': 'ergsc',
+    },
+}
+
 CONFIG = {'no_download': False,
           'local_data_dir': 'erg_data/',
           'remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/',
-          'ground_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/',
-          'ground_remote_data_layout': 'ergsc',
-          'att_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
-          'att_remote_data_layout': 'ergsc',
-          'satellite_remote_data_layout': 'ergsc',
-          'satellite_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/'}
+          **SATELLITE_SOURCES['ergsc'],
+          **ATTITUDE_SOURCES['ergsc'],
+          **GROUND_SOURCES['ergsc']}
 
 from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
 
@@ -80,3 +111,121 @@ def resolve_source(family):
     if not isinstance(url, str) or not url.strip():
         raise ValueError(f'ERG {family}_remote_data_dir must be a nonempty URL')
     return {'remote_data_dir': url, 'remote_data_layout': layout}
+
+
+def _set_source(source_tag, sources, family):
+    """Validate a preset before updating its related CONFIG settings together."""
+    if not isinstance(source_tag, str) or source_tag not in sources:
+        choices = ', '.join(sorted(sources))
+        raise ValueError(f'Unknown ERG {family} source {source_tag!r}; valid choices: {choices}')
+    settings = sources[source_tag]
+    CONFIG.update(settings)
+    logging.info('ERG %s source set to %s: %s', family, source_tag,
+                 ', '.join(f'{key}={value}' for key, value in settings.items()))
+
+
+def _get_source(sources):
+    """Recognize a preset from current settings, including direct CONFIG edits."""
+    for source_tag, settings in sources.items():
+        if all(CONFIG.get(key) == value for key, value in settings.items()):
+            return source_tag
+    return None
+
+
+def set_satellite_source(source_tag):
+    """Select the satellite provider for this session.
+
+    Parameters
+    ----------
+    source_tag : str
+        Provider tag: ``ergsc``, ``spdf``, ``heliocloud``. Tags are case-sensitive.
+
+    Raises
+    ------
+    ValueError
+        If the tag is unsupported. CONFIG is unchanged in that case.
+
+    Notes
+    -----
+    Updates only this source's CONFIG keys and logs the resulting settings at
+    INFO level. No network requests are made and preferences are not saved.
+    """
+    _set_source(source_tag, SATELLITE_SOURCES, 'satellite')
+
+
+def get_satellite_source():
+    """Identify the current satellite provider from CONFIG.
+
+    Returns
+    -------
+    str or None
+        Matching provider tag, or None for custom or incomplete settings.
+        Only this source's relevant settings participate in the match.
+    """
+    return _get_source(SATELLITE_SOURCES)
+
+
+def set_attitude_source(source_tag):
+    """Select the attitude provider for this session.
+
+    Parameters
+    ----------
+    source_tag : str
+        Provider tag: ``ergsc``, ``spdf``. Tags are case-sensitive.
+
+    Raises
+    ------
+    ValueError
+        If the tag is unsupported. CONFIG is unchanged in that case.
+
+    Notes
+    -----
+    Updates only this source's CONFIG keys and logs the resulting settings at
+    INFO level. No network requests are made and preferences are not saved.
+    """
+    _set_source(source_tag, ATTITUDE_SOURCES, 'attitude')
+
+
+def get_attitude_source():
+    """Identify the current attitude provider from CONFIG.
+
+    Returns
+    -------
+    str or None
+        Matching provider tag, or None for custom or incomplete settings.
+        Only this source's relevant settings participate in the match.
+    """
+    return _get_source(ATTITUDE_SOURCES)
+
+
+def set_ground_source(source_tag):
+    """Select the ground provider for this session.
+
+    Parameters
+    ----------
+    source_tag : str
+        Provider tag: ``ergsc``. Tags are case-sensitive.
+
+    Raises
+    ------
+    ValueError
+        If the tag is unsupported. CONFIG is unchanged in that case.
+
+    Notes
+    -----
+    Updates only this source's CONFIG keys and logs the resulting settings at
+    INFO level. No network requests are made and preferences are not saved.
+    """
+    _set_source(source_tag, GROUND_SOURCES, 'ground')
+
+
+def get_ground_source():
+    """Identify the current ground provider from CONFIG.
+
+    Returns
+    -------
+    str or None
+        Matching provider tag, or None for custom or incomplete settings.
+        Only this source's relevant settings participate in the match.
+    """
+    return _get_source(GROUND_SOURCES)

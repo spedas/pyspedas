@@ -398,5 +398,108 @@ class TestThemisSources(unittest.TestCase):
                     self.load_module.resolve_source(family)
 
 
+
+
+class SourceSwitcherTests(unittest.TestCase):
+    def setUp(self):
+        self.config = importlib.import_module('pyspedas.projects.themis.config')
+        config_patch = patch.dict(self.config.CONFIG)
+        config_patch.start()
+        self.addCleanup(config_patch.stop)
+        self.families = [
+            ('data', self.config.DATA_SOURCES),
+            ('variometer', self.config.VARIOMETER_SOURCES),
+            ('gmag_metadata', self.config.GMAG_METADATA_SOURCES),
+            ('ssc', self.config.SSC_SOURCES),
+        ]
+
+    def test_presets_update_only_their_family_and_log_settings(self):
+        with patch('pyspedas.preferences.save_preferences', side_effect=AssertionError('Unexpected preference write')), patch(
+                'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            for family, table in self.families:
+                for tag, settings in table.items():
+                    with self.subTest(family=family, tag=tag):
+                        before = self.config.CONFIG.copy()
+                        with self.assertLogs(level='INFO') as logs:
+                            getattr(self.config, 'set_' + family + '_source')(tag)
+                        expected = before.copy()
+                        expected.update(settings)
+                        self.assertEqual(self.config.CONFIG, expected)
+                        self.assertEqual(getattr(self.config, 'get_' + family + '_source')(), tag)
+                        self.assertEqual(len(logs.output), 1)
+                        self.assertIn(tag, logs.output[0])
+                        for value in settings.values():
+                            self.assertIn(value, logs.output[0])
+
+    def test_invalid_tags_leave_entire_configuration_unchanged(self):
+        for family, table in self.families:
+            invalid = ['unknown', 'SPDF', '', None, [], {}]
+            invalid += [tag for tag in ('ergsc', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
+                        if tag not in table]
+            for tag in invalid:
+                with self.subTest(family=family, tag=tag):
+                    before = self.config.CONFIG.copy()
+                    with self.assertRaises(ValueError) as error:
+                        getattr(self.config, 'set_' + family + '_source')(tag)
+                    self.assertIn('valid choices: ' + ', '.join(sorted(table)), str(error.exception))
+                    self.assertEqual(self.config.CONFIG, before)
+
+    def test_getters_follow_direct_edits_and_recognize_custom_settings(self):
+        for family, table in self.families:
+            getter = getattr(self.config, 'get_' + family + '_source')
+            for tag, settings in table.items():
+                with self.subTest(family=family, tag=tag):
+                    self.config.CONFIG.update(settings)
+                    self.assertEqual(getter(), tag)
+                    for key in settings:
+                        self.config.CONFIG[key] = 'custom-setting'
+                        self.assertIsNone(getter())
+                        self.config.CONFIG.update(settings)
+                    key = next(iter(settings))
+                    del self.config.CONFIG[key]
+                    self.assertIsNone(getter())
+                    self.config.CONFIG.update(settings)
+
+    def test_presets_select_state_paths_without_hostname_inference(self):
+        load_module = importlib.import_module(LOAD_MODULE)
+        cases = [
+            ('berkeley', 'https://themis.ssl.berkeley.edu/data/themis/', ''),
+            ('ucla', 'https://themis-data.igpp.ucla.edu/', ''),
+            ('spdf', 'https://spdf.gsfc.nasa.gov/pub/data/themis/', '_v??'),
+            ('heliocloud', 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/', '_v??'),
+        ]
+        for tag, url, version in cases:
+            with self.subTest(tag=tag), patch.object(load_module, 'download', return_value=[]) as download:
+                self.config.set_data_source(tag)
+                load(instrument='state', level='l1', trange=TRANGE, downloadonly=True)
+                self.assertEqual(download.call_args.kwargs['remote_path'], url)
+                self.assertTrue(download.call_args.kwargs['remote_file'][0].endswith(version + '.cdf'))
+                self.assertTrue(download.call_args.kwargs['last_version'])
+
+    def test_metadata_preset_triggers_existing_cache_invalidation(self):
+        gmag_module = importlib.import_module('pyspedas.projects.themis.ground.gmag')
+        self.config.set_gmag_metadata_source('berkeley')
+        old = Mock(source=(self.config.CONFIG['gmag_metadata_file'], str(self.config.CONFIG['local_data_dir'])))
+        with patch.object(gmag_module, 'gmag_info', old), patch.object(gmag_module, 'GMAG_Info') as create:
+            self.config.set_gmag_metadata_source('spdf')
+            gmag_module._init_gmag_info()
+            create.assert_called_once_with(no_download=False)
+        self.assertEqual(self.config.CONFIG['gmag_metadata_file'],
+                         'https://spdf.gsfc.nasa.gov/pub/data/themis/thg/gmags_meta.csv')
+
+    def test_defaults_and_ssc_endpoint(self):
+        with patch.dict(os.environ, {}, clear=True), patch('pyspedas.preferences.apply_mission_preferences'):
+            defaults = runpy.run_path(self.config.__file__)
+        for family in ('data', 'variometer', 'gmag_metadata'):
+            self.assertEqual(defaults['get_' + family + '_source'](), 'berkeley')
+        self.assertEqual(defaults['get_ssc_source'](), 'spdf')
+        self.config.set_ssc_source('spdf')
+        load_module = importlib.import_module(LOAD_MODULE)
+        with patch.object(load_module, 'download', return_value=[]) as download:
+            load(instrument='ssc', trange=TRANGE, downloadonly=True)
+        self.assertEqual(download.call_args.kwargs['remote_path'],
+                         'https://cdaweb.gsfc.nasa.gov/pub/data/themis/')
+
+
 if __name__ == '__main__':
     unittest.main()

@@ -273,5 +273,105 @@ class MMSSourceTests(unittest.TestCase):
             login.assert_not_called()
 
 
+
+
+class SourceSwitcherTests(unittest.TestCase):
+    def setUp(self):
+        self.config = importlib.import_module('pyspedas.projects.mms.config')
+        config_patch = patch.dict(self.config.CONFIG)
+        config_patch.start()
+        self.addCleanup(config_patch.stop)
+        self.families = [
+            ('data', self.config.DATA_SOURCES),
+            ('sdc', self.config.SDC_SOURCES),
+        ]
+
+    def test_presets_update_only_their_family_and_log_settings(self):
+        with patch('pyspedas.preferences.save_preferences', side_effect=AssertionError('Unexpected preference write')), patch(
+                'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            for family, table in self.families:
+                for tag, settings in table.items():
+                    with self.subTest(family=family, tag=tag):
+                        before = self.config.CONFIG.copy()
+                        with self.assertLogs(level='INFO') as logs:
+                            getattr(self.config, 'set_' + family + '_source')(tag)
+                        expected = before.copy()
+                        expected.update(settings)
+                        self.assertEqual(self.config.CONFIG, expected)
+                        self.assertEqual(getattr(self.config, 'get_' + family + '_source')(), tag)
+                        self.assertEqual(len(logs.output), 1)
+                        self.assertIn(tag, logs.output[0])
+                        for value in settings.values():
+                            self.assertIn(value, logs.output[0])
+
+    def test_invalid_tags_leave_entire_configuration_unchanged(self):
+        for family, table in self.families:
+            invalid = ['unknown', 'SPDF', '', None, [], {}]
+            invalid += [tag for tag in ('ergsc', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
+                        if tag not in table]
+            for tag in invalid:
+                with self.subTest(family=family, tag=tag):
+                    before = self.config.CONFIG.copy()
+                    with self.assertRaises(ValueError) as error:
+                        getattr(self.config, 'set_' + family + '_source')(tag)
+                    self.assertIn('valid choices: ' + ', '.join(sorted(table)), str(error.exception))
+                    self.assertEqual(self.config.CONFIG, before)
+
+    def test_getters_follow_direct_edits_and_recognize_custom_settings(self):
+        for family, table in self.families:
+            getter = getattr(self.config, 'get_' + family + '_source')
+            for tag, settings in table.items():
+                with self.subTest(family=family, tag=tag):
+                    self.config.CONFIG.update(settings)
+                    self.assertEqual(getter(), tag)
+                    for key in settings:
+                        self.config.CONFIG[key] = 'custom-setting'
+                        self.assertIsNone(getter())
+                        self.config.CONFIG.update(settings)
+                    key = next(iter(settings))
+                    del self.config.CONFIG[key]
+                    self.assertIsNone(getter())
+                    self.config.CONFIG.update(settings)
+
+    def test_archive_presets_preserve_independent_sdc_source(self):
+        self.config.CONFIG['sdc_data_dir'] = 'https://custom.example/sdc/'
+        for tag, url in [('spdf', 'https://spdf.gsfc.nasa.gov/pub/data/mms/'),
+                         ('heliocloud', 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/mms/')]:
+            with self.subTest(tag=tag), patch.object(archive, 'download', return_value=[]) as download, patch.object(
+                    archive, 'mms_get_local_files', return_value=[]), patch.dict(self.config.CONFIG, download_only=True):
+                self.config.set_data_source(tag)
+                science.mms_load_data(trange=TRANGE)
+                self.assertEqual(download.call_args.kwargs['remote_path'], url)
+                self.assertEqual(self.config.CONFIG['sdc_data_dir'], 'https://custom.example/sdc/')
+                self.assertIsNone(self.config.get_sdc_source())
+
+    def test_switch_back_to_sdc_and_independent_sdc_reset(self):
+        self.config.set_data_source('heliocloud')
+        self.config.set_sdc_source('sdc')
+        self.assertEqual(self.config.get_data_source(), 'heliocloud')
+        self.assertEqual(self.config.get_sdc_source(), 'sdc')
+        self.config.CONFIG['sdc_data_dir'] = 'https://custom.example/sdc/'
+        self.config.set_data_source('sdc')
+        self.assertEqual(self.config.get_data_source(), 'sdc')
+        self.assertEqual(self.config.CONFIG['remote_data_dir'],
+                         's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/mms/')
+        with patch.object(science, 'mms_login_lasp', return_value=(MagicMock(), None)), patch.object(
+                science, 'download', return_value=json.dumps({'files': []})) as download:
+            science.mms_load_data(trange=TRANGE, available=True)
+        self.assertTrue(download.call_args.kwargs['remote_file'].startswith(
+            'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?'))
+
+    def test_getter_ignores_inactive_archive_url_and_recognizes_defaults(self):
+        self.config.set_data_source('sdc')
+        self.config.CONFIG['remote_data_dir'] = 'https://custom.example/archive/'
+        self.assertEqual(self.config.get_data_source(), 'sdc')
+        self.config.CONFIG['sdc_data_dir'] = 'https://custom.example/sdc/'
+        self.assertIsNone(self.config.get_data_source())
+        with patch.dict(os.environ, {}, clear=True), patch('pyspedas.preferences.apply_mission_preferences'):
+            defaults = runpy.run_path(self.config.__file__)
+        self.assertEqual(defaults['get_data_source'](), 'sdc')
+        self.assertEqual(defaults['get_sdc_source'](), 'sdc')
+
+
 if __name__ == '__main__':
     unittest.main()
