@@ -4392,6 +4392,14 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/utilities/last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/utilities/download_ftp.py",
           "kind": "file"
         },
@@ -4521,6 +4529,14 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/utilities.rst",
           "kind": "file"
         },
         {

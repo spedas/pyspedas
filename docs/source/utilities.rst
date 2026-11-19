@@ -217,6 +217,22 @@ Download utilities
 .. autofunction:: pyspedas.download
 .. autofunction:: pyspedas.download_ftp
 .. autofunction:: pyspedas.dailynames
+
+Per-identity version selection
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+``last_version_per_identity()`` is a standalone, string-only helper for choosing
+one filename per logical identity. It is not yet integrated into ``download()``.
+A caller supplies a regex with a named ``identity`` group; an optional ``version``
+group is accepted for future use. The regex fully matches basenames and the
+helper returns the original paths or URLs. All candidates belong to one known
+directory. No files are read and no network access is performed.
+
+Selection is deliberately lexicographic: ``v2.9.0`` sorts after ``v2.10.0``.
+Callers must account for their naming convention. Invalid regexes, missing or
+nonparticipating identity groups, and unmatched filenames raise explicit errors.
+
+.. autofunction:: pyspedas.utilities.last_version_per_identity.last_version_per_identity
+
 .. autofunction:: pyspedas.load_leap_table
 
 File Format Readers/Writers

@@ -2,6 +2,8 @@
 related_files:
   - AGENTS.md
   - pyspedas/utilities/download.py
+  - pyspedas/utilities/last_version_per_identity.py
+  - pyspedas/utilities/tests/test_last_version_per_identity.py
   - pyspedas/utilities/download_ftp.py
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/datasets.py
@@ -35,6 +37,8 @@ related_files:
   - pyspedas/tplot_tools/time_double.py
   - pyspedas/tplot_tools/time_string.py
   - .github/workflows/quick_tests.yml
+  - .github/workflows/full_coverage.yml
+  - docs/source/utilities.rst
   - .github/workflows/zenodo_draft.yml
   - RULES.md
 maintenance: |
@@ -55,6 +59,10 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
 ## Layout
 
 - `download.py`: `download()` (the loaders' fetcher), `download_file()`, `check_downloaded_file()`, retrying `requests` session; `download_ftp.py`: FTP.
+- `last_version_per_identity.py`: standalone string-only grouping by a regex
+  named `identity` group, selecting the lexicographically last filename per group.
+  Regexes fully match basenames; original paths/URLs are preserved, and invalid
+  patterns or unmatched candidates raise errors. It is not yet wired into `download()`.
 - `dailynames.py`: `dailynames()` and `yearlynames()` expand a path template over a time range.
 - `datasets.py`: `find_datasets()` lists CDAWeb dataset IDs through `cdasws`.
 - `pyspedas_functools.py`: `better_partial()`, used by missions to define instrument loaders.
@@ -106,3 +114,7 @@ holds the tplot math, wildcard and plotting tests. `zenodo_draft.py` is run by
 Register each quick-test module once in `.github/workflows/quick_tests.yml`;
 all dependency policies share the same test list. New methods in an already-listed
 module need no extra workflow entry.
+
+`tests/test_last_version_per_identity.py` uses offline filename fixtures, including
+the MMS HPCA and EDP examples from issue #1582, plus version formats, error handling,
+path preservation and lexical ordering. It runs in quick_tests and full_coverage.

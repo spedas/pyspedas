@@ -114,6 +114,7 @@ jobs:
               coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
               echo Starting utilities download tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_download
+              coverage run -a -m pyspedas.utilities.tests.test_last_version_per_identity
               echo Starting utilities misc tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
               echo Starting user preferences tests at `date`
