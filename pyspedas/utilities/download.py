@@ -756,9 +756,18 @@ def download(
 
                                 if len(links) > 0:
                                     # If multiple matches were found, there must have been a wildcard.
-                                    # The last entry in the sorted list should be the one we want (highest version)
+                                    # The wildcard may have been in the body of the path, or the version string, or both.
+                                    # We'll use this heuristic (same as for HTTP downloads): if last_version is specified,
+                                    # sort the links and take the last one; otherwise return all of them.
+                                    # MMS2 HPCA burst moments data has time intervals with multiple CDFs with several
+                                    # different version.
+
                                     new_links = sorted(links)
-                                    links = [new_links[-1]]
+                                    if last_version:
+                                        links = [new_links[-1]]
+                                    else:
+                                        links = new_links
+
                                     for link in links:
                                         logging.info("Using remote URI file: "+link)
                                         out.append(link)
