@@ -21,6 +21,7 @@ from netCDF4 import Dataset
 from cdflib import CDF
 from time import sleep
 from .rate_connection_quality import rate_connection_quality
+from .last_version_per_identity import last_version_per_identity
 
 
 class LoggingRetry(Retry):
@@ -590,6 +591,7 @@ def download(
     text_only=None,
     force_download=False,
     return_text=False,
+    versioned_regex=None,
 ):
     """
     Download one or more remote files and return their local paths.
@@ -618,8 +620,18 @@ def download(
         Requests session object that allows you to persist things like HTTP authentication through multiple calls.
     no_download : bool, optional
         Flag to not download remote files.
-    last_version : bool, optional (default is True)
-        Flag to only download the last in file in a lexically sorted list when multiple matches are found using wildcards.
+    last_version : bool, optional
+        If True, select the lexicographically last wildcard match. With
+        ``versioned_regex``, select the last match per identity instead.
+        Defaults to False (return all matches).
+    versioned_regex : str or compiled regex, optional
+        Used only with ``last_version=True``. Fully match each candidate basename
+        with a named ``identity`` capture group, then select the lexicographically
+        last filename per identity. An optional ``version`` group is accepted
+        but does not affect sorting. The glob (or ``regex=True`` filename pattern)
+        still determines the candidates. Applies to HTTP, fsspec/S3 and offline
+        cache searches. Invalid regexes or unmatched candidates raise ValueError.
+        Defaults to None, preserving selection of one last match overall.
     regex : bool, optional
         Flag to allow regular expressions in the file name matching, instead of unix style matching.
     no_wildcards : bool, optional
@@ -755,18 +767,12 @@ def download(
                                 links = [protocol + "://" + link for link in fs.glob(url)]
 
                                 if len(links) > 0:
-                                    # If multiple matches were found, there must have been a wildcard.
-                                    # The wildcard may have been in the body of the path, or the version string, or both.
-                                    # We'll use this heuristic (same as for HTTP downloads): if last_version is specified,
-                                    # sort the links and take the last one; otherwise return all of them.
-                                    # MMS2 HPCA burst moments data has time intervals with multiple CDFs with several
-                                    # different version.
-
-                                    new_links = sorted(links)
+                                    links = sorted(links)
                                     if last_version:
-                                        links = [new_links[-1]]
-                                    else:
-                                        links = new_links
+                                        if versioned_regex is None:
+                                            links = links[-1:]
+                                        else:
+                                            links = last_version_per_identity(links, versioned_regex)
 
                                     for link in links:
                                         logging.info("Using remote URI file: "+link)
@@ -858,9 +864,11 @@ def download(
                         url_base,
                     )
 
-                if last_version and len(new_links) > 1:
-                    new_links = sorted(new_links)
-                    new_links = [new_links[-1]]
+                if last_version:
+                    if versioned_regex is None:
+                        new_links = sorted(new_links)[-1:]
+                    else:
+                        new_links = last_version_per_identity(new_links, versioned_regex)
 
                 if "?" in remote_path or "*" in remote_path:
                     # the user specified a wild card in the remote_path
@@ -882,7 +890,9 @@ def download(
                         session=session,
                         basic_auth=basic_auth,
                         text_only=text_only,
-                        force_download=force_download
+                        force_download=force_download,
+                        last_version=last_version,
+                        versioned_regex=versioned_regex,
                     )
                     if resp_data is not None:
                         for file in resp_data:
@@ -954,12 +964,12 @@ def download(
             temp_out = sorted(temp_out)
 
             if last_version:
-                out.append(temp_out[-1])  # append the latest version
-                logging.info(f"Local file found: {temp_out[-1]}")
-            else:
-                for file in temp_out:
-                    out.append(file)
-                logging.info(f"Local files found: {temp_out}")
+                if versioned_regex is None:
+                    temp_out = temp_out[-1:]
+                else:
+                    temp_out = last_version_per_identity(temp_out, versioned_regex)
+            out.extend(temp_out)
+            logging.info(f"Local files found: {temp_out}")
 
     session.close()
     return out

@@ -85,6 +85,12 @@ still uses SPDF. For heliocloud science data with SDC support products:
     })
     pyspedas.projects.mms.fgm(trange=['2015-10-16', '2015-10-17'])
 
+Archive requests keep each product/timestamp identity and select its
+lexicographically last CDF version. Explicit CDF version filters run first;
+``latest_version`` and ``major_version`` retain their interval-wide meaning.
+Available-only listings and offline results use the same selection. Ordering is
+lexical, so unpadded ``v2.9.0`` sorts after ``v2.10.0``.
+
 SPDF and heliocloud share archive templates; no layout setting is needed.
 Archive URLs point to the directory containing ``mms1/`` through ``mms4/``.
 Archive-capable instruments are FGM, ASPOC, EDI, FPI, EIS, FEEPS, HPCA, MEC CDFs,

@@ -44,6 +44,25 @@ class FPITestCases(unittest.TestCase):
                 f"heliocloud={file_counts['heliocloud']}",
             )
 
+    def test_edp_burst_versions_spdf_vs_heliocloud(self):
+        """Issue #1582: retain each burst timestamp, but only its last version."""
+        trange = ['2024-05-11/14:40:40', '2024-05-11/14:46:40']
+        identities = {}
+        with patch.dict(CONFIG, download_only=True, no_download=False, mirror_data_dir=None):
+            for source in ('spdf', 'heliocloud'):
+                with TemporaryDirectory(prefix='mms_edp_' + source + '_') as cache:
+                    CONFIG['local_data_dir'] = cache
+                    set_data_source(source)
+                    files = pyspedas.projects.mms.edp(
+                        probe='2', trange=trange, data_rate='brst', level='l2',
+                        datatype='scpot', time_clip=True,
+                    )
+                    self.assertTrue(files, f'{source} returned no EDP burst files')
+                    names = [name.rsplit('/', 1)[-1].rsplit('_v', 1)[0] for name in files]
+                    self.assertEqual(len(names), len(set(names)), f'{source} returned multiple versions per identity')
+                    identities[source] = sorted(names)
+            self.assertEqual(identities['spdf'], identities['heliocloud'])
+
     def test_load_default_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], available=True)
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])

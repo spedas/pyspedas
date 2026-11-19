@@ -2449,6 +2449,14 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/mms/tests/test_mms_fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/mms/mec_ascii/mms_get_state_data.py",
           "kind": "file"
         },
@@ -4397,6 +4405,10 @@
         },
         {
           "path": "pyspedas/utilities/tests/test_last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_download.py",
           "kind": "file"
         },
         {

@@ -94,8 +94,16 @@ The archive loader honors `no_update`, `no_download`, `download_only`, `notplot`
 `available`, prefix/suffix, and the existing CDF version filters. `available=True`
 lists remote filenames without downloading CDF contents; in offline mode it
 lists matching cached filenames. `notplot=True` returns data dictionaries,
-including when several probes or products are requested. The historical
-`mms_load_data_spdf` helper remains as a compatibility wrapper around
+including when several probes or products are requested.
+
+Archive requests retain each product/timestamp identity and select its
+lexicographically last CDF version, including when heliocloud stores multiple
+versions. Explicit CDF version filters run before this selection; `latest_version`
+and `major_version` keep their existing interval-wide meaning. Available-only
+listings and offline cache results use the same per-identity selection. Version
+ordering is lexical, so unpadded versions such as v2.9.0 sort after v2.10.0.
+
+The historical `mms_load_data_spdf` helper remains as a compatibility wrapper around
 `mms_load_data_archive`; importing it no longer overwrites the configured URL.
 
 All three settings support stored preferences under `[projects.mms]` and matching

@@ -4,6 +4,7 @@ from urllib.parse import unquote, urlsplit
 from pyspedas.tplot_tools import time_double
 from pyspedas.utilities.dailynames import dailynames
 from pyspedas.utilities.download import download, is_fsspec_uri, _managed_filesystem, LinkParser
+from pyspedas.utilities.last_version_per_identity import last_version_per_identity
 from .mms_file_filter import mms_file_filter
 from .mms_get_local_files import mms_get_local_files
 from pyspedas.tplot_tools import cdf_to_tplot
@@ -15,6 +16,11 @@ from .config import CONFIG
 ARCHIVE_INSTRUMENTS = frozenset({
     'fgm', 'aspoc', 'edi', 'fpi', 'epd-eis', 'feeps', 'hpca', 'mec', 'scm', 'dsp', 'edp',
 })
+
+
+# Include the product and timestamp in the identity, preserving every observation
+# while choosing one CDF version for it. Both daily and burst filenames use this form.
+MMS_VERSIONED_REGEX = r'(?P<identity>mms[1-4]_.+)_v(?P<version>\d+\.\d+\.\d+)\.cdf'
 
 
 def archive_supported(instrument, level):
@@ -75,6 +81,10 @@ def mms_load_data_archive(trange=['2015-10-16', '2015-10-17'], probe='1', data_r
     download_only = CONFIG['download_only']
     tvars_created = {} if notplot else []
     selected_files = []
+    # Keep all candidates until explicit version filters have run. In particular,
+    # selecting first could discard an older version requested by cdf_version.
+    select_before_download = not (latest_version or major_version
+                                  or min_version is not None or cdf_version is not None)
     # Compute padding once; never extend trange repeatedly across product groups.
 
     if not isinstance(probe, list): probe = [probe]
@@ -132,7 +142,9 @@ def mms_load_data_archive(trange=['2015-10-16', '2015-10-17'], probe='1', data_r
                         files = _archive_available_files(remote_names, archive_root)
                     else:
                         files = download(remote_file=remote_names, remote_path=archive_root,
-                                         local_path=CONFIG['local_data_dir'], no_download=no_download)
+                                         local_path=CONFIG['local_data_dir'], no_download=no_download,
+                                         last_version=select_before_download,
+                                         versioned_regex=MMS_VERSIONED_REGEX)
                     if files is not None:
                         for file in files:
                             out_files.append(file)
@@ -152,6 +164,8 @@ def mms_load_data_archive(trange=['2015-10-16', '2015-10-17'], probe='1', data_r
 
                     filtered_out_files = mms_file_filter(out_files, latest_version=latest_version, major_version=major_version, min_version=min_version, version=cdf_version)
 
+                    # Also covers available-only listings and local/mirror fallback.
+                    filtered_out_files = last_version_per_identity(filtered_out_files, MMS_VERSIONED_REGEX)
                     selected_files.extend(filtered_out_files)
                     if available or download_only:
                         continue

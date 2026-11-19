@@ -219,13 +219,27 @@ Download utilities
 .. autofunction:: pyspedas.dailynames
 
 Per-identity version selection
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-``last_version_per_identity()`` is a standalone, string-only helper for choosing
-one filename per logical identity. It is not yet integrated into ``download()``.
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+``download(last_version=True, versioned_regex=pattern)`` chooses one filename
+per logical identity for HTTP, S3/fsspec and offline cache searches. Without
+``versioned_regex``, ``last_version=True`` keeps its existing behavior of choosing
+one lexicographically last match overall. With ``last_version=False``, all
+matches are returned and ``versioned_regex`` is ignored.
+
+``last_version_per_identity()`` implements the selection as a string-only helper.
 A caller supplies a regex with a named ``identity`` group; an optional ``version``
 group is accepted for future use. The regex fully matches basenames and the
 helper returns the original paths or URLs. All candidates belong to one known
 directory. No files are read and no network access is performed.
+
+For example, to preserve every timestamp while choosing one version per file::
+
+    files = pyspedas.download(
+        remote_path="https://example.org/data/",
+        remote_file="product_*_v??.cdf",
+        last_version=True,
+        versioned_regex=r"(?P<identity>product_\d{8})_v(?P<version>\d{2})\.cdf",
+    )
 
 Selection is deliberately lexicographic: ``v2.9.0`` sorts after ``v2.10.0``.
 Callers must account for their naming convention. Invalid regexes, missing or

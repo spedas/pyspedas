@@ -34,6 +34,56 @@ class MMSSourceTests(unittest.TestCase):
         config.start()
         self.addCleanup(config.stop)
 
+    def test_archive_requests_use_per_identity_selection_for_all_instruments(self):
+        for instrument in sorted(archive.ARCHIVE_INSTRUMENTS):
+            for rate in ('brst', 'fast'):
+                with self.subTest(instrument=instrument, rate=rate), patch.dict(CONFIG, download_only=True), patch.object(
+                        archive, 'download', return_value=[]) as download, patch.object(archive, 'mms_get_local_files', return_value=[]):
+                    archive.mms_load_data_archive(trange=TRANGE, instrument=instrument, data_rate=rate, datatype='test')
+                    self.assertTrue(download.call_args.kwargs['last_version'])
+                    self.assertEqual(download.call_args.kwargs['versioned_regex'], archive.MMS_VERSIONED_REGEX)
+
+    def test_archive_filters_versions_before_selecting_per_identity(self):
+        names = [NAME, NAME.replace('1.2.3', '2.9.0'), NAME.replace('1.2.3', '2.10.0'),
+                 NAME.replace('20151016', '20151017')]
+        cases = [({}, [names[1], names[3]], True),
+                 ({'cdf_version': '1.2.3'}, [names[0], names[3]], False),
+                 ({'min_version': '2.10.0'}, [names[2]], False),
+                 ({'latest_version': True}, [names[2]], False),
+                 ({'major_version': True}, [names[1]], False)]
+        for options, expected, select_first in cases:
+            with self.subTest(options=options), patch.dict(CONFIG, download_only=True), patch.object(
+                    archive, 'download', return_value=names) as download:
+                self.assertEqual(archive.mms_load_data_archive(trange=TRANGE, **options), sorted(expected))
+                self.assertEqual(download.call_args.kwargs['last_version'], select_first)
+
+    def test_available_selects_one_version_per_identity(self):
+        names = [NAME, NAME.replace('1.2.3', '1.2.4'), NAME.replace('20151016', '20151017')]
+        with patch.object(archive, '_archive_available_files', return_value=names), patch.object(archive, 'cdf_to_tplot') as importer:
+            self.assertEqual(archive.mms_load_data_archive(trange=TRANGE, available=True), sorted(names[1:]))
+            importer.assert_not_called()
+
+    def test_local_and_mirror_fallback_select_one_version_per_identity(self):
+        names = [NAME, NAME.replace('1.2.3', '1.2.4'), NAME.replace('20151016', '20151017')]
+        for mirror in (False, True):
+            with self.subTest(mirror=mirror), patch.dict(CONFIG, download_only=True, mirror_data_dir='/mirror'), patch.object(
+                    archive, 'download', return_value=[]), patch.object(
+                    archive, 'mms_get_local_files', side_effect=[[], names] if mirror else [names]):
+                self.assertEqual(archive.mms_load_data_archive(trange=TRANGE), sorted(names[1:]))
+
+    def test_hpca_and_edp_cached_regressions_through_archive_loader(self):
+        from pyspedas.utilities.tests.test_last_version_per_identity import HPCA_FILES, EDP_FILES
+        for instrument, dtype, names, expected in (
+                ('hpca', 'moments', HPCA_FILES, HPCA_FILES),
+                ('edp', 'scpot', EDP_FILES, [EDP_FILES[-1]])):
+            with self.subTest(instrument=instrument), patch.dict(CONFIG, download_only=True, no_download=True), patch(
+                    'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+                for name in names:
+                    (self.cache / name).touch()
+                result = archive.mms_load_data_archive(probe='2', instrument=instrument, datatype=dtype,
+                    data_rate='brst', trange=['2024-05-11/14:40:40', '2024-05-11/14:46:40'])
+                self.assertEqual([Path(name).name for name in result], expected)
+
     def test_dispatch_and_legacy_spdf_override(self):
         for mode, spdf, use_archive in [('sdc', False, False), ('sdc', True, True),
                                         ('archive', False, True), ('archive', True, True)]:

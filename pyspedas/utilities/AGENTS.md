@@ -4,6 +4,7 @@ related_files:
   - pyspedas/utilities/download.py
   - pyspedas/utilities/last_version_per_identity.py
   - pyspedas/utilities/tests/test_last_version_per_identity.py
+  - pyspedas/utilities/tests/test_utilities_download.py
   - pyspedas/utilities/download_ftp.py
   - pyspedas/utilities/dailynames.py
   - pyspedas/utilities/datasets.py
@@ -62,7 +63,8 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
 - `last_version_per_identity.py`: standalone string-only grouping by a regex
   named `identity` group, selecting the lexicographically last filename per group.
   Regexes fully match basenames; original paths/URLs are preserved, and invalid
-  patterns or unmatched candidates raise errors. It is not yet wired into `download()`.
+  patterns or unmatched candidates raise errors. `download()` uses it when
+  `last_version=True` and `versioned_regex` is supplied.
 - `dailynames.py`: `dailynames()` and `yearlynames()` expand a path template over a time range.
 - `datasets.py`: `find_datasets()` lists CDAWeb dataset IDs through `cdasws`.
 - `pyspedas_functools.py`: `better_partial()`, used by missions to define instrument loaders.
@@ -83,7 +85,10 @@ maintenance scripts. Most public names are re-exported from `pyspedas/__init__.p
 2. A `*`, `?` (fnmatch) or `regex=True` in the file name fetches the parent directory's HTML
    index, parses the links, and keeps the matches. Index results are cached per call, and a
    failing index is skipped for the rest of the call. `last_version=True` keeps only the
-   lexically last match; otherwise every matching version is fetched.
+   lexically last match, or the last per named `identity` group when `versioned_regex`
+   is supplied; otherwise every match is fetched and the grouping regex is ignored.
+   Selection also applies to S3 streaming, forced downloads, URI copies and offline
+   cache searches. Recursive downloads retain both selection options.
 3. `download_file()` sends `If-Modified-Since` for an existing local file, writes to a
    temporary file, checks it with `check_downloaded_file()` (CDF and netCDF files are opened),
    then copies it into place; a bad download is retried once.
@@ -118,3 +123,5 @@ module need no extra workflow entry.
 `tests/test_last_version_per_identity.py` uses offline filename fixtures, including
 the MMS HPCA and EDP examples from issue #1582, plus version formats, error handling,
 path preservation and lexical ordering. It runs in quick_tests and full_coverage.
+`tests/test_utilities_download.py` adds offline transport and cache integration
+coverage in `VersionedDownloadTests`, including both issue #1582 fixtures.

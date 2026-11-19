@@ -2,7 +2,7 @@ import os
 import tempfile
 import threading
 import unittest
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 from http.server import BaseHTTPRequestHandler, HTTPServer
 import requests
 
@@ -399,6 +399,126 @@ class DownloadTestCases(unittest.TestCase):
         )
         self.assertTrue(len(dfile) == 1)
 
+
+
+class VersionedDownloadTests(unittest.TestCase):
+    """Exercise the real wildcard selection/recursion without network traffic."""
+
+    names = ['obs_A_v01.cdf', 'obs_A_v02.cdf', 'obs_B_v01.cdf']
+    pattern = r'(?P<identity>obs_[AB])_v(?P<version>\d{2})\.cdf'
+
+    def setUp(self):
+        temporary = tempfile.TemporaryDirectory()
+        self.addCleanup(temporary.cleanup)
+        self.cache = temporary.name
+        self.session = Mock()
+        self.session.get.return_value = Mock(
+            status_code=200,
+            text=''.join(f'<a href="{name}">{name}</a>' for name in reversed(self.names)),
+        )
+        for name in self.names:
+            open(os.path.join(self.cache, name), 'wb').close()
+        pause = patch('pyspedas.utilities.download.sleep')
+        pause.start()
+        self.addCleanup(pause.stop)
+
+    def run_case(self, transport, last_version, versioned_regex):
+        self.session.reset_mock()
+        fs = MagicMock()
+        fs.glob.return_value = ['bucket/data/' + name for name in reversed(self.names)]
+        fs.walk.return_value = [('bucket/cache', [], list(reversed(self.names)))]
+        context = MagicMock()
+        context.__enter__.return_value = fs
+        remote_path = 'https://example.test/data/'
+        local_path = self.cache
+        kwargs = {}
+        if transport.startswith('s3'):
+            remote_path = 's3://bucket/data/'
+        if transport == 's3_force':
+            kwargs['force_download'] = True
+        if transport == 's3_copy':
+            local_path = 's3://bucket/cache/'
+        if transport.startswith('offline'):
+            kwargs['no_download'] = True
+            if transport == 'offline_s3':
+                local_path = 's3://bucket/cache/'
+        with patch('pyspedas.utilities.download._managed_filesystem', return_value=context), patch(
+                'pyspedas.utilities.download.download_file',
+                side_effect=lambda **args: args['filename']) as transfer:
+            result = download(remote_path=remote_path, remote_file='obs_*_v*.cdf',
+                              local_path=local_path, session=self.session,
+                              last_version=last_version, versioned_regex=versioned_regex, **kwargs)
+        selected = self.names if not last_version else (
+            ['obs_A_v02.cdf', 'obs_B_v01.cdf'] if versioned_regex else ['obs_B_v01.cdf'])
+        if transport == 's3_stream':
+            expected = [remote_path + name for name in selected]
+        elif transport == 'offline_s3':
+            expected = ['s3://bucket/cache/' + name for name in selected]
+        else:
+            expected = [os.path.join(local_path, name) for name in selected]
+        self.assertEqual(sorted(result), expected)
+        self.assertEqual(transfer.call_count, len(selected) if transport in ('http', 's3_force', 's3_copy') else 0)
+        if transport != 'http':
+            self.session.get.assert_not_called()
+
+    def test_selection_across_transports(self):
+        for transport in ('http', 's3_stream', 's3_force', 's3_copy', 'offline', 'offline_s3'):
+            for last_version, regex in ((False, None), (False, '['), (True, None), (True, self.pattern)):
+                with self.subTest(transport=transport, last_version=last_version, regex=regex):
+                    self.run_case(transport, last_version, regex)
+
+    def test_regex_filename_matching_is_independent_of_version_grouping(self):
+        with patch('pyspedas.utilities.download.download_file', side_effect=lambda **args: args['filename']):
+            result = download(remote_path='https://example.test/', remote_file=r'obs_.*_v.*\.cdf',
+                              local_path=self.cache, session=self.session, regex=True,
+                              last_version=True, versioned_regex=self.pattern)
+        self.assertEqual([os.path.basename(name) for name in result], self.names[1:])
+
+    def test_failed_transfer_uses_cache_with_selection_options(self):
+        with patch('pyspedas.utilities.download.download_file', return_value=None):
+            result = download(remote_path='https://example.test/', remote_file='obs_*_v*.cdf',
+                              local_path=self.cache, session=self.session,
+                              last_version=True, versioned_regex=self.pattern)
+        self.assertEqual([os.path.basename(name) for name in result], self.names[1:])
+
+    def test_invalid_regex_and_unmatched_candidates_fail(self):
+        for regex, message in (('[', 'valid'), (r'(?P<identity>other).*', 'does not fully match')):
+            for offline in (False, True):
+                with self.subTest(regex=regex, offline=offline), self.assertRaisesRegex(ValueError, message):
+                    download(remote_path='https://example.test/', remote_file='obs_*_v*.cdf',
+                             local_path=self.cache, session=self.session, no_download=offline,
+                             last_version=True, versioned_regex=regex)
+
+    def test_empty_matches_return_empty_list(self):
+        for offline in (False, True):
+            with self.subTest(offline=offline):
+                self.assertEqual(download(remote_path='https://example.test/', remote_file='missing*.cdf',
+                                          local_path=self.cache, session=self.session, no_download=offline,
+                                          last_version=True, versioned_regex=self.pattern), [])
+
+    def test_single_candidate_is_still_validated(self):
+        self.session.get.return_value.text = '<a href="obs_A_v01.cdf">file</a>'
+        with self.assertRaisesRegex(ValueError, 'does not fully match'):
+            download(remote_path='https://example.test/', remote_file='obs_A_v*.cdf',
+                     local_path=self.cache, session=self.session, last_version=True,
+                     versioned_regex=r'(?P<identity>other).*')
+
+    def test_mms_issue_1582_fixtures_on_http_s3_and_offline(self):
+        from pyspedas.utilities.tests.test_last_version_per_identity import HPCA_FILES, EDP_FILES, MMS_PATTERN
+        for names, expected in ((HPCA_FILES, HPCA_FILES), (EDP_FILES, [EDP_FILES[-1]])):
+            for transport in ('http', 's3', 'offline'):
+                with self.subTest(transport=transport, product=names[0]), tempfile.TemporaryDirectory() as cache:
+                    for name in names:
+                        open(os.path.join(cache, name), 'wb').close()
+                    self.session.get.return_value.text = ''.join(f'<a href="{name}">{name}</a>' for name in names)
+                    context = MagicMock()
+                    context.__enter__.return_value.glob.return_value = ['bucket/data/' + name for name in names]
+                    with patch('pyspedas.utilities.download._managed_filesystem', return_value=context), patch(
+                            'pyspedas.utilities.download.download_file', side_effect=lambda **args: args['filename']):
+                        result = download(remote_path='s3://bucket/data/' if transport == 's3' else 'https://example.test/',
+                                          remote_file='mms2_*.cdf', local_path=cache, session=self.session,
+                                          no_download=transport == 'offline', last_version=True, versioned_regex=MMS_PATTERN)
+                    self.assertEqual([name.rsplit('/', 1)[-1] for name in result], expected)
 
 
 if __name__ == "__main__":
