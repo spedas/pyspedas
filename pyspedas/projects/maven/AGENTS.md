@@ -35,6 +35,7 @@ related_files:
   - pyspedas/projects/maven/tests/test_maven_uri.py
   - pyspedas/preferences.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when the SDC query or download logic in maven_load.py or
   download_files_utilities.py changes (URLs, credentials, KP linking, variable
@@ -43,6 +44,9 @@ maintenance: |
 ---
 
 # MAVEN
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the MAVEN Mars orbiter. The default route asks the MAVEN Science
 Data Center (SDC) file API at LASP which files exist and downloads them one by

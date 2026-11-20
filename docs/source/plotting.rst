@@ -70,6 +70,62 @@ but is documented here for completeness.
 
 .. autofunction:: pyspedas.specplot
 
+Text annotations
+----------------
+
+Use ``annotate`` to attach text to a tplot variable, then call ``tplot`` to draw
+the updated panel. Names, zero-based variable indices, lists and wildcard
+patterns are accepted. Non-time-varying variables are skipped with a warning.
+
+By default, positions use ``xycoords="axes fraction"``: ``(0, 0)`` is the lower
+left corner and ``(1, 1)`` is the upper right corner of the panel. This keeps
+text in the same relative position when the plot limits change.
+
+.. code-block:: python
+
+    from pyspedas import annotate, store_data, tplot
+
+    times = ["2024-01-01T00:00:00", "2024-01-01T00:01:00", "2024-01-01T00:02:00"]
+    store_data("annotation_demo", data={"x": times, "y": [1, 2, 3]})
+    annotate("annotation_demo", "Example", (0.05, 0.85))
+    tplot("annotation_demo")
+
+Annotations attached to a combined variable (pseudovariable) appear once on
+its panel. Annotations attached to its component variables are also drawn.
+For a panel with separate left and right y axes, annotations attached to the
+combined variable use the left axis.
+
+To tie the vertical position to a data value while keeping the horizontal
+position relative to the panel, use ``xycoords=("axes fraction", "data")``.
+Set ``annotation_clip=True`` to hide the label when its anchor position is
+outside the axes, such as when zooming to a different y range.
+
+.. code-block:: python
+
+    store_data("annotation_other", data={"x": times, "y": [3, 2, 1]})
+    store_data("annotation_pair", data=["annotation_demo", "annotation_other"])
+    annotate("annotation_pair", "Combined panel", (0.05, 0.70))
+    annotate("annotation_pair", "y = 2", (0.85, 2),
+             xycoords=("axes fraction", "data"), annotation_clip=True)
+    tplot("annotation_pair")
+
+Repeated calls append annotations. ``delete=True`` removes all annotations
+from each selected variable; to remove component annotations from a combined
+plot, select those component variables as well. Call ``tplot`` again to show
+the result:
+
+.. code-block:: python
+
+    annotate(["annotation_demo", "annotation_pair"], delete=True)
+    tplot("annotation_pair")
+
+Annotations are per-variable settings. Use ``annotate`` for normal use;
+``options(name, "annotations", ...)`` replaces the annotations with a list of
+annotation dictionaries in the format stored by ``annotate``. There is no
+global ``tplot_options("annotations", ...)`` setting.
+
+.. autofunction:: pyspedas.annotate
+
 Time Windowing and Plot Limits
 -------------------------------
 

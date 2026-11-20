@@ -2,6 +2,29 @@
 ## Magnetospheric Multiscale (MMS) Mission
 The routines in this module can be used to load data from the Magnetospheric Multiscale (MMS) mission. 
 
+### Cleaning the local data cache
+
+`pyspedas.projects.mms.mms_remove_old_files()` finds local MMS CDF files that
+are no longer listed by the Science Data Center (SDC). It requires internet
+access and defaults to a dry run:
+
+```python
+from pyspedas.projects.mms import mms_remove_old_files
+
+selection = dict(trange=['2015-12-15', '2015-12-16'], probes='1', instruments='fgm')
+preview = mms_remove_old_files(**selection)
+print(preview['files'], preview['total_size'])  # paths and bytes to remove
+
+# After reviewing the preview, explicitly request deletion:
+result = mms_remove_old_files(**selection, dry_run=False)
+```
+
+Each call checks the SDC again. Server errors or incomplete responses abort
+before deletion. Public access checks only L2 files; other levels require
+authenticated product visibility and are otherwise retained with a warning.
+The routine checks regular files in the standard local MMS directory layout;
+symbolic links, the read-only mirror, and cloud paths are excluded.
+
 ### Instruments
 - Fluxgate Magnetometer (FGM)
 - Search-coil Magnetometer (SCM)

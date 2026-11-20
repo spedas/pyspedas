@@ -16,12 +16,16 @@ related_files:
   - pyspedas/utilities/datasets.py
   - pyspedas/utilities/download.py
   - .github/workflows/full_coverage.yml
+  - RULES.md
 maintenance: |
   Update when load.py changes an instrument branch, the automatic prefixes, the
   master-CDF handling or the Berkeley server option, or when __init__.py adds a loader.
 ---
 
 # Wind
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Loaders for the Wind solar wind mission: magnetic field, plasma, composition,
 3DP particles, WAVES radio and orbit/attitude. All data are CDF files, from SPDF

@@ -26,6 +26,7 @@ related_files:
   - pyspedas/utilities/tests/test_utilities_plot.py
   - pyspedas/utilities/tests/test_utilities_tplotxy.py
   - .github/workflows/quick_tests.yml
+  - RULES.md
 maintenance: |
   Update when tplot() changes its call path (pseudovariable recursion, spec/line
   dispatch, time range, saving), when a plot option is read from a new place, or
@@ -33,6 +34,9 @@ maintenance: |
 ---
 
 # MPLPlotter
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 Matplotlib rendering of tplot variables. `tplot()` draws stacked time-series panels;
 the other modules draw one panel type, orbit plots, or add interactive features.
@@ -68,6 +72,9 @@ the other modules draw one panel type, orbit plots, or add interactive features.
 6. The time axis uses the `trange` argument, else `tplot_opt_glob['x_range']`, else the full data.
 7. `extras['spec']` true calls `specplot()`, otherwise `lineplot()`. Time bars
    (`pyspedas/tplot_tools/timebar.py`), highlights and annotations are drawn afterwards.
+   Pseudovariable annotations are drawn once after the components. `annotate.py`
+   accepts `annotation_clip` to hide labels whose positions are outside the axes;
+   its default `None` preserves Matplotlib's coordinate-dependent clipping.
 8. `save_plot()`, then `plt.show()` if displaying; `return_plot_objects=True` returns `(fig, axes)`.
 
 ## Things to know
