@@ -82,7 +82,8 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
      [1. 1. 0.]]
     """
     make_tvars = False
-    
+
+    name_in = None
     coord_data = data
     if isinstance(data, str):
         # load data from tplot:
@@ -103,8 +104,10 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
             raise ValueError(f"Input coordinates have invalid number dimensions: {ndim}")
 
     out = np.zeros(coord_data.shape)
+    name_out = None
     if not inverse:
-        name_out = name_in + '_geodeticpolar'
+        if name_in is not None:
+            name_out = name_in + '_geodeticpolar'
         # Assume cartesian XYZ, convert to geodetic polar
         x_cart = coord_data[:, 0]
         y_cart = coord_data[:, 1]
@@ -117,7 +120,8 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
         out[:,1] = lat_geod_deg
         out[:,2] = lon_deg
     else:
-        name_out = name_in + '_cartesian'
+        if name_in is not None:
+            name_out = name_in + '_cartesian'
         # Assume geodetic polar R, Lat, Lon, return cartesian XYZ
         r            = coord_data[:, 0]
         lat_geod_deg = coord_data[:, 1]
@@ -130,7 +134,7 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
         out[:,1] = y_cart
         out[:,2] = z_cart
 
-    if make_tvars:
+    if make_tvars and name_out is not None:
         if not store_data(name_out, data={'x': d.times, 'y':out}):
             raise ValueError(f"Variable {name_out} failed to save!")
         return

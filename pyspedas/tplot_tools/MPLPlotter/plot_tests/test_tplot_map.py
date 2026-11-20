@@ -46,6 +46,8 @@ if not os.path.exists(save_dir):
 default_trange = ["2007-03-23", "2007-03-24"]
 
 
+# TODO: test if the basemap coordinates functionality is preserved
+
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
 
@@ -75,6 +77,7 @@ class PlotTestCases(unittest.TestCase):
         # tmap._params.fillcontinents = {"color":"palegreen","lake_color":"lightskyblue"}
 
         # Add ground tracks:
+        # TODO: need to replace with segment actually doing trace
         tmap = tplot_trace_tvars_to_tmap(tmap=tmap, tvar=['tha_pos_gsm', 'thd_pos_gsm'])
 
         # Add ground station markers
