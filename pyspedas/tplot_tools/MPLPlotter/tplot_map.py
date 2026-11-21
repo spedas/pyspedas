@@ -21,6 +21,7 @@ class Tplot_Map_Param_Set():
             new_val[key] = val
         obj.__dict__[self.name] = new_val
 
+# TODO: let color keywords be matplotlib color type options
 # TODO: add auroral oval plot
 class Tplot_Map(Basemap):
     # TODO: finish examples in docstring
@@ -62,7 +63,7 @@ class Tplot_Map(Basemap):
         options in `option_dict`. Otherwise, options for a given
         plot type only be changed if those options are specified 
         in `option_dict`. Set to False by default.
-    basemap_kwargs : dict, optional
+    **basemap_kwargs
         Keyword arguments for initializing Basemap objects. 
         See Basemap() for more details.
 
@@ -139,7 +140,7 @@ class Tplot_Map(Basemap):
             view:         str | None = None, 
             ax:          Axes | None = None, 
             option_dict: dict | None = None,
-            override_defaults: bool = False, 
+            override_defaults: bool = False,
             **basemap_kwargs):
 
         # Define projection options, construct 
@@ -209,7 +210,7 @@ class Tplot_Map(Basemap):
                 else:
                     self.map_options[key].update(option_dict[key])
             else:
-                if override_defaults:
+                if override_defaults and key != "basemap":
                     self.map_options[key] = {}
         
         # Validate basemap inputs, and provide warnings if inputs are not valid:
@@ -318,7 +319,7 @@ class Tplot_Map(Basemap):
             Indicates which color the line drawn around coasts will 
             be (e.g. black lines can use the 'k' string). If None, uses 
             `map_options` or Basemap `drawcoastlines` defaults.
-        drawcoastlines_kwargs : dict, optional
+        **drawcoastlines_kwargs
             Keyword arguments for other basemap `drawcoastlines` method options.
 
         Notes
@@ -329,6 +330,32 @@ class Tplot_Map(Basemap):
         Returns
         -------
         None
+
+        Examples
+        --------
+
+        Draw a map using only blue dashed line coastlines:
+
+        >>> tmap = Tplot_Map(option_dict={},override_defaults=True)
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.add_coastlines(linewidth = 3,linestyle = 'dashed',color = 'b')
+        >>> print(tmap.map_options["drawcoastlines"])
+        {'linewidth': 3, 'linestyle': 'dashed', 'color': 'b'}
+        >>> tmap.show()
         """
         if linewidth is not None:
             drawcoastlines_kwargs.update({'linewidth':linewidth})
@@ -346,13 +373,58 @@ class Tplot_Map(Basemap):
             color:       str | None = None,
             **drawcountries_kwargs):
         """
+        Draw country borders onto the map.
+                
+        Parameters
+        ----------
+        linewidth : float, optional
+            Thickness of line drawn around country borders. If None, uses 
+            `map_options` or Basemap `drawcountries` defaults.
+        linestyle : str, optional
+            Indicates which line format option will be used 
+            (e.g. 'solid','dashed',etc...). If None, uses 
+            `map_options` or Basemap `drawcountries` defaults.
+        color : str, optional
+            Indicates which color the line drawn around coasts will 
+            be (e.g. black lines can use the 'k' string). If None, uses 
+            `map_options` or Basemap `drawcountries` defaults.
+        **drawcountries_kwargs
+            Keyword arguments for the basemap `drawcountries` method.
+
+        Notes
+        -----
         Wrapper for Basemap `drawcountries` method.
         Saves input options to `map_options` attribute.
 
-        Parameters
-        ----------
-        drawcountries_kwargs : dict, optional
-            Keyword arguments for the basemap `drawcountries` method.
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw a map using only blue dashed line country borders:
+
+        >>> tmap = Tplot_Map(option_dict={},override_defaults=True)
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.add_countries(linewidth = 3,linestyle = 'dashed',color = 'b')
+        >>> print(tmap.map_options["drawcountries"])
+        {'linewidth': 3, 'linestyle': 'dashed', 'color': 'b'}
+        >>> tmap.show()
         """
         if linewidth is not None:
             drawcountries_kwargs.update({'linewidth':linewidth})
@@ -363,6 +435,72 @@ class Tplot_Map(Basemap):
         self._add_plot_feature(plot_type="drawcountries",plot_type_kwargs=drawcountries_kwargs)
         return
 
+    def add_fillcontinents(
+            self,
+            color :      str | None = None,
+            lake_color : str | None = None,
+            alpha :    float | None = None,
+            **fillcontinents_kwargs):
+        """
+        Fill landmasses and lakes with colors.
+                                
+        Parameters
+        ----------
+        color : str, optional
+            Fills landmasses.
+        lake_color : str, optional
+            Fills lakes within landmasses. 
+        alpha : float, optional
+            Sets transparency for landmass polygons, allowing the map background (see `add_mapboundary`) to show through.
+        **fillcontinents_kwargs
+            Keyword arguments for the basemap `fillcontinents` method.
+
+        Notes
+        -----
+        Wrapper for Basemap `fillcontinents` method.
+        Saves input options to `map_options` attribute.
+        
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw landmasses in dark green, lakes in dark blue, with a transparency alpha of 0.5 (leaving the oceans white):
+
+        >>> tmap = Tplot_Map(option_dict={},override_defaults=True)
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.add_fillcontinents(color = 'darkgreen',lake_color = 'darkblue',alpha = 0.5)
+                
+        >>> print(tmap.map_options["fillcontinents"])
+        {'color': 'darkgreen', 'lake_color': 'darkblue', 'alpha': 0.5}
+        >>> tmap.show()
+        """
+        # TODO: needs handling if lake_color or alpha intentionally set to None
+        if color is not None:
+            fillcontinents_kwargs.update({'color':color})
+        if lake_color is not None:
+            fillcontinents_kwargs.update({'lake_color':lake_color})
+        if alpha is not None:
+            fillcontinents_kwargs.update({'alpha':alpha})
+        self._add_plot_feature(plot_type="fillcontinents",plot_type_kwargs=fillcontinents_kwargs)
+        return
+
     def add_mapboundary(
             self,
             linewidth: float | None = None,
@@ -370,15 +508,58 @@ class Tplot_Map(Basemap):
             fill_color:  str | None = None,
             **drawmapboundary_kwargs):
         """
+        Draw map borders and fill ocean color.
+                        
+        Parameters
+        ----------
+        linewidth : float, optional
+            Thickness of line drawn around the outer edge of the map. If None, uses 
+            `map_options` or Basemap `drawmapboundary` defaults.
+        color : str, optional
+            Indicates color the map boundary line drawn (e.g. 
+            black lines can use the 'k' string). If None, uses 
+            `map_options` or Basemap `drawcountries` defaults.
+            Defaults to black.
+        fill_color : str, optional
+            Fills map background (ocean color). 
+        **drawmapboundary_kwargs
+            Keyword arguments for the basemap `drawmapboundary` method.
+
+        Notes
+        -----
         Wrapper for Basemap `drawmapboundary` method.
         Saves input options to `map_options` attribute.
 
-        Parameters
-        ----------
-        drawmapboundary_kwargs : dict, optional
-            Keyword arguments for the basemap `drawmapboundary` method.
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw a light blue featureless globe with a red border:
+
+        >>> tmap = Tplot_Map(option_dict={},override_defaults=True)
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.add_mapboundary(linewidth = 3,color = 'r',fill_color = 'lightskyblue')
+        >>> print(tmap.map_options["drawmapboundary"])
+        {'linewidth': 3, 'color': 'r', 'fill_color': 'lightskyblue'}
+        >>> tmap.show()
         """
-        # TODO: needs handling if fill_color intentionally set to None
         if linewidth is not None:
             drawmapboundary_kwargs.update({'linewidth':linewidth})
         if color is not None:
@@ -387,21 +568,7 @@ class Tplot_Map(Basemap):
             drawmapboundary_kwargs.update({'fill_color':fill_color})
         self._add_plot_feature(plot_type="drawmapboundary",plot_type_kwargs=drawmapboundary_kwargs)
         return
-    def add_map_boundary(self,**drawmapboundary_kwargs):
-        """
-        Wrapper for Basemap `drawmapboundary` method.
-        Saves input options to `map_options` attribute.
-
-        Parameters
-        ----------
-        drawmapboundary_kwargs : dict, optional
-            Keyword arguments for the basemap `drawmapboundary` method.
-        """
-        # TODO add essential arguments as variables
-        # TODO add deprecated warning, update docstring
-        self.add_mapboundary(**drawmapboundary_kwargs)
-        return
-
+    
     # TODO: add support for tplot variables in meridians and parallels
     def add_meridians(
             self,
@@ -455,31 +622,6 @@ class Tplot_Map(Basemap):
         if linewidth is not None:
             drawparallels_kwargs.update({'linewidth':linewidth})
         self._add_plot_feature(plot_type="drawparallels",plot_type_kwargs=drawparallels_kwargs)
-        return
-
-    def add_fillcontinents(
-            self,
-            color :      str | None = None,
-            lake_color : str | None = None,
-            alpha :    float | None = None,
-            **fillcontinents_kwargs):
-        """
-        Wrapper for Basemap `drawmapboundary` method.
-        Saves input options to `map_options` attribute.
-
-        Parameters
-        ----------
-        fillcontinents_kwargs : dict, optional
-            Keyword arguments for the basemap `fillcontinents` method.
-        """
-        # TODO: needs handling if lake_color or alpha intentionally set to None
-        if color is not None:
-            fillcontinents_kwargs.update({'color':color})
-        if lake_color is not None:
-            fillcontinents_kwargs.update({'lake_color':lake_color})
-        if alpha is not None:
-            fillcontinents_kwargs.update({'alpha':alpha})
-        self._add_plot_feature(plot_type="fillcontinents",plot_type_kwargs=fillcontinents_kwargs)
         return
 
     def add_nightshade(
@@ -849,17 +991,12 @@ def convert_coords_to_geod_lonlat_list(
     
     Parameters
     ----------
-    coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO','Basemap_x_y'}
-        case 'geod_lat_lon':
-            # Geodetic latitude, Longitude
-        case 'geoc_lat_lon':
-            # Geocentric Latitude, Longitude
-        case 'geod_spherical':
-            # Radius, Geodetic Latitude, Longitude
-        case 'geoc_spherical':
-            # Radius, Geocentric Latitude, Longitude
-        case 'cart_GEO':
-            # X, Y, Z in ECEF coordinates
+    coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
+        # Geodetic latitude, Longitude
+        # Geocentric Latitude, Longitude
+        # Radius, Geodetic Latitude, Longitude
+        # Radius, Geocentric Latitude, Longitude
+        # X, Y, Z in ECEF coordinates
     angle_meas : {'degrees', 'radians', 'arcminutes'}
 
     Returns
@@ -890,8 +1027,8 @@ def convert_coords_to_geod_lonlat_list(
     from pyspedas import cartesian2geodeticpolar as cotrans_cartesian2geodeticpolar
     from pyspedas import geodetic_correction as cotrans_geodetic_correction
 
-    if coord_type not in ['geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO','Basemap_x_y']:
-        raise ValueError("coord_type must be one of: 'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO','Basemap_x_y'")
+    if coord_type not in ['geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO']:
+        raise ValueError("coord_type must be one of: 'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'")
 
     # Create list of coordinate data to parse:
     coords_list = []
@@ -1121,3 +1258,14 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     geo_data = get_data(tvar_geo)
     data_geod_polar = cotrans_cartesian2geodeticpolar(data=geo_data.y)
     return data_geod_polar
+
+if __name__ == "__main__":
+    tmap = Tplot_Map(option_dict={},override_defaults=True)
+    tmap.print_map_options()
+    tmap.add_fillcontinents(
+        color = 'darkgreen',
+        lake_color = 'darkblue',
+        alpha = 0.5)
+    print(tmap.map_options["fillcontinents"])
+    tmap.show()
+    print("Done!")
