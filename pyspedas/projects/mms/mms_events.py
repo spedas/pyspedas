@@ -5,7 +5,7 @@ import pandas as pd
 from pyspedas.tplot_tools import time_string, time_double
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 
 
 def mms_brst_events(trange=None, reload=False):
@@ -24,7 +24,7 @@ def mms_brst_events(trange=None, reload=False):
         logging.error('Time range not specified. ')
         return
 
-    remote_path = 'https://lasp.colorado.edu/mms/sdc/public/service/latis/'
+    remote_path = sdc_url('public/service/latis/')
     remote_file = 'mms_burst_data_segment.csv'
 
     if reload or not os.path.exists(os.path.join(CONFIG['local_data_dir'], remote_file)):

@@ -16,6 +16,7 @@ related_files:
   - pyspedas/tplot_tools/importers/cdf_to_tplot.py
   - pyspedas/projects/erg/tests/test_erg_load.py
   - pyspedas/projects/erg/tests/test_erg_spdf.py
+  - pyspedas/projects/erg/tests/test_erg_s3.py
   - pyspedas/projects/erg/tests/test_erg.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
   - pyspedas/projects/erg/tests/test_erg_cotrans.py
@@ -40,27 +41,29 @@ particle products.
   the particle products. Has its own AGENTS.md.
 - `ground/`: magnetometer, all-sky imager, SuperDARN, riometer and VLF loaders. Has its own
   AGENTS.md.
-- `config.py`: `CONFIG` with `local_data_dir`, separate `ground_remote_data_dir` and
-  `satellite_remote_data_dir`, legacy `remote_data_dir`, and `no_download`.
+- `config.py`: `CONFIG` with `local_data_dir`, independent ground, satellite and att
+  `*_remote_data_dir` / `*_remote_data_layout` pairs, deprecated compatibility
+  `remote_data_dir`, `no_download`, and `resolve_source(family)`.
 - `__init__.py`: imports every loader and the `*_part_products` and coordinate tools under
   its short name
   (`pyspedas.projects.erg.mgf`, `...sd_fit`, `...erg_cotrans`).
 - `tests/`: unittest modules; `test_erg_load.py` needs no network and `test_erg_spdf.py`
-  uses SPDF, the others download from ERG-SC.
+  uses SPDF; `test_erg_s3.py` uses S3 satellite data with SPDF attitude,
+  and the others download from ERG-SC.
 - `README.md`: user guide with examples.
 
 ## How a loader works
 
 Every loader, satellite or ground, builds its own file path template and calls `load()` in
 `satellite/erg/load.py`. For `mgf()` (`satellite/erg/mgf/mgf.py`) the template is
-`satellite/erg/mgf/l2/8sec/%Y/%m/erg_mgf_l2_8sec_%Y%m%d_v??.??.cdf`; ground templates start
-with `ground/` (see `ground/geomag/gmag_isee_fluxgate.py`). `load()`:
+`mgf/l2/8sec/%Y/%m/erg_mgf_l2_8sec_%Y%m%d_v??.??.cdf`; ground templates are also
+family-relative (see `ground/geomag/gmag_isee_fluxgate.py`). Each wrapper passes
+`**resolve_source(family)` to select satellite, att, or ground explicitly. `load()`:
 
 1. expands the template with `dailynames()` using the caller's `file_res` (daily or hourly);
-2. selects the ground or satellite URL, strips the corresponding template prefix for
-   remote names, translates SPDF product directories and EFD filename case when the
-   satellite URL is SPDF, and
-   retains the original ERG-SC directories in the local cache path; `download()` selects
+2. translates product directories and EFD filename case when the explicit layout
+   is `spdf`, independently of the URL, and uses those URL-relative paths directly
+   beneath `local_data_dir`; `download()` selects
    the last version only for wildcard paths and passes `uname`/`passwd` as credentials;
 3. loads the files with `cdf_to_tplot()`, using the caller's `prefix` and `suffix`;
 4. with `notplot=True`, adds the last file's CDF attributes to the returned dicts under
@@ -74,7 +77,10 @@ variables (fill value clipping, plot options, renaming).
 
 - Server: `https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/`, overridden by
   `ERG_REMOTE_DATA_DIR` (legacy common base URL), or independently by
-  `ERG_GROUND_REMOTE_DATA_DIR` and `ERG_SATELLITE_REMOTE_DATA_DIR`. SPDF satellite URL:
+  `ERG_GROUND_REMOTE_DATA_DIR`, `ERG_ATT_REMOTE_DATA_DIR`, and
+  `ERG_SATELLITE_REMOTE_DATA_DIR`. The matching `*_REMOTE_DATA_LAYOUT` variables
+  select layouts explicitly: satellite/att accept `ergsc` or `spdf`; ground accepts
+  `ergsc`. No source fallback is attempted. SPDF satellite URL:
   `https://spdf.gsfc.nasa.gov/pub/data/arase/`. Local folder: `ERG_DATA_DIR`, else `SPEDAS_DATA_DIR/ergsc`, else
   `erg_data/`. `ERG_NO_DOWNLOAD` set to true turns downloads off. Stored preferences
   (`pyspedas/preferences.py`) are applied first, then these variables.

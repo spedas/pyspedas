@@ -25,11 +25,36 @@ class DownloadTestCases(unittest.TestCase):
         # https://github.com/getmoto/moto/issues/4418
         cls.moto_server = subprocess.Popen(
                 ["moto_server", "-p3000"],
-                stdout=subprocess.PIPE, stderr=subprocess.PIPE
+                # Inherit output so startup errors appear in the test logs.
         )
 
-        # Allow the server to start properly
-        time.sleep(2)
+        # Class cleanups also run if setUpClass fails.
+        cls.addClassCleanup(cls._stop_moto_server)
+
+        # Wait for an HTTP response instead of assuming startup takes two seconds.
+        deadline = time.monotonic() + 10
+        while True:
+            returncode = cls.moto_server.poll()
+            if returncode is not None:
+                raise RuntimeError(
+                    f"Moto server exited during startup with code {returncode}; "
+                    "see its output above."
+                )
+            remaining = deadline - time.monotonic()
+            if remaining <= 0:
+                raise RuntimeError(
+                    "Moto server was not ready at http://localhost:3000 within "
+                    "10 seconds; see its output above."
+                )
+            try:
+                response = requests.get(
+                    "http://localhost:3000", timeout=min(1, remaining)
+                )
+                if response.status_code == 200 and cls.moto_server.poll() is None:
+                    break
+            except requests.exceptions.RequestException:
+                pass
+            time.sleep(min(0.1, max(0, deadline - time.monotonic())))
 
         # Set up mock AWS environment variables (fake credentials)
         os.environ["AWS_ACCESS_KEY_ID"] = "test"
@@ -52,10 +77,15 @@ class DownloadTestCases(unittest.TestCase):
         assert response.status_code == 200, "Bucket creation failed"
 
     @classmethod
-    def tearDownClass(cls):
-        # Terminate the moto server after tests
-        cls.moto_server.terminate()
-        cls.moto_server.communicate()
+    def _stop_moto_server(cls):
+        # Reap the server after tests or failed setup, without hanging cleanup.
+        if cls.moto_server.poll() is None:
+            cls.moto_server.terminate()
+        try:
+            cls.moto_server.wait(timeout=5)
+        except subprocess.TimeoutExpired:
+            cls.moto_server.kill()
+            cls.moto_server.wait()
 
     #==========================================================================
     # Adapted unit tests (from download_tests.py) for AWS-specific URI testing.

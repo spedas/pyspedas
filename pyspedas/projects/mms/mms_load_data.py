@@ -9,22 +9,27 @@ from pyspedas.tplot_tools import time_clip as tclip
 from pyspedas.tplot_tools import time_double, time_string
 from dateutil.parser import parse
 from datetime import timedelta, datetime
-from .config import CONFIG
+from .config import CONFIG, sdc_url
 from .mms_get_local_files import mms_get_local_files
 from .mms_files_in_interval import mms_files_in_interval
 from .mms_login_lasp import mms_login_lasp
 from .mms_file_filter import mms_file_filter
-from .mms_load_data_spdf import mms_load_data_spdf
+from .mms_load_data_archive import archive_supported, mms_load_data_archive
 
 from pyspedas.utilities.download import download, is_fsspec_uri
 import fsspec
 
-def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2', 
+def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy', level='l2',
     instrument='fgm', datatype='', varformat=None, exclude_format=None, prefix='', suffix='', get_support_data=False, time_clip=False,
-    no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False, 
+    no_update=False, center_measurement=False, available=False, notplot=False, latest_version=False,
     major_version=False, min_version=None, cdf_version=None, spdf=False, always_prompt=False, varnames=[]):
     """
-    This function loads MMS data into tplot variables
+    This function loads MMS data into tplot variables.
+
+    Archive-capable instruments follow CONFIG['data_access'] (default 'sdc').
+    spdf=True explicitly selects the archive at CONFIG['remote_data_dir'];
+    spdf=False follows configuration. SDC-only products always use sdc_data_dir.
+    An unavailable archive product is not retried against the SDC.
 
     This function is not meant to be called directly. Please see the individual load routines for documentation and use.
     """
@@ -32,7 +37,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     if not isinstance(data_rate, list): data_rate = [data_rate]
     if not isinstance(level, list): level = [level]
     if not isinstance(datatype, list): datatype = [datatype]
-    
+
     probe = [str(p) for p in probe]
 
     # allows the user to pass in trange as list of datetime objects
@@ -50,12 +55,16 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
     no_download = False
     if no_update or CONFIG['no_download']: no_download = True
 
-    if spdf:
-        return mms_load_data_spdf(trange=trange, probe=probe, data_rate=data_rate, level=level, 
+    access = CONFIG['data_access']
+    if access not in ('sdc', 'archive'):
+        raise ValueError(f'Unsupported MMS data_access: {access!r}')
+    # Known SDC-only instruments stay on SDC even when archive access is selected.
+    if all(archive_supported(instrument, lvl) for lvl in level) and (spdf or access == 'archive'):
+        return mms_load_data_archive(trange=trange, probe=probe, data_rate=data_rate, level=level,
                                   instrument=instrument, datatype=datatype, varformat=varformat, exclude_format=exclude_format,
-                                  suffix=suffix, get_support_data=get_support_data, time_clip=time_clip, 
-                                  no_update=no_update, center_measurement=center_measurement, notplot=notplot, 
-                                  latest_version=latest_version, major_version=major_version, 
+                                  prefix=prefix, suffix=suffix, get_support_data=get_support_data, time_clip=time_clip,
+                                  no_update=no_update, center_measurement=center_measurement, available=available, notplot=notplot,
+                                  latest_version=latest_version, major_version=major_version,
                                   min_version=min_version, cdf_version=cdf_version, varnames=varnames)
 
     headers = {}
@@ -102,10 +111,10 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                     file_found = False
 
                     if user is None:
-                        url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
+                        url = sdc_url('public/files/api/v1/file_info/science?start_date=') + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
                     else:
-                        url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/file_info/science?start_date=' + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
-                    
+                        url = sdc_url('sitl/files/api/v1/file_info/science?start_date=') + start_date + '&end_date=' + end_date + '&sc_id=mms' + prb + '&instrument_id=' + instrument + '&data_rate_mode=' + drate + '&data_level=' + lvl
+
                     if dtype != '':
                         url = url + '&descriptor=' + dtype
 
@@ -169,9 +178,9 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                                         continue
 
                                 if user is None:
-                                    download_url = 'https://lasp.colorado.edu/mms/sdc/public/files/api/v1/download/science?file=' + file['file_name']
+                                    download_url = sdc_url('public/files/api/v1/download/science?file=') + file['file_name']
                                 else:
-                                    download_url = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/science?file=' + file['file_name']
+                                    download_url = sdc_url('sitl/files/api/v1/download/science?file=') + file['file_name']
 
                                 logging.info('Downloading ' + file['file_name'] + ' to ' + out_dir)
 
@@ -205,7 +214,7 @@ def mms_load_data(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srv
                         if added_local_files and CONFIG['mirror_data_dir'] is not None:
                             # check for network mirror; note: network mirrors are assumed to be read-only
                             # and we always copy the files from the mirror to the local data directory
-                            # before trying to load into tplot variables 
+                            # before trying to load into tplot variables
                             logging.info('No local files found; checking network mirror...')
                             local_files = mms_get_local_files(prb, instrument, drate, lvl, dtype, trange, mirror=True)
                             out_files.extend(local_files)

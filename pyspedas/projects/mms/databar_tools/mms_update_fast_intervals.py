@@ -8,7 +8,7 @@ import time
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas import tai2unix, unix2tai, store_data, options
 
@@ -58,12 +58,12 @@ def get_mms_abs_selections(start_time=None, end_time=None, session=None):
     sdc_session = session
 
     # sitl path
-    path = 'mms/sdc/sitl/files/api/v1/file_names/abs_selections'
+    path = 'sitl/files/api/v1/file_names/abs_selections'
 
     query = f'?start_date={start_time}&end_date={end_time}'
 
     response = download(
-        remote_file='https://lasp.colorado.edu/' + path + query,
+        remote_file=sdc_url(path) + query,
         session=sdc_session,
         no_wildcards=True,
         return_text=True,
@@ -103,7 +103,7 @@ def download_abs_selections(start_str,
         return None
 
     # Download all the files that were found
-    remote_path = 'https://lasp.colorado.edu/mms/sdc/sitl/files/api/v1/download/abs_selections'
+    remote_path = sdc_url('sitl/files/api/v1/download/abs_selections')
     abs_local_files = []
 
     for abs in abs_results:

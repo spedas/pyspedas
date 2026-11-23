@@ -96,7 +96,7 @@ def mms_load_fsm(trange=['2015-10-16/05:59', '2015-10-16/06;01'], probe='1', dat
             Default: False
             
         spdf: bool
-            If True, download the data from the SPDF instead of the SDC
+            Retained for compatibility. FSM is SDC-only and always uses SDC.
             Default: False
 
     Returns

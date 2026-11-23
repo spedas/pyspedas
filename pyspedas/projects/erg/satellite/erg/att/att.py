@@ -3,6 +3,7 @@ from pyspedas.tplot_tools import time_float
 from pyspedas.tplot_tools import store_data
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 
 
 from typing import List, Optional
@@ -73,9 +74,9 @@ def att(
     """
     file_version = 'v??' if version is None else version
     file_res = 24*3600.
-    pathformat = 'satellite/erg/att/txt/erg_att_'+level+'_%Y%m%d_' + file_version + '.txt'
+    pathformat = 'att/txt/erg_att_'+level+'_%Y%m%d_' + file_version + '.txt'
 
-    out_files = load(pathformat=pathformat, trange=trange, file_res=file_res,
+    out_files = load(**resolve_source('att'), pathformat=pathformat, trange=trange, file_res=file_res,
                      downloadonly=True, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if downloadonly:

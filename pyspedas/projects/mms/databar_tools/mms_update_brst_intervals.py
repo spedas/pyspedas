@@ -6,7 +6,7 @@ import numpy as np
 from pyspedas.tplot_tools import time_double, time_string
 from pyspedas.projects.mms.mms_login_lasp import mms_login_lasp
 from pyspedas.utilities.download import download
-from pyspedas.projects.mms.config import CONFIG
+from pyspedas.projects.mms.config import CONFIG, sdc_url
 from pyspedas.projects.mms.mms_tai2unix import mms_tai2unix, mms_unix2tai
 from pyspedas.utilities.month_intervals import month_intervals
 
@@ -36,7 +36,7 @@ def mms_download_brst_intervals(trange):
 
         logging.info(f'Downloading burst time intervals for {start_str} - {end_str}')
 
-        remote_path = 'https://lasp.colorado.edu/mms/sdc/public/service/latis/'
+        remote_path = sdc_url('public/service/latis/')
         #remote_file = f'mms_burst_data_segment.csv?FINISHTIME>={start_str}+&FINISHTIME<{end_str}'
 
         # Here we want only the intervals with TAI start times in the exact time range (not just overlapping)

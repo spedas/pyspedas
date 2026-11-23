@@ -3,6 +3,7 @@ import numpy as np
 from pyspedas.tplot_tools import get_data, store_data, options, clip, ylim
 
 from ...satellite.erg.load import load
+from pyspedas.projects.erg.config import resolve_source
 from ...satellite.erg.get_gatt_ror import get_gatt_ror
 
 
@@ -157,7 +158,7 @@ def gmag_magdas_1sec(
 
             file_res = 3600.0 * 24
             pathformat = (
-                "ground/geomag/magdas/"
+                "geomag/magdas/"
                 + fres
                 + "/"
                 + site_input
@@ -169,6 +170,7 @@ def gmag_magdas_1sec(
             )
 
             loaded_data_temp = load(
+                **resolve_source('ground'),
                 pathformat=pathformat,
                 file_res=file_res,
                 trange=trange,

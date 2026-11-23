@@ -78,7 +78,8 @@ def mms_part_slice2d(trange=None,
             Data level (default: l2); lower levels require an SDC username and password
 
         spdf: bool
-            Flag to download the data from SPDF instead of the MMS SDC
+            Select the configured archive (SPDF by default) when True.
+            When False, follow CONFIG['data_access']; SDC-only products use SDC.
 
         trange: list of str or list of float
             Two-element time range over which data will be averaged (optional; can also use the 'time' keyword)

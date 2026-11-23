@@ -4,6 +4,7 @@ from pyspedas.tplot_tools import time_float
 from pyspedas import clip, get_data, options, store_data, ylim, zlim
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -142,9 +143,9 @@ def pwe_wfc(
                 component_list = [component]
             for com in component_list:
                 prefix = 'erg_pwe_wfc_' + level + '_' + com + '_' + mode + '_'
-                pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
+                pathformat = 'pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_'+coord+'_%Y%m%d%H_' + file_version + '.cdf'
-                loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                loaded_data.extend(load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download))
                 if com == 'e':
                     tplot_name_list += [prefix +
@@ -161,9 +162,9 @@ def pwe_wfc(
                 component_list = [component]
             for com in component_list:
                 prefix = 'erg_pwe_wfc_' + level + '_' + com + '_' + mode + '_'
-                pathformat = 'satellite/erg/pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
+                pathformat = 'pwe/wfc/'+level+'/'+datatype+'/%Y/%m/erg_pwe_wfc_' + \
                     level+'_'+com+'_'+datatype+'_'+mode+'_%Y%m%d%H_' + file_version + '.cdf'
-                loaded_data.extend(load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+                loaded_data.extend(load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                                    varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download))
                 prefix_list.append(prefix)
                 component_suffix_list.append(com.upper() + '_spectra')

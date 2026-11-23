@@ -7,6 +7,7 @@ from pyspedas.tplot_tools import time_double
 
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -161,7 +162,7 @@ def lepe(
 
     file_res = 3600. * 24
     prefix = 'erg_lepe_'+level+'_' + datatype + '_'
-    pathformat = 'satellite/erg/lepe/'+level+'/'+datatype + \
+    pathformat = 'lepe/'+level+'/'+datatype + \
         '/%Y/%m/erg_lepe_'+level+'_'+datatype+'_%Y%m%d_'
 
     if version is None:
@@ -169,7 +170,7 @@ def lepe(
     else:
         pathformat += version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
 

@@ -1,6 +1,7 @@
 from pyspedas import options, ylim, get_data
 
 from ..load import load
+from pyspedas.projects.erg.config import resolve_source
 from ..get_gatt_ror import get_gatt_ror
 
 
@@ -112,10 +113,10 @@ def mepi_nml(
     file_res = 3600. * 24
     prefix = 'erg_mepi_'+level+'_'+datatype+'_'
 
-    pathformat = 'satellite/erg/mepi/'+level+'/'+datatype + \
+    pathformat = 'mepi/'+level+'/'+datatype + \
         '/%Y/%m/erg_mepi_'+level+'_'+datatype+'_%Y%m%d_' + file_version + '.cdf'
 
-    loaded_data = load(pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
+    loaded_data = load(**resolve_source('satellite'), pathformat=pathformat, trange=trange, level=level, datatype=datatype, file_res=file_res, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                        varformat=varformat, varnames=varnames, downloadonly=downloadonly, notplot=notplot, time_clip=time_clip, no_update=no_update, uname=uname, passwd=passwd, force_download=force_download)
 
     if (len(loaded_data) > 0) and ror:

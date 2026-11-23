@@ -9,6 +9,60 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 
 Each of the MMS load routines has a short name, which is just the instrument name without the mms_load prefix.
 
+Data sources
+------------
+MMS supports ``data_access='sdc'`` (the default) and ``data_access='archive'``
+in ``pyspedas.projects.mms.config.CONFIG``. ``remote_data_dir`` is the archive
+mission root, defaulting to ``https://spdf.gsfc.nasa.gov/pub/data/mms/``.
+``sdc_data_dir`` is the independent SDC service root, defaulting to
+``https://lasp.colorado.edu/mms/sdc/``.
+
+The existing ``spdf`` keyword is retained: ``True`` explicitly selects the
+configured archive for supported products; ``False`` follows ``data_access``.
+Under the default configuration, ordinary calls still use SDC and ``spdf=True``
+still uses SPDF. For heliocloud science data with SDC support products:
+
+.. code-block:: python
+
+    import pyspedas
+    from pyspedas.projects.mms.config import CONFIG
+
+    CONFIG.update({
+        'data_access': 'archive',
+        'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/mms/',
+        'sdc_data_dir': 'https://lasp.colorado.edu/mms/sdc/',
+    })
+    pyspedas.projects.mms.fgm(trange=['2015-10-16', '2015-10-17'])
+
+SPDF and heliocloud share archive templates; no layout setting is needed.
+Archive URLs point to the directory containing ``mms1/`` through ``mms4/``.
+Archive-capable instruments are FGM, ASPOC, EDI, FPI, EIS, FEEPS, HPCA, MEC CDFs,
+SCM, DSP, and EDP. FSM, SITL/trigger levels, and restricted FEEPS L1b requests use
+SDC directly. Requests combining archive-capable and SDC-only levels use SDC for
+the whole request. Coverage can vary by date, level and descriptor; failed archive
+requests do not retry against SDC.
+
+Ancillary ASCII state/attitude data, tetrahedron quality factors, burst/fast/SROI
+intervals, DES photoelectron models, authentication, and SDC cache-cleanup queries
+always use ``sdc_data_dir``, regardless of archive selection. SDC paths retain
+``public/`` and authenticated ``sitl/`` conventions.
+
+Cache paths follow the selected implementation: archive burst paths use year/month;
+SDC burst science caches add a day directory. Files are not moved, and existing
+local-cache and read-only mirror searches remain available.
+
+Archive access honors offline flags, download-only mode, data dictionaries,
+prefix/suffix, clipping and CDF version filters. ``available=True`` lists remote
+filenames without downloading CDF contents, or matching cached filenames when
+offline. ``notplot=True`` returns dictionaries across all requested groups.
+``mms_load_data_spdf`` remains a compatibility wrapper; importing it no longer
+changes configuration.
+
+All three settings accept preferences under ``[projects.mms]`` and environment
+overrides ``MMS_DATA_ACCESS``, ``MMS_REMOTE_DATA_DIR``, and ``MMS_SDC_DATA_DIR``.
+Environment variables override stored preferences.
+
+
 MMS SDC credentials
 -------------------
 Most public MMS science data can be loaded without credentials.  When an MMS

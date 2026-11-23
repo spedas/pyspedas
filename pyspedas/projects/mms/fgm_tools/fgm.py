@@ -113,7 +113,8 @@ def mms_load_fgm(trange=['2015-10-16', '2015-10-17'], probe='1', data_rate='srvy
             Default: False
 
         spdf: bool
-            If True, download the data from the SPDF instead of the SDC
+            Select the configured archive (SPDF by default) when True.
+            When False, follow CONFIG['data_access']; SDC-only products use SDC.
             Default: False
 
         get_fgm_ephemeris: bool

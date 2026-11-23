@@ -90,6 +90,8 @@ jobs:
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_setup
               echo Starting ERG SPDF satellite tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_spdf
+              echo Starting ERG Heliocloud satellite tests at `date`
+              coverage run -a -m pyspedas.projects.erg.tests.test_erg_s3
               echo Starting ERG loader routing tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_load
               echo Starting ace tests at `date`
@@ -280,6 +282,8 @@ jobs:
               coverage run -a -m pyspedas.utilities.tests.test_utilities_plot_mms
               echo "Starting mms_login_lasp tests at $(date)"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_login_lasp
+              echo "Starting mms_sources tests at $(date)"
+              coverage run -a -m pyspedas.projects.mms.tests.test_mms_sources
               echo "Starting mms data rate seg tests at $(date)"
               coverage run -a -m pyspedas.projects.mms.tests.test_mms_data_rate_seg
               echo Starting mms cotrans tests at `date`
@@ -504,7 +508,7 @@ jobs:
           python -m venv ../.venv
           source ../.venv/bin/activate
           python -m pip install --upgrade pip
-          pip install "pdm==2.29.6" "hishel[httpx2]>=1.4,<2" uv
+          pip install pdm uv
           pdm config use_uv true
           pdm install -dG lint -dG test -dG setup --no-default
           wheelbase=$(echo dist/*.whl)

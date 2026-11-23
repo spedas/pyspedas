@@ -1,6 +1,3 @@
-import os
-from urllib.parse import urlparse
-
 import cdflib
 
 from pyspedas.tplot_tools import time_clip as tclip
@@ -64,8 +61,15 @@ def load(trange=['2017-03-27', '2017-03-28'],
          passwd=None,
          time_clip=False,
          version=None,
-         force_download=False):
+         force_download=False,
+         remote_data_dir=None,
+         remote_data_layout=None):
     """
+    ``pathformat`` is relative to the configured family root. The calling
+    wrapper supplies ``remote_data_dir`` and ``remote_data_layout`` using
+    ``resolve_source()``. Supported layouts are ``ergsc`` and ``spdf``;
+    layout selection never depends on the URL hostname or scheme.
+
     This function is not meant to be called directly; please see the instrument specific wrappers:
         pyspedas.projects.erg.mgf()
         pyspedas.projects.erg.hep()
@@ -80,55 +84,25 @@ def load(trange=['2017-03-27', '2017-03-28'],
         pyspedas.projects.erg.xep()
     """
 
-    # Templates retain their ERG-SC prefixes so the existing cache is reusable.
-    # Only the remote names are relative to the configurable data-family URL.
-    if pathformat.startswith('satellite/erg/'):
-        path_prefix = 'satellite/erg/'
-        remote_path = CONFIG['satellite_remote_data_dir']
-    elif pathformat.startswith('ground/'):
-        path_prefix = 'ground/'
-        remote_path = CONFIG['ground_remote_data_dir']
-    else:
-        path_prefix = ''
-        remote_path = CONFIG['remote_data_dir']
-    local_path = os.path.join(CONFIG['local_data_dir'], path_prefix)
-    remote_format = pathformat[len(path_prefix):]
-    last_version = any(char in pathformat for char in '?*')
+    # Wrappers select the source explicitly and supply family-relative paths.
+    # Remote names also define the cache layout, independently of URL scheme.
+    if not remote_data_dir:
+        raise ValueError('ERG load requires an explicit remote_data_dir')
+    if remote_data_layout not in ('ergsc', 'spdf'):
+        raise ValueError(f'Unsupported ERG remote_data_layout: {remote_data_layout!r}')
+    remote_format = pathformat
+    if remote_data_layout == 'spdf':
+        remote_format = _spdf_path(remote_format)
+    last_version = any(char in remote_format for char in '?*')
 
-    # find the full remote path names using the trange
-    remote_names = dailynames(file_format=remote_format,
-                              trange=trange, res=file_res)
-
-    out_files = []
-    if path_prefix == 'satellite/erg/' and urlparse(remote_path).hostname == 'spdf.gsfc.nasa.gov':
-        spdf_names = dailynames(file_format=_spdf_path(remote_format),
-                               trange=trange, res=file_res)
-        # Keep each product in its original ERG-SC cache directory even though
-        # SPDF's remote directory layout is different. Group requests so hourly
-        # files share one directory listing per local directory.
-        groups = {}
-        for original, remote in zip(remote_names, spdf_names):
-            key = (os.path.dirname(original), os.path.dirname(remote))
-            names = groups.setdefault(key, [])
-            names.append(os.path.basename(remote))
-            # Older ERG-SC EFD cache files have mixed-case product names.
-            if (no_update or CONFIG["no_download"]) and os.path.basename(original) != os.path.basename(remote):
-                names.append(os.path.basename(original))
-        requests = [(names, remote_path.rstrip('/') + '/' + remote_dir + '/',
-                     os.path.join(local_path, local_dir))
-                    for (local_dir, remote_dir), names in groups.items()]
-    else:
-        requests = [(remote_names, remote_path.rstrip('/') + '/', local_path)]
-
-    for names, url, cache in requests:
-        files = download(remote_file=names, remote_path=url, local_path=cache,
-                         no_download=no_update or CONFIG["no_download"],
-                         last_version=last_version, username=uname, password=passwd,
-                         force_download=force_download)
-        if files is not None:
-            out_files.extend(files)
-
-    out_files = sorted(set(out_files))
+    remote_names = dailynames(file_format=remote_format, trange=trange, res=file_res)
+    files = download(remote_file=remote_names,
+                     remote_path=remote_data_dir.rstrip('/') + '/',
+                     local_path=CONFIG['local_data_dir'],
+                     no_download=no_update or CONFIG["no_download"],
+                     last_version=last_version, username=uname, password=passwd,
+                     force_download=force_download)
+    out_files = sorted(set(files or []))
 
     if downloadonly:
         return out_files

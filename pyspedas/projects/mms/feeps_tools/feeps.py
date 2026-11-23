@@ -139,7 +139,8 @@ def mms_load_feeps(trange=['2015-10-16', '2015-10-17'],
             useful if you accidentally save an incorrect password, or if your SDC password has changed
 
         spdf: bool
-            If True, download the data from the SPDF instead of the SDC
+            Select the configured archive (SPDF by default) when True.
+            When False, follow CONFIG['data_access']; SDC-only products use SDC.
 
         filter_recvary_warnings: bool
             If True, capture warnings from cdf_to_tplot and filter out the ones complaining about non-record-varying support data with timestamps
