@@ -124,6 +124,8 @@ def load_fdsn(trange=None, network=None, station=None,
     tplot_variable : str or None
         Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
         If `downloadonly` is true, the path to the downloaded/cached MTH5 file is returned instead.
+        If runs differ in coordinate system, units, or measurement type, additional tplot
+        variables with `_1`, `_2`, ... suffixes are created; only the primary (base) name is returned.
     """
 
     # mth5.logger.remove()
