@@ -6,6 +6,11 @@ from pyspedas.particles.spd_part_products.spd_pgs_make_theta_spec import spd_pgs
 from pyspedas.particles.spd_part_products.spd_pgs_make_phi_spec import spd_pgs_make_phi_spec
 from pyspedas.particles.spd_part_products.spd_pgs_make_e_spec import spd_pgs_make_e_spec
 
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
+
 class MyTestCase(unittest.TestCase):
     def test_theta_spec(self):
         trange=['2017-04-05 21:45:00', '2017-04-05 22:45:00']
