@@ -425,12 +425,12 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     @patch('os.path.isfile', return_value=True)
     @patch('pyspedas.mth5.load_fdsn.MTH5')
-    def test20_station_data_undefined_unboundlocalerror(self, mock_MTH5, mock_isfile):
+    def test20_station_data_no_surveys(self, mock_MTH5, mock_isfile):
         """
-        If no survey matches the station, station_data is never assigned,
-        so referencing it later raises UnboundLocalError. That must be
-        caught and logged as "station_data was not defined correctly",
-        the same as the AttributeError case below.
+        If there are no surveys, no station metadata is ever recorded, so
+        the legend lookup on None metadata raises AttributeError. That must
+        be caught and logged as "station_data was not defined correctly",
+        the same as the missing-channels case below.
         """
         mock_mth5_instance = MagicMock()
         mock_mth5_instance.__enter__.return_value.surveys_group.groups_list = []
@@ -454,7 +454,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         If station_data.metadata has no channels_recorded attribute,
         referencing it raises AttributeError. That must be caught and
         logged as "station_data was not defined correctly", the same as
-        the UnboundLocalError case above.
+        the no-surveys case above.
         """
         station_metadata = SimpleNamespace(run_list=[])
         station_data = SimpleNamespace(metadata=station_metadata)
