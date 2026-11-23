@@ -325,6 +325,25 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         self.assertTrue(np.all(np.isnan(data[:, 1])))
         self.assertTrue(np.array_equal(data[:, 2], [10, 20]))
 
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_legend_fallback_for_partial_run(self, mock_MTH5, mock_isfile):
+        """If channels_recorded has fewer than 3 names, the legend falls back to x/y/z."""
+        station = self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20], missing_channel='hy')
+        station.metadata.channels_recorded = ['hx', 'hz']
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1']
+        mock_mth5.get_station.side_effect = [station]
+
+        result = load_fdsn(
+            network='TEST', station='TEST',
+            trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+            nodownload=True,
+        )
+
+        legend = pyspedas.tplot_tools.data_quants[result].attrs['plot_options']['yaxis_opt']['legend_names']
+        self.assertEqual(legend, ['x', 'y', 'z'])
+
     # Mock FDSN and MTH5 so we do not make unnecessary calls
     @patch('mth5.clients.make_mth5.FDSN.__init__', return_value=None)
     @patch('mth5.mth5.MTH5.__init__', return_value=None)

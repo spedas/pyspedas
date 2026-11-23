@@ -17,6 +17,7 @@
 | `test20_load_fdsn_splits_on_coord_sys` | Runs with different coordinate systems split the same way, each keeping its own `get_coords(...)` value |
 | `test20_load_fdsn_splits_on_missing_channel_units` | A run missing units on one channel (e.g. `hy`) gets a distinct signature from a fully-populated run and splits instead of merging silently |
 | `test20_load_fdsn_fills_missing_channel_with_nan` | A run with only 2 of 3 magnetic components still produces a `(N, 3)` tplot variable, with the missing component's column entirely `NaN` |
+| `test20_load_fdsn_legend_fallback_for_partial_run` | Station `channels_recorded` lists only 2 names for a partial run -> legend falls back to `['x', 'y', 'z']` so it matches the 3 data columns |
 | `test20_request_df_parameter` | A custom `request_df` (with different network/station than the positional args) takes precedence, is passed unmodified to `make_mth5_from_fdsn_client` with the expected keyword arguments, and is not mutated by the call |
 | `test20_station_data_no_surveys` | No surveys -> no station metadata is recorded -> the legend lookup on `None` metadata raises `AttributeError`, which must be caught and logged as `'station_data was not defined correctly'` |
 | `test20_station_data_missing_channels_attributeerror` | `station_data.metadata` has no `channels_recorded` -> `AttributeError`, caught and logged the same as the no-surveys case above |

@@ -418,6 +418,9 @@ def load_fdsn(trange=None, network=None, station=None,
             legend_names = ['x', 'y', 'z']
             try:
                 legend_names = metadata.channels_recorded
+                # A partial run can leave fewer names than the 3 data columns.
+                if len(legend_names) != 3:
+                    legend_names = ['x', 'y', 'z']
             except AttributeError:
                 pyspedas.logger.error("station_data was not defined correctly")
                 if not noexception:
