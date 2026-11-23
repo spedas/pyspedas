@@ -1,8 +1,8 @@
-"""THEMIS sources: explicit data layouts and independent support-data URLs.
+"""THEMIS sources: one mission data source and an independent SSC source.
 
-All source settings accept stored preferences and matching THM_* environment
-variables. Changing remote_data_dir does not change metadata, variometer, or SSC
-sources. Each resource uses its configured source without automatic fallback.
+Satellite data, all GMAG networks and station metadata share remote_data_dir.
+Source settings accept stored preferences and matching THM_* environment
+variables. Requests never fall back to a different provider.
 """
 import logging
 import os
@@ -27,26 +27,6 @@ DATA_SOURCES = {
     },
 }
 
-VARIOMETER_SOURCES = {
-    'berkeley': {
-        'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
-        'variometer_remote_data_layout': 'themis',
-    },
-    'spdf': {
-        'variometer_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/themis/',
-        'variometer_remote_data_layout': 'spdf',
-    },
-}
-
-GMAG_METADATA_SOURCES = {
-    'berkeley': {
-        'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
-    },
-    'spdf': {
-        'gmag_metadata_file': 'https://spdf.gsfc.nasa.gov/pub/data/themis/thg/gmags_meta.csv',
-    },
-}
-
 SSC_SOURCES = {
     'spdf': {
         'ssc_remote_data_dir': 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/',
@@ -56,8 +36,6 @@ SSC_SOURCES = {
 CONFIG = {'no_download': False,
           'local_data_dir': 'themis_data/',
           **DATA_SOURCES['berkeley'],
-          **VARIOMETER_SOURCES['berkeley'],
-          **GMAG_METADATA_SOURCES['berkeley'],
           **SSC_SOURCES['spdf']}
 
 from pyspedas.preferences import apply_mission_preferences, apply_no_download_environment
@@ -74,31 +52,26 @@ if os.environ.get('THM_DATA_DIR'):
     CONFIG['local_data_dir'] = os.environ['THM_DATA_DIR']
 
 # Source URLs and layouts can be overridden independently of the local cache.
-for key in ('remote_data_dir', 'remote_data_layout',
-            'variometer_remote_data_dir', 'variometer_remote_data_layout',
-            'gmag_metadata_file', 'ssc_remote_data_dir'):
+for key in ('remote_data_dir', 'remote_data_layout', 'ssc_remote_data_dir'):
     env_key = 'THM_' + key.upper()
     if env_key in os.environ:
         CONFIG[key] = os.environ[env_key]
 
 
-def resolve_source(family='data'):
-    """Return the URL and explicit layout for ordinary or variometer data.
+def resolve_source():
+    """Return the shared URL and explicit layout for all mission data.
 
     THEMIS and UCLA use ``themis`` layout. SPDF and heliocloud use ``spdf``.
     URLs point to mission roots; paths beneath them include ``tha/``, ``thg/``,
     etc. Layout selection never depends on hostname or URL scheme, and sources
     are not retried against a different server.
     """
-    if family not in ('data', 'variometer'):
-        raise ValueError(f'Unknown THEMIS data family: {family!r}')
-    prefix = 'variometer_' if family == 'variometer' else ''
-    url = CONFIG[prefix + 'remote_data_dir']
-    layout = CONFIG[prefix + 'remote_data_layout']
+    url = CONFIG['remote_data_dir']
+    layout = CONFIG['remote_data_layout']
     if layout not in ('themis', 'spdf'):
-        raise ValueError(f'Unsupported THEMIS {prefix}remote_data_layout: {layout!r}')
+        raise ValueError(f'Unsupported THEMIS remote_data_layout: {layout!r}')
     if not isinstance(url, str) or not url.strip():
-        raise ValueError(f'THEMIS {prefix}remote_data_dir must be a nonempty URL')
+        raise ValueError('THEMIS remote_data_dir must be a nonempty URL')
     return url, layout
 
 
@@ -122,7 +95,7 @@ def _get_source(sources):
 
 
 def set_data_source(source_tag):
-    """Select the data provider for this session.
+    """Select the satellite, ground and GMAG metadata provider for this session.
 
     Parameters
     ----------
@@ -152,72 +125,6 @@ def get_data_source():
         Only this source's relevant settings participate in the match.
     """
     return _get_source(DATA_SOURCES)
-
-
-def set_variometer_source(source_tag):
-    """Select the variometer provider for this session.
-
-    Parameters
-    ----------
-    source_tag : str
-        Provider tag: ``berkeley``, ``spdf``. Tags are case-sensitive.
-
-    Raises
-    ------
-    ValueError
-        If the tag is unsupported. CONFIG is unchanged in that case.
-
-    Notes
-    -----
-    Updates only this source's CONFIG keys and logs the resulting settings at
-    INFO level. No network requests are made and preferences are not saved.
-    """
-    _set_source(source_tag, VARIOMETER_SOURCES, 'variometer')
-
-
-def get_variometer_source():
-    """Identify the current variometer provider from CONFIG.
-
-    Returns
-    -------
-    str or None
-        Matching provider tag, or None for custom or incomplete settings.
-        Only this source's relevant settings participate in the match.
-    """
-    return _get_source(VARIOMETER_SOURCES)
-
-
-def set_gmag_metadata_source(source_tag):
-    """Select the GMAG metadata provider for this session.
-
-    Parameters
-    ----------
-    source_tag : str
-        Provider tag: ``berkeley``, ``spdf``. Tags are case-sensitive.
-
-    Raises
-    ------
-    ValueError
-        If the tag is unsupported. CONFIG is unchanged in that case.
-
-    Notes
-    -----
-    Updates only this source's CONFIG keys and logs the resulting settings at
-    INFO level. No network requests are made and preferences are not saved.
-    """
-    _set_source(source_tag, GMAG_METADATA_SOURCES, 'GMAG metadata')
-
-
-def get_gmag_metadata_source():
-    """Identify the current GMAG metadata provider from CONFIG.
-
-    Returns
-    -------
-    str or None
-        Matching provider tag, or None for custom or incomplete settings.
-        Only this source's relevant settings participate in the match.
-    """
-    return _get_source(GMAG_METADATA_SOURCES)
 
 
 def set_ssc_source(source_tag):

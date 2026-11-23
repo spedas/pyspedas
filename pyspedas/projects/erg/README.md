@@ -20,8 +20,8 @@ save preferences; use the existing preferences API explicitly to persist them.
 
 | Data family | Setter | Supported tags |
 | --- | --- | --- |
-| Satellite | `set_satellite_source(source_tag)` | `ergsc`, `spdf`, `heliocloud` |
-| ASCII attitude | `set_attitude_source(source_tag)` | `ergsc`, `spdf` |
+| Satellite | `set_satellite_source(source_tag)` | `ergsc`, `jaxa`, `spdf`, `heliocloud` |
+| ASCII attitude | `set_attitude_source(source_tag)` | `ergsc`, `jaxa`, `spdf` |
 | Ground | `set_ground_source(source_tag)` | `ergsc` |
 
 ```python
@@ -32,6 +32,11 @@ config.set_attitude_source('spdf')
 config.set_ground_source('ergsc')
 print(config.get_satellite_source())  # heliocloud
 ```
+
+JAXA satellite and ASCII attitude data use `https://data.darts.isas.jaxa.jp/pub/erg/`
+with the `ergsc` layout. Select both with `config.set_satellite_source('jaxa')`
+and `config.set_attitude_source('jaxa')`; ground data remain on their independent
+ERG-SC source. `jaxa` is a provider tag, not a layout name.
 
 Heliocloud uses the `spdf` satellite layout. Its missing ASCII attitude and
 ground products are selected independently using their supported providers.

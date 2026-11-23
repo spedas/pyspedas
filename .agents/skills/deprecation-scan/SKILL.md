@@ -11,6 +11,25 @@ needs during its transition period: a `logging.warning` that contains
 marks it deprecated, and, if one is being maintained, an entry in the next major
 version's migration guide. This skill finds code that falls short.
 
+## Establish release status and scope
+
+Standard deprecation requirements apply to stable APIs that have appeared in a
+release published to production PyPI (`pypi.org`). New APIs present only on master
+or development branches are experimental by default. Released APIs explicitly
+marked experimental before their first production release are also exempt from
+the standard transition period. Check published distributions and release
+records for the actual routine, parameter, setting or behavior being assessed.
+A change on master does not make a previously released stable contract
+experimental, and a stable API cannot be reclassified to avoid deprecation.
+Ask a maintainer if the status remains unclear after checking release evidence.
+
+Experimental changes still require tests, documentation and release notes when
+published, as described in RULES.md. A standard "Experimental API" notice says
+"without the standard deprecation period"; the scanner's keyword matching can
+mistake this notice for a deprecated API. Confirm the affected construct's scope
+and release status before treating a flag as a policy violation. The script
+does not establish release history or experimental eligibility automatically.
+
 ## Run the scan
 
 From the repository root:

@@ -1681,6 +1681,10 @@
           "kind": "file"
         },
         {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
           "path": "RULES.md",
           "kind": "file"
         }

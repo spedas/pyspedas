@@ -107,13 +107,15 @@ def resolve_source(family):
     URLs name the family root (including ``satellite/erg/`` for ERG-SC
     satellite and attitude data). Layouts describe paths below that root,
     independently of the hostname or URL scheme. Ground data support only
-    the ERG-SC layout. There is no automatic source fallback.
+    the ERG-SC layout. JAXA satellite and attitude presets use the ERG-SC
+    layout too; ``jaxa`` is a provider tag, not a layout. There is no automatic
+    source fallback.
     """
     if family not in ('satellite', 'att', 'ground'):
         raise ValueError(f'Unknown ERG data family: {family!r}')
     url = CONFIG[family + '_remote_data_dir']
     layout = CONFIG[family + '_remote_data_layout']
-    supported = ('ergsc',) if family == 'ground' else ('ergsc', 'spdf', 'jaxa')
+    supported = ('ergsc',) if family == 'ground' else ('ergsc', 'spdf')
     if layout not in supported:
         raise ValueError(f'Unsupported ERG {family} layout: {layout!r}; expected {supported}')
     if not isinstance(url, str) or not url.strip():
@@ -179,7 +181,7 @@ def set_attitude_source(source_tag):
     Parameters
     ----------
     source_tag : str
-        Provider tag: ``ergsc``, ``jaxa``.``spdf``. Tags are case-sensitive.
+        Provider tag: ``ergsc``, ``jaxa``, ``spdf``. Tags are case-sensitive.
 
     Raises
     ------

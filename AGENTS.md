@@ -60,12 +60,23 @@ dependencies are in `pyproject.toml`.
 `RULES.md` holds the rules that every change follows, whether a person or an
 agent makes it. Read it before you change code. It covers breaking changes,
 porting features from IDL SPEDAS, keeping code clear and simple, and adding
-dependencies. A change that renames, removes or changes the behavior of a
-user-facing routine, parameter, configuration setting or dependency is phased
-in with a deprecation warning, tests and documentation, and the old form is
-removed only in a major release. If you can't tell whether a change is covered,
-ask the human before making it. To find deprecated code that doesn't follow
-these rules yet, use `.agents/skills/deprecation-scan/SKILL.md`.
+dependencies. Standard deprecation protection applies to stable APIs that have
+appeared in a release published to production PyPI (`pypi.org`), not merely on
+master. Unreleased additions are experimental by default. Released APIs may
+remain experimental only if prominently designated before their first production
+PyPI release, using the standard "Experimental API" docstring warning in RULES.md
+and matching public documentation and release notes. Scope the designation to
+the actual routine, parameter, setting or behavior; a stable released contract
+cannot be reclassified or lose protection because its implementation changes on
+master. Check published release evidence before requiring deprecation; ask the
+human if the status remains unclear.
+
+Breaking changes to released stable APIs require a deprecation warning, tests
+and documentation, with removal only in a major release after the transition
+period. Experimental changes still need appropriate tests, documentation and
+release notes. Becoming stable takes effect in a production PyPI release.
+To find deprecated code that doesn't follow these rules yet, use
+`.agents/skills/deprecation-scan/SKILL.md`.
 
 ## Layout
 

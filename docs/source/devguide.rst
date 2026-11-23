@@ -283,22 +283,97 @@ Breaking changes and deprecations
 ---------------------------------
 
 Many people run PySPEDAS from scripts, notebooks and processing software that
-the developers never see.  A change that can break existing, previously correct
-code must be phased in.  This covers removing or renaming a user-facing routine,
-configuration parameter or parameter; removing a previously valid parameter
-value; changing how a parameter is interpreted, or a routine's logic, in a way
-that is inconsistent with the old behavior; and dependency changes that prevent
-installation on a supported platform or Python version.  Internal helpers and
-fixes for clearly undesirable behavior are not covered.
+the developers never see. Changes that can break their use of a released stable
+API need time to migrate. The complete rules and a worked example are in
+`RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__.
+
+Release status and API stability
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+For this policy, "released" means included in a PySPEDAS release published to
+production PyPI (``pypi.org``). A merge to ``master``, a development branch, a
+GitHub tag or a TestPyPI upload alone does not qualify.
+
+.. list-table:: API stability and deprecation
+   :header-rows: 1
+   :widths: 40 60
+
+   * - API status
+     - Deprecation policy
+   * - New API not yet released on production PyPI
+     - Experimental by default; may change or be removed without the standard
+       deprecation period.
+   * - Released API explicitly marked experimental before its first release
+     - May change or be removed between releases without the standard
+       deprecation period or a major release.
+   * - Released API without an experimental designation
+     - Standard deprecation protection applies.
+
+Apply the status to the actual routine, parameter, configuration setting or
+optional behavior. An unreleased addition does not make the rest of a stable
+routine experimental. Editing a previously released contract on ``master`` does
+not remove its protection, and a stable released API cannot be relabeled
+experimental to bypass deprecation.
+
+When assessing a change, check published distributions and release records for
+the affected API and any experimental designation. Do not infer release status
+from ``master`` or Git tags alone. Ask a maintainer if the status or scope
+remains unclear.
+
+Marking an API experimental
+^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To retain experimental status after release, place this standard warning near
+the beginning of the function's docstring, after its summary and before
+Parameters. Include the designation and scope in its user guide and release
+notes before its first production PyPI release:
+
+.. code-block:: python
+
+    def new_feature(data):
+        """Perform the requested analysis.
+
+        .. warning::
+
+            Experimental API. Parameters, return values, and behavior may
+            change, or this feature may be removed, between releases without
+            the standard deprecation period.
+
+        Parameters
+        ----------
+        data : array-like
+            Input data.
+        """
+
+The warning is visible through Python's ``help()`` and renders prominently in
+Sphinx. If only one parameter or optional behavior is experimental, name it in
+the warning and its parameter documentation. For a setting or feature without a
+function docstring, use an equivalent prominent notice in its public reference
+documentation. Unreleased features need no explicit label unless they will
+remain experimental when published. No runtime warning or decorator is required.
+
+Experimental API changes still require appropriate tests, updated documentation
+and a description in the pull request and the release notes when published.
+When the feature becomes stable, remove its experimental labels and announce
+the transition in the release notes. Standard protection begins with that
+production PyPI release, rather than with the documentation change on ``master``.
+
+Deprecating a released stable API
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+This covers removing or renaming a user-facing routine, configuration parameter
+or parameter; removing a previously valid parameter value; changing a parameter's
+interpretation or a routine's behavior incompatibly; and dependency changes that
+prevent installation on a supported platform or Python version. Internal helpers
+and fixes for clearly undesirable behavior are not covered.
 
 During a transition period of at least several months, the old construct keeps
 working, logs a warning (``logging.warning``) containing "deprecated" that names
 the replacement, is exercised by CI tests that check the warning, and is marked
-deprecated in its docstring.  It can be removed only in a major release, for
-example PySPEDAS 2.x to 3.0.  The complete rules, with a worked example, are in
-`RULES.md <https://github.com/spedas/pyspedas/blob/master/RULES.md>`__ at the
-repository root.  If you are not sure whether a change is covered, ask the
-developer team before proceeding.
+deprecated in its docstring. It can be removed only in a major release, for
+example PySPEDAS 2.x to 3.0. If a migration guide is maintained for that release,
+include the change there. List breaking changes and deprecations in the pull
+request description. Ask the developer team if applicability remains unclear.
 
 Porting, clarity and dependencies
 ---------------------------------

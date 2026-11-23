@@ -248,7 +248,8 @@ class LoadRoutingTests(unittest.TestCase):
     def test_invalid_source_configuration(self):
         with self.assertRaisesRegex(ValueError, 'Unknown ERG data family'):
             resolve_source('unknown')
-        for family, layout in [('satellite', 'typo'), ('att', 'heliocloud'), ('ground', 'spdf')]:
+        for family, layout in [('satellite', 'typo'), ('att', 'heliocloud'), ('ground', 'spdf'),
+                               ('satellite', 'jaxa'), ('att', 'jaxa')]:
             with self.subTest(family=family), patch.dict(CONFIG, {family + '_remote_data_layout': layout}), patch.object(load_module, 'download') as download:
                 with self.assertRaisesRegex(ValueError, 'Unsupported ERG'):
                     resolve_source(family)
@@ -372,7 +373,7 @@ class SourceSwitcherTests(unittest.TestCase):
     def test_invalid_tags_leave_entire_configuration_unchanged(self):
         for family, table in self.families:
             invalid = ['unknown', 'SPDF', '', None, [], {}]
-            invalid += [tag for tag in ('ergsc', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
+            invalid += [tag for tag in ('ergsc', 'jaxa', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
                         if tag not in table]
             for tag in invalid:
                 with self.subTest(family=family, tag=tag):
@@ -415,6 +416,34 @@ class SourceSwitcherTests(unittest.TestCase):
                 wrapper(downloadonly=True, **kwargs)
                 self.assertEqual(download.call_args.kwargs['remote_path'], url)
                 self.assertTrue(download.call_args.kwargs['remote_file'][0].startswith(directory))
+
+    def test_jaxa_presets_route_satellite_and_attitude_with_ergsc_layout(self):
+        self.config.set_satellite_source('jaxa')
+        self.config.set_attitude_source('jaxa')
+        url = 'https://data.darts.isas.jaxa.jp/pub/erg/'
+        for family in ('satellite', 'att'):
+            self.assertEqual(self.config.resolve_source(family), {
+                'remote_data_dir': url, 'remote_data_layout': 'ergsc'})
+        cases = [
+            (pyspedas.projects.erg.mepe, {'ror': False},
+             'mepe/l2/omniflux/2017/03/erg_mepe_l2_omniflux_20170327_', 'v01_02'),
+            (pyspedas.projects.erg.att, {}, 'att/txt/erg_att_l2_20170327_', 'v03'),
+        ]
+        for wrapper, kwargs, filename_prefix, version in cases:
+            for selected in (None, version):
+                with self.subTest(wrapper=wrapper.__name__, version=selected), patch.object(
+                        load_module, 'download', return_value=[]) as download:
+                    wrapper(trange=['2017-03-27', '2017-03-28'], downloadonly=True,
+                            version=selected, **kwargs)
+                    self.assertTrue(download.called)
+                    for call in download.call_args_list:
+                        self.assertEqual(call.kwargs['remote_path'], url)
+                        self.assertEqual(call.kwargs['last_version'], selected is None)
+                        self.assertTrue(all(name.startswith(filename_prefix)
+                                            for name in call.kwargs['remote_file']))
+                        if selected is not None:
+                            self.assertTrue(all('_' + selected + '.' in name
+                                                for name in call.kwargs['remote_file']))
 
     def test_defaults_are_still_recognized(self):
         config_file = Path(self.config.__file__)

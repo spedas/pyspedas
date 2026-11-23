@@ -17,74 +17,52 @@ save preferences; use the existing preferences API explicitly to persist them.
 
 | Data family | Setter | Supported tags |
 | --- | --- | --- |
-| Main satellite/ground data | `set_data_source(source_tag)` | `berkeley`, `ucla`, `spdf`, `heliocloud` |
-| Variometers | `set_variometer_source(source_tag)` | `berkeley`, `spdf` |
-| GMAG metadata CSV | `set_gmag_metadata_source(source_tag)` | `berkeley`, `spdf` |
+| All satellite/ground data and GMAG metadata | `set_data_source(source_tag)` | `berkeley`, `ucla`, `spdf`, `heliocloud` |
 | SSC orbit data | `set_ssc_source(source_tag)` | `spdf` |
 
 ```python
 from pyspedas.projects.themis import config
 
 config.set_data_source('heliocloud')
-config.set_variometer_source('spdf')
-config.set_gmag_metadata_source('spdf')
 print(config.get_data_source())  # heliocloud
 ```
 
-The main `berkeley` and `ucla` presets select `themis` layout; `spdf` and
-`heliocloud` select `spdf` layout. UCLA currently has a main-data preset only;
-its support endpoints can still be configured directly. The SSC `spdf` preset
-retains the existing CDAWeb root,
-`https://cdaweb.gsfc.nasa.gov/pub/data/themis/`. Metadata source changes trigger
-the existing in-memory table refresh on the next metadata lookup.
+The `berkeley` and `ucla` presets select `themis` layout; `spdf` and
+`heliocloud` select `spdf` layout. A data-source change applies to satellite
+products, all ground magnetometer networks (including variometers), and GMAG
+station metadata. SSC remains independent.
 
 ### Data sources and layouts
 
-Ordinary satellite and ground data use `remote_data_dir` and
-`remote_data_layout`. The THEMIS server and UCLA mirror
-(`https://themis-data.igpp.ucla.edu/`) use layout `themis`; SPDF and heliocloud
-use layout `spdf`. Layouts are explicit and independent of the URL hostname
-or scheme. Defaults use the THEMIS server and `themis` layout.
+`remote_data_dir` and `remote_data_layout` control all mission data. The THEMIS
+server and UCLA mirror (`https://themis-data.igpp.ucla.edu/`) use `themis` layout;
+SPDF and heliocloud use `spdf` layout. Layouts are explicit and independent of
+hostname or URL scheme. Defaults remain the THEMIS server and `themis` layout.
+The URL names the mission root containing `tha/`, `thg/`, etc. Mixed-network
+GMAG requests use that same root for every station.
 
-Variometers have their own `variometer_remote_data_dir` and
-`variometer_remote_data_layout`, also defaulting to THEMIS. Both data URLs point
-to mission roots: paths below them include `tha/`, `thg/`, etc. A single GMAG
-request can mix variometers from one source with other networks from another.
-The currently implemented variometer paths are shared by both layouts.
+GMAG station metadata is read from `thg/gmags_meta.csv` beneath the main URL and
+cached at the same relative path beneath `local_data_dir`. S3 metadata is copied
+locally so it can be reused offline. `gmag(no_update=True)` and
+`CONFIG['no_download']` suppress metadata downloads as well as CDF downloads.
+Missing metadata raises `FileNotFoundError`. Changing the main URL or cache root
+invalidates the in-memory metadata table on its next lookup.
 
-`gmag_metadata_file` is a complete URL to the station/network CSV. It defaults to
-`https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv` and is independent
-of the science-data source. Metadata is cached as `thg/gmags_meta.csv` beneath
-`local_data_dir`. `gmag(no_update=True)` and `CONFIG['no_download']` suppress
-metadata downloads as well as CDF downloads. Missing offline metadata raises
-`FileNotFoundError`. The in-memory table is reloaded when its configured URL or
-cache root changes; changing the science-data URL alone does not reload it.
-
-`ssc_remote_data_dir` configures both definitive and predicted SSC orbit files.
-It defaults to `https://cdaweb.gsfc.nasa.gov/pub/data/themis/` and retains the
-existing SSC path conventions.
-
-For heliocloud science data with THEMIS variometers and metadata:
+`ssc_remote_data_dir` controls definitive and predicted SSC orbit files. Its
+`spdf` preset retains `https://cdaweb.gsfc.nasa.gov/pub/data/themis/`, independently
+of the main source. For example:
 
 ```python
-from pyspedas.projects.themis.config import CONFIG
+from pyspedas.projects.themis import config
 
-CONFIG.update({
-    'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/',
-    'remote_data_layout': 'spdf',
-    'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
-    'variometer_remote_data_layout': 'themis',
-    'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
-    'ssc_remote_data_dir': 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/',
-})
+config.set_data_source('heliocloud')  # Includes GMAG data and metadata
+config.set_ssc_source('spdf')
 ```
 
-To use SPDF science data, change `remote_data_dir` to
-`https://spdf.gsfc.nasa.gov/pub/data/themis/` and retain `spdf` layout. To use
-SPDF variometers too, set their URL to that same mission root and their layout
-to `spdf`. Heliocloud does not currently supply variometers or the metadata CSV.
-Each resource uses only its configured source; there is no automatic fallback.
-Cache paths follow the server's layout, and existing files are not moved.
+Heliocloud holdings are being synchronized with SPDF; some files may remain
+unavailable until ingest/backfilling completes. Coverage gaps do not select a
+different provider automatically. Select `spdf` or another provider explicitly
+when needed. Cache paths follow server layouts; existing files are not moved.
 
 State version selection is unchanged: without `version`, `themis` uses the
 unversioned current-file link, while `spdf` wildcards the version and selects the
@@ -93,11 +71,9 @@ be present on the selected server. Other instruments retain their existing
 version defaults. Existing SPDF/S3 configurations must set `remote_data_layout`
 to `spdf` explicitly.
 
-All six source settings can be stored under `[projects.themis]` in the PySPEDAS
-preferences file. Matching environment variables override preferences:
-`THM_REMOTE_DATA_DIR`, `THM_REMOTE_DATA_LAYOUT`,
-`THM_VARIOMETER_REMOTE_DATA_DIR`, `THM_VARIOMETER_REMOTE_DATA_LAYOUT`,
-`THM_GMAG_METADATA_FILE`, and `THM_SSC_REMOTE_DATA_DIR`.
+The three source settings (`remote_data_dir`, `remote_data_layout`,
+`ssc_remote_data_dir`) accept stored preferences under `[projects.themis]` and
+matching `THM_*` environment variables. Environment settings override preferences.
 
 ### Instruments
 - Fluxgate magnetometer (FGM)

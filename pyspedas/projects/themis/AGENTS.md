@@ -68,33 +68,32 @@ wrapper module, and an import in `__init__.py`.
 
 `config.py` defines explicit `remote_data_layout` (`themis` or `spdf`) alongside
 `remote_data_dir`. THEMIS and UCLA use `themis`; SPDF and heliocloud use `spdf`.
-`resolve_source()` validates the main or variometer URL/layout pair. State with
-no version uses an unversioned link for `themis`, or a version wildcard with
-highest-version selection for `spdf`. Explicit versions request exact files.
+`resolve_source()` validates the single mission URL/layout pair. Satellite
+products and every ground network, including GMAG variometers, use that source.
+State with no version uses an unversioned link for `themis`, or a version wildcard
+with highest-version selection for `spdf`. Explicit versions request exact files.
 Other instrument version defaults are unchanged.
 
-GMAG variometers use `variometer_remote_data_dir` and
-`variometer_remote_data_layout`; mixed-station requests associate each file path
-with its source. `ground/gmag.py` downloads metadata from the full URL in
-`gmag_metadata_file` to `thg/gmags_meta.csv` beneath the local cache root.
-`no_update` and `no_download` apply to metadata; an unavailable metadata file
-raises `FileNotFoundError`. The in-memory metadata table is invalidated when
-its URL or cache root changes. Both SSC products use `ssc_remote_data_dir`.
+`ground/gmag.py` derives metadata from `thg/gmags_meta.csv` beneath the main URL
+and caches it at the same relative path beneath `local_data_dir`. S3 metadata is
+copied locally instead of streamed, preserving offline use. `no_update` and
+`no_download` apply to metadata; unavailable metadata raises `FileNotFoundError`.
+The in-memory metadata table is invalidated when the main URL or cache root
+changes. Both SSC products independently use `ssc_remote_data_dir`.
 
-Source settings support matching `THM_*` environment variables after stored
-preferences. Data URLs name mission roots. Cache paths follow server layouts;
-there is no automatic source fallback. `tests/test_themis_versions.py` checks
-routing, versions, metadata caching and preferences offline.
-`tests/test_themis_s3.py` uses S3 science data with separately configured THEMIS
-variometers and metadata in temporary caches.
+The three source settings support matching `THM_*` environment variables after
+stored preferences. Data URLs name mission roots. Cache paths follow server
+layouts; there is no automatic source fallback. `tests/test_themis_versions.py`
+checks routing, versions, S3 metadata caching and preferences offline.
+`tests/test_themis_s3.py` uses only S3 mission data in temporary caches. Its GMAG
+class is temporarily skipped pending metadata/variometer synchronization; no
+alternate metadata or station source is injected.
 
 ## Provider shortcuts
 
 `config.py` defines provider-preset dictionaries and these setter/getter pairs:
 
 - `set_data_source()` / `get_data_source()`: berkeley, ucla, spdf, heliocloud.
-- `set_variometer_source()` / `get_variometer_source()`: berkeley, spdf.
-- `set_gmag_metadata_source()` / `get_gmag_metadata_source()`: berkeley, spdf.
 - `set_ssc_source()` / `get_ssc_source()`: spdf.
 
 Setters validate a case-sensitive tag before updating its CONFIG keys together,
@@ -102,6 +101,7 @@ log the resulting settings at INFO level, and neither access the network nor
 save preferences. Getters match relevant current settings exactly and return
 `None` for custom or incomplete settings, including direct CONFIG edits.
 The existing offline routing tests also cover these APIs.
-The SSC `spdf` preset uses the existing CDAWeb endpoint. UCLA has only a
-main-data preset; support endpoints remain directly configurable. Metadata
-changes use the existing lazy in-memory cache invalidation.
+The SSC `spdf` preset uses the existing CDAWeb endpoint. All main presets include
+GMAG variometers and station metadata through the common mission root. Source
+changes trigger lazy in-memory metadata cache invalidation. Incomplete heliocloud
+holdings are an ingest/backfill issue, not a different layout or routing policy.
