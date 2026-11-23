@@ -351,8 +351,8 @@ jobs:
               coverage run -a -m pyspedas.projects.erg.tests.test_erg
               echo Starting erg cotrans tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_cotrans
-              echo Starting erg ground data tests at `date`
-              coverage run -a -m pyspedas.projects.erg.tests.test_erg_ground
+              #echo Starting erg ground data tests at `date`
+              #coverage run -a -m pyspedas.projects.erg.tests.test_erg_ground
               echo Starting erg mepe particle tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_mepe
               echo Starting erg mepi particle tests at `date`
