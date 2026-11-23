@@ -6,9 +6,14 @@ from collections import defaultdict
 from pyspedas.tplot_tools import time_datetime
 
 
-def _list_of_fdsn_channels():
+def _list_of_fdsn_channels(instruments='F'):
     """
-        Generates a list of channel names based on predefined bands, orientations, and a single instrument type.
+        Generates a list of channel names based on predefined bands, orientations, and instrument types.
+
+        Parameters
+        ----------
+        instruments : str, default='F'
+            SEED instrument codes, one character each: 'F' (magnetic), 'Q' (electric), or 'FQ' (both).
 
         Returns
         -------
@@ -27,10 +32,10 @@ def _list_of_fdsn_channels():
     # orientations some stations use instead) both map to MTH5's
     # hx/hy/hz components for instrument code F. See fdsn_data_model.md.
     channel_orientation = ['Z', 'N', 'E', '1', '2', '3']
-    channel_instrument = 'F'
-    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
+    # Create list of all combinations of channel_instrument, channel_band and channel_orientation
     channel_list = ",".join(
-        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+        [f"{band}{channel_instrument}{orient}" for channel_instrument in instruments
+         for band in channel_band for orient in channel_orientation])
     return channel_list
 
 

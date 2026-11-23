@@ -79,6 +79,7 @@ directly, and the two `test50_invalid_date*` tests fail validation or hit
 | `test02_list_of_channels_divisible_by_three` | Channel count is a multiple of 3 |
 | `test03_list_of_channels_contains_F` | Every channel's 2nd character is `'F'` |
 | `test04_list_of_channels_contains_numeric_orientations` | Orientation characters include both `'Z'/'N'/'E'` and `'1'/'2'/'3'` |
+| `test05_list_of_channels_instruments_fq` | `instruments='FQ'` returns both magnetic (`F`) and electric (`Q`) channels, including typical ones such as `LFE`, `LQE`, `LQN` |
 
 ### `TestDatasetsFunction` — exercises `datasets()`, mostly mocked
 

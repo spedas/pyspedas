@@ -768,6 +768,16 @@ class TestListOfChannels(unittest.TestCase):
         orientations = {channel[2] for channel in channel_list}
         self.assertEqual(orientations, {'Z', 'N', 'E', '1', '2', '3'})
 
+    def test05_list_of_channels_instruments_fq(self):
+        """
+        instruments='FQ' requests both magnetic (F) and electric (Q) channels.
+        """
+        channel_list = _list_of_fdsn_channels(instruments='FQ').split(',')
+        self.assertEqual({channel[1] for channel in channel_list}, {'F', 'Q'})
+        # Typical magnetic and electric channels (e.g. 8P/CAS04 uses LFE, LQE, LQN)
+        for channel in ['LFE', 'LFZ', 'LQE', 'LQN', 'LQ2']:
+            self.assertIn(channel, channel_list)
+
 
 class TestDatasetsFunction(unittest.TestCase):
     # Mock data of the response
