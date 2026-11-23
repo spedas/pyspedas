@@ -29,7 +29,8 @@ with the pySPEDAS logging level.
 
 - `load_fdsn.py`: validates an FDSN request, creates or reuses an MTH5 HDF5
   cache, reads the requested data through MTH5, and stores the result as a
-  tplot variable.
+  tplot variable. Runs with differing coordinate system, units, or
+  measurement type are split into additional `_1`, `_2`, ... variables.
 - `utilities.py`: provides FDSN channel filtering, time-string conversion, and
   dataset discovery helpers.
 - `config.py`: defines the local `mth5/` data directory and supports
@@ -53,7 +54,8 @@ This package currently only requests and extracts **magnetic field** data:
 `utilities.py`'s `_list_of_fdsn_channels()` hardcodes the SEED instrument
 code `F` (magnetic), and `load_fdsn.py`'s extraction loop only recognizes
 the `hx`/`hy`/`hz` (or `bx`/`by`/`bz`) components and requires
-`channels_recorded_magnetic` to be present with exactly 3 entries, so a run
+`channels_recorded_magnetic` to be present with at least 1 entry (missing
+magnetic components are NaN-filled), so a run
 with electric-field channels (SEED instrument code `Q`, MTH5 components
 `ex`/`ey`) is skipped rather than extracted. See `fdsn_data_model.md` for the
 FDSN/MTH5 channel-naming, hierarchy, and filter-chain/calibration data model
