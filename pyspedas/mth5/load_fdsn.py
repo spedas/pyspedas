@@ -17,6 +17,22 @@ from pyspedas.mth5.utilities import _list_of_fdsn_channels
 from datetime import datetime
 
 
+# Physical field definitions, keyed by datatype ('mag', 'elec').
+# The only place that knows magnetic vs. electric.
+# print_name: human-readable field name used in log messages, e.g. 'magnetic'.
+# components: MTH5 component names per output column, in order of preference,
+#     e.g. ('hx', 'bx') -> use hx if present, otherwise bx.
+# name: run_ts.dataset attribute listing the recorded components,
+#     e.g. 'channels_recorded_magnetic' -> ['hx', 'hy', 'hz'].
+# labels: names of the output columns, e.g. ['x', 'y', 'z'].
+_FIELDS = {
+    'mag': {'print_name': 'magnetic', 'components': [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')],
+            'name': 'channels_recorded_magnetic', 'labels': ['x', 'y', 'z']},
+    'elec': {'print_name': 'electric', 'components': [('ex',), ('ey',)],
+             'name': 'channels_recorded_electric', 'labels': ['x', 'y']},
+}
+
+
 def _disable_loguru_warnings(record):
     if record["extra"].get("no_warning"):
         return record["level"].no != mth5.logger.level("WARNING").no
@@ -224,9 +240,12 @@ def load_fdsn(trange=None, network=None, station=None,
         # surveys = mth5_object.surveys_group.groups_list
         # # print(surveys)
 
-        attributes = [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')]
-        # Initialize run-record collection before metadata validation and merging.
-        run_records = []
+        # Datatypes to extract (keys of _FIELDS), e.g. ['mag'] or ['mag', 'elec'].
+        # Temporary: replaced by the datatype keyword in the next step.
+        datatypes = ['mag']
+        # Initialize run-record collection (one list of processed runs per datatype) before merging,
+        # e.g. {'mag': [run_record, ...], 'elec': [...]}.
+        run_records = {datatype: [] for datatype in datatypes}
         last_station_metadata = None
 
         # loop over surveys and runs
@@ -263,18 +282,26 @@ def load_fdsn(trange=None, network=None, station=None,
                 # Time clips according to original times
                 run_ts = run_data.to_runts(start=request_df.start[0], end=request_df.end[0])
 
-                # Determine if we have at least one component to work with.
-                # A run with fewer than 3 recorded channels is still processed;
-                # the missing channel(s) are filled with NaN below.
-                if 'channels_recorded_magnetic' in run_ts.dataset.attrs:
-                    num_channels = len(run_ts.dataset.channels_recorded_magnetic)
-                    if num_channels == 0:
-                        pyspedas.logger.warning("Run has no magnetic components")
-                        continue
-                    if num_channels < 3:
-                        pyspedas.logger.warning(f"Run has {num_channels} of 3 magnetic components; missing ones will be NaN-filled")
-                else:
-                    pyspedas.logger.warning("Run dataset has no channels_recorded_magnetic attribute")
+                # Determine which requested fields have at least one component to work with.
+                # A run with fewer recorded channels than the field's columns is still
+                # processed; the missing channel(s) are filled with NaN below.
+                run_datatypes = []  # datatypes this run can provide, e.g. ['mag']
+                for datatype in datatypes:  # e.g. 'mag', 'elec'
+                    field = _FIELDS[datatype]
+                    n_columns = len(field['labels'])
+                    # e.g. run_ts.dataset.channels_recorded_magnetic == ['hx', 'hy', 'hz']
+                    if field['name'] in run_ts.dataset.attrs:
+                        num_channels = len(getattr(run_ts.dataset, field['name']))
+                        if num_channels == 0:
+                            pyspedas.logger.warning(f"Run has no {field['print_name']} components")
+                            continue
+                        if num_channels < n_columns:
+                            pyspedas.logger.warning(f"Run has {num_channels} of {n_columns} {field['print_name']} components; missing ones will be NaN-filled")
+                        run_datatypes.append(datatype)
+                    else:
+                        pyspedas.logger.warning(f"Run dataset has no {field['name']} attribute")
+                # Skip the run only if none of the requested datatypes has components.
+                if not run_datatypes:
                     continue
 
                 # Check if the filters are available to calibrate data
@@ -282,187 +309,207 @@ def load_fdsn(trange=None, network=None, station=None,
                     pyspedas.logger.warning("Filters were not added to run_ts")
                     continue
 
-                # Convert counts to physical units
+                # Convert counts to physical units.
+                # Calibrated once per run: one run_ts holds all datatypes (e.g. ex, ey, hx, hy, hz).
                 run_ts = run_ts.calibrate()
 
-                # Check if at least one channel is present to build a run from.
-                any_attribute_present = any(
-                    hasattr(run_ts.dataset, attr_h) or hasattr(run_ts.dataset, attr_b)
-                    for attr_h, attr_b in attributes
-                )
-                if not any_attribute_present:
-                    pyspedas.logger.warning("None of the attributes are present in run_ts dataset")
-                    continue
+                for datatype in run_datatypes:
+                    field = _FIELDS[datatype]
 
-                # Capture calibrated data and metadata without merging it yet.
-                # Copy numpy arrays to ensure that data is in memory after mth5 is closed
-                run_time = run_ts.dataset.time.to_numpy()
-                run_variables = {}
-                # Keep one unit and measurement type entry for each channel.
-                run_units = []
-                run_measurements_type = []
-                for (attr_h, attr_b), var_name in zip(attributes, ['x', 'y', 'z']):
-                    if hasattr(run_ts.dataset, attr_h):
-                        data = getattr(run_ts.dataset, attr_h)
-                    elif hasattr(run_ts.dataset, attr_b):
-                        data = getattr(run_ts.dataset, attr_b)
-                    else:
-                        # Missing channel: NaN-fill so the output stays a fixed
-                        # 3-column array; matplotlib skips NaN points natively.
-                        pyspedas.logger.warning(f"Neither {attr_h} nor {attr_b} found in run dataset; filling {var_name} with NaN")
-                        run_variables[var_name] = np.full(len(run_time), np.nan)
-                        run_units.append(None)
-                        run_measurements_type.append(None)
+                    # Check if at least one channel is present to build a run from.
+                    any_attribute_present = any(
+                        hasattr(run_ts.dataset, attr)
+                        for attrs in field['components'] for attr in attrs
+                    )
+                    if not any_attribute_present:
+                        pyspedas.logger.warning("None of the attributes are present in run_ts dataset")
                         continue
 
-                    run_variables[var_name] = data.to_numpy()
+                    # Capture calibrated data and metadata without merging it yet.
+                    # Copy numpy arrays to ensure that data is in memory after mth5 is closed
+                    run_time = run_ts.dataset.time.to_numpy()
+                    run_variables = {}
+                    # Keep one unit and measurement type entry for each channel.
+                    run_units = []
+                    run_measurements_type = []
+                    # e.g. attrs=('hx', 'bx'), var_name='x'
+                    for attrs, var_name in zip(field['components'], field['labels']):
+                        attrs_str = '/'.join(attrs)  # e.g. 'hx/bx', used in log messages
+                        present = [attr for attr in attrs if hasattr(run_ts.dataset, attr)]
+                        if present:
+                            # attrs are in order of preference: take the first one found (hx before bx)
+                            data = getattr(run_ts.dataset, present[0])
+                        else:
+                            # Missing channel: NaN-fill so the output keeps a fixed
+                            # number of columns; matplotlib skips NaN points natively.
+                            pyspedas.logger.warning(f"None of {attrs_str} found in run dataset; filling {var_name} with NaN")
+                            run_variables[var_name] = np.full(len(run_time), np.nan)
+                            run_units.append(None)
+                            run_measurements_type.append(None)
+                            continue
 
-                    # Keep run_units/run_measurements_type aligned with run_variables
-                    # (one entry per x/y/z channel) even when a channel is missing
-                    # its units or type, so a partial run gets its own signature
-                    # instead of silently matching a fully-populated one.
-                    try:
-                        run_units.append(str(data.units))
-                    except AttributeError:
-                        pyspedas.logger.warning(f"Problem with adding {attr_h}/{attr_b} dataset units")
-                        run_units.append(None)
+                        # e.g. run_variables == {'x': array([...]), 'y': ..., 'z': ...}
+                        run_variables[var_name] = data.to_numpy()
 
-                    try:
-                        run_measurements_type.append(str(data.type))
-                    except AttributeError:
-                        pyspedas.logger.warning(f"Problem with adding {attr_h}/{attr_b} dataset type")
-                        run_measurements_type.append(None)
+                        # Keep run_units/run_measurements_type aligned with run_variables
+                        # (one entry per channel) even when a channel is missing
+                        # its units or type, so a partial run gets its own signature
+                        # instead of silently matching a fully-populated one.
+                        try:
+                            run_units.append(str(data.units))
+                        except AttributeError:
+                            pyspedas.logger.warning(f"Problem with adding {attrs_str} dataset units")
+                            run_units.append(None)
 
-                # Preserve the run's coordinate, per-channel units, and measurement types as one signature.
-                run_signature = (
-                    coord_sys,
-                    tuple(run_units[:1]) if len(set(run_units)) <= 1 else tuple(run_units),
-                    tuple(run_measurements_type[:1]) if len(set(run_measurements_type)) <= 1 else tuple(run_measurements_type)
-                )
-                # Store one complete run record for the post-processing merge.
-                run_records.append({
-                    "time": run_time,
-                    "variables": run_variables,
-                    "metadata": station_data.metadata,
-                    "coord_sys": coord_sys,
-                    "units": run_units,
-                    "measurements_type": run_measurements_type,
-                    "signature": run_signature,
-                })
+                        try:
+                            run_measurements_type.append(str(data.type))
+                        except AttributeError:
+                            pyspedas.logger.warning(f"Problem with adding {attrs_str} dataset type")
+                            run_measurements_type.append(None)
 
-        # Identify unique run signatures and rank exceptional signatures by their combined time points.
-        unique_signatures = {run_record["signature"] for run_record in run_records}
-        if len(unique_signatures) > 1:
-            signature_time_sizes = {
-                signature: sum(
-                    len(run_record["time"])
-                    for run_record in run_records
-                    if run_record["signature"] == signature
-                )
-                for signature in unique_signatures
-            }
-            ordered_signatures = sorted(
-                signature_time_sizes.items(),
-                key=lambda item: item[1],
-                reverse=True,
-            )
-            pyspedas.logger.warning(
-                "FDSN data has inconsistent run metadata (coordinate system, "
-                f"units, or measurement type); splitting into separate tplot "
-                f"variables: {ordered_signatures}"
-            )
-        else:
-            ordered_signatures = [(signature, None) for signature in unique_signatures]
+                    # Preserve the run's coordinate, per-channel units, and measurement types as one signature.
+                    # Identical per-channel values collapse to one entry,
+                    # e.g. ('geographic', ('nanoTesla',), ('magnetic',)) or
+                    # ('geographic', ('nT', None, 'nT'), ('magnetic',)) for a channel without units.
+                    run_signature = (
+                        coord_sys,
+                        tuple(run_units[:1]) if len(set(run_units)) <= 1 else tuple(run_units),
+                        tuple(run_measurements_type[:1]) if len(set(run_measurements_type)) <= 1 else tuple(run_measurements_type)
+                    )
+                    # Store one complete run record for the post-processing merge.
+                    run_records[datatype].append({
+                        "time": run_time,
+                        "variables": run_variables,
+                        "metadata": station_data.metadata,
+                        "coord_sys": coord_sys,
+                        "units": run_units,
+                        "measurements_type": run_measurements_type,
+                        "signature": run_signature,
+                    })
 
-        # Create the primary and any suffixed tplot variables from signature-selected runs.
-        tplot_variable_base = 'fdsn_' + network + '_' + station
         created_variables = []
+        for datatype in datatypes:  # e.g. 'mag', 'elec'
+            field = _FIELDS[datatype]
+            n_columns = len(field['labels'])
+            # Processed runs of this datatype: [{'time', 'variables', 'signature', ...}, ...]
+            runs = run_records[datatype]
 
-        if not ordered_signatures:
-            ordered_signatures = [(None, None)]
-
-        # Merge runs one signature group at a time in ranked order.
-        for tplot_index, (signature, _) in enumerate(ordered_signatures):
-            records = [
-                run_record
-                for run_record in run_records
-                if run_record["signature"] == signature
-            ]
-            if records:
-                time = np.concatenate([record["time"] for record in records])
-                variables = {
-                    var_name: np.concatenate([record["variables"][var_name] for record in records])
-                    for var_name in ['x', 'y', 'z']
+            # Identify unique run signatures and rank exceptional signatures by their combined time points.
+            unique_signatures = {run_record["signature"] for run_record in runs}
+            if len(unique_signatures) > 1:
+                signature_time_sizes = {
+                    signature: sum(
+                        len(run_record["time"])
+                        for run_record in runs
+                        if run_record["signature"] == signature
+                    )
+                    for signature in unique_signatures
                 }
-                # Sort timestamps and vector components together before saving.
-                sort_index = np.argsort(time, kind="stable")
-                time = time[sort_index]
-                for var_name in variables:
-                    variables[var_name] = variables[var_name][sort_index]
-                metadata = records[0]["metadata"]
-                coord_sys, units, measurements_type = signature
+                ordered_signatures = sorted(
+                    signature_time_sizes.items(),
+                    key=lambda item: item[1],
+                    reverse=True,
+                )
+                pyspedas.logger.warning(
+                    "FDSN data has inconsistent run metadata (coordinate system, "
+                    f"units, or measurement type); splitting into separate tplot "
+                    f"variables: {ordered_signatures}"
+                )
             else:
-                time = np.array([])
-                variables = {'x': np.array([]), 'y': np.array([]), 'z': np.array([])}
-                metadata = last_station_metadata
-                coord_sys = None
-                units = ()
-                measurements_type = ()
+                ordered_signatures = [(signature, None) for signature in unique_signatures]
 
-            data = {'x': time, 'y': np.vstack((variables['x'], variables['y'], variables['z'])).T}
-            tplot_variable = tplot_variable_base if tplot_index == 0 else f"{tplot_variable_base}_{tplot_index}"
+            # Create the primary and any suffixed tplot variables from signature-selected runs.
+            tplot_variable_base = 'fdsn_' + network + '_' + station
 
-            # Handle legends
-            legend_names = ['x', 'y', 'z']
-            try:
-                legend_names = metadata.channels_recorded
-                # A partial run can leave fewer names than the 3 data columns.
-                if len(legend_names) != 3:
-                    legend_names = ['x', 'y', 'z']
-            except AttributeError:
-                pyspedas.logger.error("station_data was not defined correctly")
-                if not noexception:
-                    raise
+            # No processed runs: still go through the loop once so the empty case is logged.
+            if not ordered_signatures:
+                ordered_signatures = [(None, None)]
 
-            # Store PySPEDAS coordinate and units metadata with this output group.
-            # str() turns a missing per-channel unit/type (None) into the
-            # text "None" instead of raising on str.join.
-            data_att = {'coord_sys': coord_sys}
-            if units:
-                data_att['units'] = ','.join(str(unit) for unit in units)
+            # Merge runs one signature group at a time in ranked order.
+            for tplot_index, (signature, _) in enumerate(ordered_signatures):
+                # Runs sharing this signature, merged into one tplot variable.
+                signature_runs = [
+                    run_record
+                    for run_record in runs
+                    if run_record["signature"] == signature
+                ]
+                if signature_runs:
+                    time = np.concatenate([record["time"] for record in signature_runs])
+                    variables = {
+                        var_name: np.concatenate([record["variables"][var_name] for record in signature_runs])
+                        for var_name in field['labels']  # e.g. 'x', 'y', 'z'
+                    }
+                    # Sort timestamps and vector components together before saving.
+                    # Runs may arrive out of order; "stable" keeps equal timestamps in arrival order.
+                    sort_index = np.argsort(time, kind="stable")
+                    time = time[sort_index]
+                    for var_name in variables:
+                        variables[var_name] = variables[var_name][sort_index]
+                    metadata = signature_runs[0]["metadata"]
+                    coord_sys, units, measurements_type = signature
+                else:
+                    time = np.array([])
+                    variables = {var_name: np.array([]) for var_name in field['labels']}  # e.g. 'x', 'y', 'z'
+                    metadata = last_station_metadata
+                    coord_sys = None
+                    units = ()
+                    measurements_type = ()
 
-            if measurements_type:
-                data_att['measurements_type'] = ','.join(str(measurement_type) for measurement_type in measurements_type)
+                # data['y'] has shape (N, n_columns), e.g. (N, 3) for mag, (N, 2) for elec.
+                data = {'x': time, 'y': np.vstack([variables[var_name] for var_name in field['labels']]).T}
+                tplot_variable = tplot_variable_base if tplot_index == 0 else f"{tplot_variable_base}_{tplot_index}"
 
-            # metadata with filename
-            attr_dict = {
-                'filename': mth5_path,
-                'metadata': metadata,
-                'data_att': data_att,
-            }
+                # Handle legends
+                legend_names = field['labels']
+                try:
+                    legend_names = metadata.channels_recorded
+                    # A partial run can leave fewer names than the data columns.
+                    if len(legend_names) != n_columns:
+                        legend_names = field['labels']
+                except AttributeError:
+                    pyspedas.logger.error("station_data was not defined correctly")
+                    if not noexception:
+                        raise
 
-            # Store the merged group as a tplot variable.
-            tplot_variable_created = False
-            try:
-                store_data(tplot_variable, data=data, attr_dict=attr_dict)
-                tplot_variable_created = True
-            except IndexError:
-                pyspedas.logger.error(f"Cannot create empty tplot variable {tplot_variable}")
-            except Exception as E:
-                pyspedas.logger.error(f"Unexpected error {E} while creating tplot variable {tplot_variable}")
-                if not noexception:
-                    raise
+                # Store PySPEDAS coordinate and units metadata with this output group.
+                # str() turns a missing per-channel unit/type (None) into the
+                # text "None" instead of raising on str.join.
+                data_att = {'coord_sys': coord_sys}
+                if units:
+                    data_att['units'] = ','.join(str(unit) for unit in units)
 
-            if tplot_variable_created:
-                # Apply group-specific plot labels and legends.
-                tplot_options = {
-                    "name": f"FDSN: {network}, station: {station}",
-                    "ytitle": data_att['measurements_type'],
-                    "ysubtitle": data_att['units'],
-                    "legend_names": legend_names,
+                if measurements_type:
+                    data_att['measurements_type'] = ','.join(str(measurement_type) for measurement_type in measurements_type)
+
+                # metadata with filename
+                attr_dict = {
+                    'filename': mth5_path,
+                    'metadata': metadata,
+                    'data_att': data_att,
                 }
-                options(tplot_variable, opt_dict=tplot_options)
-                created_variables.append(tplot_variable)
+
+                # Store the merged group as a tplot variable.
+                tplot_variable_created = False
+                try:
+                    store_data(tplot_variable, data=data, attr_dict=attr_dict)
+                    tplot_variable_created = True
+                except IndexError:
+                    pyspedas.logger.error(f"Cannot create empty tplot variable {tplot_variable}")
+                except Exception as E:
+                    pyspedas.logger.error(f"Unexpected error {E} while creating tplot variable {tplot_variable}")
+                    if not noexception:
+                        raise
+
+                if tplot_variable_created:
+                    # Apply group-specific plot labels and legends.
+                    tplot_options = {
+                        "name": f"FDSN: {network}, station: {station}",
+                        "ytitle": data_att['measurements_type'],
+                        "ysubtitle": data_att['units'],
+                        "legend_names": legend_names,
+                    }
+                    options(tplot_variable, opt_dict=tplot_options)
+                    created_variables.append(tplot_variable)
 
         if created_variables:
             return created_variables[0]
