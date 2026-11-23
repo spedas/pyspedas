@@ -4,8 +4,6 @@ import mth5
 import numpy as np
 import pandas as pd
 import pyspedas
-
-import pyspedas
 from .config import CONFIG
 from pyspedas.tplot_tools import store_data, options
 
@@ -449,7 +447,7 @@ def load_fdsn(trange=None, network=None, station=None,
                 store_data(tplot_variable, data=data, attr_dict=attr_dict)
                 tplot_variable_created = True
             except IndexError:
-                pyspedas.logger.error(f"Cannot create empty tplot variabe {tplot_variable}")
+                pyspedas.logger.error(f"Cannot create empty tplot variable {tplot_variable}")
             except Exception as E:
                 pyspedas.logger.error(f"Unexpected error {E} while creating tplot variable {tplot_variable}")
                 if not noexception:
