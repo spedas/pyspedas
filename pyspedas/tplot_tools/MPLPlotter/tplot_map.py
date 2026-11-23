@@ -9,6 +9,7 @@ import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 import numpy as np
 import datetime as dt
+import string
 
 class Tplot_Map_Param_Set():
     def __set_name__(self, owner, name):
@@ -177,32 +178,29 @@ class Tplot_Map(Basemap):
             "add_caps":{},
         }
 
+        # Handle basemap_kwargs, if any:
+        self.map_options["basemap"].update(basemap_kwargs)
+        
         # If view is set, override basemap kwargs for centering position
         self.view = view
         if self.view is not None:
             match self.view:
                 case "North America":
-                    basemap_kwargs["lat_0"] = 50
-                    basemap_kwargs["lon_0"] = 260
+                    self.map_options["basemap"]["lat_0"] = 50
+                    self.map_options["basemap"]["lon_0"] = 260
                 case "Northern Europe":
-                    basemap_kwargs["lat_0"] = 65
-                    basemap_kwargs["lon_0"] = 20
+                    self.map_options["basemap"]["lat_0"] = 65
+                    self.map_options["basemap"]["lon_0"] = 20
                 case "North Polar":
-                    basemap_kwargs["lat_0"] = 90
-                    basemap_kwargs["lon_0"] = 0
+                    self.map_options["basemap"]["lat_0"] = 90
+                    self.map_options["basemap"]["lon_0"] = 0
                 case "South Polar":
-                    basemap_kwargs["lat_0"] = -90
-                    basemap_kwargs["lon_0"] = 0
+                    self.map_options["basemap"]["lat_0"] = -90
+                    self.map_options["basemap"]["lon_0"] = 0
 
-        # Handle basemap_kwargs, if any:
         if option_dict is None:
             option_dict = {}
-        if basemap_kwargs != {}:
-            if option_dict.get("basemap") is None:
-                option_dict["basemap"] = basemap_kwargs
-            else:
-                option_dict["basemap"].update(basemap_kwargs)
-
+                
         for key in self.map_options.keys():
             if key in option_dict.keys():
                 if override_defaults:
@@ -451,7 +449,8 @@ class Tplot_Map(Basemap):
         lake_color : str, optional
             Fills lakes within landmasses. 
         alpha : float, optional
-            Sets transparency for landmass polygons, allowing the map background (see `add_mapboundary`) to show through.
+            Sets transparency for landmass polygons, allowing the map 
+            background (see method `add_mapboundary`) to show through.
         **fillcontinents_kwargs
             Keyword arguments for the basemap `fillcontinents` method.
 
@@ -486,12 +485,10 @@ class Tplot_Map(Basemap):
          'add_caps' : {},
         }
         >>> tmap.add_fillcontinents(color = 'darkgreen',lake_color = 'darkblue',alpha = 0.5)
-                
         >>> print(tmap.map_options["fillcontinents"])
         {'color': 'darkgreen', 'lake_color': 'darkblue', 'alpha': 0.5}
         >>> tmap.show()
         """
-        # TODO: needs handling if lake_color or alpha intentionally set to None
         if color is not None:
             fillcontinents_kwargs.update({'color':color})
         if lake_color is not None:
@@ -516,12 +513,14 @@ class Tplot_Map(Basemap):
             Thickness of line drawn around the outer edge of the map. If None, uses 
             `map_options` or Basemap `drawmapboundary` defaults.
         color : str, optional
-            Indicates color the map boundary line drawn (e.g. 
+            Indicates color of the map boundary line drawn (e.g. 
             black lines can use the 'k' string). If None, uses 
-            `map_options` or Basemap `drawcountries` defaults.
+            `map_options` or Basemap `drawmapboundary` defaults.
             Defaults to black.
         fill_color : str, optional
-            Fills map background (ocean color). 
+            Fills map background (ocean color). If None, uses 
+            `map_options` or Basemap `drawmapboundary` defaults.
+            Defaults to white.
         **drawmapboundary_kwargs
             Keyword arguments for the basemap `drawmapboundary` method.
 
@@ -573,72 +572,281 @@ class Tplot_Map(Basemap):
     def add_meridians(
             self,
             meridians : np.ndarray | None = None,
-            color :            str | None = None,
-            textcolor :        str | None = None,
             linewidth :      float | None = None,
+            color :            str | None = None,
+            dashes :          list | None = None,
+            labels :          list | None = None,
+            labelstyle :       str | None = None,
+            textcolor :        str | None = None,
             **drawmeridians_kwargs):
         """
+        Draw meridional lines along specified longitudes.
+                                
+        Parameters
+        ----------
+        meridians : np.ndarray
+            Array containing longitudes to locate meridional lines. Expects 
+            longitudes in degrees. 
+        linewidth : float, optional
+            Thickness of line drawn around the outer edge of the map. If None, uses 
+            `map_options` or Basemap `drawmeridians` defaults.
+        color : str, optional
+            Indicates color of the meridional lines drawn (e.g. 
+            black lines can use the 'k' string). If None, uses 
+            `map_options` or Basemap `drawmeridians` defaults.
+            Defaults to black.
+        dashes : list, optional
+            Dash pattern for meridians (default [1,1], i.e.
+            1 pixel on, 1 pixel off). If None, uses 
+            `map_options` or Basemap `drawmeridians` defaults.
+        labels : list, optional          
+            List of 4 values (default [0,0,0,0]) that control
+            whether meridians are labelled where they intersect
+            the left, right, top or bottom of the plot. For
+            example labels=[1,0,0,1] will cause meridians
+            to be labelled where they intersect the left and
+            and bottom of the plot, but not the right and top.
+            If None, uses `map_options` or Basemap 
+            `drawmeridians` defaults.
+        labelstyle : string, optional
+            If set to "+/-", east and west longitudes are
+            labelled with "+" and "-", otherwise they are
+            labelled with "E" and "W".
+        textcolor : str, optional,
+            Color of text used to label meridians where they 
+            intersect with the map border (e.g. black text 
+            uses the 'k' string). If None, uses `map_options` 
+            or Basemap `drawmeridians` defaults. 
+        **drawmeridians_kwargs
+            Keyword arguments for the basemap `drawmeridians` method.
+
+        Notes
+        -----
         Wrapper for Basemap `drawmeridians` method.
         Saves input options to `map_options` attribute.
 
-        Parameters
-        ----------
-        drawmeridians_kwargs : dict, optional
-            Keyword arguments for the basemap `drawmeridians` method.
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw solid red meridians every 30 degrees, with blue 
+        labels placed along all edges of the plot where the longitude
+        intersects with the map boundary:
+
+        >>> tmap = Tplot_Map(view="North Europe",option_dict={},override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_meridians(meridians=np.arange(0,360,30),linewidth=3,color = 'r',dashes = [1,0],labels = [1,1,1,1],labelstyle="+/-",textcolor='b')
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'merc', 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {'meridians': array([  0,  30,  60,  90, 120, 150, 180, 210, 240, 270, 300, 330]), 'linewidth': 3, 'color': 'r', 'dashes': [1, 0], 'labels': [1, 1, 1, 1], 'labelstyle': '+/-', 'textcolor': 'b'},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.show()
         """
         if meridians is not None:
             drawmeridians_kwargs.update({'meridians':meridians})
-        if color is not None:
-            drawmeridians_kwargs.update({'color':color})
-        if textcolor is not None:
-            drawmeridians_kwargs.update({'textcolor':textcolor})    
         if linewidth is not None:
             drawmeridians_kwargs.update({'linewidth':linewidth})
+        if color is not None:
+            drawmeridians_kwargs.update({'color':color})
+        if dashes is not None:
+            drawmeridians_kwargs.update({'dashes':dashes})
+        if labels is not None:
+            drawmeridians_kwargs.update({'labels':labels})
+        if labelstyle is not None:
+            drawmeridians_kwargs.update({'labelstyle':labelstyle})
+        if textcolor is not None:
+            drawmeridians_kwargs.update({'textcolor':textcolor})    
         self._add_plot_feature(plot_type="drawmeridians",plot_type_kwargs=drawmeridians_kwargs)
         return
 
     def add_parallels(
             self,
             circles :   np.ndarray | None = None,
-            color :            str | None = None,
-            textcolor :        str | None = None,
             linewidth :      float | None = None,
+            color :            str | None = None,
+            dashes :          list | None = None,
+            labels :          list | None = None,
+            labelstyle :       str | None = None,
+            textcolor :        str | None = None,
             **drawparallels_kwargs):
         """
-        Wrapper for Basemap `drawparallels` method.
-        Saves input options to `map_options` attribute.
-
+        Draw parallels lines along specified latitudes.
+                                        
         Parameters
         ----------
-        drawparallels_kwargs : dict, optional
+        circles : np.ndarray
+            Array containing latitudes to locate parallels. Expects 
+            latitudes in degrees. 
+        linewidth : float, optional
+            Thickness of line drawn around the outer edge of the map. If None, uses 
+            `map_options` or Basemap `drawparallels` defaults.
+        color : str, optional
+            Indicates color of the parallels drawn (e.g. 
+            black lines can use the 'k' string). If None, uses 
+            `map_options` or Basemap `drawparallels` defaults.
+            Defaults to black.
+        dashes : list, optional
+            Dash pattern for parallels (default [1,1], i.e.
+            1 pixel on, 1 pixel off). If None, uses 
+            `map_options` or Basemap `drawparallels` defaults.
+        labels : list, optional          
+            List of 4 values (default [0,0,0,0]) that control
+            whether parallels are labelled where they intersect
+            the left, right, top or bottom of the plot. For
+            example labels=[1,0,0,1] will cause parallels
+            to be labelled where they intersect the left and
+            and bottom of the plot, but not the right and top.
+            If None, uses `map_options` or Basemap 
+            `drawparallels` defaults.
+        labelstyle : string, optional
+            If set to "+/-", north and south latitudes are
+            labelled with "+" and "-", otherwise they are
+            labelled with "N" and "S".
+        textcolor : str, optional,
+            Color of text used to label parallels where they 
+            intersect with the map border (e.g. black text 
+            uses the 'k' string). If None, uses `map_options` 
+            or Basemap `drawparallels` defaults. 
+        **drawparallels_kwargs
             Keyword arguments for the basemap `drawparallels` method.
+
+        Notes
+        -----
+        Wrapper for Basemap `drawparallels` method.
+        Saves input options to `map_options` attribute.
+        
+
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw solid red parallels every 30 degrees, with blue 
+        labels placed along all edges of the plot where the longitude
+        intersects with the map boundary:
+
+        >>> tmap = Tplot_Map(view="North Europe",option_dict={},override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_parallels(circles=np.arange(0,90,30),linewidth=3,color = 'r',dashes = [1,0],labels = [1,1,1,1],labelstyle="+/-",textcolor='b')
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'merc', 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {'circles': array([ 0, 30, 60]), 'linewidth': 3, 'color': 'r', 'dashes': [1, 0], 'labels': [1, 1, 1, 1], 'labelstyle': '+/-', 'textcolor': 'b'},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.show()
         """
         if circles is not None:
-            drawparallels_kwargs.update({'meridians':circles})
-        if color is not None:
-            drawparallels_kwargs.update({'color':color})
-        if textcolor is not None:
-            drawparallels_kwargs.update({'textcolor':textcolor})    
+            drawparallels_kwargs.update({'circles':circles})
         if linewidth is not None:
             drawparallels_kwargs.update({'linewidth':linewidth})
+        if color is not None:
+            drawparallels_kwargs.update({'color':color})
+        if dashes is not None:
+            drawparallels_kwargs.update({'dashes':dashes})
+        if labels is not None:
+            drawparallels_kwargs.update({'labels':labels})
+        if labelstyle is not None:
+            drawparallels_kwargs.update({'labelstyle':labelstyle})
+        if textcolor is not None:
+            drawparallels_kwargs.update({'textcolor':textcolor})
         self._add_plot_feature(plot_type="drawparallels",plot_type_kwargs=drawparallels_kwargs)
         return
 
     def add_nightshade(
             self,
-            date : dt.datetime | None = None,
+            date : dt.datetime | None = dt.datetime.now(),
             color :        str | None = None,
             delta :      float | None = None,
             alpha :      float | None = None,
             **nightshade_kwargs):
         """
-        Wrapper for Basemap `nightshade` method.
-        Saves input options to `map_options` attribute.
-
+        Draw shaded region to represent nighttime.
+                                                
         Parameters
         ----------
-        nightshade_kwargs : dict, optional
+        date : DateTime, optional
+            Specifies time from which regions in darkness will be inferred. 
+        color : str, optional
+            Indicates color of the shading (e.g. 
+            black lines can use the 'k' string). If None, uses 
+            `map_options` or Basemap `nightshade` defaults.
+            Defaults to black.
+        delta : float, optional
+            Day/night terminator is computed with a
+            a resolution of ``delta`` degrees 
+            (default 0.25).If None, uses `map_options` 
+            or Basemap `nightshade` defaults.
+        alpha : float, optional
+            Alpha transparency for shading (default 0.5, so
+            map background shows through).If None, uses 
+            `map_options` or Basemap `nightshade` defaults.
+        **nightshade_kwargs
             Keyword arguments for the basemap `nightshade` method.
+
+        Notes
+        -----
+        Wrapper for Basemap `nightshade` method.
+        Saves input options to `map_options` attribute.
+        
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Shade the nighttime of a globe centered over North America using the
+        current time, with the shading being done in blue, a degree resolution 
+        of 0.5, and a transparency of 65%:
+
+        >>> tmap = Tplot_Map(view="North America",override_defaults=True)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_nightshade(color='b',delta=0.5,alpha=0.65)
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'ortho', 'lat_0': 50, 'lon_0': 260},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {'date': datetime.datetime(2026, 11, 23, 17, 2, 34, 227845), 'color': 'b', 'delta': 0.5, 'alpha': 0.65},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
+        }
+        >>> tmap.show()
         """
         if date is not None:
             nightshade_kwargs.update({'date':date})
@@ -902,16 +1110,16 @@ class Tplot_Map(Basemap):
         return
 
     def _validate_basemap_params(self):
-        this_projection = self.map_options.get("projection")
+        this_projection = self.map_options["basemap"].get("projection")
         if this_projection is not None:
             if this_projection not in _projnames.keys():
                 # check inverse projection
                 _projnames_inverse = dict([(value, key) for key, value in _projnames.items()])
-                if this_projection not in _projnames_inverse.keys():
-                    raise ValueError(f"Option 'projection' must be one of: {_projnames.keys()} or {_projnames_inverse.keys()}")
+                if string.capwords(this_projection) in _projnames_inverse.keys():
+                    self.map_options["basemap"]["projection"] = _projnames_inverse[string.capwords(this_projection)]
+                    this_projection = self.map_options["basemap"].get("projection")
                 else:
-                    self.map_options["basemap"]["projection"] = _projnames_inverse[this_projection]
-                    this_projection = self.map_options.get("projection")
+                    raise ValueError(f"Option 'projection' must be one of: {_projnames.keys()} or {_projnames_inverse.keys()}")
 
             # check arguments:
             this_projection_param_set = set(self._projection_params[this_projection])
@@ -1260,12 +1468,10 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     return data_geod_polar
 
 if __name__ == "__main__":
-    tmap = Tplot_Map(option_dict={},override_defaults=True)
+    tmap = Tplot_Map(view="North America",override_defaults=True)
+    tmap.add_coastlines()
+    tmap.add_countries()
+    tmap.add_nightshade(color='b',delta=0.5,alpha=0.65)
     tmap.print_map_options()
-    tmap.add_fillcontinents(
-        color = 'darkgreen',
-        lake_color = 'darkblue',
-        alpha = 0.5)
-    print(tmap.map_options["fillcontinents"])
     tmap.show()
     print("Done!")
