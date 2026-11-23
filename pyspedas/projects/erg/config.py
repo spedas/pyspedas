@@ -10,28 +10,36 @@ import os
 
 # Provider presets contain only the CONFIG keys changed by that selection.
 SATELLITE_SOURCES = {
-    'ergsc': {
-        'satellite_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
-        'satellite_remote_data_layout': 'ergsc',
+    "ergsc": {
+        "satellite_remote_data_dir": "https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/",
+        "satellite_remote_data_layout": "ergsc",
     },
-    'spdf': {
-        'satellite_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
-        'satellite_remote_data_layout': 'spdf',
+    "jaxa": {
+        "satellite_remote_data_dir": "https://data.darts.isas.jaxa.jp/pub/erg/",
+        "satellite_remote_data_layout": "ergsc",
     },
-    'heliocloud': {
-        'satellite_remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/',
-        'satellite_remote_data_layout': 'spdf',
+    "spdf": {
+        "satellite_remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/arase/",
+        "satellite_remote_data_layout": "spdf",
+    },
+    "heliocloud": {
+        "satellite_remote_data_dir": "s3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/",
+        "satellite_remote_data_layout": "spdf",
     },
 }
 
 ATTITUDE_SOURCES = {
-    'ergsc': {
-        'att_remote_data_dir': 'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/',
-        'att_remote_data_layout': 'ergsc',
+    "ergsc": {
+        "att_remote_data_dir": "https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/satellite/erg/",
+        "att_remote_data_layout": "ergsc",
     },
-    'spdf': {
-        'att_remote_data_dir': 'https://spdf.gsfc.nasa.gov/pub/data/arase/',
-        'att_remote_data_layout': 'spdf',
+    "jaxa": {
+        "att_remote_data_dir": "https://data.darts.isas.jaxa.jp/pub/erg/",
+        "att_remote_data_layout": "ergsc",
+    },
+    "spdf": {
+        "att_remote_data_dir": "https://spdf.gsfc.nasa.gov/pub/data/arase/",
+        "att_remote_data_layout": "spdf",
     },
 }
 
@@ -105,7 +113,7 @@ def resolve_source(family):
         raise ValueError(f'Unknown ERG data family: {family!r}')
     url = CONFIG[family + '_remote_data_dir']
     layout = CONFIG[family + '_remote_data_layout']
-    supported = ('ergsc',) if family == 'ground' else ('ergsc', 'spdf')
+    supported = ('ergsc',) if family == 'ground' else ('ergsc', 'spdf', 'jaxa')
     if layout not in supported:
         raise ValueError(f'Unsupported ERG {family} layout: {layout!r}; expected {supported}')
     if not isinstance(url, str) or not url.strip():
@@ -138,7 +146,7 @@ def set_satellite_source(source_tag):
     Parameters
     ----------
     source_tag : str
-        Provider tag: ``ergsc``, ``spdf``, ``heliocloud``. Tags are case-sensitive.
+        Provider tag: ``ergsc``, ``jaxa``, ``spdf``, ``heliocloud``. Tags are case-sensitive.
 
     Raises
     ------
@@ -171,7 +179,7 @@ def set_attitude_source(source_tag):
     Parameters
     ----------
     source_tag : str
-        Provider tag: ``ergsc``, ``spdf``. Tags are case-sensitive.
+        Provider tag: ``ergsc``, ``jaxa``.``spdf``. Tags are case-sensitive.
 
     Raises
     ------

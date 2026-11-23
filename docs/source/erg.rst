@@ -24,10 +24,10 @@ through the existing preferences API.
      - Supported tags
    * - Satellite
      - ``set_satellite_source(source_tag)``
-     - ``ergsc``, ``spdf``, ``heliocloud``
+     - ``ergsc``, ``jaxa``, ``spdf``, ``heliocloud``
    * - ASCII attitude
      - ``set_attitude_source(source_tag)``
-     - ``ergsc``, ``spdf``
+     - ``ergsc``, ``jaxa``,``spdf``
    * - Ground
      - ``set_ground_source(source_tag)``
      - ``ergsc``
