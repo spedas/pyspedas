@@ -1144,7 +1144,7 @@ class TestDatasetsFunction(unittest.TestCase):
 
     @patch('urllib.request.urlopen')
     def test09_datasets_quiet(self, mock_urlopen):
-        """quiet=False prints one row per channel; the default (quiet=True) prints nothing."""
+        """quiet=False prints one row per time range; the default (quiet=True) prints nothing."""
         self._mock_response(mock_urlopen, self.mock_data_elec)
 
         printed = io.StringIO()
@@ -1159,9 +1159,11 @@ class TestDatasetsFunction(unittest.TestCase):
         output = printed.getvalue()
         self.assertIn('8P CAS04', output)
         self.assertIn('Channel', output)
-        # e.g. '  LQE      2020-06-02T18:41:43.0000   2020-06-12T17:52:23.0000'
+        # e.g. '  LQE           2020-06-02T18:41:43.0000   2020-06-12T17:52:23.0000'
         for channel in ['LFE', 'LFN', 'LFZ', 'LQE', 'LQN']:
             self.assertIn(channel, output)
+        # Channels sharing a time range are printed in one row
+        self.assertIn('LFE,LFN,LFZ', output)
 
 
 if __name__ == '__main__':

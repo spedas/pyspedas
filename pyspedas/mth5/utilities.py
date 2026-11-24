@@ -56,7 +56,7 @@ def mth5_time_str(time):
 
 def _print_datasets(res):
     """
-    Print the result of `datasets` as one row per channel and time range.
+    Print the result of `datasets` as one row per time range, listing the channels that share it.
 
     Parameters
     ----------
@@ -68,8 +68,8 @@ def _print_datasets(res):
     --------
     >>> _print_datasets(res)
     8P CAS04
-      Channel  Start                      End
-      LFE      2020-06-02T18:41:43.0000   2020-07-13T21:46:12.0000
+      Channels      Start                      End
+      LFE,LFN,LFZ   2020-06-02T18:41:43.0000   2020-07-13T21:46:12.0000
     """
     if not res:
         print("No datasets found")
@@ -78,15 +78,17 @@ def _print_datasets(res):
     for network, stations in res.items():
         for station, time_ranges in stations.items():
             print(f"{network} {station}")
-            print(f"  {'Channel':8} {'Start':26} End")
-            # One (channel, start, end) row per channel, sorted by channel and then start time
+            # One (channels, start, end) row per time range, e.g. ('LFE,LFN,LFZ', start, end),
+            # sorted by channels and then start time
             rows = sorted(
-                (channel, start, end)
+                (','.join(channels), start, end)
                 for (start, end), channels in time_ranges.items()
-                for channel in channels
             )
-            for channel, start, end in rows:
-                print(f"  {channel:8} {start:26} {end}")
+            # Channels column fits the longest channel list, e.g. 'LFE,LFN,LFZ'
+            width = max(len('Channels'), max(len(row[0]) for row in rows)) + 2
+            print(f"  {'Channels':{width}} {'Start':26} End")
+            for channels, start, end in rows:
+                print(f"  {channels:{width}} {start:26} {end}")
 
 
 def datasets(trange=None, network=None, station=None, USAarea=False, datatype='mag', keep_incomplete=False,

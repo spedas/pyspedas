@@ -112,7 +112,7 @@ directly, and the two `test50_invalid_date*` tests fail validation or hit
 | `test08_datasets_USAarea` | `USAarea=True` adds lat/lon bounding params; `False`/omitted leaves them out |
 | `test09_datasets_datatype` | `datatype='elec'` requests `Q` channels only (`LQE`, no `LFE`); `['mag', 'elec']` requests both; an invalid `datatype` returns `None` |
 | `test09_datasets_keep_incomplete` | With split electric epochs (as at 8P/CAS04), the default keeps only the complete magnetic set; `keep_incomplete=True` also keeps the lone `LQE` and `LQN` epochs |
-| `test09_datasets_quiet` | Default `quiet=True` prints nothing; `quiet=False` prints the station header, column names and a row for each channel |
+| `test09_datasets_quiet` | Default `quiet=True` prints nothing; `quiet=False` prints the station header, column names and one row per time range, with channels sharing a range joined (e.g. `LFE,LFN,LFZ`) |
 
 Only `test07_datasets_realcall` makes a real request to EarthScope; every
 other test in this class mocks `urllib.request.urlopen`. `setUpClass` also
