@@ -1071,6 +1071,75 @@ class TestDatasetsFunction(unittest.TestCase):
         self.assertNotIn("maxlon", called_url)
         self.assertNotIn("minlat", called_url)
 
+    # Mock response with split electric epochs, as at 8P/CAS04:
+    # LQE and LQN end at different times, so each is alone in its (start, end) group.
+    mock_data_elec = """Network|Station|Location|Channel|Latitude|Longitude|Elevation|Depth|Azimuth|Dip|SensorDescription|Scale|ScaleFreq|ScaleUnits|SampleRate|StartTime|EndTime
+8P|CAS04||LFE|0|0|0|0|0|0|NIMS|1|1|nT|1|2020-06-02T18:41:43.0000|2020-07-13T21:46:12.0000
+8P|CAS04||LFN|0|0|0|0|0|0|NIMS|1|1|nT|1|2020-06-02T18:41:43.0000|2020-07-13T21:46:12.0000
+8P|CAS04||LFZ|0|0|0|0|0|0|NIMS|1|1|nT|1|2020-06-02T18:41:43.0000|2020-07-13T21:46:12.0000
+8P|CAS04||LQE|0|0|0|0|0|0|NIMS|1|1|mV/km|1|2020-06-02T18:41:43.0000|2020-06-12T17:52:23.0000
+8P|CAS04||LQN|0|0|0|0|0|0|NIMS|1|1|mV/km|1|2020-06-02T18:41:43.0000|2020-07-01T17:32:59.0000
+"""
+
+    def _mock_response(self, mock_urlopen, data):
+        """Make the mocked urlopen return data with status 200."""
+        mock_response = MagicMock()
+        mock_response.status = 200
+        mock_response.read.return_value = data.encode('utf-8')
+        mock_urlopen.return_value.__enter__.return_value = mock_response
+
+    @patch('urllib.request.urlopen')
+    def test09_datasets_datatype(self, mock_urlopen):
+        """datatype selects the requested SEED instrument codes; an invalid datatype returns None."""
+        datasets(["2020-06-02", "2020-06-03"], network="8P", datatype='elec')
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("LQE", called_url)
+        self.assertNotIn("LFE", called_url)
+
+        datasets(["2020-06-02", "2020-06-03"], network="8P", datatype=['mag', 'elec'])
+        called_url = mock_urlopen.call_args[0][0]
+        self.assertIn("LQE", called_url)
+        self.assertIn("LFE", called_url)
+
+        self.assertIsNone(datasets(["2020-06-02", "2020-06-03"], network="8P", datatype='foo'))
+
+    @patch('urllib.request.urlopen')
+    def test09_datasets_keep_incomplete(self, mock_urlopen):
+        """keep_incomplete=True keeps time ranges without a complete set, e.g. a lone LQE epoch."""
+        self._mock_response(mock_urlopen, self.mock_data_elec)
+        lfe_range = ('2020-06-02T18:41:43.0000', '2020-07-13T21:46:12.0000')
+        lqe_range = ('2020-06-02T18:41:43.0000', '2020-06-12T17:52:23.0000')
+
+        # Default: only the complete magnetic set is kept
+        result = datasets(["2020-06-02", "2020-06-03"], network="8P", datatype=['mag', 'elec'])
+        self.assertEqual(result, {'8P': {'CAS04': {lfe_range: ['LFE', 'LFN', 'LFZ']}}})
+
+        result = datasets(["2020-06-02", "2020-06-03"], network="8P", datatype=['mag', 'elec'],
+                          keep_incomplete=True)
+        self.assertEqual(result['8P']['CAS04'][lqe_range], ['LQE'])
+        self.assertEqual(len(result['8P']['CAS04']), 3)
+
+    @patch('urllib.request.urlopen')
+    def test09_datasets_quiet(self, mock_urlopen):
+        """quiet=False prints one row per channel; the default (quiet=True) prints nothing."""
+        self._mock_response(mock_urlopen, self.mock_data_elec)
+
+        printed = io.StringIO()
+        with patch('sys.stdout', new=printed):
+            datasets(["2020-06-02", "2020-06-03"], network="8P", datatype=['mag', 'elec'])
+        self.assertEqual(printed.getvalue(), '')
+
+        printed = io.StringIO()
+        with patch('sys.stdout', new=printed):
+            datasets(["2020-06-02", "2020-06-03"], network="8P", datatype=['mag', 'elec'],
+                     keep_incomplete=True, quiet=False)
+        output = printed.getvalue()
+        self.assertIn('8P CAS04', output)
+        self.assertIn('Channel', output)
+        # e.g. '  LQE      2020-06-02T18:41:43.0000   2020-06-12T17:52:23.0000'
+        for channel in ['LFE', 'LFN', 'LFZ', 'LQE', 'LQN']:
+            self.assertIn(channel, output)
+
 
 if __name__ == '__main__':
     unittest.main()
