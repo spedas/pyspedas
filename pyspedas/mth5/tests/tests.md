@@ -34,6 +34,7 @@
 | `test50_load_fdsn_wrong_network_station` | Bad network and bad station each raise `FDSNBadRequestException`, log `'Cannot initialize mth5 object'`, and leave no temp/tplot artifacts |
 | `test50_invalid_date` | A day-first date string (`'21-06-2015'`) resolves earlier than the start date -> `load_fdsn`'s end-before-start check logs an ERROR and returns `None` without creating a tplot variable |
 | `test50_invalid_date_format` | A `request_df` date string that cannot be parsed as `YYYY-MM-DDThh:mm:ss` (e.g. `'not-a-date'`) raises `ValueError` from date-format validation |
+| `test50_load_fdsn_mag_elec_real` | Real load of 8P/CAS04 (the MTH5 tutorial station) with `datatype=['mag', 'elec']` -> returns both names, nonempty `(N, 3)`/`(N, 2)` data, units `nanoTesla`/`milliVolt per kilometer` |
 | `test60_load_fdsn_nowarnings` | Confirms `nowarnings=True` suppresses loguru WARNING output that `nowarnings=False` produces |
 | `test60_load_fdsn_nodownload` | Confirms `nodownload=True` reuses the cached `.h5` and is faster than the first (downloading) call |
 | `test60_load_fdsn_timeclip` | Confirms returned timestamps are clipped and the tplot data is nonempty, ordered, and three-component with matching row count |
@@ -74,6 +75,7 @@ layer):
 - `test40_load_fdsn_basic`
 - `test50_load_fdsn_samedates`
 - `test50_load_fdsn_wrong_network_station`
+- `test50_load_fdsn_mag_elec_real`
 - `test60_load_fdsn_nowarnings`
 - `test60_load_fdsn_nodownload` (first call)
 - `test60_load_fdsn_timeclip`

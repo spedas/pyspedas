@@ -778,6 +778,29 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         self.assertTrue(len(tnames()) == 0)
 
+    def test50_load_fdsn_mag_elec_real(self):
+        """Real load of magnetic and electric fields from 8P/CAS04 (station used in the MTH5 tutorial)."""
+        if self.CONNECTION_FAILED:
+            self.skipTest("No connection.")
+
+        result = load_fdsn(
+            datatype=['mag', 'elec'], network="8P", station="CAS04",
+            trange=['2020-06-02T19:00:00', '2020-06-02T20:00:00'],
+        )
+
+        self.assertEqual(result, ['fdsn_mag_8P_CAS04', 'fdsn_elec_8P_CAS04'])
+        time, data = pyspedas.get_data('fdsn_mag_8P_CAS04')
+        self.assertTrue(len(time) > 0)
+        self.assertEqual(data.shape, (len(time), 3))
+        time, data = pyspedas.get_data('fdsn_elec_8P_CAS04')
+        self.assertTrue(len(time) > 0)
+        self.assertEqual(data.shape, (len(time), 2))
+        # Calibrated units as reported by MTH5
+        self.assertEqual(pyspedas.get_data('fdsn_mag_8P_CAS04', metadata=True)['data_att']['units'], 'nanoTesla')
+        self.assertEqual(
+            pyspedas.get_data('fdsn_elec_8P_CAS04', metadata=True)['data_att']['units'], 'milliVolt per kilometer',
+        )
+
     # @patch('sys.stdout', new_callable=StringIO)
     def test60_load_fdsn_nowarnings(self):
         """
