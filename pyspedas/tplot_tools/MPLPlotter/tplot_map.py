@@ -92,30 +92,19 @@ class Tplot_Map(Basemap):
         Draw country borders onto the map.
     add_fillcontinents(color: str | None = None, lake_color: str | None = None, alpha: float | None = None,**fillcontinents_kwargs)
         Fill landmasses and lakes with colors.
-    add_mapboundary(linewidth: float | None = None, color:       str | None = None, fill_color:  str | None = None, **drawmapboundary_kwargs)
+    add_mapboundary(linewidth: float | None = None, color: str | None = None, fill_color:  str | None = None, **drawmapboundary_kwargs)
         Draw map borders and fill ocean color.
-    add_meridians(meridians : np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None,
-            labels: list | None = None, labelstyle: str | None = None, textcolor: str | None = None,**drawmeridians_kwargs)
+    add_meridians(meridians : np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None,labels: list | None = None, labelstyle: str | None = None, textcolor: str | None = None,**drawmeridians_kwargs)
         Draw meridional lines along specified longitudes.
-    add_parallels(circles: np.ndarray | None = None, linewidth: float | None = None, color: str | None = None,
-            dashes: list | None = None, labels: list | None = None, labelstyle: str | None = None,
-            textcolor: str | None = None, **drawparallels_kwargs)
+    add_parallels(circles: np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None, labels: list | None = None, labelstyle: str | None = None,textcolor: str | None = None, **drawparallels_kwargs)
         Draw parallels lines along specified latitudes.
-    add_nightshade(date : dt.datetime | None = dt.datetime.now(), color: str | None = None, delta: float | None = None,
-            alpha: float | None = None, **nightshade_kwargs)
+    add_nightshade(date : dt.datetime | None = dt.datetime.now(), color: str | None = None, delta: float | None = None,alpha: float | None = None, **nightshade_kwargs)
         Draw shaded region to represent nighttime.
-    add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], 
-            coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
-            color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
+    add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
         Draw line of points, optionally using tplot variable
-    add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],
-        coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
-        color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,
-        cmap = None, norm = None, alpha = None, **scatter_kwargs)
+    add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,cmap = None, norm = None, alpha = None, **scatter_kwargs)
         Plot set of coordinates with optionally varying marker sizes and colors.    
-    add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,
-        coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
-        color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
+    add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
         Draw circles around a set of coordinates, optionally using tplot variable
 
     Notes
@@ -146,16 +135,18 @@ class Tplot_Map(Basemap):
 
     Create Tplot_Map object with a day-night boundary and modified water colors:
     
-    >>> tmap = Tplot_Map(option_dict={"nightshade":{"date":dt.datetime.now(),"alpha":0.5},"fillcontinents":{"lake_color": "lightskyblue"},"drawmapboundary":{"fill_color":"lightskyblue"}})
+    >>> import datetime as dt
+    >>> tmap = Tplot_Map(option_dict={"nightshade":{"date":dt.datetime(2026, 11, 19, 11, 8, 21),"alpha":0.5},"fillcontinents":{"lake_color": "lightskyblue"},"drawmapboundary":{"fill_color":"lightskyblue"}})
     >>> print(tmap.map_options["nightshade"])
-    {'date': datetime.datetime(2026, 11, 19, 11, 8, 21, 233824), 'alpha': 0.5}
+    {'date': datetime.datetime(2026, 11, 19, 11, 8, 21), 'alpha': 0.5}
     >>> print(tmap.map_options["fillcontinents"])
     {'color': 'white', 'lake_color': 'lightskyblue'}
     >>> print(tmap.map_options["drawmapboundary"])
     {'fill_color': 'lightskyblue'}
-    >>> tmap.show()    
-    
+    >>> tmap.show()  # doctest: +SKIP
+
     Override `map_options` using `option_dict`:
+
     >>> tmap = Tplot_Map(override_defaults=True,option_dict={"basemap":{"projection":"mercator"},"fillcontinents":{"lake_color": "lightskyblue"}})
     >>> tmap.print_map_options()
     Current Map Options:
@@ -285,7 +276,7 @@ class Tplot_Map(Basemap):
         
         Display the default Tplot_Map:
         
-        >>> Tplot_Map().show()
+        >>> Tplot_Map().show()  # doctest: +SKIP
         """
         plt.show()
         return
@@ -307,7 +298,7 @@ class Tplot_Map(Basemap):
         
         Print default `map_options`:
             
-        >>> Tplot_Map().print_map_options()
+        >>> Tplot_Map().print_map_options()  # doctest: +NORMALIZE_WHITESPACE
         Current Map Options:
         {
          'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0},
@@ -392,7 +383,7 @@ class Tplot_Map(Basemap):
         >>> tmap.add_coastlines(linewidth = 3,linestyle = 'dashed',color = 'b')
         >>> print(tmap.map_options["drawcoastlines"])
         {'linewidth': 3, 'linestyle': 'dashed', 'color': 'b'}
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if linewidth is not None:
             drawcoastlines_kwargs.update({'linewidth':linewidth})
@@ -461,7 +452,7 @@ class Tplot_Map(Basemap):
         >>> tmap.add_countries(linewidth = 3,linestyle = 'dashed',color = 'b')
         >>> print(tmap.map_options["drawcountries"])
         {'linewidth': 3, 'linestyle': 'dashed', 'color': 'b'}
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if linewidth is not None:
             drawcountries_kwargs.update({'linewidth':linewidth})
@@ -526,7 +517,7 @@ class Tplot_Map(Basemap):
         >>> tmap.add_fillcontinents(color = 'darkgreen',lake_color = 'darkblue',alpha = 0.5)
         >>> print(tmap.map_options["fillcontinents"])
         {'color': 'darkgreen', 'lake_color': 'darkblue', 'alpha': 0.5}
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if color is not None:
             fillcontinents_kwargs.update({'color':color})
@@ -596,7 +587,7 @@ class Tplot_Map(Basemap):
         >>> tmap.add_mapboundary(linewidth = 3,color = 'r',fill_color = 'lightskyblue')
         >>> print(tmap.map_options["drawmapboundary"])
         {'linewidth': 3, 'color': 'r', 'fill_color': 'lightskyblue'}
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if linewidth is not None:
             drawmapboundary_kwargs.update({'linewidth':linewidth})
@@ -682,7 +673,7 @@ class Tplot_Map(Basemap):
         >>> tmap.print_map_options()
         Current Map Options:
         {
-         'basemap' : {'projection': 'merc', 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
+         'basemap' : {'projection': 'merc', 'lat_0': 65, 'lon_0': 20, 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
          'drawcoastlines' : {},
          'drawcountries' : {},
          'fillcontinents' : {},
@@ -694,7 +685,7 @@ class Tplot_Map(Basemap):
          'add_markers' : {},
          'add_caps' : {},
         }
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if meridians is not None:
             drawmeridians_kwargs.update({'meridians':meridians})
@@ -788,7 +779,7 @@ class Tplot_Map(Basemap):
         >>> tmap.print_map_options()
         Current Map Options:
         {
-         'basemap' : {'projection': 'merc', 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
+         'basemap' : {'projection': 'merc', 'lat_0': 65, 'lon_0': 20, 'llcrnrlon': -40, 'llcrnrlat': 10, 'urcrnrlon': 130, 'urcrnrlat': 70},
          'drawcoastlines' : {},
          'drawcountries' : {},
          'fillcontinents' : {},
@@ -800,7 +791,7 @@ class Tplot_Map(Basemap):
          'add_markers' : {},
          'add_caps' : {},
         }
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if circles is not None:
             drawparallels_kwargs.update({'circles':circles})
@@ -870,7 +861,7 @@ class Tplot_Map(Basemap):
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_nightshade(color='b',delta=0.5,alpha=0.65)
-        >>> tmap.print_map_options()
+        >>> tmap.print_map_options()  # doctest: +ELLIPSIS
         Current Map Options:
         {
          'basemap' : {'projection': 'ortho', 'lat_0': 50, 'lon_0': 260},
@@ -880,12 +871,12 @@ class Tplot_Map(Basemap):
          'drawmapboundary' : {},
          'drawmeridians' : {},
          'drawparallels' : {},
-         'nightshade' : {'date': datetime.datetime(2026, 11, 23, 17, 2, 34, 227845), 'color': 'b', 'delta': 0.5, 'alpha': 0.65},
+         'nightshade' : {'date': datetime.datetime(...), 'color': 'b', 'delta': 0.5, 'alpha': 0.65},
          'add_paths' : {},
          'add_markers' : {},
          'add_caps' : {},
         }
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if date is None:
             date = dt.datetime.now()
@@ -974,34 +965,36 @@ class Tplot_Map(Basemap):
         Draw two squares on a mercator projection map, once using
         a numpy array, and another using a tplot variable. 
     
+        >>> import numpy as np
         >>> from pyspedas import store_data
         >>> arr_path_points = np.array([
-                (0,0),
-                (30,0),
-                (30,30),
-                (0,30),
-                (0,0),
-            ])
+        ...     (0,0),
+        ...     (30,0),
+        ...     (30,30),
+        ...     (0,30),
+        ...     (0,0),
+        ... ])
         >>> tplot_path_points = "second square"
         >>> store_data(
-                name=tplot_path_points,
-                data = {
-                    'x': [1,2,3,4,5],
-                    'y': np.array([
-                        (15,15),
-                        (45,15),
-                        (45,45),
-                        (15,45),
-                        (15,15),
-                    ])
-                },
-            )
+        ...     name=tplot_path_points,
+        ...     data = {
+        ...         'x': [1,2,3,4,5],
+        ...         'y': np.array([
+        ...             (15,15),
+        ...             (45,15),
+        ...             (45,45),
+        ...             (15,45),
+        ...             (15,15),
+        ...         ])
+        ...     },
+        ... )
+        True
         >>> squares_coords = [arr_path_points,tplot_path_points]
         >>> tmap = Tplot_Map(override_defaults=True,projection="mercator",llcrnrlon=-50,urcrnrlon=50,llcrnrlat=-50,urcrnrlat=50)
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_paths(coords=squares_coords,marker='d',markersize=8,linestyle='dashed',linewidth=3)
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if color is not None:
             plot_kwargs.update({"color":color})
@@ -1112,32 +1105,34 @@ class Tplot_Map(Basemap):
         vary, with points of the same index having the
         same size:
 
+        >>> import numpy as np
         >>> from pyspedas import store_data
         >>> arr_path_points = np.array([
-                (0,0),
-                (30,0),
-                (30,30),
-                (0,30),
-            ])
+        ...     (0,0),
+        ...     (30,0),
+        ...     (30,30),
+        ...     (0,30),
+        ... ])
         >>> tplot_path_points = "second square"
         >>> store_data(
-                name=tplot_path_points,
-                data = {
-                    'x': [1,2,3,4],
-                    'y': np.array([
-                        (15,15),
-                        (45,15),
-                        (45,45),
-                        (15,45),
-                    ])
-                },
-            )
+        ...     name=tplot_path_points,
+        ...     data = {
+        ...         'x': [1,2,3,4],
+        ...         'y': np.array([
+        ...             (15,15),
+        ...             (45,15),
+        ...             (45,45),
+        ...             (15,45),
+        ...         ])
+        ...     },
+        ... )
+        True
         >>> squares_coords = [arr_path_points,tplot_path_points]
         >>> tmap = Tplot_Map(override_defaults=True,projection="mercator",llcrnrlon=-50,urcrnrlon=50,llcrnrlat=-50,urcrnrlat=50)
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_markers(coords=squares_coords,marker='d',marker_size=[64,16,25,9])
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         if color is not None:
             scatter_kwargs.update({"c":color})
@@ -1245,34 +1240,36 @@ class Tplot_Map(Basemap):
         of caps using a numpy array, and another using a 
         tplot variable: 
     
+        >>> import numpy as np
         >>> from pyspedas import store_data
         >>> arr_path_points = np.array([
-                (0,0),
-                (30,0),
-                (30,30),
-                (0,30),
-                (0,0),
-            ])
+        ...     (0,0),
+        ...     (30,0),
+        ...     (30,30),
+        ...     (0,30),
+        ...     (0,0),
+        ... ])
         >>> tplot_path_points = "second_cap_set"
         >>> store_data(
-                name=tplot_path_points,
-                data = {
-                    'x': [1,2,3,4,5],
-                    'y': np.array([
-                        (15,15),
-                        (45,15),
-                        (45,45),
-                        (15,45),
-                        (15,15),
-                    ])
-                },
-            )
+        ...     name=tplot_path_points,
+        ...     data = {
+        ...         'x': [1,2,3,4,5],
+        ...         'y': np.array([
+        ...             (15,15),
+        ...             (45,15),
+        ...             (45,45),
+        ...             (15,45),
+        ...             (15,15),
+        ...         ])
+        ...     },
+        ... )
+        True
         >>> caps_coords = [arr_path_points,tplot_path_points]
         >>> tmap = Tplot_Map(override_defaults=True)
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_caps(coords=caps_coords,linestyle='dashed',linewidth=1)
-        >>> tmap.show()
+        >>> tmap.show()  # doctest: +SKIP
         """
         from pyspedas import geodetic_correction as cotrans_geodetic_correction
         
@@ -1546,30 +1543,32 @@ def convert_coords_to_geod_lonlat_list(
     array and tplot variable and convert them into 
     geodetic coordinates:
 
+    >>> import numpy as np
     >>> from pyspedas import store_data
     >>> arr_path_points = np.array([
-            (0,0),
-            (30,0),
-            (30,30),
-            (0,30),
-            (0,0),
-        ])
+    ...     (0,0),
+    ...     (30,0),
+    ...     (30,30),
+    ...     (0,30),
+    ...     (0,0),
+    ... ])
     >>> tplot_path_points = "second_set"
     >>> store_data(
-            name=tplot_path_points,
-            data = {
-                'x': [1,2,3,4,5],
-                'y': np.array([
-                    (15,15),
-                    (45,15),
-                    (45,45),
-                    (15,45),
-                    (15,15),
-                ])
-            },
-        )
+    ...     name=tplot_path_points,
+    ...     data = {
+    ...         'x': [1,2,3,4,5],
+    ...         'y': np.array([
+    ...             (15,15),
+    ...             (45,15),
+    ...             (45,45),
+    ...             (15,45),
+    ...             (15,15),
+    ...         ])
+    ...     },
+    ... )
+    True
     >>> coords = [arr_path_points,tplot_path_points]
-    >>> print(convert_coords_to_geod_lonlat_list(coords=coords,coord_type="geoc_lat_lon"))
+    >>> print(convert_coords_to_geod_lonlat_list(coords=coords,coord_type="geoc_lat_lon"))  # doctest: +NORMALIZE_WHITESPACE
     [array([[ 0.        ,  0.        ],
        [ 0.        , 30.16692229],
        [30.        , 30.16692229],
@@ -1730,7 +1729,7 @@ def tplot_map(
     Create default map and display plot options:
 
     >>> tmap = tplot_map()
-    >>> tmap.print_map_options()
+    >>> tmap.print_map_options()  # doctest: +NORMALIZE_WHITESPACE
     Current Map Options:
     {
      'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0, 'ax': <Axes: >},
@@ -1750,10 +1749,12 @@ def tplot_map(
     }
 
     Create map with mercator projection, centered on Northern Europe:
-    >>> tmap = tplot_map(view="Northern Europe",projection="mercator",range=(-40,10,130,70),display=True)
+
+    >>> tmap = tplot_map(view="Northern Europe",projection="mercator",range=(-40,10,130,70),display=True)  # doctest: +SKIP
 
     Create a globe centered over North America where the oceans are blue and the land is green:
-    >>> tmap = tplot_map(view="North America",water_color='darkblue',land_color='darkgreen',display=True)
+
+    >>> tmap = tplot_map(view="North America",water_color='darkblue',land_color='darkgreen',display=True)  # doctest: +SKIP
     
     Create blank Tplot_Map object (useful if default plot types are not 
     desired--still requires Basemap params):

@@ -51,7 +51,7 @@ the other modules draw one panel type, orbit plots, or add interactive features.
 - `annotate.py`, `highlight.py`: store text annotations and shaded intervals on a variable; `tplot()` draws them.
 - `ctime.py`: click on a figure to collect times (experimental, backend dependent).
 - `tplotxy.py`, `tplotxy3.py`: orbit-style plots of position variables in one plane or three projections, with `tplotxy3_add_mpause()` and `tplotxy3_add_neutral_sheet()` overlays.
-- `tplot_map.py`: field-line footprints on a Basemap globe. It needs the optional `basemap` extra (`pyproject.toml`) and is not imported by `pyspedas/tplot_tools/__init__.py`.
+- `tplot_map.py`: plots tplot variable data onto Basemap maps. It needs the optional `basemap` extra (`pyproject.toml`).
 - `label_wrap.py`, `_plot_range.py`: small helpers for the `xwrap`/`ywrap` options and inverted axes.
 - `plot_tests/`: unittest modules.
 
