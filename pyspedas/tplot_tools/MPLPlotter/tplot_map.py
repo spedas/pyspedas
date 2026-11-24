@@ -1,4 +1,3 @@
-from mpl_toolkits.basemap import Basemap, _projnames, projection_params
 import logging
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
@@ -6,261 +5,270 @@ import numpy as np
 import datetime as dt
 import string
 
-class Tplot_Map_Param_Set():
-    def __set_name__(self, owner, name):
-        self.name = name
-    def __get__(self, obj, type=None) -> object:
-        return obj.__dict__.get(self.name) or 0
-    def __set__(self, obj, value:dict) -> None:
-        new_val = obj.__dict__.get(self.name).copy()
-        for key,val in value.items():
-            new_val[key] = val
-        obj.__dict__[self.name] = new_val
+try:
+    from mpl_toolkits.basemap import Basemap, _projnames, projection_params
+    basemap_missing = False
 
-# TODO: let color keywords be matplotlib color type options
-# TODO: add auroral oval plot
-class Tplot_Map(Basemap):
-    """
-    Create maps and add plots using tplot variables.
-    
-    The initialization creates the map, and class methods
-    are used to add plots. Allows for customization of the
-    default map format (see `options_dict` in Parameters and 
-    `map_options` in Attributes). 
+    class Tplot_Map_Param_Set():
+        def __set_name__(self, owner, name):
+            self.name = name
+        def __get__(self, obj, type=None) -> object:
+            return obj.__dict__.get(self.name) or 0
+        def __set__(self, obj, value:dict) -> None:
+            new_val = obj.__dict__.get(self.name).copy()
+            for key,val in value.items():
+                new_val[key] = val
+            obj.__dict__[self.name] = new_val
 
-    The default map adds map boundaries, fills continents, 
-    and draws coastlines, countries, meridians, and parallels
-    as plots to the initial map, as well as adding a 
-    day-night terminator shading if that option is already set.
-    If any of these types of plots are not desired for the initial
-    map, the `options_dict` will need to be provided at initialization
-    with the options for the unwanted plot types set to None (see 
-    `options_dict` in Parameters for more details). The 
-    `override_defaults` argument will also need to be set to True (
-    see `override_defaults` in Parameters for more details).
+    # TODO: let color keywords be matplotlib color type options
+    # TODO: add auroral oval plot
+    class Tplot_Map(Basemap):
+        """
+        Create maps and add plots using tplot variables.
 
-    Parameters
-    ----------
-    view : str or None, {'North America', 'Northern Europe', 'North Polar', 'South Polar', None}
-        Presets for map center position. Defaults to None.
-    ax : Axes, optional
-        Existing Axes object to which Tplot_Map plots will be 
-        attached. If none are provided, uses basemap module 
-        defaults.
-    option_dict : dict, optional
-        Modifies `map_options` before plotting. The `option_dict`
-        must have a similar format to `map_options` (see 
-        `map_options` for further details). 
-    override_defaults : bool, optional
-        If `override_defaults` is True, the default plot options 
-        in `map_options` will be completely replaced by the plot 
-        options in `option_dict`. Otherwise, options for a given
-        plot type only be changed if those options are specified 
-        in `option_dict`. Set to False by default.
-    **basemap_kwargs
-        Keyword arguments for initializing Basemap objects. 
-        See Basemap() for more details.
+        The initialization creates the map, and class methods
+        are used to add plots. Allows for customization of the
+        default map format (see `options_dict` in Parameters and
+        `map_options` in Attributes).
 
-    Attributes
-    ----------
-    ax : Axes
-        Existing Axes object to which Tplot_Map plots will be 
-        attached. If none are provided, uses basemap module 
-        defaults.
-    fig : Figure | SubFigure
-        Existing Figure which `ax` is built in.
-    map_options : dict
-        Dictionary where each key is the name of a plot type, and 
-        each value is a plot options dictionary. For the plot
-        options dictionaries, each key is an argument 
-        name (e.g. 'lat_0'), and each value is the method argument
-        (e.g 0). The Examples section contains a demonstration for
-        viewing the current value of `map_options`. Order of plot
-        type keys determines order in which initial basemap plots
-        are made. The `print_map_options()` method displays what
-        the format and current parameters of `map_options`.
+        The default map adds map boundaries, fills continents,
+        and draws coastlines, countries, meridians, and parallels
+        as plots to the initial map, as well as adding a
+        day-night terminator shading if that option is already set.
+        If any of these types of plots are not desired for the initial
+        map, the `options_dict` will need to be provided at initialization
+        with the options for the unwanted plot types set to None (see
+        `options_dict` in Parameters for more details). The
+        `override_defaults` argument will also need to be set to True (
+        see `override_defaults` in Parameters for more details).
 
-    Methods
-    -------
-    show()
-        Displays current Tplot_Map object.
-    print_map_options()
-        Print the `map_options` attribute in a readable format.
-    add_coastlines(linewidth:float | None=None,linestyle:str | None=None,color:str | None=None,**drawcoastlines_kwargs)
-        Draw coastlines onto the map.
-    add_countries(linewidth: float | None = None, linestyle: str | None = None, color: str | None = None, **drawcountries_kwargs):
-        Draw country borders onto the map.
-    add_fillcontinents(color: str | None = None, lake_color: str | None = None, alpha: float | None = None,**fillcontinents_kwargs)
-        Fill landmasses and lakes with colors.
-    add_mapboundary(linewidth: float | None = None, color: str | None = None, fill_color:  str | None = None, **drawmapboundary_kwargs)
-        Draw map borders and fill ocean color.
-    add_meridians(meridians : np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None,labels: list | None = None, labelstyle: str | None = None, textcolor: str | None = None,**drawmeridians_kwargs)
-        Draw meridional lines along specified longitudes.
-    add_parallels(circles: np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None, labels: list | None = None, labelstyle: str | None = None,textcolor: str | None = None, **drawparallels_kwargs)
-        Draw parallels lines along specified latitudes.
-    add_nightshade(date : dt.datetime | None = dt.datetime.now(), color: str | None = None, delta: float | None = None,alpha: float | None = None, **nightshade_kwargs)
-        Draw shaded region to represent nighttime.
-    add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
-        Draw line of points, optionally using tplot variable
-    add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,cmap = None, norm = None, alpha = None, **scatter_kwargs)
-        Plot set of coordinates with optionally varying marker sizes and colors.    
-    add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
-        Draw circles around a set of coordinates, optionally using tplot variable
+        Parameters
+        ----------
+        view : str or None, {'North America', 'Northern Europe', 'North Polar', 'South Polar', None}
+            Presets for map center position. Defaults to None.
+        ax : Axes, optional
+            Existing Axes object to which Tplot_Map plots will be
+            attached. If none are provided, uses basemap module
+            defaults.
+        option_dict : dict, optional
+            Modifies `map_options` before plotting. The `option_dict`
+            must have a similar format to `map_options` (see
+            `map_options` for further details).
+        override_defaults : bool, optional
+            If `override_defaults` is True, the default plot options
+            in `map_options` will be completely replaced by the plot
+            options in `option_dict`. Otherwise, options for a given
+            plot type only be changed if those options are specified
+            in `option_dict`. Set to False by default.
+        **basemap_kwargs
+            Keyword arguments for initializing Basemap objects.
+            See Basemap() for more details.
 
-    Notes
-    -----
-    Tplot_Map inherits from Basemap, so standard Basemap class functions
-    and usage are accessible using the Tplot_Map object. Please see 
-    Basemap() for more details.
+        Attributes
+        ----------
+        ax : Axes
+            Existing Axes object to which Tplot_Map plots will be
+            attached. If none are provided, uses basemap module
+            defaults.
+        fig : Figure | SubFigure
+            Existing Figure which `ax` is built in.
+        map_options : dict
+            Dictionary where each key is the name of a plot type, and
+            each value is a plot options dictionary. For the plot
+            options dictionaries, each key is an argument
+            name (e.g. 'lat_0'), and each value is the method argument
+            (e.g 0). The Examples section contains a demonstration for
+            viewing the current value of `map_options`. Order of plot
+            type keys determines order in which initial basemap plots
+            are made. The `print_map_options()` method displays what
+            the format and current parameters of `map_options`.
 
-    The Tplot_Map class methods which wrap Basemap methods update
-    the `map_options` dictionary, and also enable the use of tplot
-    variables in map plots.
+        Methods
+        -------
+        show()
+            Displays current Tplot_Map object.
+        print_map_options()
+            Print the `map_options` attribute in a readable format.
+        add_coastlines(linewidth:float | None=None,linestyle:str | None=None,color:str | None=None,**drawcoastlines_kwargs)
+            Draw coastlines onto the map.
+        add_countries(linewidth: float | None = None, linestyle: str | None = None, color: str | None = None, **drawcountries_kwargs):
+            Draw country borders onto the map.
+        add_fillcontinents(color: str | None = None, lake_color: str | None = None, alpha: float | None = None,**fillcontinents_kwargs)
+            Fill landmasses and lakes with colors.
+        add_mapboundary(linewidth: float | None = None, color: str | None = None, fill_color:  str | None = None, **drawmapboundary_kwargs)
+            Draw map borders and fill ocean color.
+        add_meridians(meridians : np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None,labels: list | None = None, labelstyle: str | None = None, textcolor: str | None = None,**drawmeridians_kwargs)
+            Draw meridional lines along specified longitudes.
+        add_parallels(circles: np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None, labels: list | None = None, labelstyle: str | None = None,textcolor: str | None = None, **drawparallels_kwargs)
+            Draw parallels lines along specified latitudes.
+        add_nightshade(date : dt.datetime | None = dt.datetime.now(), color: str | None = None, delta: float | None = None,alpha: float | None = None, **nightshade_kwargs)
+            Draw shaded region to represent nighttime.
+        add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
+            Draw line of points, optionally using tplot variable
+        add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,cmap = None, norm = None, alpha = None, **scatter_kwargs)
+            Plot set of coordinates with optionally varying marker sizes and colors.
+        add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
+            Draw circles around a set of coordinates, optionally using tplot variable
 
-    If an option used by Basemap or its class methods aren't provided
-    in `map_options`, the default option value in the Basemap method is
-    used instead.
+        Notes
+        -----
+        Tplot_Map inherits from Basemap, so standard Basemap class functions
+        and usage are accessible using the Tplot_Map object. Please see
+        Basemap() for more details.
 
-    Examples
-    --------
-    
-    Create a default Tplot_Map object:
-    
-    >>> tmap = Tplot_Map()    
+        The Tplot_Map class methods which wrap Basemap methods update
+        the `map_options` dictionary, and also enable the use of tplot
+        variables in map plots.
 
-    Create Tplot_Map object with a view over northern Europe:
-    
-    >>> print(Tplot_Map(view='Northern Europe').map_options["basemap"])
-    {'projection': 'ortho', 'lat_0': 65, 'lon_0': 20}
+        If an option used by Basemap or its class methods aren't provided
+        in `map_options`, the default option value in the Basemap method is
+        used instead.
 
-    Create Tplot_Map object with a day-night boundary and modified water colors:
-    
-    >>> import datetime as dt
-    >>> tmap = Tplot_Map(option_dict={"nightshade":{"date":dt.datetime(2026, 11, 19, 11, 8, 21),"alpha":0.5},"fillcontinents":{"lake_color": "lightskyblue"},"drawmapboundary":{"fill_color":"lightskyblue"}})
-    >>> print(tmap.map_options["nightshade"])
-    {'date': datetime.datetime(2026, 11, 19, 11, 8, 21), 'alpha': 0.5}
-    >>> print(tmap.map_options["fillcontinents"])
-    {'color': 'white', 'lake_color': 'lightskyblue'}
-    >>> print(tmap.map_options["drawmapboundary"])
-    {'fill_color': 'lightskyblue'}
-    >>> tmap.show()  # doctest: +SKIP
+        Examples
+        --------
 
-    Override `map_options` using `option_dict`:
+        Create a default Tplot_Map object:
 
-    >>> tmap = Tplot_Map(override_defaults=True,option_dict={"basemap":{"projection":"mercator"},"fillcontinents":{"lake_color": "lightskyblue"}})
-    >>> tmap.print_map_options()
-    Current Map Options:
-    {
-     'basemap' : {'projection': 'merc'},
-     'drawcoastlines' : {},
-     'drawcountries' : {},
-     'fillcontinents' : {'lake_color': 'lightskyblue'},
-     'drawmapboundary' : {},
-     'drawmeridians' : {},
-     'drawparallels' : {},
-     'nightshade' : {},
-     'add_paths' : {},
-     'add_markers' : {},
-     'add_caps' : {},
-    }
-    """
-    def __init__(
-            self, 
-            view:         str | None = None, 
-            ax:          Axes | None = None, 
-            option_dict: dict | None = None,
-            override_defaults: bool = False,
-            **basemap_kwargs):
+        >>> tmap = Tplot_Map()
 
-        # Define projection options, construct 
-        # projection options dict from basemap
-        # projection params
-        self._projection_params = projection_params
-        self._corners_latlon = ["llcrnrlon","llcrnrlat","urcrnrlon","urcrnrlat"]
-        self._corners_xy = ["llcrnrx","llcrnry","urcrnrx","urcrnry"]
-        self._center = ["lon_0","lat_0"]
-        self._center_1 = ["lon_1","lat_1"]
-        self._center_2 = ["lon_2","lat_2"]
-        self._invalid_projection_params = dict()
-        self._convert_projection_params()
+        Create Tplot_Map object with a view over northern Europe:
 
-        self.ax = None
-        self.fig = None
-        if ax is not None:
-            self.ax = ax
-            self.fig = self.ax.figure
+        >>> print(Tplot_Map(view='Northern Europe').map_options["basemap"])
+        {'projection': 'ortho', 'lat_0': 65, 'lon_0': 20}
 
-        # TODO: provide meridians in magnetic coordinates as well
-        # Define default options for map methods:
-        self.map_options = {
-            "basemap": {"projection":"ortho","lat_0":0,"lon_0":0},
-            "drawcoastlines":{"linewidth":0.25},
-            "drawcountries":{"linewidth":0.25},
-            "fillcontinents":{"color":"white","lake_color":"white"},
-            "drawmapboundary":{"fill_color":"white"},
-            "drawmeridians":{"meridians":np.arange(0,360,10)},
-            "drawparallels":{"circles":np.arange(-90,90,10)},
-            "nightshade":{},
-            "add_paths":{},
-            "add_markers":{"color":"r","marker":"d"},
-            "add_caps":{},
+        Create Tplot_Map object with a day-night boundary and modified water colors:
+
+        >>> import datetime as dt
+        >>> tmap = Tplot_Map(option_dict={"nightshade":{"date":dt.datetime(2026, 11, 19, 11, 8, 21),"alpha":0.5},"fillcontinents":{"lake_color": "lightskyblue"},"drawmapboundary":{"fill_color":"lightskyblue"}})
+        >>> print(tmap.map_options["nightshade"])
+        {'date': datetime.datetime(2026, 11, 19, 11, 8, 21), 'alpha': 0.5}
+        >>> print(tmap.map_options["fillcontinents"])
+        {'color': 'white', 'lake_color': 'lightskyblue'}
+        >>> print(tmap.map_options["drawmapboundary"])
+        {'fill_color': 'lightskyblue'}
+        >>> tmap.show()  # doctest: +SKIP
+
+        Override `map_options` using `option_dict`:
+
+        >>> tmap = Tplot_Map(override_defaults=True,option_dict={"basemap":{"projection":"mercator"},"fillcontinents":{"lake_color": "lightskyblue"}})
+        >>> tmap.print_map_options()
+        Current Map Options:
+        {
+         'basemap' : {'projection': 'merc'},
+         'drawcoastlines' : {},
+         'drawcountries' : {},
+         'fillcontinents' : {'lake_color': 'lightskyblue'},
+         'drawmapboundary' : {},
+         'drawmeridians' : {},
+         'drawparallels' : {},
+         'nightshade' : {},
+         'add_paths' : {},
+         'add_markers' : {},
+         'add_caps' : {},
         }
+        """
+        def __init__(
+                self,
+                view:         str | None = None,
+                ax:          Axes | None = None,
+                option_dict: dict | None = None,
+                override_defaults: bool = False,
+                **basemap_kwargs):
 
-        # Handle basemap_kwargs, if any:
-        self.map_options["basemap"].update(basemap_kwargs)
-        
-        # If view is set, override basemap kwargs for centering position
-        self.view = view
-        if self.view is not None:
-            match self.view:
-                case "North America":
-                    self.map_options["basemap"]["lat_0"] = 50
-                    self.map_options["basemap"]["lon_0"] = 260
-                case "Northern Europe":
-                    self.map_options["basemap"]["lat_0"] = 65
-                    self.map_options["basemap"]["lon_0"] = 20
-                case "North Polar":
-                    self.map_options["basemap"]["lat_0"] = 90
-                    self.map_options["basemap"]["lon_0"] = 0
-                case "South Polar":
-                    self.map_options["basemap"]["lat_0"] = -90
-                    self.map_options["basemap"]["lon_0"] = 0
-                case _:
-                    raise ValueError(f'Received view = "{self.view}"; must be one of: "North America", "Northern Europe", "North Polar", "South Polar"')
+            # Define projection options, construct
+            # projection options dict from basemap
+            # projection params
+            self._projection_params = projection_params
+            self._corners_latlon = ["llcrnrlon","llcrnrlat","urcrnrlon","urcrnrlat"]
+            self._corners_xy = ["llcrnrx","llcrnry","urcrnrx","urcrnry"]
+            self._center = ["lon_0","lat_0"]
+            self._center_1 = ["lon_1","lat_1"]
+            self._center_2 = ["lon_2","lat_2"]
+            self._invalid_projection_params = dict()
+            self._convert_projection_params()
 
-        if option_dict is None:
-            option_dict = {}
-        # Copy the option dictionaries so that changes to this map's options
-        # don't change the caller's option_dict (or another map's map_options):
-        option_dict = {key: dict(value) if isinstance(value, dict) else value
-                       for key, value in option_dict.items()}
+            self.ax = None
+            self.fig = None
+            if ax is not None:
+                self.ax = ax
+                self.fig = self.ax.figure
 
-        for key in self.map_options.keys():
-            if key in option_dict.keys():
-                if override_defaults:
-                    self.map_options[key] = option_dict[key]
+            # TODO: provide meridians in magnetic coordinates as well
+            # Define default options for map methods:
+            self.map_options = {
+                "basemap": {"projection":"ortho","lat_0":0,"lon_0":0},
+                "drawcoastlines":{"linewidth":0.25},
+                "drawcountries":{"linewidth":0.25},
+                "fillcontinents":{"color":"white","lake_color":"white"},
+                "drawmapboundary":{"fill_color":"white"},
+                "drawmeridians":{"meridians":np.arange(0,360,10)},
+                "drawparallels":{"circles":np.arange(-90,90,10)},
+                "nightshade":{},
+                "add_paths":{},
+                "add_markers":{"color":"r","marker":"d"},
+                "add_caps":{},
+            }
+
+            # Handle basemap_kwargs, if any:
+            self.map_options["basemap"].update(basemap_kwargs)
+
+            # If view is set, override basemap kwargs for centering position
+            self.view = view
+            if self.view is not None:
+                match self.view:
+                    case "North America":
+                        self.map_options["basemap"]["lat_0"] = 50
+                        self.map_options["basemap"]["lon_0"] = 260
+                    case "Northern Europe":
+                        self.map_options["basemap"]["lat_0"] = 65
+                        self.map_options["basemap"]["lon_0"] = 20
+                    case "North Polar":
+                        self.map_options["basemap"]["lat_0"] = 90
+                        self.map_options["basemap"]["lon_0"] = 0
+                    case "South Polar":
+                        self.map_options["basemap"]["lat_0"] = -90
+                        self.map_options["basemap"]["lon_0"] = 0
+                    case _:
+                        raise ValueError(f'Received view = "{self.view}"; must be one of: "North America", "Northern Europe", "North Polar", "South Polar"')
+
+            if option_dict is None:
+                option_dict = {}
+            # Copy the option dictionaries so that changes to this map's options
+            # don't change the caller's option_dict (or another map's map_options):
+            option_dict = {key: dict(value) if isinstance(value, dict) else value
+                           for key, value in option_dict.items()}
+
+            for key in self.map_options.keys():
+                if key in option_dict.keys():
+                    if override_defaults:
+                        self.map_options[key] = option_dict[key]
+                    else:
+                        self.map_options[key].update(option_dict[key])
                 else:
-                    self.map_options[key].update(option_dict[key])
-            else:
-                if override_defaults and key != "basemap":
-                    self.map_options[key] = {}
-        
-        # Validate basemap inputs, and provide warnings if inputs are not valid:
-        self._validate_basemap_params()
+                    if override_defaults and key != "basemap":
+                        self.map_options[key] = {}
 
-        # Deprecated; retained for compatibility: 
-        self._params = Tplot_Map_Param_Set()
-        
-        # Use map_options to update self._params, and make initial plots:
-        for map_plottype in self.map_options.keys():
-            # If plot_options are defined, create plot from
-            # corresponding map_plottype:
-            if self.map_options.get(map_plottype) is not None and self.map_options.get(map_plottype) != {}:
-                if self.ax is not None:
-                    self.map_options[map_plottype]["ax"] = self.ax
-                if map_plottype in ["basemap","drawmapboundary","fillcontinents","drawcoastlines","drawcountries","drawmeridians","drawparallels","nightshade"]:
-                    self._add_plot_feature(map_plottype)
-            self._overwrite_params(map_plottype)
+            # Validate basemap inputs, and provide warnings if inputs are not valid:
+            self._validate_basemap_params()
+
+            # Deprecated; retained for compatibility:
+            self._params = Tplot_Map_Param_Set()
+
+            # Use map_options to update self._params, and make initial plots:
+            for map_plottype in self.map_options.keys():
+                # If plot_options are defined, create plot from
+                # corresponding map_plottype:
+                if self.map_options.get(map_plottype) is not None and self.map_options.get(map_plottype) != {}:
+                    if self.ax is not None:
+                        self.map_options[map_plottype]["ax"] = self.ax
+                    if map_plottype in ["basemap","drawmapboundary","fillcontinents","drawcoastlines","drawcountries","drawmeridians","drawparallels","nightshade"]:
+                        self._add_plot_feature(map_plottype)
+                self._overwrite_params(map_plottype)
+
+except ModuleNotFoundError, ImportError:
+    class Tplot_Map():
+        def __init__(self, *args, **kwargs):
+            raise ImportError("Tplot_Map() features not available: optional basemap package is not installed.")
 
     # Display methods:
     def show(self): 
