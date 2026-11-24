@@ -135,7 +135,7 @@ from .MPLPlotter.tplotxy import tplotxy
 from .MPLPlotter.tplotxy3 import tplotxy3, tplotxy3_add_mpause, tplotxy3_add_neutral_sheet
 
 try:
-    from .MPLPlotter.tplot_map import tplot_map
+    from .MPLPlotter.tplot_map import tplot_map, convert_coords_to_geod_lonlat_list
 except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None

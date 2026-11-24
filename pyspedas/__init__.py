@@ -113,7 +113,7 @@ from .tplot_tools import netcdf_to_tplot
 from .tplot_tools import tplot_ascii
 
 try:
-    from .tplot_tools import tplot_map
+    from .tplot_tools import tplot_map, convert_coords_to_geod_lonlat_list
 except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None
