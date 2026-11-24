@@ -1435,7 +1435,9 @@ class Tplot_Map(Basemap):
                 if projection_includes_all_corners and not args_include_some_corners:
                     logging.warning("Basemap init is missing some corners arguments; visual may differ from expected.")
                 else:
-                    logging.warning(f"Required arguments are missing: {this_projection_param_set - set(self.map_options['basemap'].keys())}" )
+                    # Check if parameters are optional.
+                    if this_projection_param_set - set(self.map_options['basemap'].keys()) != set(['llcrnrx','llcrnry','urcrnrx','urcrnry']):
+                        logging.warning(f"Required arguments are missing: {this_projection_param_set - set(self.map_options['basemap'].keys())}" )
             if args_include_invalid_params:
                 logging.warning(f"Basemap init contains invalid arguments: {set(self._invalid_projection_params[this_projection]) - self.map_options['basemap'].keys()}")
         return
@@ -1586,7 +1588,7 @@ def convert_coords_to_geod_lonlat_list(
 
     if coord_type not in ['geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO']:
         raise ValueError("coord_type must be one of: 'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'")
-
+    coord_type_in = coord_type
     # Create list of coordinate data to parse:
     coords_list = []
     if isinstance(coords,list):
@@ -1596,6 +1598,7 @@ def convert_coords_to_geod_lonlat_list(
 
     geod_lonlat_list = []
     for coord_obj in coords_list:
+        coord_type = coord_type_in
         # Initially assume list contains arrays:
         coord_data = coord_obj
         if isinstance(coord_obj,str):
@@ -1603,7 +1606,7 @@ def convert_coords_to_geod_lonlat_list(
             coord_data = (get_data(coord_obj)).y
 
         ndim = len(coord_data.shape)
-        if len(coord_data) < 2:
+        if coord_data.size < 2:
             raise ValueError(f"Positional data must have at least 2 elements; got {len(coord_data)}")
         if ndim == 1:
             logging.warning("Received one dimensional data; assuming single record of coordinates...")
@@ -1639,8 +1642,9 @@ def convert_coords_to_geod_lonlat_list(
                     coord_data_lon = np.rad2deg(coord_data_lon)
                     coord_data_lat = np.rad2deg(coord_data_lat)
                 else:
-                    coord_data_lon = coord_data_lon * 60
-                    coord_data_lat = coord_data_lat * 60
+                    # Data is in arcminutes
+                    coord_data_lon = coord_data_lon / 60
+                    coord_data_lat = coord_data_lat / 60
 
             if coord_type in ['geoc_lat_lon','geoc_spherical']:
                 coord_data_lat_geoc = coord_data_lat
@@ -1847,7 +1851,7 @@ def add_tracks(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:b
     logging.warning('The "add_tracks()" method is deprecated. Please use "Tplot_Map.add_tracks()" instead.')
     if tmap is None:
         tmap = Tplot_Map()
-    tmap.add_paths(path_coords=coords,**tracks_plot_kwargs)
+    tmap.add_paths(coords=coords,**tracks_plot_kwargs)
     if display:
         tmap.show()
     return tmap
@@ -1857,7 +1861,7 @@ def add_markers(coords: str | np.ndarray | list[np.ndarray], tmap:Tplot_Map | No
     logging.warning('The "add_markers()" method is deprecated. Please use "Tplot_Map.add_markers()" instead.')
     if tmap is None:
         tmap = Tplot_Map()
-    tmap.add_markers(markers_coords=coords, **markers_plot_kwargs)
+    tmap.add_markers(coords=coords, **markers_plot_kwargs)
     if display:
         tmap.show()
     return tmap
@@ -1867,7 +1871,7 @@ def add_station_fovs(coords: str | np.ndarray | list[np.ndarray], fov_angle = 80
     logging.warning('The "add_station_fovs()" method is deprecated. Please use "Tplot_Map.add_station_fovs()" instead.')
     if tmap is None:
         tmap = Tplot_Map()
-    tmap.add_caps(centers=coords, fov_angle = fov_angle, **station_fov_plot_kwargs)
+    tmap.add_caps(coords=coords, fov_angle = fov_angle, **station_fov_plot_kwargs)
     if display:
         tmap.show()
     return tmap
@@ -1879,9 +1883,9 @@ def geodetic_correction(lat_deg,f=(1/298.26)):
     Convert geocentric latitude to geodetic latitude using squashing factor f
     """
     # TODO: revise
-    logging.warning('The "add_station_fovs()" method is deprecated. Please use "Tplot_Map.add_station_fovs()" instead.')
+    logging.warning('The "geodetic_correction()" method is deprecated. Please use "geodetic_correction" in the "cotrans" package instead.')
     from pyspedas import geodetic_correction as cotrans_geodetic_correction
-    return cotrans_geodetic_correction(lat_deg=lat_deg,f=f)
+    return cotrans_geodetic_correction(lat_deg=lat_deg,flattening=f)
 
 def cartesian2geodeticpolar(data: str | np.ndarray) -> np.ndarray:
     """
@@ -1890,6 +1894,7 @@ def cartesian2geodeticpolar(data: str | np.ndarray) -> np.ndarray:
     Get positional data from tplot variable, then convert data coordinates to 
     geodetic polar coordinates
     """
+    logging.warning('The "cartesian2geodeticpolar()" method is deprecated. Please use "cartesian2geodeticpolar" in the "cotrans" package instead.')
     from pyspedas import cartesian2geodeticpolar as cotrans_cartesian2geodeticpolar
     return cotrans_cartesian2geodeticpolar(data=data)
 
@@ -1900,6 +1905,7 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     Take a tplot variable of arbitrary coordinate system and convert to geodetic 
     polar
     """
+    logging.warning('The "tvar_to_geodeticpolar()" method is deprecated. Please use "convert_coords_to_geod_lonlat_list" instead.')
     from pyspedas import cotrans, get_data
     from pyspedas import cartesian2geodeticpolar as cotrans_cartesian2geodeticpolar
     tvar_geo = tvar + "_geo"
