@@ -3,13 +3,7 @@ Take a tplot variable containing positional data,
 trace magnetic field lines to the north ionosphere, south ionosphere, or equator,
 then map those points to a basemap
 """
-try:
-    from mpl_toolkits.basemap import Basemap, _projnames, projection_params
-except ImportError:
-    Basemap = None
-    _projnames = None
-    projection_params = None
-
+from mpl_toolkits.basemap import Basemap, _projnames, projection_params
 import logging
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
