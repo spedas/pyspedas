@@ -137,7 +137,7 @@ from .MPLPlotter.tplot_map import tplot_map
 
 try:
     from .MPLPlotter.tplot_map import tplot_map
-except ImportError:
+except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None
 

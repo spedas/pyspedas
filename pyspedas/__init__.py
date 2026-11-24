@@ -114,7 +114,7 @@ from .tplot_tools import tplot_ascii
 
 try:
     from .tplot_tools import tplot_map
-except ImportError:
+except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None
 
