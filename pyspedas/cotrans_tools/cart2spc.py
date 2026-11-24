@@ -34,16 +34,15 @@ def cart2spc(x, y, z):
     - Uses the following equations for conversion:
         r = sqrt(x^2 + y^2 + z^2)
         theta = arccos(z/r)
-        phi = 2*pi - arccos(x/sqrt(x^2 + y^2)) if y < 0, otherwise arccos(x/sqrt(x^2 + y^2))
+        phi = atan2(y, x) modulo 2*pi; undefined when x and y are both zero
     """
 
     x, y, z = np.array(x), np.array(y), np.array(z)
     r = np.sqrt(x**2 + y**2 + z**2)
 
     # Calculate phi
-    maskn = np.where(y < 0, 1, 0)
-    maskp = np.where(y > 0, 1, 0)
-    phi = 2*np.pi - maskn * np.arccos(x/np.sqrt(x**2 + y**2)) + maskp * np.arccos(x/np.sqrt(x**2 + y**2))
+    phi = np.mod(np.arctan2(y, x), 2*np.pi)
+    phi = np.where((x == 0) & (y == 0), np.nan, phi)[()]
 
     # Calculate theta
     theta = np.arccos(z/r)
