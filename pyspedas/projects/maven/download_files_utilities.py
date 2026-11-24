@@ -106,7 +106,7 @@ def get_orbit_files():
     import urllib
     import re
 
-    orbit_files_url = "http://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
+    orbit_files_url = "https://naif.jpl.nasa.gov/pub/naif/MAVEN/kernels/spk/"
     pattern = r">maven_orb_rec(\.orb|.{17}\.orb)<"
     logging.debug("get_orbit_files() making request to URL %s", orbit_files_url)
     page = urllib.request.urlopen(orbit_files_url)
