@@ -179,9 +179,9 @@ Python environment (an optional installation for PySPEDAS users with Python vers
 
 .. autofunction:: pyspedas.tplotxy3_add_neutral_sheet
 
-.. autofunction:: pyspedas.tplot_map.tplot_map
+.. autofunction:: pyspedas.tplot_map
 
-.. autofunction:: pyspedas.tplot_map.Tplot_Map
+.. autofunction:: pyspedas.convert_coords_to_geod_lonlat_list
 
 Changing projection ranges after plotting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
