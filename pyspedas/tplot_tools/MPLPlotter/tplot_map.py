@@ -3,7 +3,13 @@ Take a tplot variable containing positional data,
 trace magnetic field lines to the north ionosphere, south ionosphere, or equator,
 then map those points to a basemap
 """
-from mpl_toolkits.basemap import Basemap, _projnames, projection_params
+try:
+    from mpl_toolkits.basemap import Basemap, _projnames, projection_params
+except ImportError:
+    Basemap = None
+    _projnames = None
+    projection_params = None
+
 import logging
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
@@ -25,8 +31,6 @@ class Tplot_Map_Param_Set():
 # TODO: let color keywords be matplotlib color type options
 # TODO: add auroral oval plot
 class Tplot_Map(Basemap):
-    # TODO: finish examples in docstring
-    # TODO: finish adding methods to docstring
     """
     Create maps and add plots using tplot variables.
     
@@ -95,6 +99,35 @@ class Tplot_Map(Basemap):
         Print the `map_options` attribute in a readable format.
     add_coastlines(linewidth:float | None=None,linestyle:str | None=None,color:str | None=None,**drawcoastlines_kwargs)
         Draw coastlines onto the map.
+    add_countries(linewidth: float | None = None, linestyle: str | None = None, color: str | None = None, **drawcountries_kwargs):
+        Draw country borders onto the map.
+    add_fillcontinents(color: str | None = None, lake_color: str | None = None, alpha: float | None = None,**fillcontinents_kwargs)
+        Fill landmasses and lakes with colors.
+    add_mapboundary(linewidth: float | None = None, color:       str | None = None, fill_color:  str | None = None, **drawmapboundary_kwargs)
+        Draw map borders and fill ocean color.
+    add_meridians(meridians : np.ndarray | None = None, linewidth: float | None = None, color: str | None = None, dashes: list | None = None,
+            labels: list | None = None, labelstyle: str | None = None, textcolor: str | None = None,**drawmeridians_kwargs)
+        Draw meridional lines along specified longitudes.
+    add_parallels(circles: np.ndarray | None = None, linewidth: float | None = None, color: str | None = None,
+            dashes: list | None = None, labels: list | None = None, labelstyle: str | None = None,
+            textcolor: str | None = None, **drawparallels_kwargs)
+        Draw parallels lines along specified latitudes.
+    add_nightshade(date : dt.datetime | None = dt.datetime.now(), color: str | None = None, delta: float | None = None,
+            alpha: float | None = None, **nightshade_kwargs)
+        Draw shaded region to represent nighttime.
+    add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], 
+            coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
+            color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
+        Draw line of points, optionally using tplot variable
+    add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],
+        coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
+        color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,
+        cmap = None, norm = None, alpha = None, **scatter_kwargs)
+        Plot set of coordinates with optionally varying marker sizes and colors.    
+    add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,
+        coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',
+        color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
+        Draw circles around a set of coordinates, optionally using tplot variable
 
     Notes
     -----
@@ -134,7 +167,22 @@ class Tplot_Map(Basemap):
     >>> tmap.show()    
     
     Override `map_options` using `option_dict`:
-
+    >>> tmap = Tplot_Map(override_defaults=True,option_dict={"basemap":{"projection":"mercator"},"fillcontinents":{"lake_color": "lightskyblue"}})
+    >>> tmap.print_map_options()
+    Current Map Options:
+    {
+     'basemap' : {'projection': 'merc'},
+     'drawcoastlines' : {},
+     'drawcountries' : {},
+     'fillcontinents' : {'lake_color': 'lightskyblue'},
+     'drawmapboundary' : {},
+     'drawmeridians' : {},
+     'drawparallels' : {},
+     'nightshade' : {},
+     'add_paths' : {},
+     'add_markers' : {},
+     'add_caps' : {},
+    }
     """
     def __init__(
             self, 
@@ -892,10 +940,12 @@ class Tplot_Map(Basemap):
             geod_spherical : Radius, Geodetic Latitude, Longitude
             geoc_spherical : Radius, Geocentric Latitude, Longitude
             cart_GEO : X, Y, Z in ECEF coordinates 
+
+            Defaults to 'geod_lat_lon'
         co_latitude : bool, optional
             Indicates if input latitude is a co-latitude. Here,
             co-latitude is defined as angle between the position vector and
-            axis of Earth's rotation.
+            axis of Earth's rotation. Default is False
         angle_meas : {'degrees', 'radians', 'arcminutes'}
             Indicates unit of measurement of input latitude and longitude 
             coordinates. Defaults to 'degrees'
@@ -985,7 +1035,6 @@ class Tplot_Map(Basemap):
             coord_type: str = 'geod_lat_lon',
             co_latitude: bool = False,
             angle_meas: str = 'degrees',
-            latlon = False,
             color = None,
             marker = None,
             marker_size = None,
@@ -996,7 +1045,107 @@ class Tplot_Map(Basemap):
             alpha = None,
             **scatter_kwargs):
         """
+        Plot set of coordinates with optionally varying marker sizes and colors.
         
+        Parameters
+        ----------
+        coords : str or np.ndarray or list of str or list of np.ndarray
+            Coordinate data to convert to geodetic coordinate data. If
+            `coords` or each element of `coords` (if `coords` is a list)
+            are of the string type, then attempts to load data from a tplot
+            variable, using the string as the tplot variable name. Otherwise,
+            attempts to transform the coordinate data directly.
+        coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
+            Indicates how the input coordinates should be interpreted. The 
+            first and second (and third, if applicable) components of the
+            data will be interpreted as the following for each `coord_type`:
+            geod_lat_lon : Geodetic latitude, Longitude
+            geoc_lat_lon : Geocentric Latitude, Longitude
+            geod_spherical : Radius, Geodetic Latitude, Longitude
+            geoc_spherical : Radius, Geocentric Latitude, Longitude
+            cart_GEO : X, Y, Z in ECEF coordinates
+
+            Defaults to 'geod_lat_lon'
+        co_latitude : bool, optional
+            Indicates if input latitude is a co-latitude. Here,
+            co-latitude is defined as angle between the position vector and
+            axis of Earth's rotation. Default is False
+        angle_meas : {'degrees', 'radians', 'arcminutes'}
+            Indicates unit of measurement of input latitude and longitude 
+            coordinates. Defaults to 'degrees'
+        color : array-like or list of color or color, optional
+            The marker colors. See `pyplot.scatter` for more details.
+        marker : MarkerStyle, optional
+            The marker style. See `pyplot.scatter` for more details.
+        marker_size : float or array-like, shape (n, ), optional
+            The marker size in points**2 (typographic points are 1/72 in.). 
+            See `pyplot.scatter` for more details.
+        marker_edge_widths : float or array-like, optional
+            The linewidth of the marker edges. See `pyplot.scatter` for more details.
+        marker_edge_colors : {'face', 'none', None} or color or list of color, optional
+            The edge color of the marker. See `pyplot.scatter` for more details.
+        cmap : str or Colormap, optional
+            The Colormap instance or registered colormap name used to map scalar 
+            data to colors. See `pyplot.scatter` for more details.
+        norm : str or Normalize, optional
+            The normalization method used to scale scalar data to the [0, 1] range before 
+            mapping to colors using cmap. See `pyplot.scatter` for more details.
+        alpha : float, default: None
+            The alpha blending value, between 0 (transparent) and 1 (opaque).
+        **scatter_kwargs
+            Keyword arguments for the basemap `scatter` method.
+            
+        Notes
+        -----
+        Wrapper for Basemap `scatter` method, intended for
+        use with coordinate points. Saves input options to 
+        `map_options` attribute.
+
+        If plotting points of the same marker size and color,
+        it is more efficient to use the `add_paths` method,
+        with the line style set to 'none' and by setting the 
+        marker option.
+        
+        Returns
+        -------
+        None
+
+        Examples
+        --------
+
+        Draw two sets of point markers: one using 
+        a numpy array and another using a tplot variable.
+        Have the first set be a different color from the 
+        second set, and have the size of the markers 
+        vary, with points of the same index having the
+        same size:
+
+        >>> from pyspedas import store_data
+        >>> arr_path_points = np.array([
+                (0,0),
+                (30,0),
+                (30,30),
+                (0,30),
+            ])
+        >>> tplot_path_points = "second square"
+        >>> store_data(
+                name=tplot_path_points,
+                data = {
+                    'x': [1,2,3,4],
+                    'y': np.array([
+                        (15,15),
+                        (45,15),
+                        (45,45),
+                        (15,45),
+                    ])
+                },
+            )
+        >>> squares_coords = [arr_path_points,tplot_path_points]
+        >>> tmap = Tplot_Map(override_defaults=True,projection="mercator",llcrnrlon=-50,urcrnrlon=50,llcrnrlat=-50,urcrnrlat=50)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_markers(coords=squares_coords,marker='d',marker_size=[64,16,25,9])
+        >>> tmap.show()
         """
         if color is not None:
             scatter_kwargs.update({"c":color})
@@ -1014,14 +1163,13 @@ class Tplot_Map(Basemap):
             scatter_kwargs.update({"norm":norm})
         if alpha is not None:
             scatter_kwargs.update({"alpha":alpha})
-        scatter_kwargs.update({"latlon":latlon})
         self.map_options["add_markers"].update(scatter_kwargs)
         self._overwrite_params("add_markers")
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
-            x,y = self(coord_set[:,0],coord_set[:,1])
-            self.scatter(x,y,**self.map_options.get("add_marker"))
+            self.scatter(coord_set[:,0],coord_set[:,1],**self.map_options.get("add_markers"),latlon=True)
         return
 
+    # TODO: add option for km radius
     def add_caps(
             self,
             coords: str | np.ndarray | list[str] | list[np.ndarray],
@@ -1029,7 +1177,6 @@ class Tplot_Map(Basemap):
             coord_type: str = 'geod_lat_lon',
             co_latitude: bool = False,
             angle_meas: str = 'degrees',
-            latlon = False,
             color=None, 
             marker=None, 
             linestyle=None,
@@ -1047,6 +1194,10 @@ class Tplot_Map(Basemap):
             are of the string type, then attempts to load data from a tplot
             variable, using the string as the tplot variable name. Otherwise,
             attempts to transform the coordinate data directly. 
+        fov_angle : float, optional
+            Sets "zenith angle" when calculating circle around center point.
+            Smaller fov_angle values result in smaller radii for the circles
+            around the stations.
         coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
             Indicates how the input coordinates should be interpreted. The 
             first and second (and third, if applicable) components of the
@@ -1056,10 +1207,12 @@ class Tplot_Map(Basemap):
             geod_spherical : Radius, Geodetic Latitude, Longitude
             geoc_spherical : Radius, Geocentric Latitude, Longitude
             cart_GEO : X, Y, Z in ECEF coordinates 
+
+            Defaults to 'geod_lat_lon'
         co_latitude : bool, optional
             Indicates if input latitude is a co-latitude. Here,
             co-latitude is defined as angle between the position vector and
-            axis of Earth's rotation.
+            axis of Earth's rotation. Default is False
         angle_meas : {'degrees', 'radians', 'arcminutes'}
             Indicates unit of measurement of input latitude and longitude 
             coordinates. Defaults to 'degrees'
@@ -1082,9 +1235,8 @@ class Tplot_Map(Basemap):
         
         Notes
         -----
-        Wrapper for Basemap `plot` method, intended for
-        use with traces. Saves input options to 
-        `map_options` attribute. 
+        Formatting uses Basemap `plot` options. 
+        Saves input options to `map_options` attribute. 
         
         Algorithm to compute the path coordinates of FOV 
         circle based on a formula from Taff, Celestial 
@@ -1101,34 +1253,34 @@ class Tplot_Map(Basemap):
         of caps using a numpy array, and another using a 
         tplot variable: 
     
-        from pyspedas import store_data
-        arr_path_points = np.array([
-            (0,0),
-            (30,0),
-            (30,30),
-            (0,30),
-            (0,0),
-        ])
-        tplot_path_points = "second_cap_set"
-        store_data(
-            name=tplot_path_points,
-            data = {
-                'x': [1,2,3,4,5],
-                'y': np.array([
-                    (15,15),
-                    (45,15),
-                    (45,45),
-                    (15,45),
-                    (15,15),
-                ])
-            },
-        )
-        caps_coords = [arr_path_points,tplot_path_points]
-        tmap = Tplot_Map(override_defaults=True)
-        tmap.add_coastlines()
-        tmap.add_countries()
-        tmap.add_caps(coords=caps_coords,linestyle='dashed',linewidth=1)
-        tmap.show()
+        >>> from pyspedas import store_data
+        >>> arr_path_points = np.array([
+                (0,0),
+                (30,0),
+                (30,30),
+                (0,30),
+                (0,0),
+            ])
+        >>> tplot_path_points = "second_cap_set"
+        >>> store_data(
+                name=tplot_path_points,
+                data = {
+                    'x': [1,2,3,4,5],
+                    'y': np.array([
+                        (15,15),
+                        (45,15),
+                        (45,45),
+                        (15,45),
+                        (15,15),
+                    ])
+                },
+            )
+        >>> caps_coords = [arr_path_points,tplot_path_points]
+        >>> tmap = Tplot_Map(override_defaults=True)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_caps(coords=caps_coords,linestyle='dashed',linewidth=1)
+        >>> tmap.show()
         """
         from pyspedas import geodetic_correction as cotrans_geodetic_correction
         
@@ -1142,7 +1294,6 @@ class Tplot_Map(Basemap):
             plot_kwargs.update({"linewidth":linewidth})
         if markersize is not None:
             plot_kwargs.update({"markersize":markersize})
-        plot_kwargs.update({"latlon":latlon})
         self.map_options["add_caps"].update(plot_kwargs)
         self._overwrite_params("add_caps")
         
@@ -1363,11 +1514,13 @@ def convert_coords_to_geod_lonlat_list(
         geoc_lat_lon : Geocentric Latitude, Longitude
         geod_spherical : Radius, Geodetic Latitude, Longitude
         geoc_spherical : Radius, Geocentric Latitude, Longitude
-        cart_GEO : X, Y, Z in ECEF coordinates 
+        cart_GEO : X, Y, Z in ECEF coordinates
+
+        Defaults to 'geod_lat_lon'
     co_latitude : bool, optional
         Indicates if input latitude is a co-latitude. Here,
         co-latitude is defined as angle between the position vector and
-        axis of Earth's rotation.
+        axis of Earth's rotation. Default is False
     angle_meas : {'degrees', 'radians', 'arcminutes'}
         Indicates unit of measurement of input latitude and longitude 
         coordinates. Defaults to 'degrees' 
@@ -1578,18 +1731,53 @@ def tplot_map(
     Examples
     --------
     
-    Create blank map and display plot options:
+    Create default map and display plot options:
 
-    >>> tmap = tplot_map(override_defaults = True)
+    >>> tmap = tplot_map()
     >>> tmap.print_map_options()
+    Current Map Options:
+    {
+     'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0, 'ax': <Axes: >},
+     'drawcoastlines' : {'linewidth': 0.25, 'ax': <Axes: >},
+     'drawcountries' : {'linewidth': 0.25, 'ax': <Axes: >},
+     'fillcontinents' : {'color': 'white', 'lake_color': 'white', 'ax': <Axes: >},
+     'drawmapboundary' : {'fill_color': 'white', 'ax': <Axes: >},
+     'drawmeridians' : {'meridians': array([  0,  10,  20,  30,  40,  50,  60,  70,  80,  90, 100, 110, 120,
+        130, 140, 150, 160, 170, 180, 190, 200, 210, 220, 230, 240, 250,
+        260, 270, 280, 290, 300, 310, 320, 330, 340, 350]), 'ax': <Axes: >},
+     'drawparallels' : {'circles': array([-90, -80, -70, -60, -50, -40, -30, -20, -10,   0,  10,  20,  30,
+            40,  50,  60,  70,  80]), 'ax': <Axes: >},
+     'nightshade' : {},
+     'add_paths' : {},
+     'add_markers' : {'color': 'r', 'marker': 'd', 'ax': <Axes: >},
+     'add_caps' : {},
+    }
 
     Create map with mercator projection, centered on Northern Europe:
     >>> tmap = tplot_map(view="North Europe",projection="mercator",range=(-40,10,130,70),display=True)
 
     Create a globe centered over North America where the oceans are blue and the land is green:
-    >>> tmap = tplot_map(view="North America",)
+    >>> tmap = tplot_map(view="North America",water_color='darkblue',land_color='darkgreen',display=True)
     
-
+    Create blank Tplot_Map object (useful if default plot types are not 
+    desired--still requires Basemap params):
+    
+    >>> tmap = tplot_map(override_defaults=True)
+    >>> tmap.print_map_options()
+    Current Map Options:
+    {
+     'basemap' : {'projection': 'ortho', 'lat_0': 0, 'lon_0': 0, 'ax': <Axes: >},
+     'drawcoastlines' : {},
+     'drawcountries' : {},
+     'fillcontinents' : {},
+     'drawmapboundary' : {},
+     'drawmeridians' : {},
+     'drawparallels' : {},
+     'nightshade' : {},
+     'add_paths' : {},
+     'add_markers' : {},
+     'add_caps' : {},
+    }
     """
     
     if tmap is not None:
@@ -1637,15 +1825,15 @@ def tplot_map(
     if land_color is not None or water_color is not None:
         if option_dict is None:
             option_dict=dict()
+        if option_dict.get("fillcontinents") is None:
+            option_dict["fillcontinents"] = dict()
         if land_color is not None:
-            option_dict.update({
-                "fillcontinents":{"color":land_color}
-                })
+            option_dict["fillcontinents"].update({"color":land_color})
         if water_color is not None:
-            option_dict.update({
-                "fillcontinents":{"lake_color":water_color},
-                "drawmapboundary":{"fill_color":water_color}
-                })
+            option_dict["fillcontinents"].update({"lake_color":water_color})
+            if option_dict.get("drawmapboundary") is None:
+                option_dict["drawmapboundary"] = dict()
+            option_dict["drawmapboundary"].update({"fill_color":water_color})
 
     tmap = Tplot_Map(
         view=view,
@@ -1726,30 +1914,3 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     geo_data = get_data(tvar_geo)
     data_geod_polar = cotrans_cartesian2geodeticpolar(data=geo_data.y)
     return data_geod_polar
-
-if __name__ == "__main__":
-    from pyspedas import store_data
-    arr_path_points = np.array([
-        (0,0),
-        (30,0),
-        (30,30),
-        (0,30),
-        (0,0),
-    ])
-    tplot_path_points = "second_set"
-    store_data(
-        name=tplot_path_points,
-        data = {
-            'x': [1,2,3,4,5],
-            'y': np.array([
-                (15,15),
-                (45,15),
-                (45,45),
-                (15,45),
-                (15,15),
-            ])
-        },
-    )
-    coords = [arr_path_points,tplot_path_points]
-    print(convert_coords_to_geod_lonlat_list(coords=coords,coord_type="geoc_lat_lon"))
-    print("Done!")
