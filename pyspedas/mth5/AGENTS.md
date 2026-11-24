@@ -51,8 +51,10 @@ reuses an existing cache; `noexception` suppresses an MTH5 request exception
 and returns without creating a tplot variable.
 
 `load_fdsn.py` loads the **magnetic** and/or **electric** field, selected by
-the `datatype` keyword (`'mag'` default, `'elec'`, `['mag', 'elec']`, or
-`'legacy'`). The module-level `_FIELDS` table in `load_fdsn.py` is the only
+the `datatype` keyword (`'mag'`, `'elec'`, `['mag', 'elec']`, or
+`'legacy'`). Without `datatype`, `'legacy'` is used and a deprecation warning
+is logged; the default is planned to change to `'mag'` in a future major
+release (RULES.md). The module-level `_FIELDS` table in `load_fdsn.py` is the only
 place that defines each field: SEED instrument code (`F` magnetic, `Q`
 electric), MTH5 components (`hx`/`hy`/`hz` or `bx`/`by`/`bz`; `ex`/`ey`), the
 `channels_recorded_*` run attribute, and output column labels. Missing

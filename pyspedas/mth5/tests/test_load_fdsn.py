@@ -224,6 +224,28 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     @patch('os.path.isfile', return_value=True)
     @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_default_datatype_deprecated(self, mock_MTH5, mock_isfile):
+        """No datatype behaves as 'legacy' (str return, fdsn_<network>_<station>) and logs a deprecation warning."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20]),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1']
+        mock_mth5.get_station.side_effect = stations
+
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            result = load_fdsn(
+                network='TEST', station='TEST',
+                trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+                nodownload=True,
+            )
+
+        self.assertEqual(result, 'fdsn_TEST_TEST')
+        self.assertEqual(pyspedas.get_data(result)[1].shape, (2, 3))
+        self.assertTrue(any('deprecated' in message for message in cm.output))
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
     def test20_load_fdsn_mag_and_elec(self, mock_MTH5, mock_isfile):
         """datatype=['mag', 'elec'] creates fdsn_mag_* (N, 3) and fdsn_elec_* (N, 2) variables."""
         stations = [
@@ -862,7 +884,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_end = '2015-06-22T02:20:00'
 
         # 'mag' returns a list of names; this request creates one variable
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])[0]
+        tvar = load_fdsn(datatype='mag', network="4P", station="REU49", trange=[date_start, date_end])[0]
         time, data = pyspedas.get_data(tvar)
 
         # Validate the stored payload, not only its boundary timestamps.

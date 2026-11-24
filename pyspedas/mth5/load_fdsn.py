@@ -103,7 +103,7 @@ def _validate_date_format(date_string):
 
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
-              nowarnings=False, request_df=None, downloadonly=False, datatype='mag'):
+              nowarnings=False, request_df=None, downloadonly=False, datatype=None):
     """
     Load FDSN data using MTH5 interface.
 
@@ -139,8 +139,10 @@ def load_fdsn(trange=None, network=None, station=None,
     downloadonly : bool, default=False
         If true, return the path to the downloaded/cached MTH5 file instead of loading
         its data into a tplot variable.
-    datatype : str or list of str, default='mag'
-        Physical field(s) to load:
+    datatype : str or list of str, optional
+        Physical field(s) to load. If not specified, 'legacy' is used and a warning is logged:
+        the 'legacy' default is deprecated and will change to 'mag' in a future major release.
+        Pass datatype explicitly to avoid the warning.
 
         - 'mag': magnetic field, tplot variable `fdsn_mag_<network>_<station>`.
         - 'elec': electric field, tplot variable `fdsn_elec_<network>_<station>`.
@@ -183,6 +185,15 @@ def load_fdsn(trange=None, network=None, station=None,
     if not station:
         pyspedas.logging.error("Station not specified")
         return
+
+    # Deprecated default: no datatype means 'legacy' for now; it will become 'mag' in a future major release.
+    if datatype is None:
+        pyspedas.logger.warning(
+            "The default datatype='legacy' of load_fdsn is deprecated and will change to 'mag' "
+            "(tplot variable fdsn_mag_<network>_<station>, list return value). "
+            "Pass datatype='mag' or datatype='legacy' explicitly."
+        )
+        datatype = 'legacy'
 
     # Normalize datatype to a list, e.g. 'mag' -> ['mag']
     datatypes = [datatype] if isinstance(datatype, str) else list(datatype)

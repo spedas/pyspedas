@@ -38,22 +38,25 @@ on `Accessing Magnetic Field Data from EarthScope Using MTH5
    components ``ex``/``ey``, calibrated to mV/km) in addition to the magnetic field (instrument code ``F``, components
    ``hx``/``hy``/``hz``, calibrated to nT). The new ``datatype`` keyword selects the field(s):
 
-   * ``datatype='mag'`` (default): magnetic field, tplot variable ``fdsn_mag_<network>_<station>``.
+   * ``datatype='mag'``: magnetic field, tplot variable ``fdsn_mag_<network>_<station>``.
    * ``datatype='elec'``: electric field, tplot variable ``fdsn_elec_<network>_<station>``.
    * ``datatype=['mag', 'elec']``: both fields.
-   * ``datatype='legacy'``: magnetic field exactly as in earlier versions (see the warning below).
+   * ``datatype='legacy'``: magnetic field exactly as in earlier versions (see the warning below). This is
+     the current default, which is deprecated.
 
    Only the requested fields are downloaded. The ``.h5`` cache file name ends with the SEED instrument codes:
    ``..._F.h5``, ``..._Q.h5`` or ``..._FQ.h5``.
 
 .. warning::
 
-   **Behavior change.** In earlier versions, ``load_fdsn`` loaded the magnetic field into the tplot variable
-   ``fdsn_<network>_<station>`` and returned that name as a string. Now the default (``datatype='mag'``) creates
-   ``fdsn_mag_<network>_<station>`` and returns a **list** of tplot variable names.
+   **Deprecated default.** In earlier versions, ``load_fdsn`` loaded the magnetic field into the tplot variable
+   ``fdsn_<network>_<station>`` and returned that name as a string. If ``datatype`` is not specified, this
+   ``'legacy'`` behavior is still used, and a deprecation warning is logged. In a future major release the default
+   will change to ``datatype='mag'``, which creates ``fdsn_mag_<network>_<station>`` and returns a **list** of tplot
+   variable names.
 
-   To keep the earlier behavior (variable names, string return value, and magnetic-only cache file), use
-   ``datatype='legacy'``:
+   To avoid the warning, pass ``datatype`` explicitly. To keep the earlier behavior (variable names, string return
+   value, and magnetic-only cache file), use ``datatype='legacy'``:
 
    .. code-block:: python
 
@@ -76,7 +79,7 @@ Magnetic field example:
 
     import pyspedas
     from pyspedas.mth5.load_fdsn import load_fdsn
-    load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'])
+    load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'], datatype='mag')
     pyspedas.tplot('fdsn_mag_4P_ALW48')
 
 .. image:: _static/mth5_4p_alw48.png

@@ -15,6 +15,7 @@
 | `test20_downloadonly_cache_name_by_datatype` | Only the requested fields are downloaded: `'mag'` -> `F` channels, `..._F.h5`; `'elec'` -> `Q` channels, `..._Q.h5`; `['elec', 'mag']` -> both, `..._FQ.h5` (independent of order) |
 | `test20_load_fdsn_elec_only_warns` | `datatype='elec'` logs a WARNING about the mth5 0.6.9 electric-only bug |
 | `test20_load_fdsn_elec_no_warning` | No such WARNING for `datatype='elec'` on a newer mth5 (`1.0.0`), or for `['mag', 'elec']` on `0.6.9` |
+| `test20_load_fdsn_default_datatype_deprecated` | No `datatype` behaves as `'legacy'`: returns the string `'fdsn_TEST_TEST'` with shape `(N, 3)` and logs a WARNING containing `deprecated` |
 | `test20_load_fdsn_mag_and_elec` | `datatype=['mag', 'elec']` returns `['fdsn_mag_TEST_TEST', 'fdsn_elec_TEST_TEST']` with shapes `(N, 3)`/`(N, 2)` and units `nT`/`mV/km` |
 | `test20_load_fdsn_elec_missing_ey_nan` | A run without `ey` data still produces `fdsn_elec_TEST_TEST`, with the `ey` column entirely `NaN` |
 | `test20_downloadonly_returns_path` | `downloadonly=True` returns the downloaded/cached MTH5 file path and never opens `MTH5` (skips tplot creation entirely) |

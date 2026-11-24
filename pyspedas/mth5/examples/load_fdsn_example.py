@@ -4,7 +4,7 @@ from pyspedas.mth5.load_fdsn import load_fdsn
 import pyspedas
 import numpy as np
 
-load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'])
+load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'], datatype='mag')
 pyspedas.tplot('fdsn_mag_4P_ALW48')
 
 # Get data
