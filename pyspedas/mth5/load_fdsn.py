@@ -129,10 +129,13 @@ def load_fdsn(trange=None, network=None, station=None,
         request_df must contain the following:
 
         - One `station`, one `network`, and one `location` as a list.
-        - A list of 3 strings for `channels`.
+        - A list of one comma-separated string of SEED channel codes for `channel`, e.g. 'LFE,LFN,LFZ'.
         - The `start` and `end` date fields must contain a list of one string.
 
         See `pyspedas.mth5.load_fdsn._request_df_from_input` implementation for reference.
+        The extracted fields and the cache file name follow `datatype`, not the channels in request_df:
+        request the channels that match `datatype` (e.g. electric 'LQ?' channels for 'elec'),
+        otherwise no tplot variable is created for the missing field.
     downloadonly : bool, default=False
         If true, return the path to the downloaded/cached MTH5 file instead of loading
         its data into a tplot variable.
