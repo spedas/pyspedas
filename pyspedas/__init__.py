@@ -111,7 +111,12 @@ from .tplot_tools import tplotxy3_add_neutral_sheet
 from .tplot_tools import cdf_to_tplot
 from .tplot_tools import netcdf_to_tplot
 from .tplot_tools import tplot_ascii
-from .tplot_tools import tplot_map
+
+try:
+    from .tplot_tools import tplot_map
+except ImportError:
+    # skip import of tplot_map
+    tplot_map = None
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data

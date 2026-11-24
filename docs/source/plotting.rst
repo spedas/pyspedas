@@ -167,6 +167,10 @@ It also includes several features that are useful for orbit plots: once the init
 one can add traces for bow shock, magnetopause boundaries, or neutral sheet locations by passing the
 boundary data and the Matplotlib figure object to a helper routine to add the new traces.
 
+The tplot_map routine creates maps or globes which allow tplot variables to be plotted over top them. This enables
+the field line traces and station FOV's to be displayed on an actual map. Requires Basemap to be installed to the 
+Python environment (an optional installation for PySPEDAS users with Python version 3.13 or earlier). 
+
 .. autofunction:: pyspedas.tplotxy
 
 .. autofunction:: pyspedas.tplotxy3
@@ -174,6 +178,10 @@ boundary data and the Matplotlib figure object to a helper routine to add the ne
 .. autofunction:: pyspedas.tplotxy3_add_mpause
 
 .. autofunction:: pyspedas.tplotxy3_add_neutral_sheet
+
+.. autofunction:: pyspedas.tplot_map.tplot_map
+
+.. autofunction:: pyspedas.tplot_map.Tplot_Map
 
 Changing projection ranges after plotting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^

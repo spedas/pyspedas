@@ -87,6 +87,11 @@ Spherical to Cartesian Coordinates
 .. autofunction:: pyspedas.spc2cart
 .. autofunction:: pyspedas.sphere_to_cart
 
+Methods for Geographic Coordinates
+-----------------------------------
+.. autofunction:: pyspedas.geodetic_correction 
+.. autofunction:: pyspedas.cartesian2geodeticpolar 
+
 Field-Aligned Coordinates (FAC)
 -------------------------------
 

@@ -1,8 +1,3 @@
-"""
-Take a tplot variable containing positional data, 
-trace magnetic field lines to the north ionosphere, south ionosphere, or equator,
-then map those points to a basemap
-"""
 from mpl_toolkits.basemap import Basemap, _projnames, projection_params
 import logging
 import matplotlib.pyplot as plt
@@ -126,7 +121,7 @@ class Tplot_Map(Basemap):
     Notes
     -----
     Tplot_Map inherits from Basemap, so standard Basemap class functions
-    and usag are accessible using the Tplot_Map object. Please see 
+    and usage are accessible using the Tplot_Map object. Please see 
     Basemap() for more details.
 
     The Tplot_Map class methods which wrap Basemap methods update
@@ -239,6 +234,8 @@ class Tplot_Map(Basemap):
                 case "South Polar":
                     self.map_options["basemap"]["lat_0"] = -90
                     self.map_options["basemap"]["lon_0"] = 0
+                case _:
+                    raise ValueError(f'Received view = "{self.view}"; must be one of: "North America", "Northern Europe", "North Polar", "South Polar"')
 
         if option_dict is None:
             option_dict = {}
@@ -324,9 +321,9 @@ class Tplot_Map(Basemap):
          'drawparallels' : {'circles': array([-90, -80, -70, -60, -50, -40, -30, -20, -10,   0,  10,  20,  30,
             40,  50,  60,  70,  80])},
          'nightshade' : {},
-         'add_lineplot' : {},
-         'add_marker' : {'color': 'r', 'marker': 'd'},
-         'add_cap' : {},
+         'add_paths' : {},
+         'add_markers' : {'color': 'r', 'marker': 'd'},
+         'add_caps' : {},
         }      
         """
         outstr = "Current Map Options:\n{\n"
@@ -678,7 +675,7 @@ class Tplot_Map(Basemap):
         labels placed along all edges of the plot where the longitude
         intersects with the map boundary:
 
-        >>> tmap = Tplot_Map(view="North Europe",override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
+        >>> tmap = Tplot_Map(view="Northern Europe",override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_meridians(meridians=np.arange(0,360,30),linewidth=3,color = 'r',dashes = [1,0],labels = [1,1,1,1],labelstyle="+/-",textcolor='b')
@@ -784,7 +781,7 @@ class Tplot_Map(Basemap):
         labels placed along all edges of the plot where the longitude
         intersects with the map boundary:
 
-        >>> tmap = Tplot_Map(view="North Europe",option_dict={},override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
+        >>> tmap = Tplot_Map(view="Northern Europe",option_dict={},override_defaults=True,projection="mercator",llcrnrlon=-40,llcrnrlat=10,urcrnrlon=130,urcrnrlat=70)
         >>> tmap.add_coastlines()
         >>> tmap.add_countries()
         >>> tmap.add_parallels(circles=np.arange(0,90,30),linewidth=3,color = 'r',dashes = [1,0],labels = [1,1,1,1],labelstyle="+/-",textcolor='b')
@@ -824,7 +821,7 @@ class Tplot_Map(Basemap):
 
     def add_nightshade(
             self,
-            date : dt.datetime | None = dt.datetime.now(),
+            date : dt.datetime | None = None,
             color :        str | None = None,
             delta :      float | None = None,
             alpha :      float | None = None,
@@ -890,8 +887,9 @@ class Tplot_Map(Basemap):
         }
         >>> tmap.show()
         """
-        if date is not None:
-            nightshade_kwargs.update({'date':date})
+        if date is None:
+            date = dt.datetime.now()
+        nightshade_kwargs.update({'date':date})
         if color is not None:
             nightshade_kwargs.update({'color':color})
         if delta is not None:
@@ -976,34 +974,34 @@ class Tplot_Map(Basemap):
         Draw two squares on a mercator projection map, once using
         a numpy array, and another using a tplot variable. 
     
-        from pyspedas import store_data
-        arr_path_points = np.array([
-            (0,0),
-            (30,0),
-            (30,30),
-            (0,30),
-            (0,0),
-        ])
-        tplot_path_points = "second square"
-        store_data(
-            name=tplot_path_points,
-            data = {
-                'x': [1,2,3,4,5],
-                'y': np.array([
-                    (15,15),
-                    (45,15),
-                    (45,45),
-                    (15,45),
-                    (15,15),
-                ])
-            },
-        )
-        squares_coords = [arr_path_points,tplot_path_points]
-        tmap = Tplot_Map(override_defaults=True,projection="mercator",llcrnrlon=-50,urcrnrlon=50,llcrnrlat=-50,urcrnrlat=50)
-        tmap.add_coastlines()
-        tmap.add_countries()
-        tmap.add_paths(coords=squares_coords,marker='d',markersize=8,linestyle='dashed',linewidth=3)
-        tmap.show()
+        >>> from pyspedas import store_data
+        >>> arr_path_points = np.array([
+                (0,0),
+                (30,0),
+                (30,30),
+                (0,30),
+                (0,0),
+            ])
+        >>> tplot_path_points = "second square"
+        >>> store_data(
+                name=tplot_path_points,
+                data = {
+                    'x': [1,2,3,4,5],
+                    'y': np.array([
+                        (15,15),
+                        (45,15),
+                        (45,45),
+                        (15,45),
+                        (15,15),
+                    ])
+                },
+            )
+        >>> squares_coords = [arr_path_points,tplot_path_points]
+        >>> tmap = Tplot_Map(override_defaults=True,projection="mercator",llcrnrlon=-50,urcrnrlon=50,llcrnrlat=-50,urcrnrlat=50)
+        >>> tmap.add_coastlines()
+        >>> tmap.add_countries()
+        >>> tmap.add_paths(coords=squares_coords,marker='d',markersize=8,linestyle='dashed',linewidth=3)
+        >>> tmap.show()
         """
         if color is not None:
             plot_kwargs.update({"color":color})
@@ -1548,30 +1546,30 @@ def convert_coords_to_geod_lonlat_list(
     array and tplot variable and convert them into 
     geodetic coordinates:
 
-    from pyspedas import store_data
-    arr_path_points = np.array([
-        (0,0),
-        (30,0),
-        (30,30),
-        (0,30),
-        (0,0),
-    ])
-    tplot_path_points = "second_set"
-    store_data(
-        name=tplot_path_points,
-        data = {
-            'x': [1,2,3,4,5],
-            'y': np.array([
-                (15,15),
-                (45,15),
-                (45,45),
-                (15,45),
-                (15,15),
-            ])
-        },
-    )
-    coords = [arr_path_points,tplot_path_points]
-    print(convert_coords_to_geod_lonlat_list(coords=coords,coord_type="geoc_lat_lon"))
+    >>> from pyspedas import store_data
+    >>> arr_path_points = np.array([
+            (0,0),
+            (30,0),
+            (30,30),
+            (0,30),
+            (0,0),
+        ])
+    >>> tplot_path_points = "second_set"
+    >>> store_data(
+            name=tplot_path_points,
+            data = {
+                'x': [1,2,3,4,5],
+                'y': np.array([
+                    (15,15),
+                    (45,15),
+                    (45,45),
+                    (15,45),
+                    (15,15),
+                ])
+            },
+        )
+    >>> coords = [arr_path_points,tplot_path_points]
+    >>> print(convert_coords_to_geod_lonlat_list(coords=coords,coord_type="geoc_lat_lon"))
     [array([[ 0.        ,  0.        ],
        [ 0.        , 30.16692229],
        [30.        , 30.16692229],
@@ -1646,13 +1644,13 @@ def convert_coords_to_geod_lonlat_list(
                     coord_data_lon = coord_data_lon / 60
                     coord_data_lat = coord_data_lat / 60
 
+            if co_latitude:
+                coord_data_lat = 90-coord_data_lat
+            
             if coord_type in ['geoc_lat_lon','geoc_spherical']:
                 coord_data_lat_geoc = coord_data_lat
             else:
                 coord_data_lat_geoc = cotrans_geodetic_correction(coord_data_lat,inverse=True)
-
-            if co_latitude:
-                coord_data_lat_geoc = 90-coord_data_lat_geoc
             
             coord_data_lat_geod = cotrans_geodetic_correction(coord_data_lat_geoc)
 
@@ -1674,7 +1672,7 @@ def tplot_map(
         display:bool = False, 
         **basemap_kwargs) -> Tplot_Map:
     # TODO: make sure coordinates are interpreted as lon, lat, not the other way around
-    """"
+    """
     Create a Tplot_Map object, with convenient initialization options
     
     Parameters
@@ -1685,7 +1683,7 @@ def tplot_map(
         new Tplot_Map object from scratch.
     projection : str, optional
         Basemap projection parameter
-    center : tuple of strings, optional
+    center : tuple of floats, optional
         Shortcut for assigning map center, where
         the tuple has the form: (lon_0, lat_0)
     range : tuple, optional
@@ -1710,7 +1708,7 @@ def tplot_map(
         If `override_defaults` is True, the default plot options 
         in `map_options` (see `Tplot_Map`) will be completely 
         replaced by the plot options in `option_dict`. Otherwise, 
-        options for a given plot type only be changed if those options 
+        options for a given plot type can only be changed if those options 
         are specified in `option_dict`. Set to False by default.
     range_is_xy : bool, optional
         Indicates whether range should be interpreted
@@ -1752,7 +1750,7 @@ def tplot_map(
     }
 
     Create map with mercator projection, centered on Northern Europe:
-    >>> tmap = tplot_map(view="North Europe",projection="mercator",range=(-40,10,130,70),display=True)
+    >>> tmap = tplot_map(view="Northern Europe",projection="mercator",range=(-40,10,130,70),display=True)
 
     Create a globe centered over North America where the oceans are blue and the land is green:
     >>> tmap = tplot_map(view="North America",water_color='darkblue',land_color='darkgreen',display=True)
@@ -1790,35 +1788,34 @@ def tplot_map(
         # create axes object if none is passed:
         fig, ax = plt.subplots()
 
-    if any([projection,center,range]) is not None:
-        if basemap_kwargs is None:
-            basemap_kwargs = dict()
+    if basemap_kwargs is None:
+        basemap_kwargs = dict()
 
-        if projection is not None:
-            basemap_kwargs.update({"projection":projection})
-        
-        if isinstance(center,tuple):
-            if len(center) != 2:
-                raise ValueError("Option 'center' must be tuple of length 2")
-            else:
-                basemap_kwargs.update({"lon_0":center[0],"lat_0":center[1]})
+    if isinstance(projection,str):
+        basemap_kwargs.update({"projection":projection})
+    
+    if isinstance(center,tuple):
+        if len(center) != 2:
+            raise ValueError("Option 'center' must be tuple of length 2")
+        else:
+            basemap_kwargs.update({"lon_0":center[0],"lat_0":center[1]})
 
-        if isinstance(range,tuple):
-            if len(range) != 4:
-                raise ValueError("Option 'range' must be tuple of length 4")
+    if isinstance(range,tuple):
+        if len(range) != 4:
+            raise ValueError("Option 'range' must be tuple of length 4")
+        else:
+            if range_is_xy:
+                basemap_kwargs.update({
+                    "llcrnry":range[1],
+                    "llcrnrx":range[0],
+                    "urcrnry":range[3],
+                    "urcrnrx":range[2],})
             else:
-                if range_is_xy:
-                    basemap_kwargs.update({
-                        "llcrnry":range[1],
-                        "llcrnrx":range[0],
-                        "urcrnry":range[3],
-                        "urcrnrx":range[2],})
-                else:
-                    basemap_kwargs.update({
-                        "llcrnrlat":range[1],
-                        "llcrnrlon":range[0],
-                        "urcrnrlat":range[3],
-                        "urcrnrlon":range[2],})
+                basemap_kwargs.update({
+                    "llcrnrlat":range[1],
+                    "llcrnrlon":range[0],
+                    "urcrnrlat":range[3],
+                    "urcrnrlon":range[2],})
     
     if land_color is not None or water_color is not None:
         if option_dict is None:

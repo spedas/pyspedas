@@ -172,8 +172,6 @@ coverage.xml
 .pytest_cache/
 pyspedas_plots/
 _testing_output/
-tplot_map_basic.png
-tplot_map_full.png
 
 # Translations
 *.mo
