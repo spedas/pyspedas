@@ -230,7 +230,11 @@ class Tplot_Map(Basemap):
 
         if option_dict is None:
             option_dict = {}
-                
+        # Copy the option dictionaries so that changes to this map's options
+        # don't change the caller's option_dict (or another map's map_options):
+        option_dict = {key: dict(value) if isinstance(value, dict) else value
+                       for key, value in option_dict.items()}
+
         for key in self.map_options.keys():
             if key in option_dict.keys():
                 if override_defaults:
@@ -1781,10 +1785,16 @@ def tplot_map(
         if ax is None:
             ax=tmap.ax
         if option_dict is None:
-            option_dict=tmap.map_options
+            option_dict = tmap.map_options
         if view is None:
             view = tmap.view
-    
+
+    # Copy the option dictionaries so that the land and water colors set below
+    # don't change the caller's option_dict or the input tmap's map_options:
+    if option_dict is not None:
+        option_dict = {key: dict(value) if isinstance(value, dict) else value
+                       for key, value in option_dict.items()}
+
     if ax is None:
         # create axes object if none is passed:
         fig, ax = plt.subplots()
@@ -1831,7 +1841,7 @@ def tplot_map(
                 option_dict["drawmapboundary"] = dict()
             option_dict["drawmapboundary"].update({"fill_color":water_color})
 
-    tmap = Tplot_Map(
+    tmap_new = Tplot_Map(
         view=view,
         ax=ax,
         option_dict=option_dict,
@@ -1839,9 +1849,9 @@ def tplot_map(
         **basemap_kwargs)
     
     if display:
-        tmap.show()
+        tmap_new.show()
     
-    return tmap
+    return tmap_new
 
 # Deprecated methods:
 def add_tracks(coords: str | np.ndarray, tmap:Tplot_Map | None = None, display:bool = False, **tracks_plot_kwargs) -> Tplot_Map:
