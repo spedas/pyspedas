@@ -15,6 +15,7 @@ from pyspedas.mth5.utilities import mth5_time_str
 from pyspedas.mth5.utilities import _list_of_fdsn_channels
 
 from datetime import datetime
+from packaging.version import Version
 
 
 # Physical field definitions, keyed by datatype ('mag', 'elec').
@@ -25,10 +26,11 @@ from datetime import datetime
 # name: run_ts.dataset attribute listing the recorded components,
 #     e.g. 'channels_recorded_magnetic' -> ['hx', 'hy', 'hz'].
 # labels: names of the output columns, e.g. ['x', 'y', 'z'].
+# instrument: SEED instrument code to request, e.g. 'F' -> channels LFE, LFN, LFZ.
 _FIELDS = {
-    'mag': {'print_name': 'magnetic', 'components': [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')],
+    'mag': {'print_name': 'magnetic', 'instrument': 'F', 'components': [('hx', 'bx'), ('hy', 'by'), ('hz', 'bz')],
             'name': 'channels_recorded_magnetic', 'labels': ['x', 'y', 'z']},
-    'elec': {'print_name': 'electric', 'components': [('ex',), ('ey',)],
+    'elec': {'print_name': 'electric', 'instrument': 'Q', 'components': [('ex',), ('ey',)],
              'name': 'channels_recorded_electric', 'labels': ['x', 'y']},
 }
 
@@ -38,7 +40,7 @@ def _disable_loguru_warnings(record):
         return record["level"].no != mth5.logger.level("WARNING").no
     return True
 
-def _request_df_from_input(trange, network, station):
+def _request_df_from_input(trange, network, station, instruments='F'):
     """
     Create a request_df from input parameters.
 
@@ -50,6 +52,8 @@ def _request_df_from_input(trange, network, station):
             Network name.
         station : str
             Station name.
+        instruments : str, default='F'
+            SEED instrument codes to request, e.g. 'F' (magnetic) or 'FQ' (magnetic and electric).
 
     Returns
     -------
@@ -59,7 +63,7 @@ def _request_df_from_input(trange, network, station):
 
     # Get MTH5 file from the server
     # we use "*F*" channel instead of "*" to extract magnetic data
-    channel_list = _list_of_fdsn_channels()
+    channel_list = _list_of_fdsn_channels(instruments=instruments)
     # channel_list = "*F*"
 
     # Create request_df from input parameters
@@ -99,7 +103,7 @@ def _validate_date_format(date_string):
 
 def load_fdsn(trange=None, network=None, station=None,
               nodownload=False, noexception=False, print_request=False,
-              nowarnings=False, request_df=None, downloadonly=False):
+              nowarnings=False, request_df=None, downloadonly=False, datatype='mag'):
     """
     Load FDSN data using MTH5 interface.
 
@@ -132,14 +136,29 @@ def load_fdsn(trange=None, network=None, station=None,
     downloadonly : bool, default=False
         If true, return the path to the downloaded/cached MTH5 file instead of loading
         its data into a tplot variable.
+    datatype : str or list of str, default='mag'
+        Physical field(s) to load:
+
+        - 'mag': magnetic field, tplot variable `fdsn_mag_<network>_<station>`.
+        - 'elec': electric field, tplot variable `fdsn_elec_<network>_<station>`.
+        - ['mag', 'elec']: both.
+        - 'legacy': magnetic field only, as in earlier versions: tplot variable
+          `fdsn_<network>_<station>` and magnetic-only cache file. Cannot be combined with other values.
+
+        Only the requested fields are downloaded. The cache file name ends with the SEED instrument
+        codes: `..._F.h5` ('mag'), `..._Q.h5` ('elec'), `..._FQ.h5` (['mag', 'elec']).
+        An electric-only request can fail in mth5 0.6.9 and earlier when a station run has no electric
+        channels in the requested period; a warning is logged. Use ['mag', 'elec'] if it fails.
 
     Returns
     -------
-    tplot_variable : str or None
-        Tplot variable name. Tplot variable is created if data is loaded successfully, None otherwise.
+    tplot_variable : list of str, str or None
+        Tplot variable names (a list) for 'mag'/'elec'; a single name (str) for 'legacy';
+        None if no tplot variable was created.
         If `downloadonly` is true, the path to the downloaded/cached MTH5 file is returned instead.
         If runs differ in coordinate system, units, or measurement type, additional tplot
-        variables with `_1`, `_2`, ... suffixes are created; only the primary (base) name is returned.
+        variables with `_1`, `_2`, ... suffixes are created; for 'legacy' only the primary (base)
+        name is returned.
     """
 
     # mth5.logger.remove()
@@ -162,9 +181,35 @@ def load_fdsn(trange=None, network=None, station=None,
         pyspedas.logging.error("Station not specified")
         return
 
+    # Normalize datatype to a list, e.g. 'mag' -> ['mag']
+    datatypes = [datatype] if isinstance(datatype, str) else list(datatype)
+    legacy = datatypes == ['legacy']
+    if legacy:
+        # legacy extracts magnetic data exactly as earlier versions did
+        datatypes = ['mag']
+    elif not datatypes or any(d not in _FIELDS for d in datatypes):
+        # 'legacy' combined with other values also ends up here
+        pyspedas.logging.error(f"Invalid datatype {datatype}. Use 'mag', 'elec', ['mag', 'elec'] or 'legacy'")
+        return
+
+    # SEED instrument codes to request, sorted so the cache name does not depend on datatype order,
+    # e.g. ['mag'] -> 'F', ['elec'] -> 'Q', ['elec', 'mag'] -> 'FQ'
+    instruments = ''.join(sorted({_FIELDS[d]['instrument'] for d in datatypes}))
+
+    # mth5 0.6.9 and earlier: StationGroup.update_metadata fails with a pydantic ValidationError
+    # when a run has none of the requested channels, e.g. an electric-only request at a station
+    # whose electric channel epochs are split (8P/CAS04). Magnetic channels usually span all runs.
+    # 0.6.9 is the latest affected version known (no fixed release yet); update it if a later
+    # release is still affected.
+    if instruments == 'Q' and Version(mth5.__version__) <= Version("0.6.9"):
+        pyspedas.logger.warning(
+            f"Electric-only requests can fail in mth5 {mth5.__version__} when a station run has no "
+            "electric channels in the requested period. Use datatype=['mag', 'elec'] if it fails."
+        )
+
     # Handle request_df
     if request_df is None:
-        request_df = _request_df_from_input(trange, network, station)
+        request_df = _request_df_from_input(trange, network, station, instruments=instruments)
     else:
         network = request_df.network[0]
         station = request_df.station[0]
@@ -190,7 +235,9 @@ def load_fdsn(trange=None, network=None, station=None,
     # if os.environ.get('SPEDAS_DATA_DIR'):
     #     mth5dir = os.environ['SPEDAS_DATA_DIR']
 
-    mth5_filename = f"{network}_{station}_{trange[0]}_{trange[1]}.h5".replace(":", "").replace("-", "")
+    # Non-legacy cache files get an instrument suffix (e.g. _FQ) so a magnetic-only legacy file is never reused
+    cache_suffix = '' if legacy else f"_{instruments}"
+    mth5_filename = f"{network}_{station}_{trange[0]}_{trange[1]}{cache_suffix}.h5".replace(":", "").replace("-", "")
     mth5_pathfile = os.path.join(mth5dir, mth5_filename)
 
     # Implementation of caching
@@ -240,9 +287,6 @@ def load_fdsn(trange=None, network=None, station=None,
         # surveys = mth5_object.surveys_group.groups_list
         # # print(surveys)
 
-        # Datatypes to extract (keys of _FIELDS), e.g. ['mag'] or ['mag', 'elec'].
-        # Temporary: replaced by the datatype keyword in the next step.
-        datatypes = ['mag']
         # Initialize run-record collection (one list of processed runs per datatype) before merging,
         # e.g. {'mag': [run_record, ...], 'elec': [...]}.
         run_records = {datatype: [] for datatype in datatypes}
@@ -419,7 +463,11 @@ def load_fdsn(trange=None, network=None, station=None,
                 ordered_signatures = [(signature, None) for signature in unique_signatures]
 
             # Create the primary and any suffixed tplot variables from signature-selected runs.
-            tplot_variable_base = 'fdsn_' + network + '_' + station
+            # e.g. legacy: fdsn_4P_REU49; otherwise fdsn_mag_4P_REU49, fdsn_elec_8P_CAS04
+            if legacy:
+                tplot_variable_base = f"fdsn_{network}_{station}"
+            else:
+                tplot_variable_base = f"fdsn_{datatype}_{network}_{station}"
 
             # No processed runs: still go through the loop once so the empty case is logged.
             if not ordered_signatures:
@@ -461,15 +509,20 @@ def load_fdsn(trange=None, network=None, station=None,
 
                 # Handle legends
                 legend_names = field['labels']
-                try:
-                    legend_names = metadata.channels_recorded
-                    # A partial run can leave fewer names than the data columns.
-                    if len(legend_names) != n_columns:
-                        legend_names = field['labels']
-                except AttributeError:
-                    pyspedas.logger.error("station_data was not defined correctly")
-                    if not noexception:
-                        raise
+                if legacy:
+                    try:
+                        legend_names = metadata.channels_recorded
+                        # A partial run can leave fewer names than the data columns.
+                        if len(legend_names) != n_columns:
+                            legend_names = field['labels']
+                    except AttributeError:
+                        pyspedas.logger.error("station_data was not defined correctly")
+                        if not noexception:
+                            raise
+                else:
+                    # Station channels_recorded mixes fields (e.g. ['ex', 'ey', 'hx', 'hy', 'hz']),
+                    # so use this field's preferred component names, e.g. ['hx', 'hy', 'hz'].
+                    legend_names = [attrs[0] for attrs in field['components']]
 
                 # Store PySPEDAS coordinate and units metadata with this output group.
                 # str() turns a missing per-channel unit/type (None) into the
@@ -512,4 +565,5 @@ def load_fdsn(trange=None, network=None, station=None,
                     created_variables.append(tplot_variable)
 
         if created_variables:
-            return created_variables[0]
+            # legacy returns one name (str) as earlier versions did; otherwise all created names (list)
+            return created_variables[0] if legacy else created_variables

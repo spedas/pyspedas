@@ -10,7 +10,13 @@
 | `test10_load_fdsn_trange_wrong_length` | A `trange` with 1 or 3+ elements -> logs `'trange must have exactly 2 elements'` ERROR, no tplot var created |
 | `test10_load_fdsn_nonetwork` | No `network` given -> logs `'Network not specified'` ERROR |
 | `test10_load_fdsn_nostation` | No `station` given -> logs `'Station not specified'` ERROR |
+| `test10_load_fdsn_invalid_datatype` | Unknown `datatype`, `'legacy'` combined with other values, or an empty list -> logs `'Invalid datatype'` ERROR, returns `None` |
 | `test20_print_request` | `print_request=True` prints a dataframe containing `network/station/start/end` columns (FDSN/MTH5 mocked to abort immediately after) |
+| `test20_downloadonly_cache_name_by_datatype` | Only the requested fields are downloaded: `'mag'` -> `F` channels, `..._F.h5`; `'elec'` -> `Q` channels, `..._Q.h5`; `['elec', 'mag']` -> both, `..._FQ.h5` (independent of order) |
+| `test20_load_fdsn_elec_only_warns` | `datatype='elec'` logs a WARNING about the mth5 0.6.9 electric-only bug |
+| `test20_load_fdsn_elec_no_warning` | No such WARNING for `datatype='elec'` on a newer mth5 (`1.0.0`), or for `['mag', 'elec']` on `0.6.9` |
+| `test20_load_fdsn_mag_and_elec` | `datatype=['mag', 'elec']` returns `['fdsn_mag_TEST_TEST', 'fdsn_elec_TEST_TEST']` with shapes `(N, 3)`/`(N, 2)` and units `nT`/`mV/km` |
+| `test20_load_fdsn_elec_missing_ey_nan` | A run without `ey` data still produces `fdsn_elec_TEST_TEST`, with the `ey` column entirely `NaN` |
 | `test20_downloadonly_returns_path` | `downloadonly=True` returns the downloaded/cached MTH5 file path and never opens `MTH5` (skips tplot creation entirely) |
 | `test20_load_fdsn_splits_on_units` | Runs with different units (e.g. a sensor swap) split into `fdsn_TEST_TEST`/`_1`, each keeping its own `data_att['units']` |
 | `test20_load_fdsn_splits_on_measurement_type` | Runs with different measurement types split the same way, each keeping its own `data_att['measurements_type']` |
@@ -32,6 +38,13 @@
 | `test60_load_fdsn_nodownload` | Confirms `nodownload=True` reuses the cached `.h5` and is faster than the first (downloading) call |
 | `test60_load_fdsn_timeclip` | Confirms returned timestamps are clipped and the tplot data is nonempty, ordered, and three-component with matching row count |
 
+Tests pass `datatype='legacy'` only where they check legacy-specific
+behavior: `fdsn_<network>_<station>` names, a single `str` return, the
+legend taken from station `channels_recorded` (and its `'station_data was
+not defined correctly'` error), or the magnetic-only download path
+(`test20_downloadonly_returns_path`, `test40_load_fdsn_basic`). All other
+tests use the default `'mag'`.
+
 Test names encode a bucket number (`test<bucket>_<description>`) that groups
 tests sharing the same run-order requirement; tests in the same bucket share
 the same number so a later insertion between buckets can use an unused
@@ -44,8 +57,8 @@ number (e.g. `test15_`, `test45_`) without renumbering anything else:
   cache to still be cold (see "Setup and teardown" below) — must run before
   any `test40_*`/`test50_*`/`test60_*` test.
 - `test40_*`: `test40_load_fdsn_basic` is the real, unmocked baseline load
-  (sets `BASIC_TEST_FAILED`, writes the `.h5` cache consumed by
-  `test60_load_fdsn_nodownload`); `test40_connection_check` makes its own real
+  (sets `BASIC_TEST_FAILED`, writes the legacy `.h5` cache);
+  `test40_connection_check` makes its own real
   call and sets `CONNECTION_FAILED` for `test50_*` to check.
 - `test50_*`: real FDSN calls that are independent of `test40_load_fdsn_basic`
   and don't consume its cache file, but skip via `self.skipTest(...)` if
@@ -110,8 +123,8 @@ request) to decide whether to skip `test07_datasets_realcall`.
 - `setUp` (before every test): clears all tplot variables if any exist, so
   each test starts with a clean tplot namespace.
 - `tearDown`: no cleanup. Downloaded `.h5` cache files on disk persist across
-  tests and across runs; `test60_load_fdsn_nodownload` depends on a leftover
-  cache file created by `test40_load_fdsn_basic`.
+  tests and across runs; `test60_load_fdsn_nodownload` creates its `_F.h5`
+  cache with its own first call, then reuses it.
 - `BASIC_TEST_FAILED`: a class attribute set inside `test40_load_fdsn_basic`.
   Each `test60_*` test checks it at runtime (`if self.BASIC_TEST_FAILED:
   self.skipTest(...)`) and skips if the basic load failed.

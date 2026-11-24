@@ -153,7 +153,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
     @staticmethod
     def _mocked_fdsn_station(coord_sys, units, measurement_type, times, values,
-                              missing_units_channel=None, missing_channel=None):
+                              missing_units_channel=None, missing_channel=None, electric=False):
         """
         Build a mocked MTH5 station with one run of magnetic data.
 
@@ -164,8 +164,12 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         simulating a sensor that didn't report its units. missing_channel,
         also one of 'hx'/'hy'/'hz', leaves that channel out of the dataset
         entirely, simulating a sensor that recorded no data at all.
+        electric=True also adds ex/ey channels (units 'mV/km', type
+        'electric'), as in a combined magnetic and electric (FQ) download;
+        missing_channel may then also be 'ex'/'ey'.
         """
         channel_names = [name for name in ('hx', 'hy', 'hz') if name != missing_channel]
+        electric_names = [name for name in ('ex', 'ey') if name != missing_channel] if electric else []
 
         def make_channel(channel_name):
             if channel_name == missing_units_channel:
@@ -173,9 +177,17 @@ class TestMTH5LoadFDSN(unittest.TestCase):
             return SimpleNamespace(to_numpy=lambda: np.array(values), units=units, type=measurement_type)
 
         dataset_kwargs = {name: make_channel(name) for name in channel_names}
+        dataset_kwargs.update({
+            name: SimpleNamespace(to_numpy=lambda: np.array(values), units='mV/km', type='electric')
+            for name in electric_names
+        })
+        attrs = {'channels_recorded_magnetic': channel_names}
+        if electric:
+            attrs['channels_recorded_electric'] = electric_names
         run_ts = SimpleNamespace(
             dataset=SimpleNamespace(
-                attrs={'channels_recorded_magnetic': channel_names},
+                attrs=attrs,
+                channels_recorded_electric=electric_names,
                 channels_recorded_magnetic=channel_names,
                 time=SimpleNamespace(to_numpy=lambda: np.array(times)),
                 **dataset_kwargs,
@@ -199,6 +211,127 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         )
         return SimpleNamespace(metadata=station_metadata, get_run=MagicMock(return_value=run))
 
+    def test10_load_fdsn_invalid_datatype(self):
+        """An unknown datatype, or 'legacy' combined with others, logs an ERROR and returns None."""
+        for datatype in ['foo', ['legacy', 'mag'], []]:
+            with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
+                result = load_fdsn(
+                    datatype=datatype, network='4P', station='REU49',
+                    trange=['2015-06-22T01:45:00', '2015-06-22T02:20:00'],
+                )
+            self.assertIn('Invalid datatype', cm.output[0])
+            self.assertIsNone(result)
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_mag_and_elec(self, mock_MTH5, mock_isfile):
+        """datatype=['mag', 'elec'] creates fdsn_mag_* (N, 3) and fdsn_elec_* (N, 2) variables."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20], electric=True),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1']
+        mock_mth5.get_station.side_effect = stations
+
+        result = load_fdsn(
+            datatype=['mag', 'elec'], network='TEST', station='TEST',
+            trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+            nodownload=True,
+        )
+
+        self.assertEqual(result, ['fdsn_mag_TEST_TEST', 'fdsn_elec_TEST_TEST'])
+        self.assertEqual(pyspedas.get_data('fdsn_mag_TEST_TEST')[1].shape, (2, 3))
+        self.assertEqual(pyspedas.get_data('fdsn_elec_TEST_TEST')[1].shape, (2, 2))
+        self.assertEqual(pyspedas.get_data('fdsn_mag_TEST_TEST', metadata=True)['data_att']['units'], 'nT')
+        self.assertEqual(pyspedas.get_data('fdsn_elec_TEST_TEST', metadata=True)['data_att']['units'], 'mV/km')
+
+    @patch('os.path.isfile', return_value=True)
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    def test20_load_fdsn_elec_missing_ey_nan(self, mock_MTH5, mock_isfile):
+        """A run without ey data still loads electric field, with the ey column NaN-filled."""
+        stations = [
+            self._mocked_fdsn_station('geographic', 'nT', 'magnetic', [1, 2], [10, 20],
+                                      electric=True, missing_channel='ey'),
+        ]
+        mock_mth5 = mock_MTH5.return_value.__enter__.return_value
+        mock_mth5.surveys_group.groups_list = ['survey1']
+        mock_mth5.get_station.side_effect = stations
+
+        result = load_fdsn(
+            datatype='elec', network='TEST', station='TEST',
+            trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
+            nodownload=True,
+        )
+
+        self.assertEqual(result, ['fdsn_elec_TEST_TEST'])
+        time, data = pyspedas.get_data('fdsn_elec_TEST_TEST')
+        self.assertTrue(np.array_equal(data[:, 0], [10, 20]))
+        self.assertTrue(np.all(np.isnan(data[:, 1])))
+
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    @patch('os.rename')
+    @patch('os.path.isfile', return_value=False)
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client', return_value='fake_downloaded.h5')
+    def test20_downloadonly_cache_name_by_datatype(self, mock_make_mth5, mock_isfile, mock_rename, mock_MTH5):
+        """
+        Only the requested fields are downloaded, and the cache file name ends with their
+        SEED instrument codes (mocks as in test20_downloadonly_returns_path).
+        """
+        # (datatype, cache file ending, channels expected in the request, channels not expected)
+        cases = [
+            ('mag', '_F.h5', ['LFE'], ['LQE']),
+            ('elec', '_Q.h5', ['LQE'], ['LFE']),
+            # reversed order on purpose: the cache name must not depend on it
+            (['elec', 'mag'], '_FQ.h5', ['LFE', 'LQE'], []),
+        ]
+        for datatype, ending, present, absent in cases:
+            result = load_fdsn(
+                trange=['2015-06-22T01:45:00', '2015-06-22T02:20:00'], network="TEST", station="TEST",
+                downloadonly=True, datatype=datatype,
+            )
+            self.assertTrue(result.endswith(ending))
+            # channel string of the request, e.g. 'MFZ,MFN,...,LFE,...'
+            request_channels = mock_make_mth5.call_args[0][0].channel[0]
+            for channel in present:
+                self.assertIn(channel, request_channels)
+            for channel in absent:
+                self.assertNotIn(channel, request_channels)
+
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    @patch('os.rename')
+    @patch('os.path.isfile', return_value=False)
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client', return_value='fake_downloaded.h5')
+    # Pin the affected version so the test does not depend on the installed mth5
+    @patch('mth5.__version__', '0.6.9')
+    def test20_load_fdsn_elec_only_warns(self, mock_make_mth5, mock_isfile, mock_rename, mock_MTH5):
+        """
+        datatype='elec' logs a warning about the mth5 0.6.9 electric-only bug
+        (mocks as in test20_downloadonly_returns_path).
+        """
+        with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
+            load_fdsn(
+                trange=['2015-06-22T01:45:00', '2015-06-22T02:20:00'], network="TEST", station="TEST",
+                downloadonly=True, datatype='elec',
+            )
+        self.assertTrue(any('Electric-only' in message for message in cm.output))
+
+    @patch('pyspedas.mth5.load_fdsn.MTH5')
+    @patch('os.rename')
+    @patch('os.path.isfile', return_value=False)
+    @patch('mth5.clients.make_mth5.FDSN.make_mth5_from_fdsn_client', return_value='fake_downloaded.h5')
+    def test20_load_fdsn_elec_no_warning(self, mock_make_mth5, mock_isfile, mock_rename, mock_MTH5):
+        """
+        No electric-only warning on a newer (assumed fixed) mth5, or when magnetic
+        channels are requested too (mocks as in test20_downloadonly_returns_path).
+        """
+        # (mth5 version, datatype)
+        for version, datatype in [('1.0.0', 'elec'), ('0.6.9', ['mag', 'elec'])]:
+            with patch('mth5.__version__', version), self.assertNoLogs(logger=pyspedas.logger, level='WARNING'):
+                load_fdsn(
+                    trange=['2015-06-22T01:45:00', '2015-06-22T02:20:00'], network="TEST", station="TEST",
+                    downloadonly=True, datatype=datatype,
+                )
+
     @patch('os.path.isfile', return_value=True)
     @patch('pyspedas.mth5.load_fdsn.MTH5')
     def test20_load_fdsn_splits_on_units(self, mock_MTH5, mock_isfile):
@@ -213,6 +346,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network='TEST', station='TEST',
                 trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
                 nodownload=True,
@@ -237,6 +371,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network='TEST', station='TEST',
                 trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
                 nodownload=True,
@@ -265,6 +400,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network='TEST', station='TEST',
                 trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
                 nodownload=True,
@@ -289,6 +425,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='WARNING') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network='TEST', station='TEST',
                 trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
                 nodownload=True,
@@ -313,6 +450,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         mock_mth5.get_station.side_effect = stations
 
         result = load_fdsn(
+            datatype='legacy',
             network='TEST', station='TEST',
             trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
             nodownload=True,
@@ -336,6 +474,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         mock_mth5.get_station.side_effect = [station]
 
         result = load_fdsn(
+            datatype='legacy',
             network='TEST', station='TEST',
             trange=[self.SPLIT_DATE_START, self.SPLIT_DATE_END],
             nodownload=True,
@@ -388,6 +527,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_end = '2015-06-22T02:20:00'
 
         result = load_fdsn(
+            datatype='legacy',
             trange=[date_start, date_end], network="TEST", station="TEST",
             downloadonly=True,
         )
@@ -460,6 +600,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network="4P", station="REU49", trange=[date_start, date_end],
                 nodownload=True, noexception=True,
             )
@@ -488,6 +629,7 @@ class TestMTH5LoadFDSN(unittest.TestCase):
 
         with self.assertLogs(logger=pyspedas.logger, level='ERROR') as cm:
             result = load_fdsn(
+                datatype='legacy',
                 network="4P", station="REU49", trange=[date_start, date_end],
                 nodownload=True, noexception=True,
             )
@@ -530,8 +672,8 @@ class TestMTH5LoadFDSN(unittest.TestCase):
     def test40_load_fdsn_basic(self):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
-        load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
-        load_fdsn(network="4P", station="GAW50", trange=[date_start, date_end])
+        load_fdsn(datatype='legacy', network="4P", station="REU49", trange=[date_start, date_end])
+        load_fdsn(datatype='legacy', network="4P", station="GAW50", trange=[date_start, date_end])
 
         try:
             self.assertTrue('fdsn_4P_REU49' in pyspedas.tnames())
@@ -696,11 +838,12 @@ class TestMTH5LoadFDSN(unittest.TestCase):
         date_start = '2015-06-22T01:45:00'
         date_end = '2015-06-22T02:20:00'
 
-        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])
+        # 'mag' returns a list of names; this request creates one variable
+        tvar = load_fdsn(network="4P", station="REU49", trange=[date_start, date_end])[0]
         time, data = pyspedas.get_data(tvar)
 
         # Validate the stored payload, not only its boundary timestamps.
-        self.assertEqual(tvar, "fdsn_4P_REU49")
+        self.assertEqual(tvar, "fdsn_mag_4P_REU49")
         self.assertIn(tvar, pyspedas.tnames())
         self.assertGreater(len(time), 0)
         self.assertEqual(data.ndim, 2)
