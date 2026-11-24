@@ -50,16 +50,28 @@ access unless a matching cached HDF5 file is reused. The `nodownload` option
 reuses an existing cache; `noexception` suppresses an MTH5 request exception
 and returns without creating a tplot variable.
 
-This package currently only requests and extracts **magnetic field** data:
-`utilities.py`'s `_list_of_fdsn_channels()` hardcodes the SEED instrument
-code `F` (magnetic), and `load_fdsn.py`'s extraction loop only recognizes
-the `hx`/`hy`/`hz` (or `bx`/`by`/`bz`) components and requires
-`channels_recorded_magnetic` to be present with at least 1 entry (missing
-magnetic components are NaN-filled), so a run
-with electric-field channels (SEED instrument code `Q`, MTH5 components
-`ex`/`ey`) is skipped rather than extracted. See `fdsn_data_model.md` for the
-FDSN/MTH5 channel-naming, hierarchy, and filter-chain/calibration data model
-that this package and any future electric-field support build on.
+`load_fdsn.py` loads the **magnetic** and/or **electric** field, selected by
+the `datatype` keyword (`'mag'` default, `'elec'`, `['mag', 'elec']`, or
+`'legacy'`). The module-level `_FIELDS` table in `load_fdsn.py` is the only
+place that defines each field: SEED instrument code (`F` magnetic, `Q`
+electric), MTH5 components (`hx`/`hy`/`hz` or `bx`/`by`/`bz`; `ex`/`ey`), the
+`channels_recorded_*` run attribute, and output column labels. Missing
+components of a run are NaN-filled.
+
+- `'mag'`/`'elec'` create `fdsn_mag_<network>_<station>` /
+  `fdsn_elec_<network>_<station>` and return a list of tplot names. Only the
+  requested instruments are downloaded, into a cache file ending in `_F.h5`,
+  `_Q.h5`, or `_FQ.h5`.
+- `'legacy'` keeps the earlier behavior: magnetic only, `fdsn_<network>_<station>`,
+  a single `str` return, a cache file without an instrument suffix, and the
+  legend from station `channels_recorded`.
+- An electric-only request can fail in mth5 0.6.9 and earlier (pydantic
+  `ValidationError` in `StationGroup.update_metadata`) when a station run has
+  no electric channels in the requested period; `load_fdsn` logs a warning.
+
+`utilities.py`'s `datasets()` accepts the same `datatype` values. See
+`fdsn_data_model.md` for the FDSN/MTH5 channel-naming, hierarchy, and
+filter-chain/calibration data model.
 
 ## Tests
 

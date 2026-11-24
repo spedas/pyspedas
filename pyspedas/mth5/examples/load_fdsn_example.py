@@ -5,15 +5,15 @@ import pyspedas
 import numpy as np
 
 load_fdsn(network="4P", station="ALW48", trange=['2015-06-22', '2015-06-24'])
-pyspedas.tplot('fdsn_4P_ALW48')
+pyspedas.tplot('fdsn_mag_4P_ALW48')
 
 # Get data
-time, mag = pyspedas.get_data('fdsn_4P_ALW48')
+time, mag = pyspedas.get_data('fdsn_mag_4P_ALW48')
 
 # Re-normalize magnetometer data removing the baseline
 mag -= np.mean(mag, axis=0)
 
-pyspedas.store_data('fdsn_4P_ALW48_norm', data={'x': time, 'y':mag})
+pyspedas.store_data('fdsn_mag_4P_ALW48_norm', data={'x': time, 'y':mag})
 
 # Plot
-pyspedas.tplot('fdsn_4P_ALW48_norm')
+pyspedas.tplot('fdsn_mag_4P_ALW48_norm')
