@@ -139,6 +139,7 @@ try:
 except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None
+    convert_coords_to_geod_lonlat_list = None
 
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot

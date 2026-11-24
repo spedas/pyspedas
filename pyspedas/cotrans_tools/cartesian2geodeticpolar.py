@@ -50,12 +50,14 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
     Examples
     --------
     Convert cartesian coordinates to geodetic polar coordinates:
+    
     >>> import numpy as np
     >>> coord_geodeticpolar = cartesian2geodeticpolar(data=np.array([1,0,1]))
     >>> print(coord_geodeticpolar)
     [[ 1.41421356 45.19242142  0.        ]]
 
     Convert cartesian coordinates to geodetic polar coordinates using a tplot variable:
+    
     >>> import numpy as np
     >>> from pyspedas import store_data, get_data
     >>> name_in = 'position_cartesian'
@@ -66,12 +68,14 @@ def cartesian2geodeticpolar(data: str | np.ndarray, inverse=False):
      [ 1.41421356  0.         45.        ]]
 
     Convert geodetic polar coordinates to cartesian coordinates:
+    
     >>> import numpy as np
     >>> coord_cartesian = cartesian2geodeticpolar(data=np.array([1.41421356,45.19242142,0.0]),inverse=True)
     >>> print(coord_cartesian)
     [[1. 0. 1.]]
 
     Convert geodetic polar coordinates to cartesian coordinates using a tplot variable:
+    
     >>> import numpy as np
     >>> from pyspedas import store_data, get_data
     >>> name_in = 'position_geodeticpolar'

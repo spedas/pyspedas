@@ -117,6 +117,7 @@ try:
 except (ImportError,ModuleNotFoundError):
     # skip import of tplot_map
     tplot_map = None
+    convert_coords_to_geod_lonlat_list = None
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
