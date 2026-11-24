@@ -484,6 +484,31 @@ class CotransTestCases(unittest.TestCase):
                         )
                     del_data()  # Clean up for next test.
 
+    def test_cart2spc_quadrants(self):
+        """Azimuths are in range and Cartesian coordinates round-trip."""
+        x = np.array([1., 1., 0., -1., -1., -1., 0., 1.])
+        y = np.array([0., 1., 1., 1., 0., -1., -1., -1.])
+        z = np.ones(8)
+        r, theta, phi = pyspedas.cart2spc(x, y, z)
+        assert_allclose(phi, np.arange(8) * np.pi / 4, atol=1e-12)
+        assert_allclose(pyspedas.spc2cart(r, theta, phi), (x, y, z),
+                        atol=1e-12)
+
+    def test_cart2spc_scalar_and_poles(self):
+        """Preserve scalar results and undefined azimuths at the poles."""
+        r, theta, phi = pyspedas.cart2spc(-1., 0., 0.)
+        self.assertTrue(np.isscalar(phi))
+        assert_allclose((r, theta, phi), (1., np.pi / 2, np.pi))
+        _, theta, phi = pyspedas.cart2spc([0., 0.], [0., 0.], [1., -1.])
+        assert_allclose(theta, [0., np.pi])
+        self.assertTrue(np.isnan(phi).all())
+
+    def test_mlt_cardinal_directions(self):
+        """Magnetic midnight and noon must remain distinct."""
+        mlt = sm2mlt([1., 0., -1., 0.], [0., 1., 0., -1.], [0.] * 4)
+        assert_allclose(np.mod(mlt, 24.), [12., 18., 0., 6.],
+                        atol=1e-12)
+
     def test_mlt(self):
         """Test sm2mlt.
 
