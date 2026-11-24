@@ -112,7 +112,12 @@ from .tplot_tools import cdf_to_tplot
 from .tplot_tools import netcdf_to_tplot
 from .tplot_tools import tplot_ascii
 
-
+try:
+    from .tplot_tools import tplot_map, convert_coords_to_geod_lonlat_list
+except (ImportError,ModuleNotFoundError):
+    # skip import of tplot_map
+    tplot_map = None
+    convert_coords_to_geod_lonlat_list = None
 
 from .analysis.avg_data import avg_data
 from .analysis.deriv_data import deriv_data
@@ -150,6 +155,9 @@ from .cotrans_tools.minvar_matrix_make import minvar_matrix_make
 from .cotrans_tools.quaternions import qtom, qconj, qdotp, qmult, qnorm, qslerp, qcompose, qvalidate, qdecompose, mtoq, qnormalize
 from .cotrans_tools.tvector_rotate import tvector_rotate
 from .cotrans_tools.xyz_to_polar import xyz_to_polar
+from .cotrans_tools.geodetic_correction import geodetic_correction
+from .cotrans_tools.cartesian2geodeticpolar import cartesian2geodeticpolar
+
 
 from .geopack import get_tsy_params
 from .geopack.get_w_params import get_w

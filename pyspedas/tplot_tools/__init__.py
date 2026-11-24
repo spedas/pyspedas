@@ -133,6 +133,14 @@ from .MPLPlotter.annotate import annotate
 from .MPLPlotter.tplot import tplot
 from .MPLPlotter.tplotxy import tplotxy
 from .MPLPlotter.tplotxy3 import tplotxy3, tplotxy3_add_mpause, tplotxy3_add_neutral_sheet
+
+try:
+    from .MPLPlotter.tplot_map import tplot_map, convert_coords_to_geod_lonlat_list
+except (ImportError,ModuleNotFoundError):
+    # skip import of tplot_map
+    tplot_map = None
+    convert_coords_to_geod_lonlat_list = None
+
 from .importers.cdf_to_tplot import cdf_to_tplot
 from .importers.netcdf_to_tplot import netcdf_to_tplot
 from .exporters.tplot_ascii import tplot_ascii
