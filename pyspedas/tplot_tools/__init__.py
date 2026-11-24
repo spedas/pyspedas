@@ -133,7 +133,6 @@ from .MPLPlotter.annotate import annotate
 from .MPLPlotter.tplot import tplot
 from .MPLPlotter.tplotxy import tplotxy
 from .MPLPlotter.tplotxy3 import tplotxy3, tplotxy3_add_mpause, tplotxy3_add_neutral_sheet
-from .MPLPlotter.tplot_map import tplot_map
 
 try:
     from .MPLPlotter.tplot_map import tplot_map
