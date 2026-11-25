@@ -23,5 +23,4 @@ sphinx-rtd-theme
 tomli
 platformdirs>=4.0.0
 tomlkit>=0.13.0
-mpl_toolkits
 basemap>=2.0.0
