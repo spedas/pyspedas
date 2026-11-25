@@ -85,21 +85,25 @@ class LocalTests(SmokeTestCase):
         self.assert_plot(path)
 
     def test_basemap(self):
-        """From MPLPlotter/plot_tests/test_tplot_map.test_basic_map."""
-        from pyspedas.tplot_tools.MPLPlotter.tplot_map import tplot_map
+        """Create a map and verify projection and saved output."""
+        from pyspedas import tplot_map
 
         tmap = tplot_map(
-            projection="merc", resolution="c", llcrnrlon=-170, llcrnrlat=35,
+            projection="merc", resolution="c", lat_ts=0,
+            llcrnrlon=-170, llcrnrlat=35,
             urcrnrlon=-45, urcrnrlat=75,
+            override_defaults=True,
         )
-        tmap.add_map_boundary()
+        tmap.add_mapboundary()
         tmap.add_fillcontinents()
         tmap.add_coastlines(linewidth=0.25)
+
         x, y = tmap(-100, 50)
         self.assertTrue(np.isfinite([x, y]).all())
         assert_allclose(tmap(x, y, inverse=True), [-100, 50])
+
         path = self.output / "map.png"
-        plt.savefig(path, dpi=100)
+        tmap.fig.savefig(path, dpi=100)
         self.assert_plot(path)
 
     def test_t89(self):
