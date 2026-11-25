@@ -1,7 +1,10 @@
 """Test plotting functions (mostly for pseudovariables)"""
 
+import importlib
+import importlib.util
 import os
 import unittest
+from unittest.mock import patch
 import numpy as np
 from pyspedas.projects import themis, elfin, fast, psp
 from pyspedas import (
@@ -44,6 +47,23 @@ default_trange = ["2007-03-23", "2007-03-24"]
 
 class PlotTestCases(unittest.TestCase):
     """Test plot functions."""
+
+    def test_tplot_map_without_basemap(self):
+        """Missing Basemap allows import but gives helpful errors on construction."""
+        map_module = importlib.import_module("pyspedas.tplot_tools.MPLPlotter.tplot_map")
+        # Execute a separate copy so other tests retain their original module/classes.
+        spec = importlib.util.spec_from_file_location(map_module.__name__, map_module.__file__)
+        isolated_module = importlib.util.module_from_spec(spec)
+        # None blocks this import even when Basemap is installed and already loaded.
+        with patch.dict("sys.modules", {"mpl_toolkits.basemap": None}):
+            spec.loader.exec_module(isolated_module)
+
+        with self.assertLogs(level="ERROR") as logged:
+            with self.assertRaisesRegex(ImportError, "Tplot_Map requires the optional basemap package") as raised:
+                isolated_module.Tplot_Map()
+
+        self.assertIn('pip install "pyspedas[maps]"', str(raised.exception))
+        self.assertIn(str(raised.exception), logged.output[0])
 
     def test_markers_and_symbols(self):
         # Regression test for lineplot crash when marker sizes are set

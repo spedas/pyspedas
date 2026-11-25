@@ -1,10 +1,18 @@
-from mpl_toolkits.basemap import Basemap, _projnames, projection_params
 import logging
 import matplotlib.pyplot as plt
 from matplotlib.axes import Axes
 import numpy as np
 import datetime as dt
 import string
+
+_basemap_import_error = None
+
+try:
+    from mpl_toolkits.basemap import Basemap, _projnames, projection_params
+except ImportError as exc:
+    Basemap = object
+    _basemap_import_error = exc
+
 
 class Tplot_Map_Param_Set():
     def __set_name__(self, owner, name):
@@ -22,20 +30,20 @@ class Tplot_Map_Param_Set():
 class Tplot_Map(Basemap):
     """
     Create maps and add plots using tplot variables.
-    
+
     The initialization creates the map, and class methods
     are used to add plots. Allows for customization of the
-    default map format (see `options_dict` in Parameters and 
-    `map_options` in Attributes). 
+    default map format (see `options_dict` in Parameters and
+    `map_options` in Attributes).
 
-    The default map adds map boundaries, fills continents, 
+    The default map adds map boundaries, fills continents,
     and draws coastlines, countries, meridians, and parallels
-    as plots to the initial map, as well as adding a 
+    as plots to the initial map, as well as adding a
     day-night terminator shading if that option is already set.
     If any of these types of plots are not desired for the initial
     map, the `options_dict` will need to be provided at initialization
-    with the options for the unwanted plot types set to None (see 
-    `options_dict` in Parameters for more details). The 
+    with the options for the unwanted plot types set to None (see
+    `options_dict` in Parameters for more details). The
     `override_defaults` argument will also need to be set to True (
     see `override_defaults` in Parameters for more details).
 
@@ -44,35 +52,35 @@ class Tplot_Map(Basemap):
     view : str or None, {'North America', 'Northern Europe', 'North Polar', 'South Polar', None}
         Presets for map center position. Defaults to None.
     ax : Axes, optional
-        Existing Axes object to which Tplot_Map plots will be 
-        attached. If none are provided, uses basemap module 
+        Existing Axes object to which Tplot_Map plots will be
+        attached. If none are provided, uses basemap module
         defaults.
     option_dict : dict, optional
         Modifies `map_options` before plotting. The `option_dict`
-        must have a similar format to `map_options` (see 
-        `map_options` for further details). 
+        must have a similar format to `map_options` (see
+        `map_options` for further details).
     override_defaults : bool, optional
-        If `override_defaults` is True, the default plot options 
-        in `map_options` will be completely replaced by the plot 
+        If `override_defaults` is True, the default plot options
+        in `map_options` will be completely replaced by the plot
         options in `option_dict`. Otherwise, options for a given
-        plot type only be changed if those options are specified 
+        plot type only be changed if those options are specified
         in `option_dict`. Set to False by default.
     **basemap_kwargs
-        Keyword arguments for initializing Basemap objects. 
+        Keyword arguments for initializing Basemap objects.
         See Basemap() for more details.
 
     Attributes
     ----------
     ax : Axes
-        Existing Axes object to which Tplot_Map plots will be 
-        attached. If none are provided, uses basemap module 
+        Existing Axes object to which Tplot_Map plots will be
+        attached. If none are provided, uses basemap module
         defaults.
     fig : Figure | SubFigure
         Existing Figure which `ax` is built in.
     map_options : dict
-        Dictionary where each key is the name of a plot type, and 
+        Dictionary where each key is the name of a plot type, and
         each value is a plot options dictionary. For the plot
-        options dictionaries, each key is an argument 
+        options dictionaries, each key is an argument
         name (e.g. 'lat_0'), and each value is the method argument
         (e.g 0). The Examples section contains a demonstration for
         viewing the current value of `map_options`. Order of plot
@@ -103,14 +111,14 @@ class Tplot_Map(Basemap):
     add_paths(coords: str | np.ndarray | list[str] | list[np.ndarray], coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, markersize=None, linestyle=None, linewidth=None, **plot_kwargs)
         Draw line of points, optionally using tplot variable
     add_markers(coords: str | np.ndarray | list[str] | list[np.ndarray],coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color = None, marker = None, marker_size = None, marker_edge_widths = None, marker_edge_colors = None,cmap = None, norm = None, alpha = None, **scatter_kwargs)
-        Plot set of coordinates with optionally varying marker sizes and colors.    
+        Plot set of coordinates with optionally varying marker sizes and colors.
     add_caps(coords: str | np.ndarray | list[str] | list[np.ndarray], fov_angle = 80.0,coord_type: str = 'geod_lat_lon', co_latitude: bool = False, angle_meas: str = 'degrees',color=None, marker=None, linestyle=None, linewidth=None, markersize=None, **plot_kwargs)
         Draw circles around a set of coordinates, optionally using tplot variable
 
     Notes
     -----
     Tplot_Map inherits from Basemap, so standard Basemap class functions
-    and usage are accessible using the Tplot_Map object. Please see 
+    and usage are accessible using the Tplot_Map object. Please see
     Basemap() for more details.
 
     The Tplot_Map class methods which wrap Basemap methods update
@@ -123,18 +131,18 @@ class Tplot_Map(Basemap):
 
     Examples
     --------
-    
+
     Create a default Tplot_Map object:
-    
-    >>> tmap = Tplot_Map()    
+
+    >>> tmap = Tplot_Map()
 
     Create Tplot_Map object with a view over northern Europe:
-    
+
     >>> print(Tplot_Map(view='Northern Europe').map_options["basemap"])
     {'projection': 'ortho', 'lat_0': 65, 'lon_0': 20}
 
     Create Tplot_Map object with a day-night boundary and modified water colors:
-    
+
     >>> import datetime as dt
     >>> tmap = Tplot_Map(option_dict={"nightshade":{"date":dt.datetime(2026, 11, 19, 11, 8, 21),"alpha":0.5},"fillcontinents":{"lake_color": "lightskyblue"},"drawmapboundary":{"fill_color":"lightskyblue"}})
     >>> print(tmap.map_options["nightshade"])
@@ -165,14 +173,24 @@ class Tplot_Map(Basemap):
     }
     """
     def __init__(
-            self, 
-            view:         str | None = None, 
-            ax:          Axes | None = None, 
+            self,
+            view:         str | None = None,
+            ax:          Axes | None = None,
             option_dict: dict | None = None,
             override_defaults: bool = False,
             **basemap_kwargs):
 
-        # Define projection options, construct 
+        if _basemap_import_error is not None:
+            message = (
+                "Tplot_Map requires the optional basemap package "
+                "and its dependencies. Install them with: "
+                'pip install "pyspedas[maps]"'
+            )
+            logging.error(message)
+            raise ImportError(message) from None
+
+
+        # Define projection options, construct
         # projection options dict from basemap
         # projection params
         self._projection_params = projection_params
@@ -208,7 +226,7 @@ class Tplot_Map(Basemap):
 
         # Handle basemap_kwargs, if any:
         self.map_options["basemap"].update(basemap_kwargs)
-        
+
         # If view is set, override basemap kwargs for centering position
         self.view = view
         if self.view is not None:
@@ -244,13 +262,13 @@ class Tplot_Map(Basemap):
             else:
                 if override_defaults and key != "basemap":
                     self.map_options[key] = {}
-        
+
         # Validate basemap inputs, and provide warnings if inputs are not valid:
         self._validate_basemap_params()
 
-        # Deprecated; retained for compatibility: 
+        # Deprecated; retained for compatibility:
         self._params = Tplot_Map_Param_Set()
-        
+
         # Use map_options to update self._params, and make initial plots:
         for map_plottype in self.map_options.keys():
             # If plot_options are defined, create plot from
@@ -263,7 +281,7 @@ class Tplot_Map(Basemap):
             self._overwrite_params(map_plottype)
 
     # Display methods:
-    def show(self): 
+    def show(self):
         """
         Displays current Tplot_Map object.
 
@@ -276,10 +294,10 @@ class Tplot_Map(Basemap):
         None
 
         Examples
-        --------        
-        
+        --------
+
         Display the default Tplot_Map:
-        
+
         >>> Tplot_Map().show()  # doctest: +SKIP
         """
         plt.show()
@@ -298,10 +316,10 @@ class Tplot_Map(Basemap):
         None
 
         Examples
-        --------        
-        
+        --------
+
         Print default `map_options`:
-            
+
         >>> Tplot_Map().print_map_options()  # doctest: +NORMALIZE_WHITESPACE
         Current Map Options:
         {
@@ -319,7 +337,7 @@ class Tplot_Map(Basemap):
          'add_paths' : {},
          'add_markers' : {'color': 'r', 'marker': 'd'},
          'add_caps' : {},
-        }      
+        }
         """
         outstr = "Current Map Options:\n{\n"
         for key in self.map_options.keys():
@@ -337,19 +355,19 @@ class Tplot_Map(Basemap):
             **drawcoastlines_kwargs):
         """
         Draw coastlines onto the map.
-        
+
         Parameters
         ----------
         linewidth : float, optional
-            Thickness of line drawn around coasts. If None, uses 
+            Thickness of line drawn around coasts. If None, uses
             `map_options` or Basemap `drawcoastlines` defaults.
         linestyle : str, optional
-            Indicates which line format option will be used 
-            (e.g. 'solid','dashed',etc...). If None, uses 
+            Indicates which line format option will be used
+            (e.g. 'solid','dashed',etc...). If None, uses
             `map_options` or Basemap `drawcoastlines` defaults.
         color : str, optional
-            Indicates which color the line drawn around coasts will 
-            be (e.g. black lines can use the 'k' string). If None, uses 
+            Indicates which color the line drawn around coasts will
+            be (e.g. black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `drawcoastlines` defaults.
         **drawcoastlines_kwargs
             Keyword arguments for other basemap `drawcoastlines` method options.
@@ -406,19 +424,19 @@ class Tplot_Map(Basemap):
             **drawcountries_kwargs):
         """
         Draw country borders onto the map.
-                
+
         Parameters
         ----------
         linewidth : float, optional
-            Thickness of line drawn around country borders. If None, uses 
+            Thickness of line drawn around country borders. If None, uses
             `map_options` or Basemap `drawcountries` defaults.
         linestyle : str, optional
-            Indicates which line format option will be used 
-            (e.g. 'solid','dashed',etc...). If None, uses 
+            Indicates which line format option will be used
+            (e.g. 'solid','dashed',etc...). If None, uses
             `map_options` or Basemap `drawcountries` defaults.
         color : str, optional
-            Indicates which color the line drawn around coasts will 
-            be (e.g. black lines can use the 'k' string). If None, uses 
+            Indicates which color the line drawn around coasts will
+            be (e.g. black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `drawcountries` defaults.
         **drawcountries_kwargs
             Keyword arguments for the basemap `drawcountries` method.
@@ -475,15 +493,15 @@ class Tplot_Map(Basemap):
             **fillcontinents_kwargs):
         """
         Fill landmasses and lakes with colors.
-                                
+
         Parameters
         ----------
         color : str, optional
             Fills landmasses.
         lake_color : str, optional
-            Fills lakes within landmasses. 
+            Fills lakes within landmasses.
         alpha : float, optional
-            Sets transparency for landmass polygons, allowing the map 
+            Sets transparency for landmass polygons, allowing the map
             background (see method `add_mapboundary`) to show through.
         **fillcontinents_kwargs
             Keyword arguments for the basemap `fillcontinents` method.
@@ -492,7 +510,7 @@ class Tplot_Map(Basemap):
         -----
         Wrapper for Basemap `fillcontinents` method.
         Saves input options to `map_options` attribute.
-        
+
         Returns
         -------
         None
@@ -540,19 +558,19 @@ class Tplot_Map(Basemap):
             **drawmapboundary_kwargs):
         """
         Draw map borders and fill ocean color.
-                        
+
         Parameters
         ----------
         linewidth : float, optional
-            Thickness of line drawn around the outer edge of the map. If None, uses 
+            Thickness of line drawn around the outer edge of the map. If None, uses
             `map_options` or Basemap `drawmapboundary` defaults.
         color : str, optional
-            Indicates color of the map boundary line drawn (e.g. 
-            black lines can use the 'k' string). If None, uses 
+            Indicates color of the map boundary line drawn (e.g.
+            black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `drawmapboundary` defaults.
             Defaults to black.
         fill_color : str, optional
-            Fills map background (ocean color). If None, uses 
+            Fills map background (ocean color). If None, uses
             `map_options` or Basemap `drawmapboundary` defaults.
             Defaults to white.
         **drawmapboundary_kwargs
@@ -601,7 +619,7 @@ class Tplot_Map(Basemap):
             drawmapboundary_kwargs.update({'fill_color':fill_color})
         self._add_plot_feature(plot_type="drawmapboundary",plot_type_kwargs=drawmapboundary_kwargs)
         return
-    
+
     # TODO: add support for tplot variables in meridians and parallels
     def add_meridians(
             self,
@@ -615,42 +633,42 @@ class Tplot_Map(Basemap):
             **drawmeridians_kwargs):
         """
         Draw meridional lines along specified longitudes.
-                                
+
         Parameters
         ----------
         meridians : np.ndarray
-            Array containing longitudes to locate meridional lines. Expects 
-            longitudes in degrees. 
+            Array containing longitudes to locate meridional lines. Expects
+            longitudes in degrees.
         linewidth : float, optional
-            Thickness of line drawn around the outer edge of the map. If None, uses 
+            Thickness of line drawn around the outer edge of the map. If None, uses
             `map_options` or Basemap `drawmeridians` defaults.
         color : str, optional
-            Indicates color of the meridional lines drawn (e.g. 
-            black lines can use the 'k' string). If None, uses 
+            Indicates color of the meridional lines drawn (e.g.
+            black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `drawmeridians` defaults.
             Defaults to black.
         dashes : list, optional
             Dash pattern for meridians (default [1,1], i.e.
-            1 pixel on, 1 pixel off). If None, uses 
+            1 pixel on, 1 pixel off). If None, uses
             `map_options` or Basemap `drawmeridians` defaults.
-        labels : list, optional          
+        labels : list, optional
             List of 4 values (default [0,0,0,0]) that control
             whether meridians are labelled where they intersect
             the left, right, top or bottom of the plot. For
             example labels=[1,0,0,1] will cause meridians
             to be labelled where they intersect the left and
             and bottom of the plot, but not the right and top.
-            If None, uses `map_options` or Basemap 
+            If None, uses `map_options` or Basemap
             `drawmeridians` defaults.
         labelstyle : string, optional
             If set to "+/-", east and west longitudes are
             labelled with "+" and "-", otherwise they are
             labelled with "E" and "W".
         textcolor : str, optional,
-            Color of text used to label meridians where they 
-            intersect with the map border (e.g. black text 
-            uses the 'k' string). If None, uses `map_options` 
-            or Basemap `drawmeridians` defaults. 
+            Color of text used to label meridians where they
+            intersect with the map border (e.g. black text
+            uses the 'k' string). If None, uses `map_options`
+            or Basemap `drawmeridians` defaults.
         **drawmeridians_kwargs
             Keyword arguments for the basemap `drawmeridians` method.
 
@@ -666,7 +684,7 @@ class Tplot_Map(Basemap):
         Examples
         --------
 
-        Draw solid red meridians every 30 degrees, with blue 
+        Draw solid red meridians every 30 degrees, with blue
         labels placed along all edges of the plot where the longitude
         intersects with the map boundary:
 
@@ -704,7 +722,7 @@ class Tplot_Map(Basemap):
         if labelstyle is not None:
             drawmeridians_kwargs.update({'labelstyle':labelstyle})
         if textcolor is not None:
-            drawmeridians_kwargs.update({'textcolor':textcolor})    
+            drawmeridians_kwargs.update({'textcolor':textcolor})
         self._add_plot_feature(plot_type="drawmeridians",plot_type_kwargs=drawmeridians_kwargs)
         return
 
@@ -720,42 +738,42 @@ class Tplot_Map(Basemap):
             **drawparallels_kwargs):
         """
         Draw parallels lines along specified latitudes.
-                                        
+
         Parameters
         ----------
         circles : np.ndarray
-            Array containing latitudes to locate parallels. Expects 
-            latitudes in degrees. 
+            Array containing latitudes to locate parallels. Expects
+            latitudes in degrees.
         linewidth : float, optional
-            Thickness of line drawn around the outer edge of the map. If None, uses 
+            Thickness of line drawn around the outer edge of the map. If None, uses
             `map_options` or Basemap `drawparallels` defaults.
         color : str, optional
-            Indicates color of the parallels drawn (e.g. 
-            black lines can use the 'k' string). If None, uses 
+            Indicates color of the parallels drawn (e.g.
+            black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `drawparallels` defaults.
             Defaults to black.
         dashes : list, optional
             Dash pattern for parallels (default [1,1], i.e.
-            1 pixel on, 1 pixel off). If None, uses 
+            1 pixel on, 1 pixel off). If None, uses
             `map_options` or Basemap `drawparallels` defaults.
-        labels : list, optional          
+        labels : list, optional
             List of 4 values (default [0,0,0,0]) that control
             whether parallels are labelled where they intersect
             the left, right, top or bottom of the plot. For
             example labels=[1,0,0,1] will cause parallels
             to be labelled where they intersect the left and
             and bottom of the plot, but not the right and top.
-            If None, uses `map_options` or Basemap 
+            If None, uses `map_options` or Basemap
             `drawparallels` defaults.
         labelstyle : string, optional
             If set to "+/-", north and south latitudes are
             labelled with "+" and "-", otherwise they are
             labelled with "N" and "S".
         textcolor : str, optional,
-            Color of text used to label parallels where they 
-            intersect with the map border (e.g. black text 
-            uses the 'k' string). If None, uses `map_options` 
-            or Basemap `drawparallels` defaults. 
+            Color of text used to label parallels where they
+            intersect with the map border (e.g. black text
+            uses the 'k' string). If None, uses `map_options`
+            or Basemap `drawparallels` defaults.
         **drawparallels_kwargs
             Keyword arguments for the basemap `drawparallels` method.
 
@@ -763,7 +781,7 @@ class Tplot_Map(Basemap):
         -----
         Wrapper for Basemap `drawparallels` method.
         Saves input options to `map_options` attribute.
-        
+
 
         Returns
         -------
@@ -772,7 +790,7 @@ class Tplot_Map(Basemap):
         Examples
         --------
 
-        Draw solid red parallels every 30 degrees, with blue 
+        Draw solid red parallels every 30 degrees, with blue
         labels placed along all edges of the plot where the longitude
         intersects with the map boundary:
 
@@ -823,24 +841,24 @@ class Tplot_Map(Basemap):
             **nightshade_kwargs):
         """
         Draw shaded region to represent nighttime.
-                                                
+
         Parameters
         ----------
         date : DateTime, optional
-            Specifies time from which regions in darkness will be inferred. 
+            Specifies time from which regions in darkness will be inferred.
         color : str, optional
-            Indicates color of the shading (e.g. 
-            black lines can use the 'k' string). If None, uses 
+            Indicates color of the shading (e.g.
+            black lines can use the 'k' string). If None, uses
             `map_options` or Basemap `nightshade` defaults.
             Defaults to black.
         delta : float, optional
             Day/night terminator is computed with a
-            a resolution of ``delta`` degrees 
-            (default 0.25).If None, uses `map_options` 
+            a resolution of ``delta`` degrees
+            (default 0.25).If None, uses `map_options`
             or Basemap `nightshade` defaults.
         alpha : float, optional
             Alpha transparency for shading (default 0.5, so
-            map background shows through).If None, uses 
+            map background shows through).If None, uses
             `map_options` or Basemap `nightshade` defaults.
         **nightshade_kwargs
             Keyword arguments for the basemap `nightshade` method.
@@ -849,7 +867,7 @@ class Tplot_Map(Basemap):
         -----
         Wrapper for Basemap `nightshade` method.
         Saves input options to `map_options` attribute.
-        
+
         Returns
         -------
         None
@@ -858,7 +876,7 @@ class Tplot_Map(Basemap):
         --------
 
         Shade the nighttime of a globe centered over North America using the
-        current time, with the shading being done in blue, a degree resolution 
+        current time, with the shading being done in blue, a degree resolution
         of 0.5, and a transparency of 65%:
 
         >>> tmap = Tplot_Map(view="North America",override_defaults=True)
@@ -897,15 +915,15 @@ class Tplot_Map(Basemap):
     # Plotting methods which accept tplot variables:
     def add_paths(
             self,
-            coords: str | np.ndarray | list[str] | list[np.ndarray], 
+            coords: str | np.ndarray | list[str] | list[np.ndarray],
             coord_type: str = 'geod_lat_lon',
             co_latitude: bool = False,
             angle_meas: str = 'degrees',
-            color=None, 
-            marker=None, 
+            color=None,
+            marker=None,
             markersize=None,
             linestyle=None,
-            linewidth=None, 
+            linewidth=None,
             **plot_kwargs):
         """
         Draw line of points, optionally using tplot variable
@@ -917,16 +935,16 @@ class Tplot_Map(Basemap):
             `coords` or each element of `coords` (if `coords` is a list)
             are of the string type, then attempts to load data from a tplot
             variable, using the string as the tplot variable name. Otherwise,
-            attempts to transform the coordinate data directly. 
+            attempts to transform the coordinate data directly.
         coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
-            Indicates how the input coordinates should be interpreted. The 
+            Indicates how the input coordinates should be interpreted. The
             first and second (and third, if applicable) components of the
             data will be interpreted as the following for each `coord_type`:
             geod_lat_lon : Geodetic latitude, Longitude
             geoc_lat_lon : Geocentric Latitude, Longitude
             geod_spherical : Radius, Geodetic Latitude, Longitude
             geoc_spherical : Radius, Geocentric Latitude, Longitude
-            cart_GEO : X, Y, Z in ECEF coordinates 
+            cart_GEO : X, Y, Z in ECEF coordinates
 
             Defaults to 'geod_lat_lon'
         co_latitude : bool, optional
@@ -934,11 +952,11 @@ class Tplot_Map(Basemap):
             co-latitude is defined as angle between the position vector and
             axis of Earth's rotation. Default is False
         angle_meas : {'degrees', 'radians', 'arcminutes'}
-            Indicates unit of measurement of input latitude and longitude 
+            Indicates unit of measurement of input latitude and longitude
             coordinates. Defaults to 'degrees'
         color : string or tuple of float or tuple of string and float, optional
-            Indicates line color (e.g. black lines can use 
-            the 'k' string). If None, uses `map_options` 
+            Indicates line color (e.g. black lines can use
+            the 'k' string). If None, uses `map_options`
             or Basemap `add_paths` defaults. Defaults to black.
         marker : string or Path or MarkerStyle, optional
             Indicates style of marker along line path. Defaults
@@ -946,19 +964,19 @@ class Tplot_Map(Basemap):
         markersize : float, optional
             Sets size of markers.
         linestyle : string or tuple, optional
-            Indicates how line path is drawn (e.g. 'dashed'). 
+            Indicates how line path is drawn (e.g. 'dashed').
             Defaults to solid line.
         linewidth : float, optional
             Sets width of line path.
         **plot_kwargs
             Keyword arguments for the basemap `plot` method.
-        
+
         Notes
         -----
         Wrapper for Basemap `plot` method, intended for
-        use with traces. Saves input options to 
+        use with traces. Saves input options to
         `map_options` attribute.
-        
+
         Returns
         -------
         None
@@ -967,8 +985,8 @@ class Tplot_Map(Basemap):
         --------
 
         Draw two squares on a mercator projection map, once using
-        a numpy array, and another using a tplot variable. 
-    
+        a numpy array, and another using a tplot variable.
+
         >>> import numpy as np
         >>> from pyspedas import store_data
         >>> arr_path_points = np.array([
@@ -1035,7 +1053,7 @@ class Tplot_Map(Basemap):
             **scatter_kwargs):
         """
         Plot set of coordinates with optionally varying marker sizes and colors.
-        
+
         Parameters
         ----------
         coords : str or np.ndarray or list of str or list of np.ndarray
@@ -1045,7 +1063,7 @@ class Tplot_Map(Basemap):
             variable, using the string as the tplot variable name. Otherwise,
             attempts to transform the coordinate data directly.
         coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
-            Indicates how the input coordinates should be interpreted. The 
+            Indicates how the input coordinates should be interpreted. The
             first and second (and third, if applicable) components of the
             data will be interpreted as the following for each `coord_type`:
             geod_lat_lon : Geodetic latitude, Longitude
@@ -1060,41 +1078,41 @@ class Tplot_Map(Basemap):
             co-latitude is defined as angle between the position vector and
             axis of Earth's rotation. Default is False
         angle_meas : {'degrees', 'radians', 'arcminutes'}
-            Indicates unit of measurement of input latitude and longitude 
+            Indicates unit of measurement of input latitude and longitude
             coordinates. Defaults to 'degrees'
         color : array-like or list of color or color, optional
             The marker colors. See `pyplot.scatter` for more details.
         marker : MarkerStyle, optional
             The marker style. See `pyplot.scatter` for more details.
         marker_size : float or array-like, shape (n, ), optional
-            The marker size in points**2 (typographic points are 1/72 in.). 
+            The marker size in points**2 (typographic points are 1/72 in.).
             See `pyplot.scatter` for more details.
         marker_edge_widths : float or array-like, optional
             The linewidth of the marker edges. See `pyplot.scatter` for more details.
         marker_edge_colors : {'face', 'none', None} or color or list of color, optional
             The edge color of the marker. See `pyplot.scatter` for more details.
         cmap : str or Colormap, optional
-            The Colormap instance or registered colormap name used to map scalar 
+            The Colormap instance or registered colormap name used to map scalar
             data to colors. See `pyplot.scatter` for more details.
         norm : str or Normalize, optional
-            The normalization method used to scale scalar data to the [0, 1] range before 
+            The normalization method used to scale scalar data to the [0, 1] range before
             mapping to colors using cmap. See `pyplot.scatter` for more details.
         alpha : float, default: None
             The alpha blending value, between 0 (transparent) and 1 (opaque).
         **scatter_kwargs
             Keyword arguments for the basemap `scatter` method.
-            
+
         Notes
         -----
         Wrapper for Basemap `scatter` method, intended for
-        use with coordinate points. Saves input options to 
+        use with coordinate points. Saves input options to
         `map_options` attribute.
 
         If plotting points of the same marker size and color,
         it is more efficient to use the `add_paths` method,
-        with the line style set to 'none' and by setting the 
+        with the line style set to 'none' and by setting the
         marker option.
-        
+
         Returns
         -------
         None
@@ -1102,10 +1120,10 @@ class Tplot_Map(Basemap):
         Examples
         --------
 
-        Draw two sets of point markers: one using 
+        Draw two sets of point markers: one using
         a numpy array and another using a tplot variable.
-        Have the first set be a different color from the 
-        second set, and have the size of the markers 
+        Have the first set be a different color from the
+        second set, and have the size of the markers
         vary, with points of the same index having the
         same size:
 
@@ -1168,15 +1186,15 @@ class Tplot_Map(Basemap):
             coord_type: str = 'geod_lat_lon',
             co_latitude: bool = False,
             angle_meas: str = 'degrees',
-            color=None, 
-            marker=None, 
+            color=None,
+            marker=None,
             linestyle=None,
-            linewidth=None, 
-            markersize=None, 
+            linewidth=None,
+            markersize=None,
             **plot_kwargs):
         """
         Draw circles around a set of coordinates, optionally using tplot variable
-        
+
         Parameters
         ----------
         coords : str or np.ndarray or list of str or list of np.ndarray
@@ -1184,20 +1202,20 @@ class Tplot_Map(Basemap):
             `coords` or each element of `coords` (if `coords` is a list)
             are of the string type, then attempts to load data from a tplot
             variable, using the string as the tplot variable name. Otherwise,
-            attempts to transform the coordinate data directly. 
+            attempts to transform the coordinate data directly.
         fov_angle : float, optional
             Sets "zenith angle" when calculating circle around center point.
             Smaller fov_angle values result in smaller radii for the circles
             around the stations.
         coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
-            Indicates how the input coordinates should be interpreted. The 
+            Indicates how the input coordinates should be interpreted. The
             first and second (and third, if applicable) components of the
             data will be interpreted as the following for each `coord_type`:
             geod_lat_lon : Geodetic latitude, Longitude
             geoc_lat_lon : Geocentric Latitude, Longitude
             geod_spherical : Radius, Geodetic Latitude, Longitude
             geoc_spherical : Radius, Geocentric Latitude, Longitude
-            cart_GEO : X, Y, Z in ECEF coordinates 
+            cart_GEO : X, Y, Z in ECEF coordinates
 
             Defaults to 'geod_lat_lon'
         co_latitude : bool, optional
@@ -1205,11 +1223,11 @@ class Tplot_Map(Basemap):
             co-latitude is defined as angle between the position vector and
             axis of Earth's rotation. Default is False
         angle_meas : {'degrees', 'radians', 'arcminutes'}
-            Indicates unit of measurement of input latitude and longitude 
+            Indicates unit of measurement of input latitude and longitude
             coordinates. Defaults to 'degrees'
         color : string or tuple of float or tuple of string and float, optional
-            Indicates line color (e.g. black lines can use 
-            the 'k' string). If None, uses `map_options` 
+            Indicates line color (e.g. black lines can use
+            the 'k' string). If None, uses `map_options`
             or Basemap `add_paths` defaults. Defaults to black.
         marker : string or Path or MarkerStyle, optional
             Indicates style of marker along line path. Defaults
@@ -1217,22 +1235,22 @@ class Tplot_Map(Basemap):
         markersize : float, optional
             Sets size of markers.
         linestyle : string or tuple, optional
-            Indicates how line path is drawn (e.g. 'dashed'). 
+            Indicates how line path is drawn (e.g. 'dashed').
             Defaults to solid line.
         linewidth : float, optional
             Sets width of line path.
         **plot_kwargs
             Keyword arguments for the basemap `plot` method.
-        
+
         Notes
         -----
-        Formatting uses Basemap `plot` options. 
-        Saves input options to `map_options` attribute. 
-        
-        Algorithm to compute the path coordinates of FOV 
-        circle based on a formula from Taff, Celestial 
+        Formatting uses Basemap `plot` options.
+        Saves input options to `map_options` attribute.
+
+        Algorithm to compute the path coordinates of FOV
+        circle based on a formula from Taff, Celestial
         mechanics.
-        
+
         Returns
         -------
         None
@@ -1240,10 +1258,10 @@ class Tplot_Map(Basemap):
         Examples
         --------
 
-        Draw two sets of caps onto a globe, drawing one set 
-        of caps using a numpy array, and another using a 
-        tplot variable: 
-    
+        Draw two sets of caps onto a globe, drawing one set
+        of caps using a numpy array, and another using a
+        tplot variable:
+
         >>> import numpy as np
         >>> from pyspedas import store_data
         >>> arr_path_points = np.array([
@@ -1276,7 +1294,7 @@ class Tplot_Map(Basemap):
         >>> tmap.show()  # doctest: +SKIP
         """
         from pyspedas import geodetic_correction as cotrans_geodetic_correction
-        
+
         if color is not None:
             plot_kwargs.update({"color":color})
         if marker is not None:
@@ -1289,7 +1307,7 @@ class Tplot_Map(Basemap):
             plot_kwargs.update({"markersize":markersize})
         self.map_options["add_caps"].update(plot_kwargs)
         self._overwrite_params("add_caps")
-        
+
         azi = np.arange(0,361)
         r_e = 6378.0 # Earth radius, in km
         z = 120.0 # altitude of emission, in km
@@ -1297,11 +1315,11 @@ class Tplot_Map(Basemap):
         theta = np.rad2deg(np.arcsin((r_e/(r_e+z))*np.sin(np.deg2rad(zeta)))) # second angle of triangle
         alpha = zeta - theta
         surface_arclength = np.deg2rad(alpha)*r_e
-    
+
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
             for i in np.arange(0,coord_set.shape[0]):
                 coord = coord_set[i,:]
-                
+
                 alat = 90.0 - np.rad2deg(surface_arclength/r_e)
                 alon = 180-azi
                 latp = cotrans_geodetic_correction(lat_deg=coord[1],inverse=True) # coord[1]
@@ -1320,7 +1338,7 @@ class Tplot_Map(Basemap):
                 alon = np.rad2deg(np.arctan(xx/yy))
                 alat = 90.0 - np.rad2deg(alat/r_e)
                 alon=coord[0]-alon
-        
+
                 x,y = self(alon,cotrans_geodetic_correction(alat))
                 self.plot(x,y,**self.map_options.get("add_caps"))
         return
@@ -1429,7 +1447,7 @@ class Tplot_Map(Basemap):
             args_include_corners_xy = len(set(self._corners_xy) - set(self.map_options["basemap"].keys())) == 0
             args_include_some_corners = args_include_corners_latlon or args_include_corners_xy
             args_include_invalid_params = len(set(self._invalid_projection_params[this_projection]) - self.map_options["basemap"].keys()) < len(set(self._invalid_projection_params[this_projection]))
-            
+
             if len(projection_param_diff) > 0:
                 if projection_includes_all_corners and not args_include_some_corners:
                     logging.warning("Basemap init is missing some corners arguments; visual may differ from expected.")
@@ -1477,22 +1495,22 @@ class Tplot_Map(Basemap):
     # End Tplot_Map class definition
 
 def convert_coords_to_geod_lonlat_list(
-        coords: str | np.ndarray | list[str] | list[np.ndarray],
-        coord_type: str = 'geod_lat_lon',
-        co_latitude: bool = False,
-        angle_meas: str = 'degrees'
-        ) -> list[np.ndarray]:
+    coords: str | np.ndarray | list[str] | list[np.ndarray],
+    coord_type: str = 'geod_lat_lon',
+    co_latitude: bool = False,
+    angle_meas: str = 'degrees'
+    ) -> list[np.ndarray]:
     """
     Takes tplot variable(s) or numpy array(s), and packages the data into arrays of longitude and latitude.
-    
-    For every tplot variable or numpy array, it parses the data, 
-    assuming a given coordinate format, into an array 
 
-    Takes tplot variable, list of tplot variables, numpy 
-    array, or list of numpy arrays and packages position 
-    data as a list of longitudes and latitudes (which 
+    For every tplot variable or numpy array, it parses the data,
+    assuming a given coordinate format, into an array
+
+    Takes tplot variable, list of tplot variables, numpy
+    array, or list of numpy arrays and packages position
+    data as a list of longitudes and latitudes (which
     basemap expects).
-    
+
     Parameters
     ----------
     coords : str or np.ndarray or list of str or list of np.ndarray
@@ -1500,9 +1518,9 @@ def convert_coords_to_geod_lonlat_list(
         `coords` or each element of `coords` (if `coords` is a list)
         are of the string type, then attempts to load data from a tplot
         variable, using the string as the tplot variable name. Otherwise,
-        attempts to transform the coordinate data directly. 
+        attempts to transform the coordinate data directly.
     coord_type : {'geod_lat_lon','geoc_lat_lon','geod_spherical','geoc_spherical','cart_GEO'}
-        Indicates how the input coordinates should be interpreted. The 
+        Indicates how the input coordinates should be interpreted. The
         first and second (and third, if applicable) components of the
         data will be interpreted as the following for each `coord_type`:
         geod_lat_lon : Geodetic latitude, Longitude
@@ -1517,34 +1535,34 @@ def convert_coords_to_geod_lonlat_list(
         co-latitude is defined as angle between the position vector and
         axis of Earth's rotation. Default is False
     angle_meas : {'degrees', 'radians', 'arcminutes'}
-        Indicates unit of measurement of input latitude and longitude 
-        coordinates. Defaults to 'degrees' 
-    
+        Indicates unit of measurement of input latitude and longitude
+        coordinates. Defaults to 'degrees'
+
     Returns
     -------
     lonlat_data_list, list
-        Two-dimensional Numpy arrays where the first 
-        index corresponds to the record/observation, 
-        and the second index corresponds to each 
-        coordinate (longitude and geodetic latitude, 
+        Two-dimensional Numpy arrays where the first
+        index corresponds to the record/observation,
+        and the second index corresponds to each
+        coordinate (longitude and geodetic latitude,
         respectively). Longitude and latitude are
         reported in degrees.
 
     Notes
     -----
     This method is primarily used by the Tplot_Map
-    plotting methods to parse the positional input 
-    argument, so that they can accept tplot 
-    variables or numpy arrays (or lists of either). 
-    While it is generally unnecessary to call this 
+    plotting methods to parse the positional input
+    argument, so that they can accept tplot
+    variables or numpy arrays (or lists of either).
+    While it is generally unnecessary to call this
     method on its own, it is provided for convenience
     when handling positional data of common formats.
 
     Examples
     --------
-    
+
     Take a set of geocentric coordinates from a numpy
-    array and tplot variable and convert them into 
+    array and tplot variable and convert them into
     geodetic coordinates:
 
     >>> import numpy as np
@@ -1613,7 +1631,7 @@ def convert_coords_to_geod_lonlat_list(
             logging.warning("Received one dimensional data; assuming single record of coordinates...")
             coord_data = np.array([coord_data])
             ndim = len(coord_data.shape)
-        
+
         if ndim != 2:
             raise ValueError(f"Positional data must be two dimensional; got: {ndim}")
         elif coord_data.shape[1] not in [2,3]:
@@ -1629,7 +1647,7 @@ def convert_coords_to_geod_lonlat_list(
                 # X, Y, Z in ECEF coordinates
                 coord_data = cotrans_cartesian2geodeticpolar(data=coord_data)
                 coord_type = 'geod_spherical'
-            
+
             coord_data_lon = coord_data[:,-1]
             if coord_data.shape[1] == 3:
                 coord_data_lat = coord_data[:,1]
@@ -1649,39 +1667,39 @@ def convert_coords_to_geod_lonlat_list(
 
             if co_latitude:
                 coord_data_lat = 90-coord_data_lat
-            
+
             if coord_type in ['geoc_lat_lon','geoc_spherical']:
                 coord_data_lat_geoc = coord_data_lat
             else:
                 coord_data_lat_geoc = cotrans_geodetic_correction(coord_data_lat,inverse=True)
-            
+
             coord_data_lat_geod = cotrans_geodetic_correction(coord_data_lat_geoc)
 
             geod_lonlat_list.append( np.array([ coord_data_lon , coord_data_lat_geod ]).transpose() )
     return geod_lonlat_list
 
 def tplot_map(
-        tmap:   Tplot_Map | None = None, 
-        projection:   str | None = None,
-        center:     tuple | None = None,
-        range:      tuple | None = None,
-        land_color:   str | None = None,
-        water_color:  str | None = None,
-        view:         str | None = None,
-        option_dict: dict | None = None,
-        override_defaults : bool = False,
-        ax:          Axes | None = None, 
-        range_is_xy: bool = False,
-        display:bool = False, 
-        **basemap_kwargs) -> Tplot_Map:
+    tmap:   Tplot_Map | None = None,
+    projection:   str | None = None,
+    center:     tuple | None = None,
+    range:      tuple | None = None,
+    land_color:   str | None = None,
+    water_color:  str | None = None,
+    view:         str | None = None,
+    option_dict: dict | None = None,
+    override_defaults : bool = False,
+    ax:          Axes | None = None,
+    range_is_xy: bool = False,
+    display:bool = False,
+    **basemap_kwargs) -> Tplot_Map:
     # TODO: make sure coordinates are interpreted as lon, lat, not the other way around
     """
     Create a Tplot_Map object, with convenient initialization options
-    
+
     Parameters
     ----------
     tmap : Tplot_Map, optional
-        Existing Tplot_Map object to use as the basis for the 
+        Existing Tplot_Map object to use as the basis for the
         created Tplot_Map object. If none are provided, creates
         new Tplot_Map object from scratch.
     projection : str, optional
@@ -1702,16 +1720,16 @@ def tplot_map(
     view : str or None, {'North America', 'Northern Europe', 'North Polar', 'South Polar', None}
         Presets for map center position. Defaults to None.
     ax : Axes, optional
-        Existing Axes object to which Tplot_Map plots will be 
+        Existing Axes object to which Tplot_Map plots will be
         attached. If none are provided, creates one.
     option_dict : dict, optional
-        Modifies `map_options` (see `Tplot_Map`) before plotting. 
-        The `option_dict` must have a similar format to `map_options`. 
+        Modifies `map_options` (see `Tplot_Map`) before plotting.
+        The `option_dict` must have a similar format to `map_options`.
     override_defaults : bool, optional
-        If `override_defaults` is True, the default plot options 
-        in `map_options` (see `Tplot_Map`) will be completely 
-        replaced by the plot options in `option_dict`. Otherwise, 
-        options for a given plot type can only be changed if those options 
+        If `override_defaults` is True, the default plot options
+        in `map_options` (see `Tplot_Map`) will be completely
+        replaced by the plot options in `option_dict`. Otherwise,
+        options for a given plot type can only be changed if those options
         are specified in `option_dict`. Set to False by default.
     range_is_xy : bool, optional
         Indicates whether range should be interpreted
@@ -1729,7 +1747,7 @@ def tplot_map(
 
     Examples
     --------
-    
+
     Create default map and display plot options:
 
     >>> tmap = tplot_map()
@@ -1759,10 +1777,10 @@ def tplot_map(
     Create a globe centered over North America where the oceans are blue and the land is green:
 
     >>> tmap = tplot_map(view="North America",water_color='darkblue',land_color='darkgreen',display=True)  # doctest: +SKIP
-    
-    Create blank Tplot_Map object (useful if default plot types are not 
+
+    Create blank Tplot_Map object (useful if default plot types are not
     desired--still requires Basemap params):
-    
+
     >>> tmap = tplot_map(override_defaults=True)
     >>> tmap.print_map_options()
     Current Map Options:
@@ -1780,7 +1798,7 @@ def tplot_map(
      'add_caps' : {},
     }
     """
-    
+
     if tmap is not None:
         if ax is None:
             ax=tmap.ax
@@ -1804,7 +1822,7 @@ def tplot_map(
 
     if isinstance(projection,str):
         basemap_kwargs.update({"projection":projection})
-    
+
     if isinstance(center,tuple):
         if len(center) != 2:
             raise ValueError("Option 'center' must be tuple of length 2")
@@ -1827,7 +1845,7 @@ def tplot_map(
                     "llcrnrlon":range[0],
                     "urcrnrlat":range[3],
                     "urcrnrlon":range[2],})
-    
+
     if land_color is not None or water_color is not None:
         if option_dict is None:
             option_dict=dict()
@@ -1847,10 +1865,10 @@ def tplot_map(
         option_dict=option_dict,
         override_defaults=override_defaults,
         **basemap_kwargs)
-    
+
     if display:
         tmap_new.show()
-    
+
     return tmap_new
 
 # Deprecated methods:
@@ -1899,7 +1917,7 @@ def cartesian2geodeticpolar(data: str | np.ndarray) -> np.ndarray:
     """
     Obsolete, deprecated (moved to separate script)
 
-    Get positional data from tplot variable, then convert data coordinates to 
+    Get positional data from tplot variable, then convert data coordinates to
     geodetic polar coordinates
     """
     logging.warning('The "cartesian2geodeticpolar()" method is deprecated. Please use "cartesian2geodeticpolar" in the "cotrans" package instead.')
@@ -1910,7 +1928,7 @@ def tvar_to_geodeticpolar(tvar:str, in_coord_str:str='gsm'):
     """
     Obsolete, deprecated
 
-    Take a tplot variable of arbitrary coordinate system and convert to geodetic 
+    Take a tplot variable of arbitrary coordinate system and convert to geodetic
     polar
     """
     logging.warning('The "tvar_to_geodeticpolar()" method is deprecated. Please use "convert_coords_to_geod_lonlat_list" instead.')
