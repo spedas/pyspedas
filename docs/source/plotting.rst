@@ -4,8 +4,8 @@ Plotting routines
 In past releases of PySPEDAS, plotting utilities, and many other tools that work with tplot variables, were
 imported from the external pytplot-mpl-temp package.  As of PySPEDAS 2.0, they are now bundled with PySPEDAS.
 
-Plotting
---------
+Time-series plots: tplot
+--------------------------
 
 ``tplot`` is the top level plotting routine.  It uses the matplotlib plotting library to render plots of tplot variables.
 If multiple variables are plotted, they will be stacked vertically in the same Matplotlib figure, with their time
@@ -13,10 +13,10 @@ dimensions aligned (since they will all share an x-axis).
 
 A large number of plot options are supported.  Some apply to the entire set of plots: for example,
 the figure title, figure dimensions, background color, etc.  These global plot options are set
-with the `tplot_options` routine, documented below.
+with the ``tplot_options`` routine, documented below.
 
 Other plot options are associated with specific variables. These include plot colors, symbols,
-legends, X, Y, and Z axis titles, and many more.  These are set with the `options` routine, documented below.
+legends, X, Y, and Z axis titles, and many more.  These are set with the ``options`` routine, documented below.
 
 Since matplotlib is the underlying plot framework used by PySPEDAS, many of the global and per-variable
 plot options accept the same options and argument conventions as matplotlib, although they may not
@@ -33,7 +33,7 @@ Formatting in titles and labels
 Scientific plots often benefit from using mathematical formatting conventions, Greek letters, and symbols
 in plot text. Matplotlib supports this with their ``mathtext`` markup language, which is their flavor
 of Latex.  You can invoke 'mathtext' by enclosing your titles, subtitles, labels, etc. in ``$...$``
-and using Latex notation inside the ``$$`` delimiters.  For example, here's how to
+and using LaTex notation inside the ``$$`` delimiters.  For example, here's how to
 indicate exponentiation, with a multiple-character superscript:
 
 .. code-block:: python
@@ -53,25 +53,43 @@ The ``$$`` delimiters indicate a mathtext expression.
 ``r""`` is the Python syntax for raw strings.  This prevents the ``\m`` in ``\mathregular`` from
 being interpreted as a control character.
 
-Note the PySPEDAS has supported a nice rendering of superscript expressions like ``base^p`` in ``ysubtitle`` fields.
+PySPEDAS has supported a nice rendering of superscript expressions like ``base^p`` in ``ysubtitle`` fields.
 However, this only works for single-character exponents, and only in ``ysubtitle``.  We recommend
 using the mathtext markup for mathematical notation instead of relying on this shortcut.
+
+tplot API reference
+^^^^^^^^^^^^^^^^^^^^^
 
 .. autofunction:: pyspedas.tplot
 
 
-lineplot is a line plotting routine called by tplot. It is not usually called by users,
+``lineplot`` is a line plotting routine called by tplot. It is not usually called by users,
 but is documented here for completeness.
 
 .. autofunction:: pyspedas.lineplot
 
-specplot is a spectrogram plotting routine called by tplot. It is not usually called by users,
+``specplot`` is a spectrogram plotting routine called by tplot. It is not usually called by users,
 but is documented here for completeness.
 
 .. autofunction:: pyspedas.specplot
 
-Text annotations
-----------------
+
+tplot Per-Variable Plot Options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.options
+
+.. autofunction:: pyspedas.timebar
+
+.. autofunction:: pyspedas.databar
+
+tplot "Global" plot options
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.tplot_options
+
+tplot Text annotations
+^^^^^^^^^^^^^^^^^^^^^^^^
 
 Use ``annotate`` to attach text to a tplot variable, then call ``tplot`` to draw
 the updated panel. Names, zero-based variable indices, lists and wildcard
@@ -127,7 +145,7 @@ global ``tplot_options("annotations", ...)`` setting.
 .. autofunction:: pyspedas.annotate
 
 Time Windowing and Plot Limits
--------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 .. autofunction:: pyspedas.tlimit
 .. autofunction:: pyspedas.timespan
@@ -136,7 +154,7 @@ Time Windowing and Plot Limits
 .. autofunction:: pyspedas.zlim
 
 Interactive Time Selection from Plots
---------------------------------------
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 The ctime routine is a close analogue of the IDL SPEDAS tool.  A call to tplot()
 with return_plot_objects=True will return Matplotlib figure and axis objects that can
@@ -152,17 +170,17 @@ or calling any pyspedas or matplotlib routines.
 
 .. autofunction:: pyspedas.ctime
 
-Non-time-series plots
-----------------------
+Non-time-series plots: orbits, field lines, and other 3-D vector data with tplotxy, tplotxy3
+----------------------------------------------------------------------------------------------
 
-PySPEDAS now has the ability to generate certain kinds of non-time-series plots which involve projecting 3-D
+PySPEDAS has the ability to generate certain kinds of non-time-series plots which involve projecting 3-D
 position or field data onto one or more of the coordinate system planes.  Examples include orbit plots, field line traces,
 or hodograms.
 
-The tplotxy routine projects one or more 3-d input variables onto one of the 2D coordinate system planes:
+The ``tplotxy`` routine projects one or more 3-d input variables onto one of the 2D coordinate system planes:
 xy, xz, or yz.
 
-The tplotxy3 routine projects and plots the input data onto all three coordinate planes in a single figure.
+The ``tplotxy3`` routine projects and plots the input data onto all three coordinate planes in a single figure.
 It also includes several features that are useful for orbit plots: once the initial figure is created,
 one can add traces for bow shock, magnetopause boundaries, or neutral sheet locations by passing the
 boundary data and the Matplotlib figure object to a helper routine to add the new traces.
@@ -178,7 +196,7 @@ boundary data and the Matplotlib figure object to a helper routine to add the ne
 Changing projection ranges after plotting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-Both routines return a Matplotlib figure with methods for changing its limits after
+``tplotxy`` and ``tplotxy3`` both return a Matplotlib figure with methods for changing its limits after
 creation. Pass each range as a two-element sequence in the figure's ``plot_units``.
 Give the lower and upper coordinate values in that order; the methods preserve the
 plot's axis direction, including when ``reverse_x=True`` was used.
@@ -196,6 +214,7 @@ of a YZ plot represents Y rather than X.
     fig.set_vrange((-10, 10))  # Z on this projection
     fig.show()
 
+
 For ``tplotxy3``, ``set_xrange``, ``set_yrange``, and ``set_zrange`` refer to the
 spatial coordinates. Each method updates both panels containing that coordinate:
 X in XY and XZ, Y in XY and YZ, and Z in XZ and YZ.
@@ -209,6 +228,7 @@ X in XY and XZ, Y in XY and YZ, and Z in XZ and YZ.
     fig.set_yrange((-15, 15))
     fig.set_zrange((-10, 10))
     fig.show()
+
 
 The corresponding ``hrange`` and ``vrange`` arguments to ``tplotxy``, and
 ``xrange``, ``yrange``, and ``zrange`` arguments to ``tplotxy3``, set the same
@@ -272,8 +292,8 @@ location to the plots.
    :class: imgborder
 
 
-Maps and globes
----------------
+Non-time-series plots: Maps and globes with Tplot_Map
+-------------------------------------------------------
 
 .. warning::
 
@@ -287,14 +307,14 @@ Maps and globes
 
 Use ``tplot_map()`` to create a map or globe and return a ``Tplot_Map`` object.
 Its methods add paths, markers and circles around stations, using coordinate
-arrays or tplot position variables. Map plotting requires the optional Basemap
-dependency. Install it with the PySPEDAS ``maps`` extra:
+arrays or tplot position variables. Map plotting requires the optional ``basemap``
+package. Install it with the PySPEDAS ``maps`` extra:
 
 .. code-block:: bash
 
     pip install "pyspedas[maps]"
 
-Importing PySPEDAS works without Basemap. Creating a map without it raises an
+Importing PySPEDAS works without basemap. Creating a map without it raises an
 ``ImportError`` with installation instructions.
 
 Creating and decorating a map
@@ -322,6 +342,15 @@ This example uses geodetic latitude/longitude pairs in degrees. Unlike the
     tmap.add_markers(stations, marker_size=30)
     tmap.add_nightshade(date=dt.datetime(2026, 1, 1, 12, 0))
     tmap.show()
+
+.. figure:: _static/tplot_map_northern_europe.png
+   :align: center
+   :width: 640px
+   :alt: Globe centered on northern Europe, with blue paths connecting red station markers and shading on the nighttime side of Earth.
+   :class: imgborder
+
+   Northern Europe with three station markers, a connecting path and nighttime
+   shading for 1 January 2026 at 12:00 UTC.
 
 ``add_caps()`` draws circles around input coordinates, with their size set by
 ``fov_angle``. For tplot position variables, pass the variable name and choose
@@ -381,16 +410,3 @@ Map API reference
 
 .. autofunction:: pyspedas.convert_coords_to_geod_lonlat_list
 
-Per-Variable Plot Options
--------------------------
-
-.. autofunction:: pyspedas.options
-
-.. autofunction:: pyspedas.timebar
-
-.. autofunction:: pyspedas.databar
-
-"Global" plot options
----------------------
-
-.. autofunction:: pyspedas.tplot_options
