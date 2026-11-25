@@ -21,6 +21,7 @@ import os
 import io
 import logging
 import unittest
+import warnings
 import contextlib
 import datetime as dt
 
@@ -518,6 +519,32 @@ class TplotMapPlotTestCases(TplotMapTestCase):
         x, y = tmap(SQUARE_LAT_LON[:, 1], SQUARE_LAT_LON[:, 0])
         np.testing.assert_allclose(ax.collections[0].get_offsets(), np.column_stack([x, y]), rtol=1e-6)
         np.testing.assert_allclose(ax.collections[0].get_sizes(), sizes)
+
+    def test_single_point_projection_without_scalar_conversion_warning(self):
+        """One-point markers and paths project without NumPy scalar warnings."""
+        point = np.array([[65.0, -150.0]])  # geodetic latitude, longitude
+        for projection in ("merc", "ortho"):
+            for method in ("add_markers", "add_paths"):
+                with self.subTest(projection=projection, method=method):
+                    options = {"projection": projection}
+                    if projection == "merc":
+                        options.update(lat_ts=0, llcrnrlon=-166, llcrnrlat=59,
+                                       urcrnrlon=-136, urcrnrlat=74)
+                    else:
+                        options.update(lon_0=-150, lat_0=65)
+                    tmap, ax = blank_map(**options)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings(
+                            "error", category=DeprecationWarning,
+                            message="Conversion of an array with ndim > 0 to a scalar",
+                        )
+                        getattr(tmap, method)(point, marker="o", color="orange")
+                        expected = tmap(-150.0, 65.0)
+                        if method == "add_markers":
+                            actual = ax.collections[-1].get_offsets()
+                        else:
+                            actual = ax.lines[-1].get_xydata()
+                    np.testing.assert_allclose(actual, np.array([expected]))
 
     def test_add_markers_colormap(self):
         """Marker colors may come from data values with a colormap."""

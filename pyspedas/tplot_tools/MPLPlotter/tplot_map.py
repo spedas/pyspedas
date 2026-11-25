@@ -1043,7 +1043,11 @@ class Tplot_Map(Basemap):
 
         self._overwrite_params("add_paths")
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
-            self.plot(coord_set[:,0],coord_set[:,1],**self.map_options.get("add_paths"))
+            lon, lat = coord_set[:, 0], coord_set[:, 1]
+            if len(coord_set) == 1:
+                # pyproj's scalar fast path warns on one-element NumPy arrays.
+                lon, lat = coord_set[0].tolist()
+            self.plot(lon, lat, **self.map_options.get("add_paths"))
         return
 
     def add_markers(
@@ -1185,7 +1189,11 @@ class Tplot_Map(Basemap):
         self.map_options["add_markers"].update(scatter_kwargs)
         self._overwrite_params("add_markers")
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
-            self.scatter(coord_set[:,0],coord_set[:,1],**self.map_options.get("add_markers"),latlon=True)
+            lon, lat = coord_set[:, 0], coord_set[:, 1]
+            if len(coord_set) == 1:
+                # pyproj's scalar fast path warns on one-element NumPy arrays.
+                lon, lat = coord_set[0].tolist()
+            self.scatter(lon, lat, **self.map_options.get("add_markers"),latlon=True)
         return
 
     # TODO: add option for km radius
