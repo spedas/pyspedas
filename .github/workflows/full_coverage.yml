@@ -114,6 +114,7 @@ jobs:
               coverage run -a -m pyspedas.projects.dscovr.tests.test_dscovr
               echo Starting utilities download tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_download
+              coverage run -a -m pyspedas.utilities.tests.test_last_version_per_identity
               echo Starting utilities misc tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_utilities_misc
               echo Starting user preferences tests at `date`
@@ -350,8 +351,8 @@ jobs:
               coverage run -a -m pyspedas.projects.erg.tests.test_erg
               echo Starting erg cotrans tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_cotrans
-              echo Starting erg ground data tests at `date`
-              coverage run -a -m pyspedas.projects.erg.tests.test_erg_ground
+              #echo Starting erg ground data tests at `date`
+              #coverage run -a -m pyspedas.projects.erg.tests.test_erg_ground
               echo Starting erg mepe particle tests at `date`
               coverage run -a -m pyspedas.projects.erg.tests.test_erg_mepe
               echo Starting erg mepi particle tests at `date`

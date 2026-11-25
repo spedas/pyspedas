@@ -5,7 +5,10 @@ from pyspedas.tplot_tools import data_exists, del_data, timespan,tplot, options
 from pyspedas.projects.erg import erg_lep_part_products
 
 import pyspedas
-import pyspedas
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
 
 display=False
 # Set for a specific CDF version, or None for most recent version

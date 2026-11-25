@@ -10,6 +10,8 @@ related_files:
   - pyspedas/projects/mms/mms_load_data_spdf.py
   - pyspedas/projects/mms/mms_load_data_archive.py
   - pyspedas/projects/mms/tests/test_mms_sources.py
+  - pyspedas/projects/mms/tests/test_mms_fpi.py
+  - pyspedas/utilities/last_version_per_identity.py
   - pyspedas/projects/mms/mec_ascii/mms_get_state_data.py
   - pyspedas/projects/mms/mec_ascii/mms_get_tetrahedron_qf.py
   - pyspedas/projects/mms/databar_tools/mms_update_fast_intervals.py
@@ -95,7 +97,12 @@ paths. `mms_load_data_archive()` builds per-instrument path templates and uses
 is SPDF. `mms_load_data_spdf()` remains a compatibility wrapper and does not
 modify configuration at import. The archive implementation preserves dictionary
 results across groups, prefix/suffix, clipping, offline flags, download-only mode
-and version filtering. `available` lists files without CDF transfers.
+and version filtering. `available` lists files without CDF transfers. Archive
+requests select the lexicographically last CDF per product/timestamp identity
+using `download(last_version=True, versioned_regex=MMS_VERSIONED_REGEX)`.
+Explicit version filters defer selection until after `mms_file_filter()` runs;
+its global latest/major-version semantics remain intact. The same selection
+applies to available listings and local/mirror fallback results.
 
 `config.py` defaults `data_access` to `sdc`, `remote_data_dir` to the SPDF MMS root,
 and `sdc_data_dir` to `https://lasp.colorado.edu/mms/sdc/`. Matching `MMS_*`
@@ -137,3 +144,22 @@ never trigger a switch to SDC. The archive URL names a mission root containing
 `tests/test_mms_sources.py` tests routing, SDC-only services, configurable URLs,
 archive options, real cached CDFs, authentication and preferences without network
 access; it is registered in quick_tests and full_coverage.
+
+## Provider shortcuts
+
+`config.py` defines provider-preset dictionaries and these setter/getter pairs:
+
+- `set_data_source()` / `get_data_source()`: sdc, spdf, heliocloud.
+- `set_sdc_source()` / `get_sdc_source()`: sdc.
+
+Setters validate a case-sensitive tag before updating its CONFIG keys together,
+log the resulting settings at INFO level, and neither access the network nor
+save preferences. Getters match relevant current settings exactly and return
+`None` for custom or incomplete settings, including direct CONFIG edits.
+The existing offline routing tests also cover these APIs.
+`tests/test_mms_fpi.py` includes live SPDF/heliocloud HPCA and EDP regressions
+for issue #1582; each restores the complete configuration after running.
+
+The main `sdc` preset resets its canonical SDC URL and access mode while
+retaining the inactive archive URL. Archive presets retain the separate SDC
+support URL. The independent SDC setter does not change access mode.

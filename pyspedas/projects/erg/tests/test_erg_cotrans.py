@@ -6,6 +6,10 @@ from pyspedas import tplot_names, get_data, data_exists, store_data
 import numpy as np
 from numpy.testing import assert_allclose
 
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
 
 
 class MyTestCase(unittest.TestCase):

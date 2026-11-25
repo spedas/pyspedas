@@ -92,11 +92,13 @@ Missing or short coverage calls `state(get_support_data=True)` or `slp()` for th
   unsuffixed names (`thc_spinras_corrected`, `slp_sun_pos`), so state or SLP data loaded
   with a `suffix` is not found and gets reloaded.
 - STATE files: without `version`, Berkeley's unversioned link `th?_l1_state_YYYYMMDD.cdf`
-  is loaded; with `version`, or when the remote is SPDF, the versioned `v??` name is used.
+  is loaded; with `version`, or when `remote_data_layout` is `spdf`, the versioned
+  `v??` name is used.
 - `slp()` sets GEI coordinates on every variable except the light-time (`ltime`) ones.
 - `ssc()` reads monthly files and `ssc_pre()` yearly files from
-  `https://cdaweb.gsfc.nasa.gov/pub/data/themis/`, whatever `CONFIG['remote_data_dir']`
-  says. Both default to `time_clip=True`.
+  `CONFIG['ssc_remote_data_dir']`, defaulting to
+  `https://cdaweb.gsfc.nasa.gov/pub/data/themis/`, independently of the main data
+  source. Both default to `time_clip=True`.
 
 ## Tests
 

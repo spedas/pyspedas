@@ -9,9 +9,14 @@ from pyspedas.projects.erg.satellite.erg.particle.erg_pgs_make_theta_spec import
 from pyspedas.projects.erg.satellite.erg.particle.erg_pgs_make_phi_spec import erg_pgs_make_phi_spec
 
 import pyspedas
-import pyspedas
+
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
 
 display=False
+
 
 class LoadTestCases(unittest.TestCase):
 

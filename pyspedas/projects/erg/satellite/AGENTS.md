@@ -55,7 +55,9 @@ code is under `erg/`; this folder level only holds that package.
 - `erg/load.py`: the shared `load()`, also used by the ground loaders. Wrappers pass an explicit
   family URL/layout using `resolve_source()` from `pyspedas/projects/erg/config.py`.
   It uses the selected server layout for the local cache and enables
-  latest-version selection only for wildcard templates.
+  latest-version selection only for wildcard templates. JAXA satellite and ASCII
+  attitude presets use `https://data.darts.isas.jaxa.jp/pub/erg/` with the existing
+  `ergsc` layout; no separate JAXA path translation is needed.
 - `erg/get_gatt_ror.py`: gets CDF global attributes for the rules-of-the-road printout.
 - Instrument wrappers, one module each: `erg/att/att.py` (attitude, from text files),
   `erg/mgf/mgf.py` (magnetic field), `erg/orb/orb.py` (orbit), `erg/hep/hep.py`,

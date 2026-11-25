@@ -9,6 +9,57 @@ The routines in this module can be used to load data from the Magnetospheric Mul
 
 Each of the MMS load routines has a short name, which is just the instrument name without the mms_load prefix.
 
+Provider shortcuts
+------------------
+Setters update in-memory ``CONFIG`` settings for the current session, log the
+result at INFO level, and perform no network requests. Tags are case-sensitive.
+An unsupported tag raises ``ValueError`` listing valid choices before any settings
+change. Only the selected family's settings are updated.
+
+Each setter has a matching ``get_..._source()`` function. Getters match the current
+relevant configuration exactly, including direct ``CONFIG`` edits, and return a
+provider tag or ``None`` for custom or incomplete settings. Direct URLs remain
+supported. Setters do not save preferences; persistence remains an explicit step
+through the existing preferences API.
+
+.. list-table:: Supported presets
+   :header-rows: 1
+
+   * - Data family
+     - Setter
+     - Supported tags
+   * - Main science data/access method
+     - ``set_data_source(source_tag)``
+     - ``sdc``, ``spdf``, ``heliocloud``
+   * - Independent SDC support service
+     - ``set_sdc_source(source_tag)``
+     - ``sdc``
+
+.. code-block:: python
+
+    from pyspedas.projects.mms import config
+
+    config.set_data_source('heliocloud')
+    print(config.get_data_source())  # heliocloud
+    print(config.get_sdc_source())   # sdc, with the default support-service URL
+    config.set_data_source('sdc')
+
+The main ``sdc`` preset selects API access and the canonical SDC URL,
+retaining the inactive archive URL. ``spdf`` and ``heliocloud`` select archive
+access and their archive URL, retaining the independent SDC support URL.
+``set_sdc_source('sdc')`` resets only that support URL without changing access
+mode. ``get_data_source()`` ignores the inactive archive URL in SDC mode and the
+independent support URL in archive mode; a custom active URL returns ``None``.
+SDC-only products and ``spdf=True`` retain their previous routing rules.
+
+.. autofunction:: pyspedas.projects.mms.config.set_data_source
+
+.. autofunction:: pyspedas.projects.mms.config.get_data_source
+
+.. autofunction:: pyspedas.projects.mms.config.set_sdc_source
+
+.. autofunction:: pyspedas.projects.mms.config.get_sdc_source
+
 Data sources
 ------------
 MMS supports ``data_access='sdc'`` (the default) and ``data_access='archive'``
@@ -33,6 +84,12 @@ still uses SPDF. For heliocloud science data with SDC support products:
         'sdc_data_dir': 'https://lasp.colorado.edu/mms/sdc/',
     })
     pyspedas.projects.mms.fgm(trange=['2015-10-16', '2015-10-17'])
+
+Archive requests keep each product/timestamp identity and select its
+lexicographically last CDF version. Explicit CDF version filters run first;
+``latest_version`` and ``major_version`` retain their interval-wide meaning.
+Available-only listings and offline results use the same selection. Ordering is
+lexical, so unpadded ``v2.9.0`` sorts after ``v2.10.0``.
 
 SPDF and heliocloud share archive templates; no layout setting is needed.
 Archive URLs point to the directory containing ``mms1/`` through ``mms4/``.
