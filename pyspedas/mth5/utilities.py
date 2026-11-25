@@ -6,9 +6,14 @@ from collections import defaultdict
 from pyspedas.tplot_tools import time_datetime
 
 
-def _list_of_fdsn_channels():
+def _list_of_fdsn_channels(instruments='F'):
     """
-        Generates a list of channel names based on predefined bands, orientations, and a single instrument type.
+        Generates a list of channel names based on predefined bands, orientations, and instrument types.
+
+        Parameters
+        ----------
+        instruments : str, default='F'
+            SEED instrument codes, one character each: 'F' (magnetic), 'Q' (electric), or 'FQ' (both).
 
         Returns
         -------
@@ -27,10 +32,10 @@ def _list_of_fdsn_channels():
     # orientations some stations use instead) both map to MTH5's
     # hx/hy/hz components for instrument code F. See fdsn_data_model.md.
     channel_orientation = ['Z', 'N', 'E', '1', '2', '3']
-    channel_instrument = 'F'
-    # Create list of all combinations of channel_band, channel_instrument and channel_orientation
+    # Create list of all combinations of channel_instrument, channel_band and channel_orientation
     channel_list = ",".join(
-        [f"{band}{channel_instrument}{orient}" for band in channel_band for orient in channel_orientation])
+        [f"{band}{channel_instrument}{orient}" for channel_instrument in instruments
+         for band in channel_band for orient in channel_orientation])
     return channel_list
 
 
@@ -49,15 +54,53 @@ def mth5_time_str(time):
     return time_datetime(time).strftime("%Y-%m-%dT%H:%M:%S")
 
 
-def datasets(trange=None, network=None, station=None, USAarea=False):
+def _print_datasets(res):
+    """
+    Print the result of `datasets` as one row per time range, listing the channels that share it.
+
+    Parameters
+    ----------
+    res : dict
+        Output of `datasets`, e.g.
+        {'8P': {'CAS04': {('2020-06-02T18:41:43.0000', '2020-07-13T21:46:12.0000'): ['LFE', 'LFN', 'LFZ']}}}
+
+    Examples
+    --------
+    >>> _print_datasets(res)
+    8P CAS04
+      Channels      Start                      End
+      LFE,LFN,LFZ   2020-06-02T18:41:43.0000   2020-07-13T21:46:12.0000
+    """
+    if not res:
+        print("No datasets found")
+        return
+
+    for network, stations in res.items():
+        for station, time_ranges in stations.items():
+            print(f"{network} {station}")
+            # One (channels, start, end) row per time range, e.g. ('LFE,LFN,LFZ', start, end),
+            # sorted by channels and then start time
+            rows = sorted(
+                (','.join(channels), start, end)
+                for (start, end), channels in time_ranges.items()
+            )
+            # Channels column fits the longest channel list, e.g. 'LFE,LFN,LFZ'
+            width = max(len('Channels'), max(len(row[0]) for row in rows)) + 2
+            print(f"  {'Channels':{width}} {'Start':26} End")
+            for channels, start, end in rows:
+                print(f"  {channels:{width}} {start:26} {end}")
+
+
+def datasets(trange=None, network=None, station=None, USAarea=False, datatype='mag', keep_incomplete=False,
+             quiet=True):
     """
     Fetches datasets availability based on time range, network, and station.
 
     The function queries an FDSN (Federation of Digital Seismograph Networks) web service for station
     data within a specified time range and geographical bounds limited to the USA. It filters the resulting channels
-    based on selection of 3 channels of the same band and different orientation, e.g., 'LFE', 'LFN', 'LFZ'. If the dataset has
-    less than 3 channels with the same band, it is excluded. The resulting dataset is organized by network, station, and time
-    range, including only the channels that meet the specified criteria.
+    based on selection of 3 magnetic channels of the same band and different orientation, e.g., 'LFE', 'LFN', 'LFZ',
+    or 2 electric channels, e.g., 'LQE', 'LQN'. A time range without such a complete set is excluded. The resulting
+    dataset is organized by network, station, and time range, including only the channels that meet the specified criteria.
 
     Parameters
     ----------
@@ -72,6 +115,14 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
 
         - Latitude: 24 to 49 degrees
         - Longitude: -127 to -59 degrees
+    datatype : str or list of str, default='mag'
+        Physical field(s) to search for: 'mag' (magnetic, SEED instrument code F), 'elec' (electric, Q),
+        or ['mag', 'elec'].
+    keep_incomplete : bool, default=False
+        If True, don't remove time ranges without a complete set of channels. Every channel epoch
+        is kept, e.g. electric channels whose epochs are split at different times.
+    quiet : bool, default=True
+        If False, print the result as one row per channel and time range.
 
     Returns
     -------
@@ -95,16 +146,29 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
     if not trange:
         return None
 
-    # Function to filter channels based on the starting letter criteria
+    # SEED instrument code and the number of channels in a complete set, per datatype
+    instrument_codes = {'mag': 'F', 'elec': 'Q'}
+    complete_set = {'F': 3, 'Q': 2}  # e.g. LFE, LFN, LFZ or LQE, LQN
+
+    # Normalize datatype to a list, e.g. 'mag' -> ['mag']
+    datatypes = [datatype] if isinstance(datatype, str) else list(datatype)
+    if not datatypes or any(d not in instrument_codes for d in datatypes):
+        pyspedas.logger.error(f"Invalid datatype {datatype}. Use 'mag', 'elec' or ['mag', 'elec']")
+        return None
+    # e.g. ['mag', 'elec'] -> 'FQ'
+    instruments = ''.join(sorted({instrument_codes[d] for d in datatypes}))
+
+    # Function to filter channels based on the band and instrument criteria
     def filter_channels_by_letter(channels):
-        # Count channels starting with each letter
+        # Count channels per band and instrument, e.g. 'LF' for LFE
         channel_start_count = defaultdict(int)
         for channel in channels:
             if channel:  # Ensure the channel is not empty
-                channel_start_count[channel[0]] += 1
+                channel_start_count[channel[:2]] += 1
 
-        # Filter channels where the starting letter count is 3 or more
-        return any(count >= 3 for count in channel_start_count.values())
+        # Keep the time range if at least one band and instrument has a complete set,
+        # e.g. {'LF': 3} -> True, {'LQ': 1} -> False
+        return any(count >= complete_set.get(key[1:], 3) for key, count in channel_start_count.items())
 
     # Get data and handle empty response
     def fetch_data(url):
@@ -125,8 +189,8 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
     t1 = mth5_time_str(trange[0])  # ["2019-11-14T00:00:00"],
     t2 = mth5_time_str(trange[1])  # ["2019-11-15T00:00:00"]
 
-    # FDSN F Channels
-    cha = _list_of_fdsn_channels()
+    # FDSN channels of the requested instruments, e.g. F (magnetic) and Q (electric)
+    cha = _list_of_fdsn_channels(instruments=instruments)
 
     net_str = ''
     sta_str = ''
@@ -176,6 +240,8 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
             # Append the current channel to the list for this date_tuple
             res[network][station][date_tuple].append(channel)
     else:
+        if not quiet:
+            _print_datasets(res)
         return res
 
     # Filter the constructed dictionary, using copies of the iterators
@@ -183,7 +249,7 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
         for station in list(res[network].keys()):
             for date_tuple in list(res[network][station].keys()):
                 channels = res[network][station][date_tuple]
-                if not filter_channels_by_letter(channels):
+                if not keep_incomplete and not filter_channels_by_letter(channels):
                     del res[network][station][date_tuple]
 
             # Remove the station if it becomes empty after the filtering
@@ -193,5 +259,8 @@ def datasets(trange=None, network=None, station=None, USAarea=False):
         # Remove the network if it becomes empty after the filtering
         if not res[network]:
             del res[network]
+
+    if not quiet:
+        _print_datasets(res)
 
     return res
