@@ -358,6 +358,12 @@ This example uses geodetic latitude/longitude pairs in degrees. Unlike the
 positions). The method reference below describes the supported coordinate
 formats, angle units and styling options.
 
+The overlay methods accept either -180 to 180 or 0 to 360 degree longitudes.
+On cylindrical maps, coordinates are wrapped to the longitude region selected
+by the map bounds; on pseudocylindrical maps, they are wrapped around the central
+meridian. Paths keep their original point order, and paths and circle edges are
+split at map seams to avoid lines connecting opposite sides of the map.
+
 The map initially draws coastlines, countries, filled continents, a map boundary,
 meridians and parallels. Use ``option_dict`` and ``override_defaults`` to customize
 these initial layers. ``print_map_options()`` displays the current settings.

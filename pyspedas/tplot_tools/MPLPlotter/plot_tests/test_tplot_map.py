@@ -546,6 +546,125 @@ class TplotMapPlotTestCases(TplotMapTestCase):
                             actual = ax.lines[-1].get_xydata()
                     np.testing.assert_allclose(actual, np.array([expected]))
 
+    def test_overlay_longitudes_match_map_region(self):
+        """Both longitude conventions work for single and multiple overlays."""
+        regions = [(0, 360, 260), (-180, 180, -100),
+                   (225, 300, 260), (-135, -60, -100)]
+        for left, right, expected_lon in regions:
+            for method in ("add_markers", "add_paths"):
+                for count in (1, 2):
+                    for lon in (-100.0, 260.0):
+                        with self.subTest(region=(left, right), method=method,
+                                          count=count, longitude=lon):
+                            tmap, ax = blank_map(projection="mill", llcrnrlon=left,
+                                                 llcrnrlat=-85, urcrnrlon=right,
+                                                 urcrnrlat=85)
+                            points = np.array([[40.0, lon], [45.0, lon + 5]])[:count]
+                            original = points.copy()
+                            with warnings.catch_warnings():
+                                warnings.filterwarnings(
+                                    "error", category=DeprecationWarning,
+                                    message="Conversion of an array with ndim > 0 to a scalar",
+                                )
+                                getattr(tmap, method)(points, marker="o", color="orange")
+                            if method == "add_markers":
+                                actual = ax.collections[-1].get_offsets()
+                            else:
+                                actual = ax.lines[-1].get_xydata()
+                            expected = [tmap(expected_lon + 5 * i, 40 + 5 * i)
+                                        for i in range(count)]
+                            np.testing.assert_allclose(actual, expected)
+                            np.testing.assert_array_equal(points, original)
+                            self.assertTrue(np.all(actual[:, 0] >= tmap.xmin))
+                            self.assertTrue(np.all(actual[:, 0] <= tmap.xmax))
+                            plt.close(ax.figure)
+
+    def test_marker_order_and_styles_survive_longitude_wrapping(self):
+        """Wrapping preserves point order and per-point sizes and colors."""
+        tmap, ax = blank_map(projection="mill", llcrnrlon=0, llcrnrlat=-85,
+                             urcrnrlon=360, urcrnrlat=85)
+        points = np.array([[40., -90.], [45., -100.], [35., 280.]])
+        tmap.add_markers(points, color=[1., 2., 3.], marker_size=[9, 16, 25],
+                         cmap="viridis")
+        collection = ax.collections[-1]
+        expected = [tmap(270., 40.), tmap(260., 45.), tmap(280., 35.)]
+        np.testing.assert_allclose(collection.get_offsets(), expected)
+        np.testing.assert_array_equal(collection.get_sizes(), [9, 16, 25])
+        np.testing.assert_array_equal(collection.get_array(), [1., 2., 3.])
+
+    def test_explicit_marker_color_overrides_default(self):
+        """An explicit marker color works on a map with default layers."""
+        tmap = tplot_map()
+        tmap.add_markers(np.array([[40., 20.]]), color="orange")
+        colors = tmap.ax.collections[-1].get_facecolors()
+        np.testing.assert_allclose(colors[0], [1., 165. / 255., 0., 1.])
+
+    def test_marker_color_from_map_options(self):
+        """A colormap value in option_dict also overrides the default color."""
+        tmap = tplot_map(option_dict={"add_markers": {"c": "orange"}})
+        tmap.add_markers(np.array([[40., 20.]]))
+        colors = tmap.ax.collections[-1].get_facecolors()
+        np.testing.assert_allclose(colors[0], [1., 165. / 255., 0., 1.])
+
+    def test_overlays_on_shifted_pseudocylindrical_map(self):
+        """A central meridian of 180 keeps US markers and paths visible."""
+        for method in ("add_markers", "add_paths"):
+            for lon in (-100., 260.):
+                with self.subTest(method=method, longitude=lon):
+                    tmap, ax = blank_map(projection="moll", lon_0=180)
+                    with warnings.catch_warnings():
+                        warnings.filterwarnings(
+                            "error", category=DeprecationWarning,
+                            message="Conversion of an array with ndim > 0 to a scalar",
+                        )
+                        getattr(tmap, method)(np.array([[40., lon]]), marker="o")
+                    actual = (ax.collections[-1].get_offsets() if method == "add_markers"
+                              else ax.lines[-1].get_xydata())
+                    np.testing.assert_allclose(actual, np.array([tmap(260., 40.)]))
+
+    def test_paths_preserve_both_world_map_edges(self):
+        """Longitudes exactly on either map edge retain their chosen endpoint."""
+        for left, right in ((0, 360), (-180, 180)):
+            with self.subTest(region=(left, right)):
+                tmap, ax = blank_map(projection="mill", llcrnrlon=left,
+                                     llcrnrlat=-85, urcrnrlon=right, urcrnrlat=85)
+                tmap.add_markers(np.array([[40., left], [40., right]]))
+                actual = ax.collections[-1].get_offsets()
+                np.testing.assert_allclose(actual[:, 0], [tmap.xmin, tmap.xmax], atol=1e-7)
+
+    def test_paths_break_at_world_map_seam(self):
+        """A path across the edge does not draw a line across the whole map."""
+        for left, right, lons in [(0, 360, [358., 359., 1., 2.]),
+                                  (-180, 180, [178., 179., -179., -178.])]:
+            with self.subTest(region=(left, right)):
+                tmap, ax = blank_map(projection="mill", llcrnrlon=left,
+                                     llcrnrlat=-85, urcrnrlon=right, urcrnrlat=85)
+                points = np.column_stack([np.full(4, 40.), lons])
+                tmap.add_paths(points)
+                actual = ax.lines[-1].get_xydata()
+                self.assertTrue(np.isnan(actual).any())
+                expected = [tmap(lon, 40.) for lon in lons]
+                np.testing.assert_allclose(actual[np.isfinite(actual).all(axis=1)], expected)
+                finite_steps = np.abs(np.diff(actual[:, 0]))
+                self.assertTrue(np.all(finite_steps[np.isfinite(finite_steps)]
+                                       < (tmap.xmax - tmap.xmin) / 2))
+
+    def test_caps_wrap_and_break_at_world_map_seam(self):
+        """A circle around Greenwich is visible on both sides of a 0–360 map."""
+        tmap, ax = blank_map(projection="mill", llcrnrlon=0, llcrnrlat=-85,
+                             urcrnrlon=360, urcrnrlat=85)
+        tmap.add_caps(np.array([[40., 0.]]))
+        actual = ax.lines[-1].get_xydata()
+        self.assertTrue(np.isnan(actual).any())
+        finite_x = actual[np.isfinite(actual).all(axis=1), 0]
+        self.assertTrue(np.all(finite_x >= tmap.xmin))
+        self.assertTrue(np.all(finite_x <= tmap.xmax))
+        self.assertTrue(np.any(finite_x < (tmap.xmax - tmap.xmin) / 4))
+        self.assertTrue(np.any(finite_x > 3 * (tmap.xmax - tmap.xmin) / 4))
+        finite_steps = np.abs(np.diff(actual[:, 0]))
+        self.assertTrue(np.all(finite_steps[np.isfinite(finite_steps)]
+                               < (tmap.xmax - tmap.xmin) / 2))
+
     def test_add_markers_colormap(self):
         """Marker colors may come from data values with a colormap."""
         tmap, ax = blank_map()
