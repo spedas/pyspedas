@@ -8,9 +8,15 @@ from pyspedas import del_data, options, split_vec, timespan, tplot, tplot_option
 
 from pyspedas.config import CONFIG
 
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
+
 global_display = False
 save_dir = os.path.join(CONFIG["testing"]["output_dir"], "utilities")
 os.makedirs(save_dir, exist_ok=True)
+
 
 
 class PlotTestCases(unittest.TestCase):

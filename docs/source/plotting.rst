@@ -279,6 +279,8 @@ Maps and globes
 
    **Experimental map API.** ``Tplot_Map``, its plotting methods and the
    ``tplot_map()`` entry point are experimental and have not been finalized.
+   Parameters, return values and behavior may change, or these features may be
+   removed, between releases without the standard deprecation period.
    Please share feedback on map creation, coordinate inputs and plotting options
    through the `PySPEDAS issue tracker
    <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.

@@ -41,9 +41,13 @@ Before requesting review:
    the HTML locally and inspect the affected pages.
 4. If the change renames, removes or changes the behavior of a user-facing
    routine, parameter, configuration setting or dependency, follow the rules
-   for breaking changes in [RULES.md](RULES.md): keep the old form working with
-   a deprecation warning, tests and documentation until the next major release,
-   and list each deprecation in the pull request description.
+   for breaking changes in [RULES.md](RULES.md). Stable APIs released on production
+   PyPI require a compatibility period and removal only in a major release;
+   unreleased additions and explicitly experimental APIs are exempt from that
+   period. Label experimental APIs before their first production release.
+   Update tests and documentation for every API change, and describe breaking
+   changes, deprecations and experimental API changes in the pull request and
+   release notes when published.
 5. If the change ports a feature from IDL SPEDAS or adds a dependency, follow
    the matching section of [RULES.md](RULES.md).
 6. Check `git status` and the diff. Stage intended new source files, tests, RST

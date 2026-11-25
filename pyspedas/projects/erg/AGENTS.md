@@ -20,6 +20,7 @@ related_files:
   - pyspedas/projects/erg/tests/test_erg.py
   - pyspedas/projects/erg/tests/test_erg_ground.py
   - pyspedas/projects/erg/tests/test_erg_cotrans.py
+  - .github/workflows/full_coverage.yml
   - RULES.md
 maintenance: |
   Update when satellite/erg/load.py changes, when config.py changes the data server or
@@ -49,7 +50,8 @@ particle products.
   (`pyspedas.projects.erg.mgf`, `...sd_fit`, `...erg_cotrans`).
 - `tests/`: unittest modules; `test_erg_load.py` needs no network and `test_erg_spdf.py`
   uses SPDF; `test_erg_s3.py` uses S3 satellite data with SPDF attitude,
-  and the others download from ERG-SC.
+  and the main satellite, coordinate-transform and particle suites select JAXA.
+  Ground tests use ERG-SC; their full_coverage entry is temporarily disabled.
 - `README.md`: user guide with examples.
 
 ## How a loader works
@@ -106,3 +108,20 @@ the other modules cover the particle products of one instrument each.
 without network access. `tests/test_erg_spdf.py` tests satellite loading from SPDF in a
 fresh cache, including explicit versions; it runs in the SPDF-heavy full coverage shard,
 not in quick_tests, and excludes particle get_dist tests.
+
+## Provider shortcuts
+
+`config.py` defines provider-preset dictionaries and these setter/getter pairs:
+
+- `set_satellite_source()` / `get_satellite_source()`: ergsc, jaxa, spdf, heliocloud.
+- `set_attitude_source()` / `get_attitude_source()`: ergsc, jaxa, spdf.
+- `set_ground_source()` / `get_ground_source()`: ergsc.
+
+Setters validate a case-sensitive tag before updating its CONFIG keys together,
+log the resulting settings at INFO level, and neither access the network nor
+save preferences. Getters match relevant current settings exactly and return
+`None` for custom or incomplete settings, including direct CONFIG edits.
+The existing offline routing tests also cover these APIs, including JAXA satellite
+and attitude routing, explicit versions, and rejecting JAXA as a ground provider.
+JAXA presets use `https://data.darts.isas.jaxa.jp/pub/erg/` and the existing `ergsc`
+layout. `jaxa` names the provider, not a separate layout. Defaults remain ERG-SC.

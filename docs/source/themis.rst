@@ -3,16 +3,64 @@ Time History of Events and Macroscale Interactions during Substorms (THEMIS)
 The routines in this module can be used to load data from the Time History of Events and Macroscale Interactions during Substorms (THEMIS) mission.
 
 
-Data sources and layouts
-------------------------
+Provider shortcuts
+------------------
 
 .. warning::
 
-   **Experimental source-routing API.** The configuration interface for selecting
-   data sources and layouts is experimental and has not been finalized. Please
-   share feedback on configuration names, source selection and cache behavior
-   through the `PySPEDAS issue tracker
+   **Experimental source-routing API.** The provider setters/getters and new
+   source-selection configuration interfaces have not been finalized. Their
+   parameters, return values and behavior may change, or these features may be
+   removed, between releases without the standard deprecation period.
+   Please share feedback on configuration names, source selection and cache
+   behavior through the `PySPEDAS issue tracker
    <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
+Setters update in-memory ``CONFIG`` settings for the current session, log the
+result at INFO level, and perform no network requests. Tags are case-sensitive.
+An unsupported tag raises ``ValueError`` listing valid choices before any settings
+change. Only the selected family's settings are updated.
+
+Each setter has a matching ``get_..._source()`` function. Getters match the current
+relevant configuration exactly, including direct ``CONFIG`` edits, and return a
+provider tag or ``None`` for custom or incomplete settings. Direct URLs remain
+supported. Setters do not save preferences; persistence remains an explicit step
+through the existing preferences API.
+
+.. list-table:: Supported presets
+   :header-rows: 1
+
+   * - Data family
+     - Setter
+     - Supported tags
+   * - All satellite/ground data and GMAG metadata
+     - ``set_data_source(source_tag)``
+     - ``berkeley``, ``ucla``, ``spdf``, ``heliocloud``
+   * - SSC orbit data
+     - ``set_ssc_source(source_tag)``
+     - ``spdf``
+
+.. code-block:: python
+
+    from pyspedas.projects.themis import config
+
+    config.set_data_source('heliocloud')
+    print(config.get_data_source())  # heliocloud
+
+The main provider controls satellite data, all GMAG networks and station
+metadata. Berkeley and UCLA use ``themis`` layout; SPDF and heliocloud use
+``spdf`` layout. SSC retains its independent source.
+
+.. autofunction:: pyspedas.projects.themis.config.set_data_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_data_source
+
+.. autofunction:: pyspedas.projects.themis.config.set_ssc_source
+
+.. autofunction:: pyspedas.projects.themis.config.get_ssc_source
+
+Data sources and layouts
+------------------------
 
 Ordinary satellite and ground data use ``remote_data_dir`` and
 ``remote_data_layout`` in ``pyspedas.projects.themis.config.CONFIG``.
@@ -20,50 +68,38 @@ The THEMIS server and UCLA mirror use ``themis`` layout. SPDF and heliocloud
 use ``spdf`` layout. Set the layout explicitly, independently of the hostname
 or URL scheme. Existing SPDF/S3 configurations must set it to ``spdf``.
 
-Variometers use independent ``variometer_remote_data_dir`` and
-``variometer_remote_data_layout`` settings. Both pairs default to THEMIS URLs
-and ``themis`` layout. URLs point to mission roots with ``tha/``, ``thg/``, etc.
-beneath them. Mixed GMAG requests select a source for each station.
+All GMAG networks, including variometers, use the main URL/layout pair.
+Mission URLs name roots containing ``tha/``, ``thg/``, etc. Station metadata is
+read from ``thg/gmags_meta.csv`` beneath ``remote_data_dir`` and cached at that
+relative path beneath ``local_data_dir``. S3 metadata is copied locally for
+offline use. ``gmag(no_update=True)`` and ``CONFIG['no_download']`` suppress
+metadata downloads as well as CDF downloads. Unavailable metadata raises
+``FileNotFoundError``. Changing the main URL or cache root invalidates the
+in-memory metadata table on the next lookup.
 
-``gmag_metadata_file`` is the full URL of the station/network CSV, independently
-configured from science data. Metadata is cached as ``thg/gmags_meta.csv`` beneath
-``local_data_dir``. Both ``gmag(no_update=True)`` and ``CONFIG['no_download']``
-suppress metadata downloads; missing offline metadata raises ``FileNotFoundError``.
-Changing the metadata URL or cache root reloads the in-memory table.
-
-``ssc_remote_data_dir`` controls both definitive and predicted SSC orbit data,
-retaining their existing path conventions. For heliocloud science data with
-THEMIS variometers and metadata, and the existing CDAWeb SSC source:
+``ssc_remote_data_dir`` independently controls definitive and predicted SSC
+orbit data, retaining its existing CDAWeb root and path conventions. For example:
 
 .. code-block:: python
 
-    from pyspedas.projects.themis.config import CONFIG
+    from pyspedas.projects.themis import config
 
-    CONFIG.update({
-        'remote_data_dir': 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/',
-        'remote_data_layout': 'spdf',
-        'variometer_remote_data_dir': 'https://themis.ssl.berkeley.edu/data/themis/',
-        'variometer_remote_data_layout': 'themis',
-        'gmag_metadata_file': 'https://themis.ssl.berkeley.edu/data/themis/thg/gmags_meta.csv',
-        'ssc_remote_data_dir': 'https://cdaweb.gsfc.nasa.gov/pub/data/themis/',
-    })
+    config.set_data_source('heliocloud')  # Includes GMAG data and metadata
+    config.set_ssc_source('spdf')
 
-Heliocloud currently lacks variometers and the metadata CSV. To use SPDF science
-data, set ``remote_data_dir`` to ``https://spdf.gsfc.nasa.gov/pub/data/themis/``
-and retain ``spdf`` layout. Variometers can independently use that root and
-``spdf`` layout. Each resource uses only its configured source, without automatic
-fallback. Cache paths follow the server layout; existing files are not moved.
+Heliocloud holdings are being synchronized with SPDF; missing files may remain
+unavailable until ingest/backfilling completes. Requests do not fall back to
+another provider. Select ``spdf`` or another provider explicitly when needed.
+Cache paths follow server layouts; existing files are not moved.
+
+The three source settings accept stored preferences under ``[projects.themis]``
+and matching ``THM_REMOTE_DATA_DIR``, ``THM_REMOTE_DATA_LAYOUT``, and
+``THM_SSC_REMOTE_DATA_DIR`` environment overrides.
 
 State version selection is unchanged. With no explicit version, ``themis`` uses
 the unversioned current-file link; ``spdf`` wildcards the version and selects the
 highest available. An explicit version requests that exact file, which may be
 absent from the server. Other instrument version defaults remain unchanged.
-
-All six source settings support preferences under ``[projects.themis]`` and
-matching environment overrides: ``THM_REMOTE_DATA_DIR``, ``THM_REMOTE_DATA_LAYOUT``,
-``THM_VARIOMETER_REMOTE_DATA_DIR``, ``THM_VARIOMETER_REMOTE_DATA_LAYOUT``,
-``THM_GMAG_METADATA_FILE``, and ``THM_SSC_REMOTE_DATA_DIR``.
-
 
 Fluxgate magnetometer (FGM)
 ----------------------------------------------------------

@@ -7,8 +7,10 @@ coding agent makes it. Every AGENTS.md points here, and the developer guide
 ## Breaking changes and deprecations
 
 People run PySPEDAS from scripts, notebooks, tutorials and processing software
-that we never see. A change that breaks their previously correct code has to be
-phased in, so they have time to adapt.
+that we never see. A change that breaks their previously correct use of a
+released, stable API has to be phased in, so they have time to adapt. Release
+status and experimental designations determine whether that protection applies;
+merging a feature into master does not by itself make it a released API.
 
 ### What counts
 
@@ -34,12 +36,75 @@ These are not covered:
 If it isn't clear whether a change is covered, consult the developer team
 before going ahead. A coding agent asks the human it works for.
 
+### Released, unreleased and experimental APIs
+
+For this policy, a feature is released when it has appeared in a PySPEDAS
+release published to production PyPI (`pypi.org`). Presence on master, another
+branch, a GitHub tag or TestPyPI is not sufficient.
+
+| API status | Deprecation requirements |
+| --- | --- |
+| New API not yet included in a production PyPI release | Experimental by default; may change or be removed without the standard deprecation period. |
+| Released API explicitly marked experimental before its first production PyPI release | May change or be removed between releases without the standard deprecation period or a major release. |
+| Released API without an experimental designation | Standard deprecation requirements apply. |
+
+Apply this distinction to the specific routine, parameter, configuration
+setting or optional behavior being changed. Changing a previously released
+stable API on master does not make its existing contract experimental again.
+Only its unreleased additions are exempt. A released stable API cannot be
+reclassified as experimental to bypass deprecation requirements.
+
+Before requiring a transition, establish whether the affected API has appeared
+in a production PyPI release and whether it was marked experimental there.
+Check published distributions and release records rather than inferring release
+status from master or a Git tag alone. If the status or scope remains unclear,
+ask a maintainer. A coding agent asks the human it works for.
+
+#### Explicitly marking experimental features
+
+A feature may remain experimental after release, but that designation must be
+visible before its first production PyPI release. Put this standard wording
+near the beginning of its docstring, after the summary and before Parameters:
+
+```python
+def new_feature(data):
+    """Perform the requested analysis.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
+    Parameters
+    ----------
+    data : array-like
+        Input data.
+    """
+```
+
+This wording is readable through `help()` and renders as a warning in Sphinx.
+If only one parameter or behavior is experimental, name it explicitly in the
+warning and its parameter documentation; the remainder of the stable API keeps
+its protection. For settings or features without a function docstring, put an
+equivalent prominent notice in their public reference documentation. Repeat the
+experimental designation and its scope in the user guide and release notes.
+Unreleased features need no explicit label unless they will remain experimental
+when published. Runtime warnings and decorators are not required.
+
+Changes to experimental APIs still need appropriate tests and updated
+documentation. Describe them in the pull request and, when released, the release
+notes, even though a compatibility period is not required. To make an
+experimental feature stable, remove its experimental notices and announce the
+transition in the release notes. Standard deprecation protection starts with
+that production PyPI release, not merely with the change on master.
+
 ### Phasing one in
 
-If a breaking change is necessary, keep the old construct working for a
-transition period of at least several months. Remove it only in a major
-release (for example, PySPEDAS 2.x to 3.0), never before. During the
-transition period:
+If a breaking change to a released, stable API is necessary, keep the old
+construct working for a transition period of at least several months. Remove
+it only in a major release (for example, PySPEDAS 2.x to 3.0), never before.
+During the transition period:
 
 - **Warning.** Every use of the old construct logs a warning with
   `logging.warning`. The message names the deprecated construct and its

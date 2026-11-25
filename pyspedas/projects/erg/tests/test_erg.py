@@ -11,6 +11,11 @@ from pyspedas.projects.erg.satellite.erg.particle.erg_xep_get_dist import erg_xe
 import numpy as np
 import pyspedas
 
+from pyspedas.projects.erg.config import set_attitude_source, set_satellite_source
+
+set_attitude_source('jaxa')
+set_satellite_source('jaxa')
+
 class LoadTestCases(unittest.TestCase):
     def test_load_att_data(self):
         del_data()

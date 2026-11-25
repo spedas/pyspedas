@@ -33,8 +33,11 @@ class Tplot_Map(Basemap):
 
     .. warning::
 
-        Experimental API: ``Tplot_Map``, its plotting methods and ``tplot_map()``
-        have not been finalized. Please share feedback on map creation,
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+        This applies to ``Tplot_Map``, its plotting methods and ``tplot_map()``.
+        Please share feedback on map creation,
         coordinate inputs and plotting options at
         https://github.com/spedas/pyspedas/issues to help shape the stable API.
 
@@ -1705,8 +1708,11 @@ def tplot_map(
 
     .. warning::
 
-        Experimental API: ``Tplot_Map``, its plotting methods and ``tplot_map()``
-        have not been finalized. Please share feedback on map creation,
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+        This applies to ``Tplot_Map``, its plotting methods and ``tplot_map()``.
+        Please share feedback on map creation,
         coordinate inputs and plotting options at
         https://github.com/spedas/pyspedas/issues to help shape the stable API.
 

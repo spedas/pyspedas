@@ -1,13 +1,20 @@
 import logging
 import pandas as pd
 from pyspedas.projects.themis.load import load
-from pyspedas.utilities.download import download
+from pyspedas.utilities.download import download, is_fsspec_uri
 
-from pyspedas.projects.themis.config import CONFIG
+from pyspedas.projects.themis.config import CONFIG, resolve_source
 
 
 # Initialize global variable for gmag_info:
 gmag_info = None
+
+
+def _metadata_source():
+    """Resolve station metadata beneath the shared mission root."""
+    root, _ = resolve_source()
+    return root.rstrip('/') + '/thg/gmags_meta.csv', str(CONFIG['local_data_dir'])
+
 
 class GMAG_Info():
     """This object holds the table of gmag stations and their metadata"""
@@ -15,7 +22,7 @@ class GMAG_Info():
         # Initialize empty table:
         self.table = pd.DataFrame()
         self.no_download = no_download
-        self.source = (CONFIG['gmag_metadata_file'], str(CONFIG['local_data_dir']))
+        self.source = _metadata_source()
         # Load GMAG info:
         self.table = self.get_gmag_info()
         # Note: the final info column should always be "notes"
@@ -35,7 +42,9 @@ class GMAG_Info():
         files = download(remote_file=url,
                          local_path=cache_root,
                          local_file='thg/gmags_meta.csv',
-                         no_download=self.no_download or CONFIG['no_download'])
+                         no_download=self.no_download or CONFIG['no_download'],
+                         # Metadata needs a persistent local copy for offline use.
+                         force_download=is_fsspec_uri(url))
         if not files:
             raise FileNotFoundError(
                 f'THEMIS GMAG metadata unavailable: {url}; '
@@ -115,9 +124,9 @@ def gmag(
     """
     Load ground magnetometer data from the THEMIS mission.
 
-    Variometer files use the separately configured variometer source; other
-    networks use the main source. Station metadata uses ``gmag_metadata_file``
-    and is cached as ``thg/gmags_meta.csv`` beneath ``local_data_dir``. Both
+    All networks, including variometers, use ``remote_data_dir``. Station
+    metadata comes from ``thg/gmags_meta.csv`` beneath that same URL and is
+    cached at the same relative path beneath ``local_data_dir``. Both
     ``no_update`` and the configured ``no_download`` apply to metadata too.
 
     Parameters
@@ -260,7 +269,7 @@ def gmag(
 
 def _init_gmag_info(no_update=False):
     global gmag_info
-    source = (CONFIG['gmag_metadata_file'], str(CONFIG['local_data_dir']))
+    source = _metadata_source()
     if gmag_info is None or gmag_info.source != source:
         gmag_info = GMAG_Info(no_download=no_update)
 

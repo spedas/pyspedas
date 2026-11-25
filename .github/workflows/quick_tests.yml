@@ -233,6 +233,7 @@ jobs:
               run_test "DOI metadata" pyspedas.utilities.tests.test_doi
               run_test "Zenodo draft client" pyspedas.utilities.tests.test_zenodo_draft
               run_test "utilities download" pyspedas.utilities.tests.test_utilities_download
+              run_test "latest file per identity" pyspedas.utilities.tests.test_last_version_per_identity
               run_test "utilities misc" pyspedas.utilities.tests.test_utilities_misc
               run_test "user preferences" pyspedas.utilities.tests.test_preferences
               run_test "utilities URI" pyspedas.utilities.tests.test_utilities_download_uri

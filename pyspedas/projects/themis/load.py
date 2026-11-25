@@ -85,7 +85,6 @@ def load(trange=['2013-11-5', '2013-11-6'],
             remote_data_dir = CONFIG['ssc_remote_data_dir']
         else:
             remote_data_dir, remote_data_layout = resolve_source()
-        station_sources = None
 
         if instrument == 'ask':
             if stations is None:
@@ -202,16 +201,10 @@ def load(trange=['2013-11-5', '2013-11-6'],
                 return
             else:
                 pathformat = []
-                station_sources = []
                 for ccode,g_group in zip(stations,gmag_group):
                     ccode_clean = ccode
                     if "_" in ccode:
                         ccode_clean = (ccode.split("_"))[0]
-                    # One request can mix variometers with other networks.
-                    station_url = remote_data_dir
-                    if g_group == 'variom' and ccode != 'idx':
-                        station_url, _ = resolve_source('variometer')
-                    station_sources.append(station_url)
                     if ccode == 'idx':
                         # THEMIS GMAG index files are only L1
                         pathformat.append('thg/l1/mag/idx/%Y/thg_l1_idx_%Y%m%d_v??.cdf')
@@ -231,8 +224,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
         if not isinstance(pathformat, list):
             pathformat = [pathformat]
 
-        for index, file_format in enumerate(pathformat):
-            file_source = remote_data_dir if station_sources is None else station_sources[index]
+        for file_format in pathformat:
             if version is not None:
                 file_format = file_format.replace('_v??', '_' + version)
 
@@ -240,7 +232,7 @@ def load(trange=['2013-11-5', '2013-11-6'],
             remote_names = dailynames(file_format=file_format, trange=trange, res=file_resolution)
 
             files = download(remote_file=remote_names,
-                             remote_path=file_source.rstrip('/') + '/',
+                             remote_path=remote_data_dir.rstrip('/') + '/',
                              local_path=CONFIG['local_data_dir'],
                              no_download=no_update or CONFIG["no_download"],
                              last_version=version is None and not fixed_version,

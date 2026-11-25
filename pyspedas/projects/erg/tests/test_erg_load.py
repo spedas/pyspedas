@@ -248,7 +248,8 @@ class LoadRoutingTests(unittest.TestCase):
     def test_invalid_source_configuration(self):
         with self.assertRaisesRegex(ValueError, 'Unknown ERG data family'):
             resolve_source('unknown')
-        for family, layout in [('satellite', 'typo'), ('att', 'heliocloud'), ('ground', 'spdf')]:
+        for family, layout in [('satellite', 'typo'), ('att', 'heliocloud'), ('ground', 'spdf'),
+                               ('satellite', 'jaxa'), ('att', 'jaxa')]:
             with self.subTest(family=family), patch.dict(CONFIG, {family + '_remote_data_layout': layout}), patch.object(load_module, 'download') as download:
                 with self.assertRaisesRegex(ValueError, 'Unsupported ERG'):
                     resolve_source(family)
@@ -335,6 +336,122 @@ class LoadRoutingTests(unittest.TestCase):
             config = runpy.run_path(str(config_file))['CONFIG']
             for key, value in values.items():
                 self.assertEqual(config[key], value)
+
+
+
+
+class SourceSwitcherTests(unittest.TestCase):
+    def setUp(self):
+        self.config = importlib.import_module('pyspedas.projects.erg.config')
+        config_patch = patch.dict(self.config.CONFIG)
+        config_patch.start()
+        self.addCleanup(config_patch.stop)
+        self.families = [
+            ('satellite', self.config.SATELLITE_SOURCES),
+            ('attitude', self.config.ATTITUDE_SOURCES),
+            ('ground', self.config.GROUND_SOURCES),
+        ]
+
+    def test_presets_update_only_their_family_and_log_settings(self):
+        with patch('pyspedas.preferences.save_preferences', side_effect=AssertionError('Unexpected preference write')), patch(
+                'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            for family, table in self.families:
+                for tag, settings in table.items():
+                    with self.subTest(family=family, tag=tag):
+                        before = self.config.CONFIG.copy()
+                        with self.assertLogs(level='INFO') as logs:
+                            getattr(self.config, 'set_' + family + '_source')(tag)
+                        expected = before.copy()
+                        expected.update(settings)
+                        self.assertEqual(self.config.CONFIG, expected)
+                        self.assertEqual(getattr(self.config, 'get_' + family + '_source')(), tag)
+                        self.assertEqual(len(logs.output), 1)
+                        self.assertIn(tag, logs.output[0])
+                        for value in settings.values():
+                            self.assertIn(value, logs.output[0])
+
+    def test_invalid_tags_leave_entire_configuration_unchanged(self):
+        for family, table in self.families:
+            invalid = ['unknown', 'SPDF', '', None, [], {}]
+            invalid += [tag for tag in ('ergsc', 'jaxa', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
+                        if tag not in table]
+            for tag in invalid:
+                with self.subTest(family=family, tag=tag):
+                    before = self.config.CONFIG.copy()
+                    with self.assertRaises(ValueError) as error:
+                        getattr(self.config, 'set_' + family + '_source')(tag)
+                    self.assertIn('valid choices: ' + ', '.join(sorted(table)), str(error.exception))
+                    self.assertEqual(self.config.CONFIG, before)
+
+    def test_getters_follow_direct_edits_and_recognize_custom_settings(self):
+        for family, table in self.families:
+            getter = getattr(self.config, 'get_' + family + '_source')
+            for tag, settings in table.items():
+                with self.subTest(family=family, tag=tag):
+                    self.config.CONFIG.update(settings)
+                    self.assertEqual(getter(), tag)
+                    for key in settings:
+                        self.config.CONFIG[key] = 'custom-setting'
+                        self.assertIsNone(getter())
+                        self.config.CONFIG.update(settings)
+                    key = next(iter(settings))
+                    del self.config.CONFIG[key]
+                    self.assertIsNone(getter())
+                    self.config.CONFIG.update(settings)
+
+    def test_mixed_presets_route_existing_loaders(self):
+        self.config.set_satellite_source('heliocloud')
+        self.config.set_attitude_source('spdf')
+        self.config.set_ground_source('ergsc')
+        cases = [
+            (pyspedas.projects.erg.mepe, {'ror': False},
+             's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/erg/', 'mepe/l2/omniflux/2017/'),
+            (pyspedas.projects.erg.att, {},
+             'https://spdf.gsfc.nasa.gov/pub/data/arase/', 'att/txt/'),
+            (pyspedas.projects.erg.gmag_isee_fluxgate, {'site': 'ktb', 'datatype': '1min', 'ror': False},
+             'https://ergsc.isee.nagoya-u.ac.jp/data/ergsc/ground/', 'geomag/'),
+        ]
+        for wrapper, kwargs, url, directory in cases:
+            with self.subTest(wrapper=wrapper.__name__), patch.object(load_module, 'download', return_value=[]) as download:
+                wrapper(downloadonly=True, **kwargs)
+                self.assertEqual(download.call_args.kwargs['remote_path'], url)
+                self.assertTrue(download.call_args.kwargs['remote_file'][0].startswith(directory))
+
+    def test_jaxa_presets_route_satellite_and_attitude_with_ergsc_layout(self):
+        self.config.set_satellite_source('jaxa')
+        self.config.set_attitude_source('jaxa')
+        url = 'https://data.darts.isas.jaxa.jp/pub/erg/'
+        for family in ('satellite', 'att'):
+            self.assertEqual(self.config.resolve_source(family), {
+                'remote_data_dir': url, 'remote_data_layout': 'ergsc'})
+        cases = [
+            (pyspedas.projects.erg.mepe, {'ror': False},
+             'mepe/l2/omniflux/2017/03/erg_mepe_l2_omniflux_20170327_', 'v01_02'),
+            (pyspedas.projects.erg.att, {}, 'att/txt/erg_att_l2_20170327_', 'v03'),
+        ]
+        for wrapper, kwargs, filename_prefix, version in cases:
+            for selected in (None, version):
+                with self.subTest(wrapper=wrapper.__name__, version=selected), patch.object(
+                        load_module, 'download', return_value=[]) as download:
+                    wrapper(trange=['2017-03-27', '2017-03-28'], downloadonly=True,
+                            version=selected, **kwargs)
+                    self.assertTrue(download.called)
+                    for call in download.call_args_list:
+                        self.assertEqual(call.kwargs['remote_path'], url)
+                        self.assertEqual(call.kwargs['last_version'], selected is None)
+                        self.assertTrue(all(name.startswith(filename_prefix)
+                                            for name in call.kwargs['remote_file']))
+                        if selected is not None:
+                            self.assertTrue(all('_' + selected + '.' in name
+                                                for name in call.kwargs['remote_file']))
+
+    def test_defaults_are_still_recognized(self):
+        config_file = Path(self.config.__file__)
+        with patch.dict(os.environ, {}, clear=True), patch('pyspedas.preferences.apply_mission_preferences'):
+            defaults = runpy.run_path(str(config_file))
+        self.assertEqual(defaults['get_satellite_source'](), 'ergsc')
+        self.assertEqual(defaults['get_attitude_source'](), 'ergsc')
+        self.assertEqual(defaults['get_ground_source'](), 'ergsc')
 
 
 if __name__ == '__main__':

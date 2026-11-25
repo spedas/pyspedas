@@ -3,9 +3,9 @@
 This file is the inventory for the manually selected tests in
 `.github/workflows/quick_tests.yml`.
 
-- Active tests: 70
+- Active tests: 71
 - Commented tests: 2
-- Total listed test entries: 72
+- Total listed test entries: 73
 
 The commented entries are included so that any future split or cleanup can be
 checked against the complete list in the workflow. They are not currently
@@ -85,6 +85,7 @@ executed.
 | 70 | Active | `pyspedas.projects.themis.tests.test_themis_scpot2dens` |
 | 71 | Active | `pyspedas.projects.mms.tests.test_mms_sources` |
 | 72 | Active | `pyspedas.projects.mms.tests.test_mms_remove_old_files` |
+| 73 | Active | `pyspedas.utilities.tests.test_last_version_per_identity` |
 
 ## Validation rule
 
@@ -101,7 +102,7 @@ boundary. The inventory IDs below refer to the table above.
 
 | Group | Purpose | Inventory entries | Count |
 |---|---|---|---:|
-| `utilities` | Shared utilities, downloads, preferences, and interpolation helpers | 1, 5, 6, 20-26, 34, 35, 51, 52 | 14 |
+| `utilities` | Shared utilities, downloads, preferences, and interpolation helpers | 1, 5, 6, 20-26, 34, 35, 51, 52, 73 | 15 |
 | `tplot` | tplot wildcard, plotting, and tplot-XY behavior | 27-33 | 7 |
 | `cotrans` | Coordinate transformation routines | 15, 36-39 | 5 |
 | `analysis` | General analysis, wave polarization, and wavelet routines | 50, 53-54 | 3 |
@@ -114,7 +115,7 @@ boundary. The inventory IDs below refer to the table above.
 | `missions-spdf` | Mission loaders documented as using SPDF, excluding separately grouped PSP and RBSP coverage | 7, 10-14, 16-17, 19, 40-42, 46-49, 55-56, 59-60 | 20 |
 | `missions-non-spdf` | Mission loaders using non-SPDF sources | 18, 45, 61-62 | 4 |
 
-Total active tests assigned: **70**.
+Total active tests assigned: **71**.
 
 `pyspedas.projects.mms.tests.test_mms_perigee` runs in full coverage only: it
 loads real MEC positions and can contact the configured data source when the

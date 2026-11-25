@@ -2,6 +2,8 @@ import numpy as np
 import pyspedas
 from pyspedas import mms_load_fpi
 import unittest
+from tempfile import TemporaryDirectory
+from unittest.mock import patch
 from numpy.testing import assert_allclose
 
 from pyspedas.tplot_tools import data_exists, get_data, tplot, tplot_names
@@ -10,11 +12,57 @@ from pyspedas.projects.mms.fpi_tools.mms_fpi_ang_ang import mms_fpi_ang_ang
 from pyspedas.projects.mms.fpi_tools.mms_get_fpi_dist import mms_get_fpi_dist
 from pyspedas.projects.mms.fpi_tools.mms_pad_fpi import mms_pad_fpi
 from pyspedas.projects.mms import mms_part_getspec
+from pyspedas.projects.mms.config import CONFIG, set_data_source
 
 global_display=False
 
 
 class FPITestCases(unittest.TestCase):
+    def test_hpca_burst_file_count_spdf_vs_heliocloud(self):
+        """Issue #1582: S3 must retain files with different timestamps/versions."""
+        trange = ['2024-05-11/14:40:40', '2024-05-11/14:46:40']
+        file_counts = {}
+        # Restore the complete configuration, including custom source settings,
+        # even when the regression assertion fails. Download-only mode returns
+        # file paths rather than tplot variable names and avoids plot side effects.
+        with patch.dict(CONFIG, download_only=True, no_download=False, mirror_data_dir=None):
+            for source in ('spdf', 'heliocloud'):
+                # Separate empty caches ensure one source cannot reuse the
+                # other source's files and mask missing S3 wildcard matches.
+                with TemporaryDirectory(prefix='mms_hpca_' + source + '_') as cache:
+                    CONFIG['local_data_dir'] = cache
+                    set_data_source(source)
+                    files = pyspedas.projects.mms.hpca(
+                        probe='2', trange=trange, data_rate='brst', level='l2',
+                        datatype='moments', time_clip=True,
+                    )
+                    self.assertTrue(files, f'{source} returned no HPCA burst files')
+                    file_counts[source] = len(files)
+            self.assertEqual(
+                file_counts['spdf'], file_counts['heliocloud'],
+                f"HPCA burst file counts differ: SPDF={file_counts['spdf']}, "
+                f"heliocloud={file_counts['heliocloud']}",
+            )
+
+    def test_edp_burst_versions_spdf_vs_heliocloud(self):
+        """Issue #1582: retain each burst timestamp, but only its last version."""
+        trange = ['2024-05-11/14:40:40', '2024-05-11/14:46:40']
+        identities = {}
+        with patch.dict(CONFIG, download_only=True, no_download=False, mirror_data_dir=None):
+            for source in ('spdf', 'heliocloud'):
+                with TemporaryDirectory(prefix='mms_edp_' + source + '_') as cache:
+                    CONFIG['local_data_dir'] = cache
+                    set_data_source(source)
+                    files = pyspedas.projects.mms.edp(
+                        probe='2', trange=trange, data_rate='brst', level='l2',
+                        datatype='scpot', time_clip=True,
+                    )
+                    self.assertTrue(files, f'{source} returned no EDP burst files')
+                    names = [name.rsplit('/', 1)[-1].rsplit('_v', 1)[0] for name in files]
+                    self.assertEqual(len(names), len(set(names)), f'{source} returned multiple versions per identity')
+                    identities[source] = sorted(names)
+            self.assertEqual(identities['spdf'], identities['heliocloud'])
+
     def test_load_default_data(self):
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'], available=True)
         data = mms_load_fpi(trange=['2015-10-16/14:00', '2015-10-16/15:00'])

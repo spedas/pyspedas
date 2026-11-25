@@ -1697,6 +1697,10 @@
           "kind": "file"
         },
         {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
           "path": "RULES.md",
           "kind": "file"
         }
@@ -2462,6 +2466,14 @@
         },
         {
           "path": "pyspedas/projects/mms/tests/test_mms_sources.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_fpi.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/last_version_per_identity.py",
           "kind": "file"
         },
         {
@@ -4440,6 +4452,18 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/utilities/last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_last_version_per_identity.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/utilities/tests/test_utilities_download.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/utilities/download_ftp.py",
           "kind": "file"
         },
@@ -4569,6 +4593,14 @@
         },
         {
           "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
+          "path": "docs/source/utilities.rst",
           "kind": "file"
         },
         {

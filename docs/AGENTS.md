@@ -77,6 +77,18 @@ this pattern. Keep repeated examples synchronized with their docstrings and
 ensure any plot image matches the example it illustrates. Sphinx includes these
 static images; it does not regenerate the plots from those code blocks.
 
+## API stability notices
+
+Follow RULES.md's production-PyPI release boundary: unreleased additions are
+experimental by default; stable released contracts remain protected. Features
+that will remain experimental after release need the standard "Experimental API"
+`.. warning::` near the beginning of their docstring (or a prominent public
+reference notice for settings), plus matching user-guide and release-note labels.
+Name the exact experimental routine, parameter or behavior; do not imply that a
+stable surrounding API is experimental. Keep these labels consistent when the
+API changes or becomes stable. No runtime warning or decorator is required.
+`docs/source/devguide.rst` explains the statuses, standard wording and transition.
+
 ## Developer and contributor guidance
 
 `docs/source/devguide.rst` holds the detailed human development process.

@@ -6,7 +6,7 @@ from pathlib import Path
 import runpy
 import unittest
 from tempfile import TemporaryDirectory
-from unittest.mock import Mock, patch
+from unittest.mock import MagicMock, Mock, patch
 
 from pyspedas.projects.themis.load import load
 
@@ -231,10 +231,7 @@ class TestThemisSources(unittest.TestCase):
         config = patch.dict(self.load_module.CONFIG, {
             'remote_data_dir': 's3://science/themis/',
             'remote_data_layout': 'spdf',
-            'variometer_remote_data_dir': 'https://variometers.example/themis/',
-            'variometer_remote_data_layout': 'themis',
             'ssc_remote_data_dir': 'https://orbits.example/themis/',
-            'gmag_metadata_file': 'https://metadata.example/stations.csv',
             'local_data_dir': self.cache.name,
             'no_download': False,
         })
@@ -304,9 +301,9 @@ class TestThemisSources(unittest.TestCase):
                 calls = [call.kwargs for call in download.call_args_list]
                 self.assertEqual(len(calls), 5)
                 self.assertEqual([call['remote_path'] for call in calls], [
-                    's3://science/themis/', 'https://variometers.example/themis/',
                     's3://science/themis/', 's3://science/themis/',
-                    'https://variometers.example/themis/'])
+                    's3://science/themis/', 's3://science/themis/',
+                    's3://science/themis/'])
                 self.assertIn('/variometers/s61a/', calls[1]['remote_file'][0])
                 self.assertIn('_s61a_100ms_', calls[1]['remote_file'][0])
                 self.assertIn('/greenland_gmag/', calls[2]['remote_file'][0])
@@ -319,10 +316,11 @@ class TestThemisSources(unittest.TestCase):
             info = self.gmag_module.GMAG_Info()
         self.assertIn('atha', info.station_codes)
         self.assertEqual(download.call_args.kwargs, {
-            'remote_file': 'https://metadata.example/stations.csv',
+            'remote_file': 's3://science/themis/thg/gmags_meta.csv',
             'local_file': 'thg/gmags_meta.csv',
             'local_path': self.cache.name,
             'no_download': False,
+            'force_download': True,
         })
 
     def test_metadata_cache_refreshes_for_source_or_cache_root(self):
@@ -332,21 +330,40 @@ class TestThemisSources(unittest.TestCase):
             first = self.gmag_module.gmag_info
             self.gmag_module._init_gmag_info()
             self.assertEqual(download.call_count, 1)
-            # Changing only the science server does not invalidate metadata.
-            with patch.dict(self.load_module.CONFIG, remote_data_dir='https://science.example/'):
-                self.gmag_module._init_gmag_info()
-                self.assertIs(self.gmag_module.gmag_info, first)
             file = self.metadata_file(station='BETT')
-            with patch.dict(self.load_module.CONFIG, gmag_metadata_file='https://other.example/meta.csv'):
+            with patch.dict(self.load_module.CONFIG, remote_data_dir='https://other.example/themis/'):
                 self.gmag_module._init_gmag_info()
                 self.assertIsNot(self.gmag_module.gmag_info, first)
                 self.assertIn('bett', self.gmag_module.gmag_info.station_codes)
                 self.assertEqual(download.call_count, 2)
+                self.assertEqual(download.call_args.kwargs['remote_file'],
+                                 'https://other.example/themis/thg/gmags_meta.csv')
+                self.assertFalse(download.call_args.kwargs['force_download'])
                 with TemporaryDirectory() as other_cache, patch.dict(
                         self.load_module.CONFIG, local_data_dir=other_cache):
                     self.gmag_module._init_gmag_info()
                     self.assertEqual(download.call_count, 3)
                     self.assertEqual(download.call_args.kwargs['local_path'], other_cache)
+
+    def test_s3_metadata_is_cached_and_read_offline(self):
+        from datetime import datetime, timezone
+        fixture = self.metadata_file().read_bytes()
+        destination = Path(self.cache.name) / 'thg/gmags_meta.csv'
+        destination.unlink()
+        fs = Mock()
+        fs.info.return_value = {'LastModified': datetime.now(timezone.utc)}
+        fs.get.side_effect = lambda url, filename: Path(filename).write_bytes(fixture)
+        context = MagicMock()
+        context.__enter__.return_value = fs
+        with patch('pyspedas.utilities.download._managed_filesystem', return_value=context):
+            info = self.gmag_module.GMAG_Info()
+        self.assertIn('atha', info.station_codes)
+        fs.get.assert_called_once_with('s3://science/themis/thg/gmags_meta.csv', str(destination))
+        self.assertTrue(destination.is_file())
+        with patch('requests.Session.request', side_effect=AssertionError('Unexpected HTTP')), patch(
+                'pyspedas.utilities.download._managed_filesystem', side_effect=AssertionError('Unexpected S3')):
+            cached = self.gmag_module.GMAG_Info(no_download=True)
+        self.assertIn('atha', cached.station_codes)
 
     def test_missing_offline_metadata_fails_without_network(self):
         with patch('requests.Session.request', side_effect=AssertionError('Unexpected network request')):
@@ -372,9 +389,7 @@ class TestThemisSources(unittest.TestCase):
         from pyspedas import preferences
         config_file = Path(self.load_module.__file__).with_name('config.py')
         values = {key: value for key, value in self.load_module.CONFIG.items()
-                  if key in ('remote_data_dir', 'remote_data_layout',
-                             'variometer_remote_data_dir', 'variometer_remote_data_layout',
-                             'gmag_metadata_file', 'ssc_remote_data_dir')}
+                  if key in ('remote_data_dir', 'remote_data_layout', 'ssc_remote_data_dir')}
         with patch.dict(os.environ, {
                 'PYSPEDAS_CONFIG_FILE': str(Path(self.cache.name) / 'preferences.toml')}, clear=True):
             self.addCleanup(preferences._read_file.cache_clear)
@@ -390,12 +405,128 @@ class TestThemisSources(unittest.TestCase):
                     self.assertEqual(config[key], value)
 
     def test_invalid_layouts_fail_before_downloading(self):
-        for family, key in [('data', 'remote_data_layout'),
-                            ('variometer', 'variometer_remote_data_layout')]:
-            with self.subTest(family=family), patch.dict(
-                    self.load_module.CONFIG, {key: 'heliocloud'}):
-                with self.assertRaisesRegex(ValueError, 'Unsupported THEMIS'):
-                    self.load_module.resolve_source(family)
+        with patch.dict(self.load_module.CONFIG, remote_data_layout='heliocloud'):
+            with self.assertRaisesRegex(ValueError, 'Unsupported THEMIS'):
+                self.load_module.resolve_source()
+
+
+
+
+
+class SourceSwitcherTests(unittest.TestCase):
+    def setUp(self):
+        self.config = importlib.import_module('pyspedas.projects.themis.config')
+        config_patch = patch.dict(self.config.CONFIG)
+        config_patch.start()
+        self.addCleanup(config_patch.stop)
+        self.families = [
+            ('data', self.config.DATA_SOURCES),
+            ('ssc', self.config.SSC_SOURCES),
+        ]
+
+    def test_presets_update_only_their_family_and_log_settings(self):
+        with patch('pyspedas.preferences.save_preferences', side_effect=AssertionError('Unexpected preference write')), patch(
+                'requests.Session.request', side_effect=AssertionError('Unexpected network request')):
+            for family, table in self.families:
+                for tag, settings in table.items():
+                    with self.subTest(family=family, tag=tag):
+                        before = self.config.CONFIG.copy()
+                        with self.assertLogs(level='INFO') as logs:
+                            getattr(self.config, 'set_' + family + '_source')(tag)
+                        expected = before.copy()
+                        expected.update(settings)
+                        self.assertEqual(self.config.CONFIG, expected)
+                        self.assertEqual(getattr(self.config, 'get_' + family + '_source')(), tag)
+                        self.assertEqual(len(logs.output), 1)
+                        self.assertIn(tag, logs.output[0])
+                        for value in settings.values():
+                            self.assertIn(value, logs.output[0])
+
+    def test_invalid_tags_leave_entire_configuration_unchanged(self):
+        for family, table in self.families:
+            invalid = ['unknown', 'SPDF', '', None, [], {}]
+            invalid += [tag for tag in ('ergsc', 'berkeley', 'ucla', 'sdc', 'spdf', 'heliocloud')
+                        if tag not in table]
+            for tag in invalid:
+                with self.subTest(family=family, tag=tag):
+                    before = self.config.CONFIG.copy()
+                    with self.assertRaises(ValueError) as error:
+                        getattr(self.config, 'set_' + family + '_source')(tag)
+                    self.assertIn('valid choices: ' + ', '.join(sorted(table)), str(error.exception))
+                    self.assertEqual(self.config.CONFIG, before)
+
+    def test_getters_follow_direct_edits_and_recognize_custom_settings(self):
+        for family, table in self.families:
+            getter = getattr(self.config, 'get_' + family + '_source')
+            for tag, settings in table.items():
+                with self.subTest(family=family, tag=tag):
+                    self.config.CONFIG.update(settings)
+                    self.assertEqual(getter(), tag)
+                    for key in settings:
+                        self.config.CONFIG[key] = 'custom-setting'
+                        self.assertIsNone(getter())
+                        self.config.CONFIG.update(settings)
+                    key = next(iter(settings))
+                    del self.config.CONFIG[key]
+                    self.assertIsNone(getter())
+                    self.config.CONFIG.update(settings)
+
+    def test_presets_select_state_paths_without_hostname_inference(self):
+        load_module = importlib.import_module(LOAD_MODULE)
+        cases = [
+            ('berkeley', 'https://themis.ssl.berkeley.edu/data/themis/', ''),
+            ('ucla', 'https://themis-data.igpp.ucla.edu/', ''),
+            ('spdf', 'https://spdf.gsfc.nasa.gov/pub/data/themis/', '_v??'),
+            ('heliocloud', 's3://gov-nasa-hdrl-data1/spdf/cdaweb/data/themis/', '_v??'),
+        ]
+        for tag, url, version in cases:
+            with self.subTest(tag=tag), patch.object(load_module, 'download', return_value=[]) as download:
+                self.config.set_data_source(tag)
+                load(instrument='state', level='l1', trange=TRANGE, downloadonly=True)
+                self.assertEqual(download.call_args.kwargs['remote_path'], url)
+                self.assertTrue(download.call_args.kwargs['remote_file'][0].endswith(version + '.cdf'))
+                self.assertTrue(download.call_args.kwargs['last_version'])
+
+    def test_each_data_preset_controls_all_gmag_networks_and_metadata(self):
+        gmag = importlib.import_module('pyspedas.projects.themis.ground.gmag')
+        load_module = importlib.import_module(LOAD_MODULE)
+        for tag, settings in self.config.DATA_SOURCES.items():
+            with self.subTest(tag=tag), patch.object(load_module, 'download', return_value=[]) as download:
+                self.config.set_data_source(tag)
+                root = settings['remote_data_dir']
+                self.assertEqual(gmag._metadata_source(),
+                                 (root + 'thg/gmags_meta.csv', str(self.config.CONFIG['local_data_dir'])))
+                load(instrument='gmag', stations=['atha', 's61a_100ms', 'upn', 'idx'],
+                     gmag_group=['carisma', 'variom', 'greenland', 'all'],
+                     trange=TRANGE, downloadonly=True)
+                self.assertEqual(len(download.call_args_list), 4)
+                self.assertTrue(all(call.kwargs['remote_path'] == root for call in download.call_args_list))
+                old = Mock(source=('https://old.example/thg/gmags_meta.csv',
+                                   str(self.config.CONFIG['local_data_dir'])))
+                with patch.object(gmag, 'gmag_info', old), patch.object(gmag, 'GMAG_Info') as create:
+                    gmag._init_gmag_info()
+                    create.assert_called_once_with(no_download=False)
+
+    def test_main_and_ssc_sources_are_independent(self):
+        self.config.CONFIG['ssc_remote_data_dir'] = 'https://custom.example/orbits/'
+        for tag in self.config.DATA_SOURCES:
+            self.config.set_data_source(tag)
+            self.assertEqual(self.config.CONFIG['ssc_remote_data_dir'], 'https://custom.example/orbits/')
+        before = self.config.resolve_source()
+        self.config.set_ssc_source('spdf')
+        self.assertEqual(self.config.resolve_source(), before)
+
+    def test_defaults_and_ssc_endpoint(self):
+        with patch.dict(os.environ, {}, clear=True), patch('pyspedas.preferences.apply_mission_preferences'):
+            defaults = runpy.run_path(self.config.__file__)
+        self.assertEqual(defaults['get_data_source'](), 'berkeley')
+        self.assertEqual(defaults['get_ssc_source'](), 'spdf')
+        self.config.set_ssc_source('spdf')
+        load_module = importlib.import_module(LOAD_MODULE)
+        with patch.object(load_module, 'download', return_value=[]) as download:
+            load(instrument='ssc', trange=TRANGE, downloadonly=True)
+        self.assertEqual(download.call_args.kwargs['remote_path'],
+                         'https://cdaweb.gsfc.nasa.gov/pub/data/themis/')
 
 
 if __name__ == '__main__':
