@@ -5,6 +5,15 @@ the ERG Science Center: https://ergsc.isee.nagoya-u.jp
 
 Data sources and caching
 ------------------------
+
+.. warning::
+
+   **Experimental source-routing API.** The configuration interface for selecting
+   data sources and layouts is experimental and has not been finalized. Please
+   share feedback on configuration names, source selection and cache behavior
+   through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
 Satellite science, ASCII attitude, and ground data use independent configuration
 pairs: ``satellite_remote_data_dir`` / ``satellite_remote_data_layout``,
 ``att_remote_data_dir`` / ``att_remote_data_layout``, and

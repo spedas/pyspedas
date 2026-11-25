@@ -1,3 +1,10 @@
+"""MMS data sources and cache configuration.
+
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+"""
 import os
 
 CONFIG = {'local_data_dir': 'pydata',

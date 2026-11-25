@@ -26,6 +26,11 @@ related_files:
   - pyspedas/projects/mms/databar_tools/spd_mms_load_bss.py
   - pyspedas/projects/mms/deprecated/mms_load_fast_segments.py
   - pyspedas/projects/mms/mms_orbit_plot.py
+  - pyspedas/projects/mms/mms_find_perigee_times.py
+  - pyspedas/projects/mms/tests/test_mms_perigee.py
+  - pyspedas/projects/mms/tests/test_mms_remove_old_files.py
+  - .github/workflows/quick_tests.yml
+  - .github/workflows/full_coverage.yml
   - pyspedas/projects/mms/mms_events.py
   - pyspedas/projects/mms/print_vars.py
   - pyspedas/projects/mms/mms_python_startup.py
@@ -67,9 +72,17 @@ SDC API or archive implementation for archive-capable products.
 - `databar_tools/`: burst, fast and SROI segment bars and `spd_mms_load_bss`.
 - `cotrans/`: `mms_qcotrans` (uses MEC quaternions), `mms_cotrans_lmn` and helpers.
 - `plots/`, `mms_orbit_plot.py`, `mms_events.py`: overview and orbit plots, burst event text.
+- `mms_find_perigee_times.py`: finds perigees bracketing an input time using
+  survey L2 `epht89d` MEC ECI positions. Returns two Unix times, or None if
+  both perigees cannot be found.
+- `mms_remove_old_files.py`: previews obsolete local cache files by default;
+  deletion with `dry_run=False` requires SDC checks before removing files.
 - `deprecated/`: `mms_load_fast_segments` only logs an error and returns None. Skip it.
 
 ## How `mms_load_fgm()` loads data
+
+The source-routing configuration API is experimental; its interface is being
+evaluated with user feedback before it is finalized (see `config.py`).
 
 `fgm_tools/fgm.py` calls `mms_load_data(instrument='fgm', ...)` and then post-processes
 (flag removal, splitting, metadata). `mms_load_data()`:
@@ -137,3 +150,8 @@ never trigger a switch to SDC. The archive URL names a mission root containing
 `tests/test_mms_sources.py` tests routing, SDC-only services, configurable URLs,
 archive options, real cached CDFs, authentication and preferences without network
 access; it is registered in quick_tests and full_coverage.
+`tests/test_mms_remove_old_files.py` also uses mocked responses and temporary
+local fixtures and runs in both workflows. `tests/test_mms_perigee.py` uses real
+MEC data and runs only in `.github/workflows/full_coverage.yml`, since it can
+contact the configured data source when data are not cached.
+The offline source and cleanup tests are registered in `.github/workflows/quick_tests.yml`.

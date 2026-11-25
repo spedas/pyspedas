@@ -1,5 +1,10 @@
 """THEMIS sources: explicit data layouts and independent support-data URLs.
 
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+
 All source settings accept stored preferences and matching THM_* environment
 variables. Changing remote_data_dir does not change metadata, variometer, or SSC
 sources. Each resource uses its configured source without automatic fallback.

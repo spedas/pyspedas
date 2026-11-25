@@ -134,6 +134,10 @@
           "kind": "file"
         },
         {
+          "path": ".github/workflows/quick_tests_inventory.md",
+          "kind": "file"
+        },
+        {
           "path": ".github/scripts/install_quick_test_dependencies.py",
           "kind": "file"
         },
@@ -482,6 +486,14 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/cotrans_tools/cartesian2geodeticpolar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/geodetic_correction.py",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/cotrans_tools/spc2cart.py",
           "kind": "file"
         },
@@ -723,6 +735,10 @@
         },
         {
           "path": "docs/source/mth5.rst",
+          "kind": "file"
+        },
+        {
+          "path": "RULES.md",
           "kind": "file"
         }
       ]
@@ -2513,6 +2529,26 @@
           "kind": "file"
         },
         {
+          "path": "pyspedas/projects/mms/mms_find_perigee_times.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_perigee.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/projects/mms/tests/test_mms_remove_old_files.py",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/quick_tests.yml",
+          "kind": "file"
+        },
+        {
+          "path": ".github/workflows/full_coverage.yml",
+          "kind": "file"
+        },
+        {
           "path": "pyspedas/projects/mms/mms_events.py",
           "kind": "file"
         },
@@ -4097,6 +4133,18 @@
         },
         {
           "path": "pyspedas/tplot_tools/MPLPlotter/tplot_map.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/tplot_tools/options.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/cartesian2geodeticpolar.py",
+          "kind": "file"
+        },
+        {
+          "path": "pyspedas/cotrans_tools/geodetic_correction.py",
           "kind": "file"
         },
         {

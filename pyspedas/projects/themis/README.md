@@ -4,6 +4,12 @@ The routines in this module can be used to load data from the THEMIS mission.
 
 ### Data sources and layouts
 
+> **Experimental source-routing API.** The configuration interface for selecting
+> data sources and layouts is experimental and has not been finalized. Please
+> share feedback on configuration names, source selection and cache behavior
+> through the [PySPEDAS issue tracker](https://github.com/spedas/pyspedas/issues)
+> to help shape the stable API.
+
 Ordinary satellite and ground data use `remote_data_dir` and
 `remote_data_layout`. The THEMIS server and UCLA mirror
 (`https://themis-data.igpp.ucla.edu/`) use layout `themis`; SPDF and heliocloud

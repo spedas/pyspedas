@@ -54,6 +54,9 @@ particle products.
 
 ## How a loader works
 
+The source-routing configuration API is experimental; its interface is being
+evaluated with user feedback before it is finalized (see `config.py`).
+
 Every loader, satellite or ground, builds its own file path template and calls `load()` in
 `satellite/erg/load.py`. For `mgf()` (`satellite/erg/mgf/mgf.py`) the template is
 `mgf/l2/8sec/%Y/%m/erg_mgf_l2_8sec_%Y%m%d_v??.??.cdf`; ground templates are also

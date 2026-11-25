@@ -31,6 +31,13 @@ class Tplot_Map(Basemap):
     """
     Create maps and add plots using tplot variables.
 
+    .. warning::
+
+        Experimental API: ``Tplot_Map``, its plotting methods and ``tplot_map()``
+        have not been finalized. Please share feedback on map creation,
+        coordinate inputs and plotting options at
+        https://github.com/spedas/pyspedas/issues to help shape the stable API.
+
     The initialization creates the map, and class methods
     are used to add plots. Allows for customization of the
     default map format (see `options_dict` in Parameters and
@@ -1695,6 +1702,13 @@ def tplot_map(
     # TODO: make sure coordinates are interpreted as lon, lat, not the other way around
     """
     Create a Tplot_Map object, with convenient initialization options
+
+    .. warning::
+
+        Experimental API: ``Tplot_Map``, its plotting methods and ``tplot_map()``
+        have not been finalized. Please share feedback on map creation,
+        coordinate inputs and plotting options at
+        https://github.com/spedas/pyspedas/issues to help shape the stable API.
 
     Parameters
     ----------

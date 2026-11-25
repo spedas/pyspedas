@@ -5,6 +5,15 @@ The routines in this module can be used to load data from the Time History of Ev
 
 Data sources and layouts
 ------------------------
+
+.. warning::
+
+   **Experimental source-routing API.** The configuration interface for selecting
+   data sources and layouts is experimental and has not been finalized. Please
+   share feedback on configuration names, source selection and cache behavior
+   through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
 Ordinary satellite and ground data use ``remote_data_dir`` and
 ``remote_data_layout`` in ``pyspedas.projects.themis.config.CONFIG``.
 The THEMIS server and UCLA mirror use ``themis`` layout. SPDF and heliocloud

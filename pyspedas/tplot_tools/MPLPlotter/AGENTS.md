@@ -15,6 +15,9 @@ related_files:
   - pyspedas/tplot_tools/MPLPlotter/tplotxy.py
   - pyspedas/tplot_tools/MPLPlotter/tplotxy3.py
   - pyspedas/tplot_tools/MPLPlotter/tplot_map.py
+  - pyspedas/tplot_tools/options.py
+  - pyspedas/cotrans_tools/cartesian2geodeticpolar.py
+  - pyspedas/cotrans_tools/geodetic_correction.py
   - pyspedas/tplot_tools/MPLPlotter/plot_tests
   - pyspedas/tplot_tools/__init__.py
   - pyspedas/tplot_tools/reduce_spec_dataset.py
@@ -51,7 +54,14 @@ the other modules draw one panel type, orbit plots, or add interactive features.
 - `annotate.py`, `highlight.py`: store text annotations and shaded intervals on a variable; `tplot()` draws them.
 - `ctime.py`: click on a figure to collect times (experimental, backend dependent).
 - `tplotxy.py`, `tplotxy3.py`: orbit-style plots of position variables in one plane or three projections, with `tplotxy3_add_mpause()` and `tplotxy3_add_neutral_sheet()` overlays.
-- `tplot_map.py`: plots tplot variable data onto Basemap maps. It needs the optional `basemap` extra (`pyproject.toml`).
+- `tplot_map.py`: `Tplot_Map` and `tplot_map()` plot tplot variable data onto
+  Basemap maps. This map API, including its plotting methods, is experimental
+  and is being evaluated with user feedback before it is finalized.
+  Install the optional `maps` extra (`pyproject.toml`) with
+  `pip install "pyspedas[maps]"`. Importing the module works without Basemap;
+  constructing `Tplot_Map` then raises an ImportError with installation guidance.
+  Coordinate helpers live in `pyspedas/cotrans_tools/cartesian2geodeticpolar.py`
+  and `pyspedas/cotrans_tools/geodetic_correction.py`.
 - `label_wrap.py`, `_plot_range.py`: small helpers for the `xwrap`/`ywrap` options and inverted axes.
 - `plot_tests/`: unittest modules.
 
@@ -86,13 +96,18 @@ the other modules draw one panel type, orbit plots, or add interactive features.
   `CONFIG['plotting']['plot_directory']` (env `PYSPEDAS_PLOT_DIRECTORY`); an extension is added
   if missing.
 - Times on the axes are `datetime64`/UTC; `ctime()` returns float Unix seconds.
+- `options()` (`pyspedas/tplot_tools/options.py`) stores `x_major_ticks` and
+  `x_minor_tick_interval` in `xaxis_opt`; `tplot()` reads them at draw time.
+  Major tick positions accept UTC strings or Unix timestamps; an empty list
+  hides major ticks. The minor interval is in seconds. `None` restores automatic
+  placement for either option.
 - Colormaps: `extras['colormap']` holds a list. Without it, and without a matplotlib `style`,
   spectrograms use the 'spedas' table built from `pyspedas/tplot_tools/spedas_colorbar.py`.
 
 ## Tests
 
-`plot_tests/` holds a few tests (CI runs `test_wrap_label` and
-`test_grid_background_options`, see `.github/workflows/quick_tests.yml`). Most plotting tests
+`plot_tests/` includes `test_wrap_label`, `test_fill_between` and
+`test_grid_background_options` in quick tests (see `.github/workflows/quick_tests.yml`). Most plotting tests
 are in `pyspedas/utilities/tests/test_utilities_plot.py` and
 `pyspedas/utilities/tests/test_utilities_tplotxy.py`.
 

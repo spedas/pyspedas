@@ -11,6 +11,15 @@ Each of the MMS load routines has a short name, which is just the instrument nam
 
 Data sources
 ------------
+
+.. warning::
+
+   **Experimental source-routing API.** The configuration interface for selecting
+   data sources and layouts is experimental and has not been finalized. Please
+   share feedback on configuration names, source selection and cache behavior
+   through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
 MMS supports ``data_access='sdc'`` (the default) and ``data_access='archive'``
 in ``pyspedas.projects.mms.config.CONFIG``. ``remote_data_dir`` is the archive
 mission root, defaulting to ``https://spdf.gsfc.nasa.gov/pub/data/mms/``.

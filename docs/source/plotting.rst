@@ -167,10 +167,6 @@ It also includes several features that are useful for orbit plots: once the init
 one can add traces for bow shock, magnetopause boundaries, or neutral sheet locations by passing the
 boundary data and the Matplotlib figure object to a helper routine to add the new traces.
 
-The tplot_map routine creates maps or globes which allow tplot variables to be plotted over top them. This enables
-the field line traces and station FOVs to be displayed on an actual map. Requires Basemap to be installed to the 
-Python environment (an optional installation for PySPEDAS users with Python version 3.13 or earlier). 
-
 .. autofunction:: pyspedas.tplotxy
 
 .. autofunction:: pyspedas.tplotxy3
@@ -178,12 +174,6 @@ Python environment (an optional installation for PySPEDAS users with Python vers
 .. autofunction:: pyspedas.tplotxy3_add_mpause
 
 .. autofunction:: pyspedas.tplotxy3_add_neutral_sheet
-
-.. autofunction:: pyspedas.tplot_map
-
-.. autofunction:: pyspedas.convert_coords_to_geod_lonlat_list
-
-.. autoclass:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map
 
 Changing projection ranges after plotting
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -281,6 +271,113 @@ location to the plots.
    :align: center
    :class: imgborder
 
+
+Maps and globes
+---------------
+
+.. warning::
+
+   **Experimental map API.** ``Tplot_Map``, its plotting methods and the
+   ``tplot_map()`` entry point are experimental and have not been finalized.
+   Please share feedback on map creation, coordinate inputs and plotting options
+   through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
+Use ``tplot_map()`` to create a map or globe and return a ``Tplot_Map`` object.
+Its methods add paths, markers and circles around stations, using coordinate
+arrays or tplot position variables. Map plotting requires the optional Basemap
+dependency. Install it with the PySPEDAS ``maps`` extra:
+
+.. code-block:: bash
+
+    pip install "pyspedas[maps]"
+
+Importing PySPEDAS works without Basemap. Creating a map without it raises an
+``ImportError`` with installation instructions.
+
+Creating and decorating a map
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+``view`` selects a preset map center; ``projection`` and other Basemap keyword
+arguments customize the projection. The returned object's ``ax`` and ``fig``
+attributes expose its Matplotlib axes and figure. Map creation defaults to
+``display=False``, so add overlays before calling ``show()``.
+
+This example uses geodetic latitude/longitude pairs in degrees. Unlike the
+``center=(longitude, latitude)`` argument to ``tplot_map()``, the default
+``coord_type="geod_lat_lon"`` for the overlay methods expects latitude first.
+
+.. code-block:: python
+
+    import datetime as dt
+    import numpy as np
+    from pyspedas import tplot_map
+
+    tmap = tplot_map(view="Northern Europe", land_color="lightgray",
+                     water_color="lightblue")
+    stations = np.array([[60.0, 15.0], [65.0, 20.0], [70.0, 25.0]])
+    tmap.add_paths(stations, color="blue", linewidth=2)
+    tmap.add_markers(stations, marker_size=30)
+    tmap.add_nightshade(date=dt.datetime(2026, 1, 1, 12, 0))
+    tmap.show()
+
+``add_caps()`` draws circles around input coordinates, with their size set by
+``fov_angle``. For tplot position variables, pass the variable name and choose
+``coord_type`` to match its data (for example, ``"cart_GEO"`` for GEO Cartesian
+positions). The method reference below describes the supported coordinate
+formats, angle units and styling options.
+
+The map initially draws coastlines, countries, filled continents, a map boundary,
+meridians and parallels. Use ``option_dict`` and ``override_defaults`` to customize
+these initial layers. ``print_map_options()`` displays the current settings.
+
+Map API reference
+^^^^^^^^^^^^^^^^^
+
+.. autofunction:: pyspedas.tplot_map
+
+.. autoclass:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map
+
+.. The class docstring already indexes its method summary. Avoid duplicate
+   index entries when rendering the full method documentation below.
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.show
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.print_map_options
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_coastlines
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_countries
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_fillcontinents
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_mapboundary
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_meridians
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_parallels
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_nightshade
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_paths
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_markers
+   :no-index:
+
+.. automethod:: pyspedas.tplot_tools.MPLPlotter.tplot_map.Tplot_Map.add_caps
+   :no-index:
+
+.. autofunction:: pyspedas.convert_coords_to_geod_lonlat_list
 
 Per-Variable Plot Options
 -------------------------

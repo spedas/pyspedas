@@ -1,5 +1,10 @@
 """ERG data sources and cache configuration.
 
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+
 ``remote_data_dir`` and ``ERG_REMOTE_DATA_DIR`` are deprecated compatibility
 settings for a common ERG-SC root. Use the satellite, att, and ground URL/layout
 pairs instead. Explicit family preferences override the legacy preference;
