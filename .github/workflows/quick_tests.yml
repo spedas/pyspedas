@@ -244,6 +244,7 @@ jobs:
               run_test "utilities libs_tests" pyspedas.utilities.tests.test_utilities_libs
               run_test "tinterpol_mxn" pyspedas.utilities.tests.test_tinterpol_mxn
               run_test "interpolate_rotation" pyspedas.utilities.tests.test_interpolate_rotation
+              run_test "cdf_to_tplot" pyspedas.utilities.tests.test_cdf_to_tplot
           - test-group: tplot
             test-command: |
               run_test "tplot wildcard" pyspedas.utilities.tests.test_utilities_tplot_wildcard

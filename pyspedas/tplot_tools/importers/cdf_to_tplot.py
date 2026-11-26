@@ -432,6 +432,9 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                                 delta_t = np.timedelta64(int(delta_time*1e9),'ns')
 
                         epoch_cache[filename + x_axis_var] = xdata + delta_t
+                        # the variable that fills the cache gets the centered
+                        # times, too, not only the ones read after it (#1584)
+                        xdata = epoch_cache[filename + x_axis_var]
                 else:
                     xdata = epoch_cache[filename + x_axis_var]
 
