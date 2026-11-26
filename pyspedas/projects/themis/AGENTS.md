@@ -66,6 +66,9 @@ wrapper module, and an import in `__init__.py`.
 
 ## Source routing
 
+The source-routing configuration API is experimental; its interface is being
+evaluated with user feedback before it is finalized (see `config.py`).
+
 `config.py` defines explicit `remote_data_layout` (`themis` or `spdf`) alongside
 `remote_data_dir`. THEMIS and UCLA use `themis`; SPDF and heliocloud use `spdf`.
 `resolve_source()` validates the single mission URL/layout pair. Satellite

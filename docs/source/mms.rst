@@ -11,6 +11,17 @@ Each of the MMS load routines has a short name, which is just the instrument nam
 
 Provider shortcuts
 ------------------
+
+.. warning::
+
+   **Experimental source-routing API.** The provider setters/getters and new
+   source-selection configuration interfaces have not been finalized. Their
+   parameters, return values and behavior may change, or these features may be
+   removed, between releases without the standard deprecation period.
+   Please share feedback on configuration names, source selection and cache
+   behavior through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
 Setters update in-memory ``CONFIG`` settings for the current session, log the
 result at INFO level, and perform no network requests. Tags are case-sensitive.
 An unsupported tag raises ``ValueError`` listing valid choices before any settings
@@ -62,6 +73,7 @@ SDC-only products and ``spdf=True`` retain their previous routing rules.
 
 Data sources
 ------------
+
 MMS supports ``data_access='sdc'`` (the default) and ``data_access='archive'``
 in ``pyspedas.projects.mms.config.CONFIG``. ``remote_data_dir`` is the archive
 mission root, defaulting to ``https://spdf.gsfc.nasa.gov/pub/data/mms/``.

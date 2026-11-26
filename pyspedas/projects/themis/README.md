@@ -4,6 +4,12 @@ The routines in this module can be used to load data from the THEMIS mission.
 
 ### Provider shortcuts
 
+> **Experimental source-routing API.** The configuration interface for selecting
+> data sources and layouts is experimental and has not been finalized. Please
+> share feedback on configuration names, source selection and cache behavior
+> through the [PySPEDAS issue tracker](https://github.com/spedas/pyspedas/issues)
+> to help shape the stable API.
+
 Setters update in-memory `CONFIG` settings for the current session, log the new
 settings at INFO level, and make no network requests. Tags are case-sensitive.
 Unsupported tags raise `ValueError` with the valid choices before changing any

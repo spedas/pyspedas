@@ -40,6 +40,12 @@ previous routing rules.
 
 ### Data sources
 
+> **Experimental source-routing API.** The configuration interface for selecting
+> data sources and layouts is experimental and has not been finalized. Please
+> share feedback on configuration names, source selection and cache behavior
+> through the [PySPEDAS issue tracker](https://github.com/spedas/pyspedas/issues)
+> to help shape the stable API.
+
 MMS separates SDC API access from file-archive access. Defaults preserve existing
 behavior:
 

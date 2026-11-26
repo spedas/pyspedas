@@ -5,6 +5,17 @@ The routines in this module can be used to load data from the Time History of Ev
 
 Provider shortcuts
 ------------------
+
+.. warning::
+
+   **Experimental source-routing API.** The provider setters/getters and new
+   source-selection configuration interfaces have not been finalized. Their
+   parameters, return values and behavior may change, or these features may be
+   removed, between releases without the standard deprecation period.
+   Please share feedback on configuration names, source selection and cache
+   behavior through the `PySPEDAS issue tracker
+   <https://github.com/spedas/pyspedas/issues>`_ to help shape the stable API.
+
 Setters update in-memory ``CONFIG`` settings for the current session, log the
 result at INFO level, and perform no network requests. Tags are case-sensitive.
 An unsupported tag raises ``ValueError`` listing valid choices before any settings
@@ -50,6 +61,7 @@ metadata. Berkeley and UCLA use ``themis`` layout; SPDF and heliocloud use
 
 Data sources and layouts
 ------------------------
+
 Ordinary satellite and ground data use ``remote_data_dir`` and
 ``remote_data_layout`` in ``pyspedas.projects.themis.config.CONFIG``.
 The THEMIS server and UCLA mirror use ``themis`` layout. SPDF and heliocloud

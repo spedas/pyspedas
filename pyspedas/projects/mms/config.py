@@ -1,3 +1,10 @@
+"""MMS data sources and cache configuration.
+
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+"""
 import logging
 import os
 
@@ -89,6 +96,12 @@ def _get_source(sources):
 def set_data_source(source_tag):
     """Select the data provider for this session.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Selecting ``sdc`` sets the SDC URL and API access; archive selections set
     the archive URL and access method, retaining the independent SDC URL.
     The inactive archive URL is retained when selecting SDC.
@@ -114,6 +127,12 @@ def set_data_source(source_tag):
 def get_data_source():
     """Identify the current data provider from CONFIG.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Returns
     -------
     str or None
@@ -125,6 +144,12 @@ def get_data_source():
 
 def set_sdc_source(source_tag):
     """Select the SDC provider for this session.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Parameters
     ----------
@@ -146,6 +171,12 @@ def set_sdc_source(source_tag):
 
 def get_sdc_source():
     """Identify the current SDC provider from CONFIG.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Returns
     -------

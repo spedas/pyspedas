@@ -16,6 +16,8 @@ related_files:
   - pyspedas/cotrans_tools/rotmat_get_coords.py
   - pyspedas/cotrans_tools/rotmat_set_coords.py
   - pyspedas/cotrans_tools/cart2spc.py
+  - pyspedas/cotrans_tools/cartesian2geodeticpolar.py
+  - pyspedas/cotrans_tools/geodetic_correction.py
   - pyspedas/cotrans_tools/spc2cart.py
   - pyspedas/cotrans_tools/cart_to_sphere.py
   - pyspedas/cotrans_tools/sphere_to_cart.py
@@ -34,7 +36,7 @@ related_files:
 maintenance: |
   Update when a coordinate system or a sub<a>2<b> transform is added to
   cotrans_lib.py (and its path table), when cotrans() changes its metadata
-  handling, or when a new rotation-matrix maker is added here.
+  handling, or when a rotation-matrix maker or coordinate helper is added here.
 ---
 
 # cotrans_tools
@@ -57,6 +59,11 @@ Public names are re-exported from `pyspedas/__init__.py`.
 - `rotmat_set_coords.py`, `rotmat_get_coords.py`: record a matrix variable's input and output systems.
 - `quaternions.py`: quaternion library (`qslerp`, `mtoq`, `qtom`, ...); `matrix_array_lib.py`: batch 3x3 matrix checks (`ctv_verify_mats`, `ctv_swap_hands`).
 - `cart2spc.py`, `spc2cart.py`, `cart_to_sphere.py`, `sphere_to_cart.py`, `xyz_to_polar.py`, `sm2mlt.py`: small conversions.
+- `cartesian2geodeticpolar.py`: converts GEO Cartesian positions to radius,
+  geodetic latitude and longitude, or reverses the conversion with `inverse=True`;
+  accepts arrays or tplot variable names. Angles are in degrees.
+- `geodetic_correction.py`: converts geocentric latitude to geodetic latitude,
+  or reverses the correction with `inverse=True`.
 - `tests/`: unittest modules.
 
 ## How cotrans() works

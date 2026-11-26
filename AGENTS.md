@@ -29,6 +29,7 @@ related_files:
   - pyproject.toml
   - pdm.lock
   - .github/workflows/quick_tests.yml
+  - .github/workflows/quick_tests_inventory.md
   - .github/scripts/install_quick_test_dependencies.py
   - .github/scripts/tests/test_quick_test_dependencies.py
   - .github/workflows/full_coverage.yml
@@ -126,8 +127,9 @@ Most loaders run the same pipeline. For `pyspedas.projects.themis.fgm()`:
 4. `cdf_to_tplot()` (`pyspedas/tplot_tools/importers/cdf_to_tplot.py`) stores the
    file contents as tplot variables.
 
-MMS is an exception: `pyspedas/projects/mms/mms_load_data.py` queries the
-LASP SDC file API instead of a directory listing.
+MMS uses `pyspedas/projects/mms/mms_load_data.py` to select the LASP SDC
+file API or a configured archive for supported products. SDC-only products
+continue through the SDC API; see `pyspedas/projects/mms/AGENTS.md`.
 
 ## tplot variables
 
@@ -179,6 +181,10 @@ via `get_data()`, `store_data()`, and similar utilities.
   Add quick-test modules only if they avoid lengthy calculations, large downloads
   and known unreliable data providers. All quick-test dependency policies share
   one test list; register each module once.
+- Quick tests build shared source and wheel artifacts, run quality checks once,
+  and restore a shared test environment in parallel subsystem and mission groups.
+  Keep `.github/workflows/quick_tests_inventory.md` synchronized with the active
+  modules and group assignments in `.github/workflows/quick_tests.yml`.
 - `quick_tests` runs on pushes and pull requests with `dependency_policy=default`.
   Automatic runs use Python 3.14. Manual dispatch can choose `default`, `latest`
   or `oldest` and `python_version` from 3.11 through 3.15 (default 3.14).

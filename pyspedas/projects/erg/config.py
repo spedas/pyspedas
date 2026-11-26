@@ -1,5 +1,10 @@
 """ERG data sources and cache configuration.
 
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+
 ``remote_data_dir`` and ``ERG_REMOTE_DATA_DIR`` are deprecated compatibility
 settings for a common ERG-SC root. Use the satellite, att, and ground URL/layout
 pairs instead. Explicit family preferences override the legacy preference;
@@ -145,6 +150,12 @@ def _get_source(sources):
 def set_satellite_source(source_tag):
     """Select the satellite provider for this session.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Parameters
     ----------
     source_tag : str
@@ -166,6 +177,12 @@ def set_satellite_source(source_tag):
 def get_satellite_source():
     """Identify the current satellite provider from CONFIG.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Returns
     -------
     str or None
@@ -177,6 +194,12 @@ def get_satellite_source():
 
 def set_attitude_source(source_tag):
     """Select the attitude provider for this session.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Parameters
     ----------
@@ -199,6 +222,12 @@ def set_attitude_source(source_tag):
 def get_attitude_source():
     """Identify the current attitude provider from CONFIG.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Returns
     -------
     str or None
@@ -210,6 +239,12 @@ def get_attitude_source():
 
 def set_ground_source(source_tag):
     """Select the ground provider for this session.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Parameters
     ----------
@@ -231,6 +266,12 @@ def set_ground_source(source_tag):
 
 def get_ground_source():
     """Identify the current ground provider from CONFIG.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Returns
     -------

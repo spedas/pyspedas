@@ -8,7 +8,7 @@ import string
 _basemap_import_error = None
 
 try:
-    from mpl_toolkits.basemap import Basemap, _projnames, projection_params
+    from mpl_toolkits.basemap import Basemap, _projnames, projection_params, _cylproj, _pseudocyl
 except ImportError as exc:
     Basemap = object
     _basemap_import_error = exc
@@ -30,6 +30,16 @@ class Tplot_Map_Param_Set():
 class Tplot_Map(Basemap):
     """
     Create maps and add plots using tplot variables.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+        This applies to ``Tplot_Map``, its plotting methods and ``tplot_map()``.
+        Please share feedback on map creation,
+        coordinate inputs and plotting options at
+        https://github.com/spedas/pyspedas/issues to help shape the stable API.
 
     The initialization creates the map, and class methods
     are used to add plots. Allows for customization of the
@@ -981,6 +991,12 @@ class Tplot_Map(Basemap):
         -------
         None
 
+        Notes
+        -----
+        Longitudes are wrapped to the map region without reordering points.
+        Paths crossing a cylindrical or pseudocylindrical map seam are split
+        instead of drawing a line across the map.
+
         Examples
         --------
 
@@ -1032,8 +1048,10 @@ class Tplot_Map(Basemap):
         self.map_options["add_paths"].update(plot_kwargs)
 
         self._overwrite_params("add_paths")
+        options = dict(self.map_options["add_paths"], latlon=False)
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
-            self.plot(coord_set[:,0],coord_set[:,1],**self.map_options.get("add_paths"))
+            x, y = self._project_overlay_coords(coord_set, split_seams=True)
+            self.plot(x, y, **options)
         return
 
     def add_markers(
@@ -1117,6 +1135,11 @@ class Tplot_Map(Basemap):
         -------
         None
 
+        Notes
+        -----
+        Longitudes are wrapped to the map region, so either -180 to 180 or
+        0 to 360 degree inputs can be used. Point order is preserved.
+
         Examples
         --------
 
@@ -1173,9 +1196,14 @@ class Tplot_Map(Basemap):
         if alpha is not None:
             scatter_kwargs.update({"alpha":alpha})
         self.map_options["add_markers"].update(scatter_kwargs)
+        if "c" in self.map_options["add_markers"]:
+            # Matplotlib rejects simultaneous 'c' and 'color' arguments.
+            self.map_options["add_markers"].pop("color", None)
         self._overwrite_params("add_markers")
+        options = dict(self.map_options["add_markers"], latlon=False)
         for coord_set in convert_coords_to_geod_lonlat_list(coords=coords,coord_type=coord_type,co_latitude=co_latitude,angle_meas=angle_meas):
-            self.scatter(coord_set[:,0],coord_set[:,1],**self.map_options.get("add_markers"),latlon=True)
+            x, y = self._project_overlay_coords(coord_set)
+            self.scatter(x, y, **options)
         return
 
     # TODO: add option for km radius
@@ -1254,6 +1282,11 @@ class Tplot_Map(Basemap):
         Returns
         -------
         None
+
+        Notes
+        -----
+        Circle edges are wrapped to the map region and split at cylindrical
+        or pseudocylindrical map seams.
 
         Examples
         --------
@@ -1339,11 +1372,36 @@ class Tplot_Map(Basemap):
                 alat = 90.0 - np.rad2deg(alat/r_e)
                 alon=coord[0]-alon
 
-                x,y = self(alon,cotrans_geodetic_correction(alat))
-                self.plot(x,y,**self.map_options.get("add_caps"))
+                cap_coords = np.column_stack([alon, cotrans_geodetic_correction(alat)])
+                x, y = self._project_overlay_coords(cap_coords, split_seams=True)
+                self.plot(x, y, **dict(self.map_options["add_caps"], latlon=False))
         return
 
     # Helper functions:
+    def _project_overlay_coords(self, coords, split_seams=False):
+        """Project (longitude, latitude) records without Basemap's implicit shifting."""
+        lon = np.array(coords[:, 0], dtype=float, copy=True)
+        lat = np.asarray(coords[:, 1], dtype=float)
+        if self.projection in _cylproj or self.projection in _pseudocyl:
+            if self.projection in _cylproj:
+                # Explicit bounds can differ from the default central meridian:
+                # a 0–360 map must retain US longitudes such as 260 degrees.
+                center = (self.llcrnrlon + self.urcrnrlon) / 2
+            else:
+                center = self.projparams["lon_0"]
+            outside = np.isfinite(lon) & ((lon < center - 180) | (lon > center + 180))
+            lon[outside] = (lon[outside] - center + 180) % 360 + center - 180
+            if split_seams:
+                # Break lines at the map edge without reordering points or
+                # connecting opposite sides of a world map.
+                breaks = np.flatnonzero(np.abs(np.diff(lon)) > 180) + 1
+                lon = np.insert(lon, breaks, np.nan)
+                lat = np.insert(lat, breaks, np.nan)
+        if lon.size == 1:
+            # pyproj's scalar fast path warns on one-element NumPy arrays.
+            return self(lon.item(), lat.item())
+        return self(lon, lat)
+
     def _overwrite_params(self,map_plottype:str):
         param_opts = self.map_options.get(map_plottype)
         match map_plottype:
@@ -1695,6 +1753,16 @@ def tplot_map(
     # TODO: make sure coordinates are interpreted as lon, lat, not the other way around
     """
     Create a Tplot_Map object, with convenient initialization options
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+        This applies to ``Tplot_Map``, its plotting methods and ``tplot_map()``.
+        Please share feedback on map creation,
+        coordinate inputs and plotting options at
+        https://github.com/spedas/pyspedas/issues to help shape the stable API.
 
     Parameters
     ----------

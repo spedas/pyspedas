@@ -1,5 +1,10 @@
 """THEMIS sources: one mission data source and an independent SSC source.
 
+Experimental source-routing API: the configuration interface for selecting data
+sources and layouts has not been finalized. Please share feedback on configuration
+names, source selection and cache behavior at
+https://github.com/spedas/pyspedas/issues to help shape the stable API.
+
 Satellite data, all GMAG networks and station metadata share remote_data_dir.
 Source settings accept stored preferences and matching THM_* environment
 variables. Requests never fall back to a different provider.
@@ -97,6 +102,12 @@ def _get_source(sources):
 def set_data_source(source_tag):
     """Select the satellite, ground and GMAG metadata provider for this session.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Parameters
     ----------
     source_tag : str
@@ -118,6 +129,12 @@ def set_data_source(source_tag):
 def get_data_source():
     """Identify the current data provider from CONFIG.
 
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
+
     Returns
     -------
     str or None
@@ -129,6 +146,12 @@ def get_data_source():
 
 def set_ssc_source(source_tag):
     """Select the SSC provider for this session.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Parameters
     ----------
@@ -150,6 +173,12 @@ def set_ssc_source(source_tag):
 
 def get_ssc_source():
     """Identify the current SSC provider from CONFIG.
+
+    .. warning::
+
+        Experimental API. Parameters, return values, and behavior may
+        change, or this feature may be removed, between releases without
+        the standard deprecation period.
 
     Returns
     -------

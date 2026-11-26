@@ -13,12 +13,16 @@ related_files:
   - pyspedas/mth5/tests/test_mth5_import.py
   - pyspedas/mth5/tests/tests.md
   - docs/source/mth5.rst
+  - RULES.md
 maintenance: |
   Update when the MTH5 dependency handling, FDSN loading and caching behavior,
   data-directory configuration, examples, or tests change.
 ---
 
 # MTH5
+
+Every change here follows `RULES.md` at the repository root. Read it before
+you change code here.
 
 This package integrates pySPEDAS with the external `mth5` package. Importing
 `pyspedas.mth5` creates the configured local data directory and requires the
