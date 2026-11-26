@@ -90,11 +90,10 @@ class CDFToTplotTestCases(unittest.TestCase):
                 pyspedas.cdf_to_tplot(path, varnames=order, center_measurement=True)
                 for name in order:
                     times = np.asarray(pyspedas.get_data(name, dt=True).times)
-                    shift = (times[0] - raw[0]) / np.timedelta64(1, "s")
-                    self.assertAlmostEqual(
-                        shift,
-                        1.0,
-                        msg=f"varnames={order}: {name} shifted by {shift} s",
+                    np.testing.assert_array_equal(
+                        times,
+                        raw + np.timedelta64(1, "s"),
+                        err_msg=f"varnames={order}: {name} timestamps should all shift by 1 s",
                     )
 
 
