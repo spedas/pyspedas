@@ -147,6 +147,8 @@ jobs:
               coverage run -a -m  pyspedas.utilities.tests.test_math
               echo Starting utilities interp_nan tests at `date`
               coverage run -a -m pyspedas.utilities.tests.test_interp_nan
+              echo Starting cdf_to_tplot tests at `date`
+              coverage run -a -m pyspedas.utilities.tests.test_cdf_to_tplot
               echo Starting cotrans minvar tests at `date`
               coverage run -a -m pyspedas.cotrans_tools.tests.test_minvar
               echo Starting cotrans fac tests at `date`
