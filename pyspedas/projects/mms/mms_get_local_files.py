@@ -64,7 +64,17 @@ def mms_get_local_files(probe, instrument, data_rate, level, datatype, trange, m
 
     file_name = 'mms'+probe+'_'+instrument+'_'+data_rate+'_'+level+r'(_)?.*_([0-9]{8,14})_v(\d+).(\d+).(\d+).cdf'
 
-    days = rrule(DAILY, dtstart=parse(parse(trange[0]).strftime('%Y-%m-%d')), until=parse(trange[1])-timedelta(seconds=1))
+    start_time = parse(trange[0])
+    end_time = parse(trange[1])
+    if start_time >= end_time:
+        logging.error(
+            "Invalid trange: start time %s must be before end time %s.",
+            trange[0],
+            trange[1],
+        )
+        return []
+
+    days = rrule(DAILY, dtstart=parse(start_time.strftime('%Y-%m-%d')), until=end_time-timedelta(seconds=1))
 
     if datatype == '' or datatype is None:
         level_and_dtype = level
