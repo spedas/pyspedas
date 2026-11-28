@@ -107,12 +107,6 @@ def load(trange=['2017-03-27', '2017-03-28'],
     if downloadonly:
         return out_files
 
-    new_cdflib = False
-    if cdflib.__version__ > "0.4.9":
-        new_cdflib = True
-    else:
-        new_cdflib = False
-
     tvars = cdf_to_tplot(out_files, prefix=prefix, suffix=suffix, get_support_data=get_support_data,
                          varformat=varformat, varnames=varnames, notplot=notplot)
 
@@ -120,10 +114,7 @@ def load(trange=['2017-03-27', '2017-03-28'],
         if len(out_files) > 0:
             cdf_file = cdflib.CDF(out_files[-1])
             cdf_info = cdf_file.cdf_info()
-            if new_cdflib:
-                all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
-            else:
-                all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
+            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
             gatt = cdf_file.globalattsget()
             for var in all_cdf_variables:
                 t_plot_name = prefix + var + suffix
