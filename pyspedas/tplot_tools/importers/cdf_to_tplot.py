@@ -87,14 +87,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     output_table = {}
     metadata = {}
 
-    new_cdflib = False
-    if cdflib.__version__ > "0.4.9":
-        new_cdflib = True
-        logging.debug("Using new version of cdflib (%s)", cdflib.__version__)
-    else:
-        new_cdflib = False
-        logging.debug("Using old version of cdflib (%s)", cdflib.__version__)
-
     if prefix is None:
         prefix = ''
 
@@ -167,7 +159,6 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
     else:
         exclude_regex = None
 
-
     # This step may not be appropriate if the lexicographic sort does not correspond to a time sort. (For example,
     # if filenames contain orbit numbers rather than dates, and no leading zeroes are used.)  JWL 2023-03-17
 
@@ -185,10 +176,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         master_cdf_file = cdflib.CDF(mastercdf)
         master_cdf_file.string_encoding = string_encoding
         master_cdf_info = master_cdf_file.cdf_info()
-        if new_cdflib:
-            master_cdf_variables = master_cdf_info.rVariables + master_cdf_info.zVariables
-        else:
-            master_cdf_variables = master_cdf_info['rVariables'] + master_cdf_info['zVariables']
+        master_cdf_variables = master_cdf_info.rVariables + master_cdf_info.zVariables
 
         logging.debug("master_cdf_variables: " + str(master_cdf_variables))
     else:
@@ -200,10 +188,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
         cdf_file = cdflib.CDF(filename)
         cdf_file.string_encoding = string_encoding
         cdf_info = cdf_file.cdf_info()
-        if new_cdflib:
-            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
-        else:
-            all_cdf_variables = cdf_info['rVariables'] + cdf_info['zVariables']
+        all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
 
         logging.debug("all_cdf_variables: " + str(all_cdf_variables))
         if not mastercdf_flag:
@@ -271,16 +256,10 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                 # Is this variable marked as non-record-varying?  This may
                 # differ between the data and master CDFs.
 
-                if new_cdflib:
-                    rec_vary_data \
-                        = var_properties_data_cdf.Rec_Vary
-                    rec_vary_master \
-                        = var_properties.Rec_Vary
-                else:
-                    rec_vary_data \
-                        = var_properties_data_cdf["Rec_Vary"]
-                    rec_vary_master \
-                        = var_properties["Rec_Vary"]
+                rec_vary_data \
+                    = var_properties_data_cdf.Rec_Vary
+                rec_vary_master \
+                    = var_properties.Rec_Vary
                 if (rec_vary_master != rec_vary_data):
                     logging.warning("Master and data CDFs have different values for Rec_Vary property on variable %s, using %s from master CDF.", var, rec_vary_master)
                 rec_vary = rec_vary_master
@@ -324,12 +303,8 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     logging.warning('Variable %s timestamp variable %s not found, skipping', var, x_axis_var)
                     continue
 
-                if new_cdflib:
-                    data_type_description \
-                        = cdf_file.varinq(x_axis_var).Data_Type_Description
-                else:
-                    data_type_description \
-                        = cdf_file.varinq(x_axis_var)["Data_Type_Description"]
+                data_type_description \
+                    = cdf_file.varinq(x_axis_var).Data_Type_Description
 
 
                 if epoch_cache.get(filename + x_axis_var) is None:
@@ -461,10 +436,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                     #logging.info("No data records for variable %s", var)
                     continue
                 if "FILLVAL" in var_atts:
-                    if new_cdflib:
-                        thisvar_dtd = var_properties.Data_Type_Description
-                    else:
-                        thisvar_dtd = var_properties["Data_Type_Description"]
+                    thisvar_dtd = var_properties.Data_Type_Description
 
                     fillval = var_atts['FILLVAL']
 
@@ -567,10 +539,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             if depend_1 is not None and depend_1.dtype.type is np.str_:
                                 # Get the original array dimensions from the variable properties
                                 dp_props = master_cdf_file.varinq(dep_name)
-                                if new_cdflib:
-                                    orig_dimensions = dp_props.Dim_Sizes
-                                else:
-                                    orig_dimensions = dp_props['Dim_Sizes']
+                                orig_dimensions = dp_props.Dim_Sizes
                                 reshape_dim = tuple(orig_dimensions)
                                 if depend_1.shape != reshape_dim:
                                     logging.warning('Variable %s has shape %s. Its DEPEND_1 attribute %s is string-valued, and cdflib returned dimensions %s which do not match original dimensions %s.',var, ydata.shape, dep_name, depend_1.shape, reshape_dim)
@@ -643,10 +612,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             if depend_2 is not None and depend_2.dtype.type is np.str_:
                                 # Get the original array dimensions from the variable properties
                                 dp_props = master_cdf_file.varinq(dep_name)
-                                if new_cdflib:
-                                    orig_dimensions = dp_props.Dim_Sizes
-                                else:
-                                    orig_dimensions = dp_props['Dim_Sizes']
+                                orig_dimensions = dp_props.Dim_Sizes
                                 reshape_dim = tuple(orig_dimensions)
                                 depend_2 = np.reshape(depend_2, reshape_dim)
                                 #depend_2 = None
@@ -708,10 +674,7 @@ def cdf_to_tplot(filenames, mastercdf=None, varformat=None, exclude_format=None,
                             if depend_3 is not None and depend_3.dtype.type is np.str_:
                                 # Get the original array dimensions from the variable properties
                                 dp_props = master_cdf_file.varinq(dep_name)
-                                if new_cdflib:
-                                    orig_dimensions = dp_props.Dim_Sizes
-                                else:
-                                    orig_dimensions = dp_props['Dim_Sizes']
+                                orig_dimensions = dp_props.Dim_Sizes
                                 reshape_dim = tuple(orig_dimensions)
                                 depend_3 = np.reshape(depend_3, reshape_dim)
                                 #depend_3 = None
