@@ -1,8 +1,10 @@
 """Tests for pyspedas.tplot_tools.importers.cdf_to_tplot."""
 
+import importlib
 import os
 import tempfile
 import unittest
+from unittest.mock import patch
 
 import cdflib
 import numpy as np
@@ -72,6 +74,90 @@ class CDFToTplotTestCases(unittest.TestCase):
             )
         cdf.close()
         return epoch
+
+    def test_supported_cdflib_metadata_without_version_check(self):
+        """Read real CDF metadata without inspecting cdflib's version string."""
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "metadata.cdf")
+            self._write_centered_cdf(path)
+            # Version metadata is not needed to choose an API: the dependency
+            # already requires cdflib >= 1.3.12. A non-string sentinel catches
+            # accidental reintroduction of lexicographic version comparisons.
+            with patch.object(cdflib, "__version__", object()):
+                values = pyspedas.cdf_to_tplot(path, mastercdf=path, notplot=True)
+            for name in ("a", "b"):
+                np.testing.assert_array_equal(values[name]["y"], np.arange(3.0))
+
+    def test_psp_rfs_supported_cdflib_metadata(self):
+        """Select RFS variables from a real modern cdflib CDFInfo object."""
+        rfs = importlib.import_module("pyspedas.projects.psp.rfs")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "rfs.cdf")
+            with CDFWriter(path) as cdf:
+                for name in ("psp_fld_test", "unrelated"):
+                    cdf.write_var(
+                        {"Variable": name, "Data_Type": 45, "Num_Elements": 1,
+                         "Rec_Vary": True, "Dim_Sizes": []},
+                        var_data=np.array([1.0, 2.0]),
+                    )
+            with patch.object(cdflib, "__version__", object()):
+                self.assertEqual(rfs.rfs_variables_to_load([path]), ["psp_fld_test"])
+                self.assertEqual(rfs.rfs_variables_to_load([]), [])
+
+    def test_erg_notplot_supported_cdflib_metadata(self):
+        """Preserve ERG notplot attributes using the supported CDFInfo API."""
+        erg = importlib.import_module("pyspedas.projects.erg.satellite.erg.load")
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "erg.cdf")
+            self._write_centered_cdf(path)
+            with patch.object(erg, "download", return_value=[path]), patch.object(
+                cdflib, "__version__", object()
+            ):
+                values = erg.load(
+                    notplot=True, prefix="erg_", suffix="_test",
+                    remote_data_dir="https://example.invalid/erg/",
+                    remote_data_layout="ergsc", pathformat="erg_%Y%m%d.cdf",
+                )
+            np.testing.assert_array_equal(values["erg_a_test"]["y"], np.arange(3.0))
+            metadata = values["erg_a_test"]["CDF"]
+            self.assertEqual(metadata["FILENAME"], [path])
+            self.assertEqual(metadata["VATT"]["DEPEND_0"], "Epoch")
+            self.assertEqual(metadata["GATT"]["Project"], ["center_measurement test"])
+
+    def test_erg_induction_supported_cdflib_metadata(self):
+        """Read calibration record counts through modern VDRInfo attributes."""
+        induction = importlib.import_module(
+            "pyspedas.projects.erg.ground.geomag.gmag_isee_induction"
+        )
+        with tempfile.TemporaryDirectory() as tmpdir:
+            path = os.path.join(tmpdir, "induction.cdf")
+            with CDFWriter(path) as cdf:
+                for name, dimensions, values in (
+                    ("frequency", [], np.array([1.0, 2.0])),
+                    ("sensitivity", [3], np.arange(6.0).reshape(2, 3)),
+                    ("phase_difference", [3], np.arange(6.0).reshape(2, 3)),
+                ):
+                    cdf.write_var(
+                        {"Variable": name, "Data_Type": 45, "Num_Elements": 1,
+                         "Rec_Vary": True, "Dim_Sizes": dimensions},
+                        var_data=values,
+                    )
+            name = "isee_induction_db_dt_msr"
+            pyspedas.store_data(
+                name, data={"x": [0.0, 1.0], "y": [[1., 2., 3.], [4., 5., 6.]]},
+                attr_dict={"CDF": {"FILENAME": path}},
+            )
+            with patch.object(induction, "load", return_value=[name]), patch.object(
+                cdflib, "__version__", object()
+            ):
+                result = induction.gmag_isee_induction(
+                    site="msr", frequency_dependent=True, ror=False
+                )["msr"]
+            self.assertEqual(result["nfreq"], 2)
+            np.testing.assert_array_equal(result["frequency"][:2], [1., 2.])
+            np.testing.assert_array_equal(
+                result["sensitivity"][:2], np.arange(6.0).reshape(2, 3)
+            )
 
     def test_center_measurement_all_variables(self):
         """Regression test for spedas/pyspedas issue #1584.
