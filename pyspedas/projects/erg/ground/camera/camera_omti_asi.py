@@ -126,12 +126,6 @@ def camera_omti_asi(
     
     site_code = list(set(site_code).intersection(site_code_all))
 
-    new_cdflib = False
-    if cdflib.__version__ > "0.4.9":
-        new_cdflib = True
-    else:
-        new_cdflib = False
-
     if notplot:
         loaded_data = {}
     else:
@@ -213,18 +207,12 @@ def camera_omti_asi(
                         cdf_file = cdflib.CDF(file_name)
                         cdf_info = cdf_file.cdf_info()
 
-                        if new_cdflib:
-                            all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
-                        else:
-                            all_cdf_variables = cdf_info["rVariables"] + cdf_info["zVariables"]
+                        all_cdf_variables = cdf_info.rVariables + cdf_info.zVariables
 
                         if 'image_raw' in all_cdf_variables:
                             var_string = 'image_raw'
                             var_properties = cdf_file.varinq(var_string)
-                            if new_cdflib:
-                                original_datatype_string = var_properties.Data_Type_Description
-                            else:
-                                original_datatype_string = var_properties["Data_Type_Description"]
+                            original_datatype_string = var_properties.Data_Type_Description
                             if original_datatype_string == 'CDF_INT4':
                                 image_y_transpose = image_y_transpose.astype(np.int32)
                             elif original_datatype_string == 'CDF_UINT1':
